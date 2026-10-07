@@ -7,7 +7,8 @@
 !.yarn/plugins
 !.yarn/releases
 !.yarn/versions
-
+package-lock.json
+AGENTS.md
 # testing
 /coverage
 /test-results/
@@ -24,7 +25,7 @@
 # environment variables
 .env*
 !.env.example
-
+.env.example
 # Vercel
 .vercel
 
