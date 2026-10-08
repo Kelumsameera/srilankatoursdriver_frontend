@@ -5,7 +5,10 @@ import type { ApiEnvelope } from "@/types/cms";
 
 export interface SubmitResult<T> {
   ok: boolean;
+  /** HTTP status; 0 when the request never reached the API (offline, DNS, CORS). */
+  status: number;
   data?: T;
+  /** API message for logging/debugging only – forms show their own translated text. */
   message: string;
   errors: { path: string; message: string }[];
 }
@@ -19,8 +22,10 @@ export async function submitPublic<T = unknown>(path: string, body: unknown): Pr
       body: JSON.stringify(body),
     });
     const json = (await res.json().catch(() => null)) as ApiEnvelope<T> | null;
-    return { ok: res.ok && !!json?.success, data: json?.data, message: json?.message ?? res.statusText, errors: json?.errors ?? [] };
+    // Field errors are only meaningful for validation failures (400); never surface 5xx details.
+    const errors = res.status === 400 && Array.isArray(json?.errors) ? json.errors : [];
+    return { ok: res.ok && !!json?.success, status: res.status, data: json?.data, message: json?.message ?? res.statusText, errors };
   } catch (err) {
-    return { ok: false, message: (err as Error).message, errors: [] };
+    return { ok: false, status: 0, message: (err as Error).message, errors: [] };
   }
 }

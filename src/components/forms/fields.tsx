@@ -1,6 +1,6 @@
 "use client";
 
-import { forwardRef, type InputHTMLAttributes, type ReactNode, type SelectHTMLAttributes, type TextareaHTMLAttributes } from "react";
+import { forwardRef, useCallback, useRef, type InputHTMLAttributes, type ReactNode, type SelectHTMLAttributes, type TextareaHTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
 
 const control =
@@ -66,4 +66,30 @@ export function SuccessPanel({ title, text, extra }: { title: string; text: stri
 /** Maps API field errors (e.g. "customer.email") onto react-hook-form fields. */
 export function applyServerErrors(errors: { path: string; message: string }[], setError: (name: never, e: { message: string }) => void) {
   for (const e of errors) if (e.path) setError(e.path as never, { message: e.message });
+}
+
+/**
+ * Translation key (in the "booking" namespace) for a failed public submission. Every failure shows a
+ * message – raw API text is never displayed, and field errors also get a summary in case the
+ * offending field is not visible on the current step.
+ */
+export function failureKey(res: { status: number; errors: unknown[] }): "errorFields" | "errorRateLimited" | "errorNetwork" | "errorGeneric" {
+  if (res.errors.length) return "errorFields";
+  if (res.status === 429) return "errorRateLimited";
+  if (res.status === 0) return "errorNetwork";
+  return "errorGeneric";
+}
+
+/** Guards a submit handler against re-entry (double click / repeated Enter before the button disables). */
+export function useSubmitLock() {
+  const busy = useRef(false);
+  return useCallback(<A extends unknown[]>(fn: (...args: A) => Promise<void>) => async (...args: A) => {
+    if (busy.current) return;
+    busy.current = true;
+    try {
+      await fn(...args);
+    } finally {
+      busy.current = false;
+    }
+  }, []);
 }

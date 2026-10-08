@@ -19,7 +19,7 @@ export default function BookingDetailPage({ params }: { params: Promise<{ id: st
       permission="bookings"
       statuses={["new", "contacted", "quoted", "pending", "confirmed", "cancelled", "completed"]}
       title={(r) => `Booking – ${(r.customer as { name?: string })?.name ?? ""}`}
-      contact={(r) => r.customer as { email?: string; phone?: string; whatsapp?: string; name?: string }}
+      contact={(r) => (r.customer ?? {}) as { email?: string; phone?: string; whatsapp?: string; name?: string }}
     >
       {(r) => {
         const c = (r.customer ?? {}) as Record<string, string>;

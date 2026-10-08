@@ -66,18 +66,19 @@ export async function buildMetadata(input: BuildInput): Promise<Metadata> {
           ? global.ogImage
           : branding?.primaryLogo;
   const alt = alternates(input.path, input.locale);
+  const canonical = s.canonicalUrl || route?.canonicalUrl || alt.canonical;
 
   return {
     title,
     description,
     keywords: s.keywords?.length ? s.keywords : route?.keywords?.length ? route.keywords : global?.keywords,
-    alternates: { ...alt, canonical: s.canonicalUrl || route?.canonicalUrl || alt.canonical },
+    alternates: { ...alt, canonical },
     robots: robots(s.robots || route?.robots || global?.robots),
     openGraph: {
       type: input.type ?? "website",
       title: s.ogTitle || route?.ogTitle || title,
       description: s.ogDescription || route?.ogDescription || description,
-      url: alt.canonical,
+      url: canonical,
       siteName: settings?.businessName,
       locale: localeTags[input.locale as keyof typeof localeTags] ?? input.locale,
       images: ogImage(image),

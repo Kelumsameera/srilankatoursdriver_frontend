@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -28,10 +29,13 @@ export function ResourceEditor({ resource, id }: { resource: AdminResource; id: 
     enabled: !isNew,
   });
 
-  if (!isNew && isLoading) return <LoadingBlock />;
-  if (!isNew && error) return <ErrorBlock message={errorMessage(error)} onRetry={() => refetch()} />;
+  // Must be referentially stable: EntityForm resets itself whenever `initial` changes.
+  const blank = useMemo(() => ({ ...resource.defaults, ...resource.fixedValues }), [resource]);
 
-  const item = isNew ? { ...resource.defaults, ...resource.fixedValues } : data?.data;
+  if (!isNew && isLoading) return <LoadingBlock />;
+  if (!isNew && (error || !data)) return <ErrorBlock message={errorMessage(error ?? new Error("Not found"))} onRetry={() => refetch()} />;
+
+  const item = isNew ? blank : data?.data;
   const title = isNew ? `New ${resource.singular.toLowerCase()}` : String(item?.[resource.titleKey] ?? resource.singular);
   const publicPath = !isNew && item ? resource.publicPath?.(item) : null;
 

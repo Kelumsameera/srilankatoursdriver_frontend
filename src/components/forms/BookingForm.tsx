@@ -8,7 +8,7 @@ import { Loader2 } from "lucide-react";
 import { bookingSchema, clean, type BookingValues } from "@/validations/public";
 import { submitPublic } from "@/lib/api/public-client";
 import { buttonClass } from "@/components/ui/Button";
-import { Field, Honeypot, Input, Select, SuccessPanel, Textarea, applyServerErrors } from "./fields";
+import { Field, Honeypot, Input, Select, SuccessPanel, Textarea, applyServerErrors, failureKey, useSubmitLock } from "./fields";
 import { useValidationMessages } from "./useValidationMessages";
 
 interface Option {
@@ -53,8 +53,9 @@ export function BookingForm({ tours, excursions, vehicles, initial }: Props) {
     },
   });
   const type = useWatch({ control, name: "type" });
+  const lock = useSubmitLock();
 
-  const onSubmit = handleSubmit(async (values) => {
+  const onSubmit = lock(handleSubmit(async (values) => {
     setFailure(null);
     const payload = clean({ ...values, locale });
     for (const k of ["tour", "excursion", "vehicle"] as const) if (k !== values.type) delete payload[k];
@@ -64,9 +65,9 @@ export function BookingForm({ tours, excursions, vehicles, initial }: Props) {
       window.scrollTo({ top: 0, behavior: "smooth" });
     } else {
       applyServerErrors(res.errors, setError as never);
-      setFailure(res.errors.length ? null : t("errorGeneric"));
+      setFailure(t(failureKey(res)));
     }
-  });
+  }));
 
   if (reference) return <SuccessPanel title={t("successTitle")} text={t("success")} extra={t("reference", { reference })} />;
 

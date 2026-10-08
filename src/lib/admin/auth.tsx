@@ -16,6 +16,8 @@ export interface AdminUser {
 interface AuthState {
   user: AdminUser | null;
   loading: boolean;
+  /** Set when the session could not be checked (API down / network) – distinct from "signed out". */
+  error: unknown;
   can: (permission: string) => boolean;
   login: (email: string, password: string) => Promise<AdminUser>;
   logout: () => Promise<void>;
@@ -45,6 +47,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   });
   const user = me.data ?? null;
   const loading = me.isLoading;
+  const error = me.isError && !me.data ? me.error : null;
 
   const reload = useCallback(async () => {
     await qc.invalidateQueries({ queryKey: ["me"] });
@@ -74,7 +77,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     [user],
   );
 
-  const value = useMemo(() => ({ user, loading, can, login, logout, reload }), [user, loading, can, login, logout, reload]);
+  const value = useMemo(() => ({ user, loading, error, can, login, logout, reload }), [user, loading, error, can, login, logout, reload]);
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 

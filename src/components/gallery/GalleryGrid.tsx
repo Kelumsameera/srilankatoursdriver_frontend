@@ -1,17 +1,19 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight, Play, X } from "lucide-react";
 import type { GalleryItem } from "@/types/cms";
 import { cn } from "@/lib/utils";
 import { videoPoster, videoUrl } from "@/lib/cloudinary-loader";
+import { Marquee } from "@/components/ui/Marquee";
 
 interface Props {
   items: GalleryItem[];
   labels: { close: string; previous: string; next: string; all: string; photos: string; videos: string };
   filters?: boolean;
-  variant?: "masonry" | "strip";
+  /** "marquee" = endless sliding row (homepage); tiles still open the lightbox. */
+  variant?: "masonry" | "strip" | "marquee";
 }
 
 /** Responsive gallery with an accessible lightbox (keyboard: ←, →, Esc). */
@@ -38,8 +40,56 @@ export function GalleryGrid({ items, labels, filters, variant = "masonry" }: Pro
     };
   }, [open, close, step]);
 
+  // Move focus into the lightbox while it is open and give it back to the thumbnail afterwards.
+  const isOpen = open !== null;
+  const closeBtn = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (!isOpen) return;
+    const previous = document.activeElement as HTMLElement | null;
+    closeBtn.current?.focus();
+    return () => previous?.focus();
+  }, [isOpen]);
+
   const current = open !== null ? shown[open] : null;
   const hasVideos = items.some((i) => i.media.resourceType === "video");
+
+  const tile = (item: GalleryItem, i: number) => {
+    const isVideo = item.media.resourceType === "video";
+    const src = isVideo ? videoPoster(item.media.url ?? "") : item.media.url;
+    const ratio = item.media.width && item.media.height ? item.media.width / item.media.height : 4 / 3;
+    return (
+      <button
+        type="button"
+        onClick={() => setOpen(i)}
+        className={cn("group relative block overflow-hidden rounded-2xl bg-forest-800", variant === "marquee" ? "h-56 w-72 sm:h-72 sm:w-96" : "w-full")}
+        style={variant === "masonry" ? { aspectRatio: String(ratio) } : variant === "marquee" ? undefined : { aspectRatio: "1" }}
+        aria-label={item.title || item.altText || item.caption || "Open"}
+      >
+        {src && (
+          <Image
+            src={src}
+            alt={item.altText || item.media.alt || item.title || ""}
+            fill
+            sizes={variant === "marquee" ? "384px" : "(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"}
+            className="object-cover transition-transform duration-700 group-hover:scale-105"
+          />
+        )}
+        <span className="absolute inset-0 bg-forest-950/0 transition-colors group-hover:bg-forest-950/25" />
+        {isVideo && (
+          <span className="absolute inset-0 flex items-center justify-center">
+            <span className="rounded-full bg-white/90 p-3 text-forest-900 shadow-lg">
+              <Play className="h-5 w-5 fill-current" />
+            </span>
+          </span>
+        )}
+        {item.title && (
+          <span className="absolute inset-x-0 bottom-0 translate-y-full bg-gradient-to-t from-forest-950/80 p-3 text-start text-sm text-white transition-transform group-hover:translate-y-0">
+            {item.title}
+          </span>
+        )}
+      </button>
+    );
+  };
 
   return (
     <div>
@@ -59,51 +109,21 @@ export function GalleryGrid({ items, labels, filters, variant = "masonry" }: Pro
           ))}
         </div>
       )}
-      <ul className={cn(variant === "masonry" ? "columns-2 gap-3 sm:gap-4 md:columns-3 lg:columns-4" : "grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4")} data-testid="gallery-grid">
-        {shown.map((item, i) => {
-          const isVideo = item.media.resourceType === "video";
-          const src = isVideo ? videoPoster(item.media.url ?? "") : item.media.url;
-          const ratio = item.media.width && item.media.height ? item.media.width / item.media.height : 4 / 3;
-          return (
+      {variant === "marquee" ? (
+        <Marquee items={shown} getKey={(item) => item._id} render={(item) => tile(item, shown.indexOf(item))} label={labels.photos} />
+      ) : (
+        <ul className={cn(variant === "masonry" ? "columns-2 gap-3 sm:gap-4 md:columns-3 lg:columns-4" : "grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4")} data-testid="gallery-grid">
+          {shown.map((item, i) => (
             <li key={item._id} className={cn("break-inside-avoid", variant === "masonry" && "mb-3 sm:mb-4")}>
-              <button
-                type="button"
-                onClick={() => setOpen(i)}
-                className="group relative block w-full overflow-hidden rounded-2xl bg-forest-800"
-                style={variant === "masonry" ? { aspectRatio: String(ratio) } : { aspectRatio: "1" }}
-                aria-label={item.title || item.altText || item.caption || "Open"}
-              >
-                {src && (
-                  <Image
-                    src={src}
-                    alt={item.altText || item.media.alt || item.title || ""}
-                    fill
-                    sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
-                )}
-                <span className="absolute inset-0 bg-forest-950/0 transition-colors group-hover:bg-forest-950/25" />
-                {isVideo && (
-                  <span className="absolute inset-0 flex items-center justify-center">
-                    <span className="rounded-full bg-white/90 p-3 text-forest-900 shadow-lg">
-                      <Play className="h-5 w-5 fill-current" />
-                    </span>
-                  </span>
-                )}
-                {item.title && (
-                  <span className="absolute inset-x-0 bottom-0 translate-y-full bg-gradient-to-t from-forest-950/80 p-3 text-start text-sm text-white transition-transform group-hover:translate-y-0">
-                    {item.title}
-                  </span>
-                )}
-              </button>
+              {tile(item, i)}
             </li>
-          );
-        })}
-      </ul>
+          ))}
+        </ul>
+      )}
 
       {current && (
         <div role="dialog" aria-modal="true" aria-label={current.title || "Gallery"} className="fixed inset-0 z-50 flex items-center justify-center bg-forest-950/95 p-4" onClick={close}>
-          <button type="button" onClick={close} className="absolute end-4 top-4 rounded-full p-2 text-white hover:bg-white/10" aria-label={labels.close}>
+          <button ref={closeBtn} type="button" onClick={close} className="absolute end-4 top-4 rounded-full p-2 text-white hover:bg-white/10" aria-label={labels.close}>
             <X className="h-7 w-7" />
           </button>
           {shown.length > 1 && (
@@ -135,11 +155,11 @@ export function GalleryGrid({ items, labels, filters, variant = "masonry" }: Pro
           <figure className="flex max-h-full max-w-5xl flex-col items-center" onClick={(e) => e.stopPropagation()}>
             {current.media.resourceType === "video" ? (
               <video src={videoUrl(current.media.url ?? "")} controls autoPlay playsInline className="max-h-[80vh] w-auto rounded-xl" />
-            ) : (
+            ) : current.media.url ? (
               <div className="relative h-[80vh] w-[90vw] max-w-5xl">
-                <Image src={current.media.url ?? ""} alt={current.altText || current.title || ""} fill sizes="90vw" className="object-contain" />
+                <Image src={current.media.url} alt={current.altText || current.title || ""} fill sizes="90vw" className="object-contain" />
               </div>
-            )}
+            ) : null}
             {(current.title || current.caption) && (
               <figcaption className="mt-4 text-center text-sm text-white/80">
                 {current.title && <span className="font-medium text-white">{current.title}</span>}

@@ -3,11 +3,12 @@
 import { useEffect, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { ChevronDown, ExternalLink, LogOut, Menu, X } from "lucide-react";
+import { ChevronDown, ExternalLink, LogOut, Menu, ShieldOff, X } from "lucide-react";
 import { useAuth } from "@/lib/admin/auth";
-import { ADMIN_NAV, type NavGroup } from "@/features/admin/navigation";
+import { errorMessage } from "@/lib/admin/api";
+import { ADMIN_NAV, routePermission, type NavGroup } from "@/features/admin/navigation";
 import { cn } from "@/lib/utils";
-import { LoadingBlock } from "./ui";
+import { Empty, ErrorBlock, LoadingBlock } from "./ui";
 
 function isActive(pathname: string, search: string, href: string) {
   const [path, query] = href.split("?");
@@ -80,16 +81,34 @@ function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
 
 /** Authenticated admin chrome. Redirects to /admin/login when there is no session. */
 export function AdminShell({ children }: { children: ReactNode }) {
-  const { user, loading, logout } = useAuth();
+  const { user, loading, error, logout, reload, can } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
   const [mobile, setMobile] = useState(false);
+  const [signingOut, setSigningOut] = useState(false);
 
   useEffect(() => {
-    if (!loading && !user) router.replace(`/admin/login?next=${encodeURIComponent(pathname)}`);
-  }, [loading, user, router, pathname]);
+    if (!loading && !user && !error) router.replace(`/admin/login?next=${encodeURIComponent(pathname)}`);
+  }, [loading, user, error, router, pathname]);
 
+  useEffect(() => {
+    if (!mobile) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setMobile(false);
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [mobile]);
+
+  // The session could not be verified (API down / offline): don't bounce to the login page, offer a retry.
+  if (!loading && !user && error) {
+    return (
+      <div className="mx-auto max-w-lg p-8">
+        <ErrorBlock message={errorMessage(error)} onRetry={() => void reload()} />
+      </div>
+    );
+  }
   if (loading || !user) return <LoadingBlock />;
+  const required = routePermission(pathname);
+  const allowed = !required || can(required);
 
   const brand = (
     <div className="flex h-16 items-center gap-2 border-b border-white/10 px-5">
@@ -109,11 +128,11 @@ export function AdminShell({ children }: { children: ReactNode }) {
       </aside>
       {mobile && (
         <div className="fixed inset-0 z-50 lg:hidden">
-          <div className="absolute inset-0 bg-black/50" onClick={() => setMobile(false)} />
-          <aside className="absolute inset-y-0 start-0 w-72 overflow-y-auto bg-forest-950">
+          <div className="absolute inset-0 bg-black/50" onClick={() => setMobile(false)} aria-hidden />
+          <aside className="absolute inset-y-0 start-0 w-72 overflow-y-auto bg-forest-950" role="dialog" aria-modal="true" aria-label="Admin menu">
             <div className="flex items-center justify-between pe-3">
               {brand}
-              <button type="button" onClick={() => setMobile(false)} className="text-white" aria-label="Close menu">
+              <button type="button" onClick={() => setMobile(false)} className="rounded p-1 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold-400" aria-label="Close menu" autoFocus>
                 <X className="h-5 w-5" />
               </button>
             </div>
@@ -138,11 +157,13 @@ export function AdminShell({ children }: { children: ReactNode }) {
             </div>
             <button
               type="button"
+              disabled={signingOut}
               onClick={async () => {
+                setSigningOut(true);
                 await logout();
                 router.replace("/admin/login");
               }}
-              className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 hover:text-red-600"
+              className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 hover:text-red-600 disabled:opacity-50"
               aria-label="Sign out"
               title="Sign out"
             >
@@ -150,7 +171,20 @@ export function AdminShell({ children }: { children: ReactNode }) {
             </button>
           </div>
         </header>
-        <main className="mx-auto w-full max-w-7xl flex-1 p-4 sm:p-6 lg:p-8">{children}</main>
+        <main className="mx-auto w-full max-w-7xl flex-1 p-4 sm:p-6 lg:p-8">
+          {allowed ? (
+            children
+          ) : (
+            <Empty>
+              <ShieldOff className="mx-auto mb-2 h-8 w-8 text-slate-400" aria-hidden />
+              <p className="font-medium text-slate-700">You don&apos;t have access to this page.</p>
+              <p className="mt-1">Ask a Super Admin to grant the “{required}” permission to your role.</p>
+              <Link href="/admin" className="mt-3 inline-block text-forest-700 underline">
+                Back to dashboard
+              </Link>
+            </Empty>
+          )}
+        </main>
       </div>
     </div>
   );

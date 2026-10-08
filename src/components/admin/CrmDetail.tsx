@@ -57,7 +57,7 @@ export function CrmDetail({ id, endpoint, listHref, listLabel, permission, statu
   if (error || !data) return <ErrorBlock message={errorMessage(error)} onRetry={() => refetch()} />;
   const r = data.data;
   const editable = can(`${permission}:update`);
-  const c = contact(r);
+  const c = contact(r) ?? {};
 
   const patch = async (body: Record<string, unknown>, msg: string) => {
     setBusy(true);
@@ -167,7 +167,11 @@ export function CrmDetail({ id, endpoint, listHref, listLabel, permission, statu
                   <Label htmlFor="crm-quote">Quoted amount</Label>
                   <div className="flex gap-2">
                     <Input id="crm-quote" type="number" min={0} value={quote ?? (r.quotedAmount ?? "")} onChange={(e) => setQuote(e.target.value)} />
-                    <Button variant="outline" onClick={() => patch({ quotedAmount: quote === "" ? null : Number(quote) }, "Quote saved")} disabled={quote === null}>
+                    <Button
+                      variant="outline"
+                      onClick={() => patch({ quotedAmount: quote === "" ? null : Number(quote) }, "Quote saved")}
+                      disabled={quote === null || busy || (quote !== "" && !(Number(quote) >= 0))}
+                    >
                       Save
                     </Button>
                   </div>
@@ -177,8 +181,8 @@ export function CrmDetail({ id, endpoint, listHref, listLabel, permission, statu
                 <div>
                   <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-slate-500">History</p>
                   <ol className="space-y-1 text-xs text-slate-500">
-                    {r.statusHistory.map((h, i) => (
-                      <li key={i}>
+                    {r.statusHistory.map((h) => (
+                      <li key={`${h.status}-${h.changedAt}`}>
                         <span className="capitalize text-slate-700">{h.status}</span> · {formatDate(h.changedAt, "en", { dateStyle: "short", timeStyle: "short" })}
                       </li>
                     ))}

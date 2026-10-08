@@ -8,7 +8,7 @@ import { Loader2 } from "lucide-react";
 import { clean, contactSchema, type ContactValues } from "@/validations/public";
 import { submitPublic } from "@/lib/api/public-client";
 import { buttonClass } from "@/components/ui/Button";
-import { Field, Honeypot, Input, SuccessPanel, Textarea, applyServerErrors } from "./fields";
+import { Field, Honeypot, Input, SuccessPanel, Textarea, applyServerErrors, failureKey, useSubmitLock } from "./fields";
 import { useValidationMessages } from "./useValidationMessages";
 
 export function ContactForm() {
@@ -19,7 +19,8 @@ export function ContactForm() {
   const messages = useValidationMessages();
   const schema = useMemo(() => contactSchema(messages), [messages]);
   const [sent, setSent] = useState(false);
-  const [failure, setFailure] = useState(false);
+  const [failure, setFailure] = useState<string | null>(null);
+  const lock = useSubmitLock();
   const {
     register,
     handleSubmit,
@@ -27,15 +28,15 @@ export function ContactForm() {
     formState: { errors, isSubmitting },
   } = useForm<ContactValues>({ resolver: zodResolver(schema), defaultValues: { name: "", email: "", message: "" } });
 
-  const onSubmit = handleSubmit(async (values) => {
-    setFailure(false);
+  const onSubmit = lock(handleSubmit(async (values) => {
+    setFailure(null);
     const res = await submitPublic("/contact", clean({ ...values, locale }));
     if (res.ok) setSent(true);
     else {
       applyServerErrors(res.errors, setError as never);
-      setFailure(!res.errors.length);
+      setFailure(tb(failureKey(res)));
     }
-  });
+  }));
 
   if (sent) return <SuccessPanel title={tb("successTitle")} text={t("success")} />;
 
@@ -60,7 +61,7 @@ export function ContactForm() {
       </Field>
       {failure && (
         <p role="alert" className="rounded-xl bg-red-50 p-3 text-sm text-red-700 sm:col-span-2">
-          {tb("errorGeneric")}
+          {failure}
         </p>
       )}
       <div className="sm:col-span-2">

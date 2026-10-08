@@ -10,6 +10,8 @@ interface Props {
   /** Needed for the special "whatsapp" URL value used by CMS buttons. */
   whatsapp?: { phone?: string; message?: string };
   ariaLabel?: string;
+  /** Marks the link for the current page (internal links only). */
+  current?: boolean;
 }
 
 /**
@@ -17,7 +19,7 @@ interface Props {
  * external URLs open normally; the special value "whatsapp" opens a WhatsApp chat
  * with the number from Site Settings.
  */
-export function CmsLink({ href, children, className, newTab, whatsapp, ariaLabel }: Props) {
+export function CmsLink({ href, children, className, newTab, whatsapp, ariaLabel, current }: Props) {
   const url = href?.trim() || "/";
   if (url === "whatsapp") {
     return (
@@ -40,7 +42,7 @@ export function CmsLink({ href, children, className, newTab, whatsapp, ariaLabel
     );
   }
   return (
-    <Link href={url} className={className} aria-label={ariaLabel} {...(newTab ? { target: "_blank" } : {})}>
+    <Link href={url} className={className} aria-label={ariaLabel} aria-current={current ? "page" : undefined} {...(newTab ? { target: "_blank" } : {})}>
       {children}
     </Link>
   );

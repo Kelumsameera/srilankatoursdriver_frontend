@@ -15,7 +15,7 @@ export default function PermissionsPage() {
   const roles = useQuery({ queryKey: ["roles"], queryFn: () => api.get<Role[]>("/admin/roles") });
   const perms = useQuery({ queryKey: ["permissions"], queryFn: () => api.get<{ modules: string[]; actions: string[] }>("/admin/permissions") });
   if (roles.isLoading || perms.isLoading) return <LoadingBlock />;
-  if (roles.error || perms.error) return <ErrorBlock message={errorMessage(roles.error ?? perms.error)} />;
+  if (roles.error || perms.error) return <ErrorBlock message={errorMessage(roles.error ?? perms.error)} onRetry={() => void Promise.all([roles.refetch(), perms.refetch()])} />;
   const { modules, actions } = perms.data!.data;
   const list = roles.data!.data;
   const letter = (role: Role, m: string) =>

@@ -49,6 +49,8 @@ const SECTION_TYPES: { value: string; label: string; help: string }[] = [
   { value: "richText", label: "Rich text", help: "Free text content." },
   { value: "contact", label: "Contact details", help: "Phone, WhatsApp, email, address." },
   { value: "cta", label: "Call to action", help: "Banner with buttons." },
+  { value: "team", label: "Team", help: "Owner, managers and staff with profile photos. The first person is shown large (e.g. the owner)." },
+  { value: "offer", label: "Special offer", help: "Exclusive deal card: badge, offer title, included items, bonuses (star icon) and price." },
 ];
 const typeLabel = (t: string) => SECTION_TYPES.find((s) => s.value === t)?.label ?? t;
 
@@ -67,6 +69,25 @@ const linkList: FieldDef = {
   ],
 };
 
+/** Section types that list content, and the category kind they can be filtered by. */
+const CATEGORY_KIND: Record<string, string> = {
+  popularTours: "tour",
+  destinations: "destination",
+  excursions: "excursion",
+  vehicles: "vehicle",
+  gallery: "gallery",
+  blog: "blog",
+};
+
+/** Section types with a highlighted short line, and how to label it. */
+const BADGE_HINT: Record<string, { label: string; placeholder: string; hint?: string }> = {
+  popularTours: { label: "Season line", placeholder: "(November to April)", hint: "shown under the title" },
+  destinations: { label: "Season line", placeholder: "(May to September)", hint: "shown under the title" },
+  excursions: { label: "Season line", placeholder: "(All year)", hint: "shown under the title" },
+  offer: { label: "Badge", placeholder: "Limited offer – 30% off" },
+  tailorMade: { label: "Floating badge", placeholder: "15+ years of local expertise", hint: "photo layout only" },
+};
+
 function sectionForm(type: string): FormSection[] {
   const data = ["popularTours", "destinations", "excursions", "vehicles", "gallery", "guestShorts", "reviews", "blog", "faqs"].includes(type);
   return [
@@ -75,9 +96,60 @@ function sectionForm(type: string): FormSection[] {
       fields: [
         { name: "name", label: "Internal name", type: "text", hint: "only shown in admin" },
         { name: "enabled", label: "Enabled", type: "switch", hint: "visible on the website" },
-        { name: "eyebrow", label: "Eyebrow (small heading)", type: "text" },
-        { name: "title", label: "Title", type: "text" },
-        { name: "subtitle", label: "Subtitle", type: "textarea", span: 2 },
+        {
+          name: "eyebrow",
+          label: type === "offer" ? "Section heading" : "Eyebrow (small heading)",
+          type: "text",
+          placeholder: type === "offer" ? "Exclusive Deals for You" : undefined,
+        },
+        { name: "title", label: type === "offer" ? "Offer title" : "Title", type: "text", placeholder: type === "offer" ? "10-Day Luxury Sri Lanka Tour" : undefined },
+        ...(BADGE_HINT[type]
+          ? [{ name: "badge", label: BADGE_HINT[type].label, type: "text", placeholder: BADGE_HINT[type].placeholder, hint: BADGE_HINT[type].hint } as FieldDef]
+          : []),
+        { name: "subtitle", label: type === "offer" ? "Offer description" : "Subtitle", type: "textarea", span: 2 },
+        ...(type === "team"
+          ? ([
+              {
+                name: "items",
+                label: "People (first = shown large, e.g. the owner)",
+                type: "objectList",
+                itemTitle: "title",
+                addLabel: "Add person",
+                fields: [
+                  { name: "title", label: "Name", type: "text", required: true },
+                  { name: "role", label: "Role", type: "text", placeholder: "Owner / Manager / Chauffeur guide" },
+                  { name: "image", label: "Profile photo", type: "media", folder: "pages", span: 2 },
+                  { name: "description", label: "Short bio", type: "textarea", span: 2 },
+                  { name: "url", label: "Link (optional)", type: "url", placeholder: "https://www.linkedin.com/in/…", span: 2 },
+                ],
+              },
+            ] as FieldDef[])
+          : []),
+        ...(type === "offer"
+          ? ([
+              { name: "price", label: "Price", type: "text", placeholder: "$700" },
+              { name: "priceNote", label: "Price note", type: "text", placeholder: "For 2 travellers" },
+              {
+                name: "items",
+                label: "Included items & bonuses",
+                type: "objectList",
+                itemTitle: "title",
+                addLabel: "Add item",
+                fields: [
+                  { name: "title", label: "Text", type: "text", required: true, span: 2 },
+                  {
+                    name: "icon",
+                    label: "List",
+                    type: "select",
+                    options: [
+                      { value: "check", label: "Included (✓)" },
+                      { value: "star", label: "Complimentary bonus (★)" },
+                    ],
+                  },
+                ],
+              },
+            ] as FieldDef[])
+          : []),
         ...(["richText", "cta", "tailorMade", "features", "whyChooseUs"].includes(type) ? [{ name: "content", label: "Text", type: "markdown" } as FieldDef] : []),
         ...(["whyChooseUs", "features", "tailorMade", "cta"].includes(type)
           ? [
@@ -97,7 +169,17 @@ function sectionForm(type: string): FormSection[] {
               } as FieldDef,
             ]
           : []),
-        ...(["tailorMade", "cta", "richText"].includes(type) ? [{ name: "media", label: "Background image", type: "media", folder: "pages", span: 2 } as FieldDef] : []),
+        ...(["tailorMade", "cta", "richText"].includes(type)
+          ? [
+              {
+                name: "media",
+                label: type === "tailorMade" ? "Photo (shows the split photo layout)" : "Background image",
+                type: "media",
+                folder: "pages",
+                span: 2,
+              } as FieldDef,
+            ]
+          : []),
         linkList,
       ],
     },
@@ -110,10 +192,37 @@ function sectionForm(type: string): FormSection[] {
           type: "group",
           fields: [
             { name: "theme", label: "Background", type: "select", options: ["light", "sand", "forest", "dark"].map((v) => ({ value: v, label: v })) },
+            ...(type === "reviews" || type === "gallery"
+              ? ([
+                  {
+                    name: "layout",
+                    label: "Layout",
+                    type: "select",
+                    options: [
+                      { value: "grid", label: "Grid" },
+                      { value: "carousel", label: "Sliding (animated)" },
+                    ],
+                  },
+                ] as FieldDef[])
+              : []),
             ...(data
               ? ([
                   { name: "limit", label: "Number of items", type: "number", min: 1, max: 24 },
                   { name: "source", label: "Which items", type: "select", options: [{ value: "featured", label: "Featured first" }, { value: "latest", label: "Latest" }, { value: "all", label: "All (ordered)" }] },
+                ] as FieldDef[])
+              : []),
+            // Category filter, e.g. a "Seasonal tours" or "One-day tours" section showing only that category.
+            ...(CATEGORY_KIND[type]
+              ? ([
+                  {
+                    name: "category",
+                    label: "Only this category",
+                    type: "relation",
+                    endpoint: "/admin/categories",
+                    labelKey: "name",
+                    query: { kind: CATEGORY_KIND[type] },
+                    hint: "optional – e.g. Seasonal or One-day tours",
+                  },
                 ] as FieldDef[])
               : []),
           ],

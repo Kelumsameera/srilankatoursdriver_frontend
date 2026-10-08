@@ -2,6 +2,7 @@ import Image from "next/image";
 import { Mountain } from "lucide-react";
 import type { MediaAsset } from "@/types/cms";
 import { cn } from "@/lib/utils";
+import { isOptimizable } from "@/lib/cloudinary-loader";
 
 interface Props {
   media?: MediaAsset | null;
@@ -20,8 +21,11 @@ interface Props {
  */
 export function CmsImage({ media, alt, sizes = "100vw", priority, className, wrapperClassName, fallbackLabel }: Props) {
   const url = media?.resourceType === "video" ? undefined : media?.url;
+  // `cn` doesn't de-duplicate Tailwind classes: adding "relative" next to a caller's "absolute inset-0"
+  // lets "relative" win and the background image collapses to 0×0, so only default the position.
+  const positioned = /(^|\s)(absolute|fixed|sticky)(\s|$)/.test(wrapperClassName ?? "");
   return (
-    <div className={cn("relative overflow-hidden bg-forest-800", wrapperClassName)}>
+    <div className={cn(!positioned && "relative", "overflow-hidden bg-forest-800", wrapperClassName)}>
       {url ? (
         <Image
           src={url}
@@ -29,6 +33,8 @@ export function CmsImage({ media, alt, sizes = "100vw", priority, className, wra
           fill
           sizes={sizes}
           priority={priority}
+          // Foreign URLs can't be resized by the Cloudinary loader – serve them as-is instead of a fake srcset.
+          unoptimized={!isOptimizable(url)}
           className={cn("object-cover", className)}
         />
       ) : (

@@ -35,6 +35,38 @@
     "home": "Accueil"
   },
   "nav": { "openMenu": "Ouvrir le menu", "closeMenu": "Fermer le menu" },
+  "account": {
+    "signIn": "Se connecter",
+    "signOut": "Se déconnecter",
+    "myAccount": "Mon compte",
+    "createAccount": "Créer un compte",
+    "loginTitle": "Bon retour parmi nous",
+    "loginSubtitle": "Connectez-vous pour réserver plus vite grâce à vos informations enregistrées.",
+    "registerTitle": "Créez votre compte",
+    "registerSubtitle": "Enregistrez vos informations pour réserver plus rapidement.",
+    "name": "Nom complet",
+    "email": "E-mail",
+    "password": "Mot de passe",
+    "passwordRule": "Au moins 8 caractères, dont une lettre et un chiffre",
+    "or": "ou",
+    "noAccount": "Nouveau ici ?",
+    "haveAccount": "Vous avez déjà un compte ?",
+    "guestNote": "Le compte est facultatif – vous pouvez toujours réserver en tant qu'invité.",
+    "staffLogin": "Connexion admin / personnel",
+    "invalidCredentials": "E-mail ou mot de passe incorrect.",
+    "emailTaken": "Un compte existe déjà avec cet e-mail. Essayez plutôt de vous connecter.",
+    "locked": "Trop de tentatives échouées. Réessayez dans 15 minutes.",
+    "rateLimited": "Trop de tentatives. Patientez quelques minutes puis réessayez.",
+    "checkFields": "Veuillez vérifier les champs signalés.",
+    "errorGeneric": "Une erreur s'est produite. Veuillez réessayer.",
+    "errorNetwork": "Impossible de joindre le serveur. Vérifiez votre connexion et réessayez.",
+    "googleFailed": "La connexion avec Google a échoué. Veuillez réessayer.",
+    "googleConflict": "Cet e-mail est déjà associé à un autre compte Google.",
+    "loading": "Chargement…",
+    "hello": "Bonjour, {name}",
+    "accountIntro": "Vous êtes connecté. Vos informations sont enregistrées pour des réservations et demandes plus rapides.",
+    "googleConnected": "Compte Google connecté"
+  },
   "footer": {
     "contact": "Contact",
     "popularTours": "Circuits populaires",
@@ -90,7 +122,18 @@
     "available": "Disponible",
     "limited": "Disponibilité limitée",
     "unavailable": "Actuellement indisponible",
-    "book": "Réserver ce véhicule"
+    "book": "Réserver ce véhicule",
+    "typeLabel": "Type de véhicule",
+    "passengers": "Passagers",
+    "luggage": "Bagages",
+    "comfort": "Confort",
+    "overview": "Aperçu",
+    "related": "Autres véhicules",
+    "fleetDesc": "Nous fournissons les meilleurs chauffeurs multilingues pour",
+    "fleetCount": "{count, plural, one {# véhicule} other {# véhicules}}",
+    "otherType": "Autres véhicules",
+    "startsFrom": "À partir de",
+    "disclaimer": "* Pas de frais cachés. Paiement direct au chauffeur."
   },
   "booking": {
     "formTitle": "Demande de réservation",
@@ -115,7 +158,10 @@
     "successTitle": "Merci !",
     "success": "Votre demande a bien été reçue. Nous vous répondrons rapidement.",
     "reference": "Votre référence : {reference}",
-    "errorGeneric": "Une erreur est survenue. Réessayez ou contactez-nous sur WhatsApp."
+    "errorGeneric": "Une erreur est survenue. Réessayez ou contactez-nous sur WhatsApp.",
+    "errorFields": "Veuillez vérifier les champs signalés et réessayer.",
+    "errorRateLimited": "Trop de demandes. Veuillez patienter quelques minutes et réessayer.",
+    "errorNetwork": "Impossible de joindre notre serveur. Vérifiez votre connexion Internet et réessayez."
   },
   "tailorMade": {
     "stepOf": "Étape {current} sur {total}",
@@ -225,5 +271,96 @@
     "after": "Doit être après la date de début",
     "select": "Veuillez faire un choix"
   },
-  "preview": { "banner": "Mode aperçu – les sections désactivées sont visibles. Cette page n'est pas publique." }
+  "preview": { "banner": "Mode aperçu – les sections désactivées sont visibles. Cette page n'est pas publique." },
+  "about": {
+    "title": "À propos de Sri Lanka Tours Driver",
+    "label": "À Propos",
+    "heading": "Nous Vous Aidons à",
+    "headingHighlight": "Planifier",
+    "headingEnd": "Votre Voyage",
+    "desc1": "Un soleil souriant toute l'année, des plages dorées, des cités anciennes, des safaris et des gens charmants dans un paradis tropical — le Sri Lanka offre une expérience de voyage inoubliable.",
+    "desc2": "Avec plus d'une décennie d'expérience, we craft private, personalized journeys that connect you with the real heart of Sri Lanka.",
+    "checklist": {
+      "item1": "Guides professionnels certifiés par l'État",
+      "item2": "Circuits privés — pas de groupes partagés",
+      "item3": "Disponible 24h/24 et 7j/7 pour vous assister",
+      "item4": "Tarification transparente et tout compris"
+    },
+    "cta": "Contactez-nous",
+    "stats": {
+      "experience": "Années d'Expérience",
+      "travelers": "Voyageurs Heureux",
+      "support": "Support Disponible",
+      "certified": "Licencié & Certifié"
+    },
+    "reasons": {
+      "licensed": {
+        "title": "Guides Certifiés",
+        "desc": "Tous nos guides sont agréés par le gouvernement."
+      },
+      "rated": {
+        "title": "Service 5 Étoiles",
+        "desc": "Régulièrement salué sur TripAdvisor."
+      },
+      "private": {
+        "title": "Privé & Personnalisé",
+        "desc": "Chaque voyage est adapté à votre groupe."
+      },
+      "passionate": {
+        "title": "Passionnés",
+        "desc": "Nous sommes des locaux qui aimons cette île."
+      },
+      "pata": {
+        "title": "Certifié PATA",
+        "desc": "Membres reconnus du Sri Lanka Tourism."
+      },
+      "transparent": {
+        "title": "Tarification Transparente",
+        "desc": "Aucun frais caché. Des prix clairs."
+      }
+    }
+  },
+  "trust": {
+    "accredited": "Accrédité & Reconnu",
+    "trustedBy": "Approuvé par les Autorités",
+    "stayConnected": "Restez Connecté",
+    "followUs": "Suivez-nous",
+    "available247": "Nous sommes là 24/7",
+    "planDream": "Planifions Votre Voyage",
+    "planDesc": "Notre équipe est prête à concevoir votre voyage parfait.",
+    "callUs": "Appelez-nous",
+    "emailUs": "Envoyez un email",
+    "whatsappDesc": "Réponses rapides",
+    "tagline": "⚡ Réponses rapides sur WhatsApp • Planification personnalisée • Meilleur prix"
+  },
+  "currency": {
+    "title": "Convertisseur de devises",
+    "amount": "Montant",
+    "from": "De",
+    "to": "Vers",
+    "swap": "Inverser les devises",
+    "updated": "Taux indicatif · mis à jour le {date}",
+    "error": "Les taux de change sont indisponibles pour le moment. Veuillez réessayer plus tard.",
+    "note": "Nos prix sont indiqués en {currency} ; le taux de votre banque peut légèrement différer."
+  },
+  "rates": {
+    "title": "Tarifs des Forfaits",
+    "subtitle": "Tarifs Fixes depuis l'Aéroport (CMB)",
+    "headers": {
+      "destination": "Destination",
+      "car": "Voiture (USD)",
+      "van": "Van (USD)",
+      "bus": "Autobus (USD)",
+      "duration": "Durée Est.",
+      "distance": "Distance"
+    },
+    "units": {
+      "km": "km"
+    }
+  },
+  "offer": {
+    "included": "Inclus",
+    "bonuses": "Bonus offerts",
+    "priceLabel": "Prix exclusif"
+  }
 }

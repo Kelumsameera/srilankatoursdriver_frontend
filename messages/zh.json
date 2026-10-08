@@ -35,6 +35,38 @@
     "home": "首页"
   },
   "nav": { "openMenu": "打开菜单", "closeMenu": "关闭菜单" },
+  "account": {
+    "signIn": "登录",
+    "signOut": "退出登录",
+    "myAccount": "我的账户",
+    "createAccount": "创建账户",
+    "loginTitle": "欢迎回来",
+    "loginSubtitle": "登录后可使用已保存的信息更快预订。",
+    "registerTitle": "创建您的账户",
+    "registerSubtitle": "保存您的信息，预订更快捷。",
+    "name": "姓名",
+    "email": "电子邮箱",
+    "password": "密码",
+    "passwordRule": "至少 8 个字符，包含字母和数字",
+    "or": "或",
+    "noAccount": "第一次来？",
+    "haveAccount": "已有账户？",
+    "guestNote": "账户为可选项——您随时可以以访客身份预订。",
+    "staffLogin": "管理员 / 员工登录",
+    "invalidCredentials": "邮箱或密码错误。",
+    "emailTaken": "该邮箱已注册账户，请直接登录。",
+    "locked": "失败次数过多，请 15 分钟后再试。",
+    "rateLimited": "尝试次数过多，请稍等几分钟后再试。",
+    "checkFields": "请检查标出的字段。",
+    "errorGeneric": "出了点问题，请重试。",
+    "errorNetwork": "无法连接服务器，请检查网络后重试。",
+    "googleFailed": "Google 登录失败，请重试。",
+    "googleConflict": "该邮箱已关联另一个 Google 账户。",
+    "loading": "加载中…",
+    "hello": "您好，{name}",
+    "accountIntro": "您已登录。您的信息已保存，预订和咨询更快捷。",
+    "googleConnected": "已关联 Google 账户"
+  },
   "footer": {
     "contact": "联系我们",
     "popularTours": "热门线路",
@@ -90,7 +122,18 @@
     "available": "可预订",
     "limited": "名额有限",
     "unavailable": "暂不可用",
-    "book": "预订此车辆"
+    "book": "预订此车辆",
+    "typeLabel": "车型",
+    "passengers": "乘客",
+    "luggage": "行李",
+    "comfort": "舒适度",
+    "overview": "概览",
+    "related": "更多车辆",
+    "fleetDesc": "我们提供最优秀的多语种司机，服务于",
+    "fleetCount": "{count} 辆车",
+    "otherType": "其他车辆",
+    "startsFrom": "起价",
+    "disclaimer": "* 无隐藏费用。直接支付给司机。"
   },
   "booking": {
     "formTitle": "预订申请",
@@ -115,7 +158,10 @@
     "successTitle": "谢谢！",
     "success": "我们已收到您的申请，将尽快回复。",
     "reference": "您的编号：{reference}",
-    "errorGeneric": "出现问题，请重试或通过 WhatsApp 联系我们。"
+    "errorGeneric": "出现问题，请重试或通过 WhatsApp 联系我们。",
+    "errorFields": "请检查标出的字段后重试。",
+    "errorRateLimited": "请求过于频繁，请稍等几分钟后重试。",
+    "errorNetwork": "无法连接到我们的服务器，请检查您的网络连接后重试。"
   },
   "tailorMade": {
     "stepOf": "第 {current} 步，共 {total} 步",
@@ -225,5 +271,96 @@
     "after": "必须晚于开始日期",
     "select": "请选择"
   },
-  "preview": { "banner": "预览模式——已停用的版块可见。此页面未公开。" }
+  "preview": { "banner": "预览模式——已停用的版块可见。此页面未公开。" },
+  "about": {
+    "title": "关于 Sri Lanka Tours Driver",
+    "label": "关于我们",
+    "heading": "我们协助您",
+    "headingHighlight": "规划",
+    "headingEnd": "您的完美旅程",
+    "desc1": "全年灿烂的阳光、金色的沙滩、古老的城市、野性的萨法里和热情的当地人——斯里兰卡为您提供难忘的旅行体验。我们是总部位于科伦坡的持证导游团队。",
+    "desc2": "凭借十余年的丰富经验，我们精心打造私人定制旅程，带您深入探索斯里兰卡的真实魅力。",
+    "checklist": {
+      "item1": "政府持证专业导游",
+      "item2": "私人独立团——无拼团，不与陌生人同行",
+      "item3": "24/7 全天候客户支持",
+      "item4": "价格透明，全包定价"
+    },
+    "cta": "联系我们",
+    "stats": {
+      "experience": "年行业经验",
+      "travelers": "满意的游客",
+      "support": "全天候支持",
+      "certified": "持证与认证"
+    },
+    "reasons": {
+      "licensed": {
+        "title": "持证导游",
+        "desc": "所有导游均为政府持证专业人员。"
+      },
+      "rated": {
+        "title": "五星级评价服务",
+        "desc": "在 TripAdvisor 上因卓越的热情待客而屡获好评。"
+      },
+      "private": {
+        "title": "私密与个性化",
+        "desc": "每一段旅程均为您专属打造——无大巴拼团。"
+      },
+      "passionate": {
+        "title": "热爱斯里兰卡",
+        "desc": "我们是热爱这片土地的当地人，渴望展示这里最美的一面。"
+      },
+      "pata": {
+        "title": "PATA 与旅游局认证单位",
+        "desc": "斯里兰卡旅游局及亚太旅游协会 (PATA) 正式会员。"
+      },
+      "transparent": {
+        "title": "透明定价",
+        "desc": "无隐藏费用。清晰的前期报价，让您旅行无忧。"
+      }
+    }
+  },
+  "trust": {
+    "accredited": "官方认证与认可",
+    "trustedBy": "旅游权威机构推荐",
+    "stayConnected": "保持联系",
+    "followUs": "关注我们",
+    "available247": "24/7 全天候服务",
+    "planDream": "打造您的梦幻之旅",
+    "planDesc": "我们的团队已准备好为您定制完美的行程。",
+    "callUs": "拨打电话",
+    "emailUs": "发送邮件",
+    "whatsappDesc": "回复极速保证",
+    "tagline": "⚡ WhatsApp 快速响应 • 个性化规划 • 最佳价格保证"
+  },
+  "currency": {
+    "title": "货币换算",
+    "amount": "金额",
+    "from": "从",
+    "to": "到",
+    "swap": "交换货币",
+    "updated": "参考汇率 · 更新于 {date}",
+    "error": "暂时无法获取汇率，请稍后再试。",
+    "note": "我们的价格以 {currency} 报价；您银行的汇率可能略有不同。"
+  },
+  "rates": {
+    "title": "旅游套餐资费表",
+    "subtitle": "自机场 (CMB) 出发的固定费率",
+    "headers": {
+      "destination": "目的地",
+      "car": "轿车 (USD)",
+      "van": "面包车 (USD)",
+      "bus": "中巴/巴士 (USD)",
+      "duration": "预计用时",
+      "distance": "距离"
+    },
+    "units": {
+      "km": "公里"
+    }
+  },
+  "offer": {
+    "included": "包含项目",
+    "bonuses": "免费赠送",
+    "priceLabel": "专享价"
+  }
 }

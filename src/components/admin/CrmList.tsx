@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useState, type KeyboardEvent, type ReactNode } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
@@ -71,6 +71,7 @@ export function CrmList({ title, description, endpoint, detailBase, permission, 
             key={s || "all"}
             type="button"
             onClick={() => setStatus(s)}
+            aria-pressed={status === s}
             className={cn("-mb-px border-b-2 px-3 py-2 text-sm font-medium capitalize", status === s ? "border-forest-700 text-forest-800" : "border-transparent text-slate-500 hover:text-slate-800")}
           >
             {s || "All"} <span className="ms-1 rounded-full bg-slate-100 px-1.5 text-xs text-slate-600">{s ? (counts[s] ?? 0) : total}</span>
@@ -80,10 +81,10 @@ export function CrmList({ title, description, endpoint, detailBase, permission, 
       <div className="mb-4 flex flex-wrap items-center gap-2">
         <div className="relative min-w-56 flex-1">
           <Search className="absolute start-3 top-2.5 h-4 w-4 text-slate-400" />
-          <Input className="ps-9" placeholder="Search name, email, phone, reference…" value={search} onChange={(e) => (setSearch(e.target.value), setPage(1))} />
+          <Input className="ps-9" placeholder="Search name, email, phone, reference…" aria-label="Search" value={search} onChange={(e) => (setSearch(e.target.value), setPage(1))} />
         </div>
         {typeFilter && (
-          <Select className="w-40" value={type} onChange={(e) => setType(e.target.value)} aria-label="Type">
+          <Select className="w-40" value={type} onChange={(e) => (setType(e.target.value), setPage(1))} aria-label="Type">
             <option value="">All types</option>
             {typeFilter.map((t) => (
               <option key={t.value} value={t.value}>
@@ -92,8 +93,8 @@ export function CrmList({ title, description, endpoint, detailBase, permission, 
             ))}
           </Select>
         )}
-        <Input type="date" className="w-40" value={from} onChange={(e) => setFrom(e.target.value)} aria-label="From date" title="Received from" />
-        <Input type="date" className="w-40" value={to} onChange={(e) => setTo(e.target.value)} aria-label="To date" title="Received until" />
+        <Input type="date" className="w-40" value={from} onChange={(e) => (setFrom(e.target.value), setPage(1))} aria-label="From date" title="Received from" />
+        <Input type="date" className="w-40" value={to} onChange={(e) => (setTo(e.target.value), setPage(1))} aria-label="To date" title="Received until" />
         <Select className="w-44" value={sort} onChange={(e) => setSort(e.target.value)} aria-label="Sort">
           <option value="-createdAt">Newest first</option>
           <option value="createdAt">Oldest first</option>
@@ -102,7 +103,7 @@ export function CrmList({ title, description, endpoint, detailBase, permission, 
         </Select>
         {endpoint !== "/admin/contact-messages" && (
           <label className="flex items-center gap-2 text-sm text-slate-600">
-            <input type="checkbox" checked={mine} onChange={(e) => setMine(e.target.checked)} className="accent-forest-700" /> Assigned to me
+            <input type="checkbox" checked={mine} onChange={(e) => (setMine(e.target.checked), setPage(1))} className="accent-forest-700" /> Assigned to me
           </label>
         )}
       </div>
@@ -111,7 +112,7 @@ export function CrmList({ title, description, endpoint, detailBase, permission, 
       ) : error ? (
         <ErrorBlock message={errorMessage(error)} onRetry={() => refetch()} />
       ) : !data?.data.length ? (
-        <Empty>Nothing here yet.</Empty>
+        <Empty>{search || status || from || to || mine || type ? "No records match these filters." : "Nothing here yet."}</Empty>
       ) : (
         <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
           <div className="overflow-x-auto">
@@ -131,8 +132,12 @@ export function CrmList({ title, description, endpoint, detailBase, permission, 
                 {data.data.map((row) => (
                   <tr
                     key={row._id}
-                    className={cn("cursor-pointer hover:bg-slate-50", row.status === "new" && "font-medium")}
+                    className={cn("cursor-pointer hover:bg-slate-50 focus-visible:bg-slate-50 focus-visible:outline-none", row.status === "new" && "font-medium")}
                     onClick={() => (onRowClick ? onRowClick(row) : router.push(`${detailBase}/${row._id}`))}
+                    // Rows without a link cell (onRowClick) must still be reachable by keyboard.
+                    {...(onRowClick
+                      ? { tabIndex: 0, onKeyDown: (e: KeyboardEvent) => (e.key === "Enter" || e.key === " ") && (e.preventDefault(), onRowClick(row)) }
+                      : {})}
                   >
                     {columns.map((c, i) => (
                       <td key={c.label} className="px-4 py-3">

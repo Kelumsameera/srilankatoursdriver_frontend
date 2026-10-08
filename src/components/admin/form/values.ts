@@ -1,3 +1,4 @@
+import type { FieldValues, RegisterOptions } from "react-hook-form";
 import type { FieldDef, FormSection } from "./types";
 
 type Rec = Record<string, unknown>;
@@ -61,11 +62,26 @@ export function toFormValues(fields: FieldDef[], data: Rec = {}): Rec {
   return out;
 }
 
+/** Whether a `showWhen` field is visible for the given value of its controlling sibling. */
+export function isShown(field: FieldDef, siblingValue: unknown): boolean {
+  const cond = field.showWhen;
+  if (!cond) return true;
+  const v = String(siblingValue ?? "");
+  if (cond.in && !cond.in.includes(v)) return false;
+  if (cond.notIn && cond.notIn.includes(v)) return false;
+  return true;
+}
+
 /** Converts form values back into an API payload. */
 export function fromFormValues(fields: FieldDef[], values: Rec = {}): Rec {
   const out: Rec = {};
   for (const f of fields) {
     const v = values[f.name];
+    // A hidden conditional field is cleared so stale data (e.g. an old URL after switching to an upload) isn't saved.
+    if (f.showWhen && !isShown(f, values[f.showWhen.field])) {
+      out[f.name] = f.type === "media" || f.type === "relation" ? null : f.type === "mediaList" || f.type === "tags" || f.type === "list" ? [] : "";
+      continue;
+    }
     switch (f.type) {
       case "number": {
         const n = v === "" || v === null || v === undefined ? null : Number(v);
@@ -103,3 +119,48 @@ export function fromFormValues(fields: FieldDef[], values: Rec = {}): Rec {
 }
 
 export const allFields = (sections: FormSection[]) => sections.flatMap((s) => s.fields);
+
+/** Path of a sibling field (same group / list item) – used by `showWhen`. */
+export const siblingPath = (path: string, name: string) => path.split(".").slice(0, -1).concat(name).join(".");
+
+export function getPath(obj: unknown, path: string): unknown {
+  return path.split(".").reduce<unknown>((o, k) => (o as Record<string, unknown> | undefined)?.[k], obj);
+}
+
+const isEmpty = (v: unknown) =>
+  v === "" || v === null || v === undefined || (typeof v === "string" && !v.trim()) || (Array.isArray(v) && v.length === 0) || (typeof v === "object" && v !== null && "url" in v && !(v as { url?: unknown }).url);
+
+const HTTP_URL = /^https?:\/\/[^\s]+$/i;
+const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+
+/**
+ * Client-side rules mirroring the API's Zod schemas (the API still validates everything):
+ * required (skipped while the field is hidden by `showWhen`), http(s) URLs, emails, slugs and number ranges.
+ */
+export function fieldRules(field: FieldDef, path: string): RegisterOptions<FieldValues> {
+  return {
+    validate: (v: unknown, all: FieldValues) => {
+      if (field.showWhen && !isShown(field, getPath(all, siblingPath(path, field.showWhen.field)))) return true;
+      if (isEmpty(v)) return field.required ? `${field.label} is required` : true;
+      const s = String(v).trim();
+      switch (field.type) {
+        case "url":
+          return HTTP_URL.test(s) || "Enter a full URL starting with https://";
+        case "email":
+          return EMAIL.test(s) || "Enter a valid email address";
+        case "slug":
+          return SLUG.test(s.toLowerCase()) || "Use lowercase letters, numbers and hyphens only";
+        case "number": {
+          const n = Number(v);
+          if (Number.isNaN(n)) return "Enter a number";
+          if (field.min !== undefined && n < field.min) return `Must be at least ${field.min}`;
+          if (field.max !== undefined && n > field.max) return `Must be at most ${field.max}`;
+          return true;
+        }
+        default:
+          return true;
+      }
+    },
+  };
+}

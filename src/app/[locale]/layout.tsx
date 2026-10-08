@@ -11,7 +11,10 @@ import { alternates, jsonLd, organizationJsonLd } from "@/lib/seo";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
+import { TrustBar } from "@/components/site/TrustBar";
+import { CurrencyConverter } from "@/components/site/CurrencyConverter";
 import { Logo } from "@/components/site/Logo";
+import { CustomerAuthProvider } from "@/lib/customer/auth";
 import type { SiteSettings } from "@/types/cms";
 
 export function generateStaticParams() {
@@ -88,6 +91,7 @@ export default async function LocaleLayout({ children, params }: Props) {
           {t("skipToContent")}
         </a>
         <NextIntlClientProvider locale={locale} messages={messages}>
+          <CustomerAuthProvider>
           <SiteHeader
             nav={nav ?? []}
             languages={enabledLanguages}
@@ -106,10 +110,13 @@ export default async function LocaleLayout({ children, params }: Props) {
           <main id="main" className="flex-1">
             {children}
           </main>
+          {settingsRes && <TrustBar settings={settings} />}
           {settingsRes && (
             <SiteFooter settings={settings} branding={branding} tours={footerTours?.items ?? []} destinations={footerDestinations?.items ?? []} />
           )}
+          <CurrencyConverter siteCurrency={settings.currency} />
           <WhatsAppFloat phone={settings.whatsapp} message={settings.whatsappMessage} />
+          </CustomerAuthProvider>
         </NextIntlClientProvider>
         {settingsRes && (
           <script

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { CalendarDays, MapPin } from "lucide-react";
-import { getDetail, getList, getPage } from "@/lib/api/server";
+import { getDetail, getList, getPage, getSiteSettings } from "@/lib/api/server";
 import { buildMetadata, jsonLd } from "@/lib/seo";
 import { SITE_URL } from "@/lib/config";
 import { CmsImage } from "@/components/ui/CmsImage";
@@ -11,6 +11,7 @@ import { Markdown } from "@/components/ui/Markdown";
 import { DestinationCard, TourCard } from "@/components/cards/cards";
 import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 import { CheckList, DetailSection, MediaStrip } from "@/components/site/DetailBits";
+import { TransferRates } from "@/components/site/TransferRates";
 
 type Props = { params: Promise<{ locale: string; slug: string }> };
 
@@ -25,9 +26,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function DestinationDetailPage({ params }: Props) {
   const { locale, slug } = await params;
   setRequestLocale(locale);
-  const [data, listing, t, tc] = await Promise.all([
+  const [data, listing, settings, t, tc] = await Promise.all([
     getDetail("destinations", slug, locale),
     getPage("destinations", locale),
+    getSiteSettings(locale),
     getTranslations("destination"),
     getTranslations("common"),
   ]);
@@ -120,6 +122,8 @@ export default async function DestinationDetailPage({ params }: Props) {
           </div>
         </section>
       ) : null}
+
+      <TransferRates settings={settings} />
 
       {data.related.length > 0 && (
         <section className="bg-sand-100 py-16">

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, type ReactNode } from "react";
-import { useController, useFieldArray, useFormContext, type FieldValues } from "react-hook-form";
+import { useController, useFieldArray, useFormContext, useWatch, type FieldValues } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowDown, ArrowUp, ChevronDown, ChevronRight, Copy, Plus, Trash2 } from "lucide-react";
 import { api, qs } from "@/lib/admin/api";
@@ -9,11 +9,11 @@ import { FEATURE_ICONS } from "@/components/ui/icons";
 import { Button, FieldError, Input, Label, Select, Switch, Textarea } from "../ui";
 import { MediaField, MediaListField } from "../MediaLibrary";
 import type { FieldDef } from "./types";
+import { fieldRules, getPath, isShown, siblingPath } from "./values";
 import type { MediaAsset } from "@/types/cms";
 
 function getError(errors: unknown, path: string): string | undefined {
-  const e = path.split(".").reduce<unknown>((o, k) => (o as Record<string, unknown> | undefined)?.[k], errors) as { message?: string } | undefined;
-  return e?.message;
+  return (getPath(errors, path) as { message?: string } | undefined)?.message;
 }
 
 /** Markdown editor with live preview toggle. */
@@ -196,12 +196,6 @@ function ObjectList({ field, path }: { field: Extract<FieldDef, { type: "objectL
 
 const CONTROLLED = new Set(["markdown", "color", "switch", "tags", "list", "media", "mediaList", "relation"]);
 
-function requiredRule(field: FieldDef) {
-  return field.required
-    ? { validate: (v: unknown) => (v !== "" && v !== null && v !== undefined && !(Array.isArray(v) && v.length === 0)) || `${field.label} is required` }
-    : undefined;
-}
-
 function Wrapper({ field, id, error, children }: { field: FieldDef; id: string; error?: string; children: ReactNode }) {
   const span = field.span === 2 || ["markdown", "group", "objectList", "mediaList", "list"].includes(field.type) ? "sm:col-span-2" : "";
   return (
@@ -218,7 +212,7 @@ function Wrapper({ field, id, error, children }: { field: FieldDef; id: string; 
 /** Complex inputs bound through useController. */
 function ControlledField({ field, path, id, error }: { field: FieldDef; path: string; id: string; error?: string }) {
   const { control } = useFormContext<FieldValues>();
-  const { field: ctrl } = useController({ control, name: path, rules: requiredRule(field) });
+  const { field: ctrl } = useController({ control, name: path, rules: fieldRules(field, path) });
   let input: ReactNode = null;
   switch (field.type) {
     case "markdown":
@@ -261,14 +255,14 @@ function ControlledField({ field, path, id, error }: { field: FieldDef; path: st
 /** Native inputs bound through register (uncontrolled = fast). */
 function RegisteredField({ field, path, id, error }: { field: FieldDef; path: string; id: string; error?: string }) {
   const { register } = useFormContext<FieldValues>();
-  const reg = register(path, requiredRule(field));
+  const reg = register(path, fieldRules(field, path));
   let input: ReactNode;
   switch (field.type) {
     case "textarea":
       input = <Textarea id={id} placeholder={field.placeholder} aria-invalid={!!error} {...reg} />;
       break;
     case "number":
-      input = <Input id={id} type="number" min={field.min} max={field.max} step={field.step ?? "any"} aria-invalid={!!error} {...reg} />;
+      input = <Input id={id} type="number" inputMode="decimal" min={field.min} max={field.max} step={field.step ?? "any"} aria-invalid={!!error} {...reg} />;
       break;
     case "date":
       input = <Input id={id} type="date" aria-invalid={!!error} {...reg} />;
@@ -304,7 +298,7 @@ function RegisteredField({ field, path, id, error }: { field: FieldDef; path: st
       input = (
         <Input
           id={id}
-          type={field.type === "email" ? "email" : "text"}
+          type={field.type === "email" ? "email" : field.type === "url" ? "url" : "text"}
           placeholder={field.placeholder ?? (field.type === "slug" ? "auto-generated from the title" : undefined)}
           aria-invalid={!!error}
           {...reg}
@@ -320,6 +314,14 @@ function RegisteredField({ field, path, id, error }: { field: FieldDef; path: st
 
 /** Renders one configured field bound to react-hook-form at `path`. */
 export function FormField({ field, path }: { field: FieldDef; path: string }) {
+  const { control } = useFormContext<FieldValues>();
+  // Only conditional fields subscribe to their controlling sibling.
+  const watched = useWatch({ control, name: field.showWhen ? siblingPath(path, field.showWhen.field) : path, disabled: !field.showWhen });
+  if (!isShown(field, watched)) return null;
+  return <VisibleField field={field} path={path} />;
+}
+
+function VisibleField({ field, path }: { field: FieldDef; path: string }) {
   const { formState } = useFormContext<FieldValues>();
   const id = `f-${path.replace(/\./g, "-")}`;
   const error = getError(formState.errors, path);

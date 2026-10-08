@@ -35,6 +35,38 @@
     "home": "ホーム"
   },
   "nav": { "openMenu": "メニューを開く", "closeMenu": "メニューを閉じる" },
+  "account": {
+    "signIn": "ログイン",
+    "signOut": "ログアウト",
+    "myAccount": "マイアカウント",
+    "createAccount": "アカウント作成",
+    "loginTitle": "おかえりなさい",
+    "loginSubtitle": "ログインすると、保存した情報ですばやく予約できます。",
+    "registerTitle": "アカウントを作成",
+    "registerSubtitle": "情報を保存して、予約をもっとスムーズに。",
+    "name": "氏名",
+    "email": "メールアドレス",
+    "password": "パスワード",
+    "passwordRule": "8文字以上で、英字と数字を含めてください",
+    "or": "または",
+    "noAccount": "初めてですか？",
+    "haveAccount": "すでにアカウントをお持ちですか？",
+    "guestNote": "アカウントは任意です。いつでもゲストとして予約できます。",
+    "staffLogin": "管理者 / スタッフ ログイン",
+    "invalidCredentials": "メールアドレスまたはパスワードが正しくありません。",
+    "emailTaken": "このメールアドレスのアカウントは既に存在します。ログインしてください。",
+    "locked": "失敗回数が多すぎます。15分後に再度お試しください。",
+    "rateLimited": "試行回数が多すぎます。数分待ってから再度お試しください。",
+    "checkFields": "強調表示された項目を確認してください。",
+    "errorGeneric": "問題が発生しました。もう一度お試しください。",
+    "errorNetwork": "サーバーに接続できません。接続を確認して再度お試しください。",
+    "googleFailed": "Google ログインに失敗しました。もう一度お試しください。",
+    "googleConflict": "このメールアドレスは別の Google アカウントに連携済みです。",
+    "loading": "読み込み中…",
+    "hello": "こんにちは、{name}さん",
+    "accountIntro": "ログイン中です。予約やお問い合わせがすばやくできるよう、情報が保存されています。",
+    "googleConnected": "Google アカウント連携済み"
+  },
   "footer": {
     "contact": "お問い合わせ",
     "popularTours": "人気のツアー",
@@ -90,7 +122,18 @@
     "available": "予約可能",
     "limited": "残りわずか",
     "unavailable": "現在ご利用いただけません",
-    "book": "この車両を予約"
+    "book": "この車両を予約",
+    "typeLabel": "車種",
+    "passengers": "乗車人数",
+    "luggage": "荷物",
+    "comfort": "快適性",
+    "overview": "概要",
+    "related": "その他の車両",
+    "fleetDesc": "多言語対応の優秀なドライバーをご案内します：",
+    "fleetCount": "{count} 台",
+    "otherType": "その他の車両",
+    "startsFrom": "料金：",
+    "disclaimer": "* 隠れた費用はありません。ドライバーへ直接お支払いください。"
   },
   "booking": {
     "formTitle": "予約リクエスト",
@@ -115,7 +158,10 @@
     "successTitle": "ありがとうございます！",
     "success": "リクエストを受け付けました。まもなくご連絡します。",
     "reference": "受付番号：{reference}",
-    "errorGeneric": "問題が発生しました。もう一度お試しいただくか、WhatsAppでご連絡ください。"
+    "errorGeneric": "問題が発生しました。もう一度お試しいただくか、WhatsAppでご連絡ください。",
+    "errorFields": "強調表示された項目を確認して、もう一度お試しください。",
+    "errorRateLimited": "リクエストが多すぎます。数分待ってからもう一度お試しください。",
+    "errorNetwork": "サーバーに接続できませんでした。インターネット接続を確認して、もう一度お試しください。"
   },
   "tailorMade": {
     "stepOf": "ステップ {current} / {total}",
@@ -225,5 +271,96 @@
     "after": "開始日より後の日付にしてください",
     "select": "選択してください"
   },
-  "preview": { "banner": "プレビューモード – 無効なセクションも表示されています。このページは公開されていません。" }
+  "preview": { "banner": "プレビューモード – 無効なセクションも表示されています。このページは公開されていません。" },
+  "about": {
+    "title": "Sri Lanka Tours Driver について",
+    "label": "私たちについて",
+    "heading": "あなたの旅の",
+    "headingHighlight": "計画を",
+    "headingEnd": "お手伝いします",
+    "desc1": "一年中輝く太陽、黄金のビーチ、古代都市、サファリ、そして温かい人々。スリランカは想像を超える忘れられない旅行体験を提供します。私たちはコロンボを拠点とする、政府公認のガイドチームです。",
+    "desc2": "10年以上の経験を活かし、スリランカの真の魅力に触れるプライベートな旅をご提案します。",
+    "checklist": {
+      "item1": "政府公認のプロフェッショナルガイド",
+      "item2": "プライベートツアー（他グループとの相乗りなし）",
+      "item3": "24時間365日の万全なサポート",
+      "item4": "透明性の高いオールインワン料金"
+    },
+    "cta": "お問い合わせ",
+    "stats": {
+      "experience": "年の経験",
+      "travelers": "満足された旅行者",
+      "support": "充実のサポート",
+      "certified": "公認・認定済み"
+    },
+    "reasons": {
+      "licensed": {
+        "title": "公認ツアーガイド",
+        "desc": "すべてのガイドは政府公認のプロフェッショナルであり、コロンボを拠点としています。"
+      },
+      "rated": {
+        "title": "5つ星のサービス",
+        "desc": "卓越したおもてなしと地元知識により、TripAdvisorで一貫して高い評価を得ています。"
+      },
+      "private": {
+        "title": "プライベート＆パーソナル",
+        "desc": "すべての旅はお客様のグループ専用です。相乗りバスや見知らぬ人との同行はありません。"
+      },
+      "passionate": {
+        "title": "スリランカへの情熱",
+        "desc": "私たちはこの島を愛する地元住民です。スリランカの最高の姿を体験していただきたいと願っています。"
+      },
+      "pata": {
+        "title": "PATA認定メンバー",
+        "desc": "スリランカ観光局および太平洋アジア観光協会（PATA）の公認メンバーです。"
+      },
+      "transparent": {
+        "title": "明朗な価格設定",
+        "desc": "隠れた費用はありません。事前に明確な価格を提示し、安心して旅行をお楽しみいただけます。"
+      }
+    }
+  },
+  "trust": {
+    "accredited": "公認・認定",
+    "trustedBy": "観光当局からの信頼",
+    "stayConnected": "SNSで繋がる",
+    "followUs": "最新情報をチェック",
+    "available247": "24時間365日対応",
+    "planDream": "夢の旅行を計画しましょう",
+    "planDesc": "スリランカでの完璧な旅をご提案します。お好みの方法でご連絡ください。",
+    "callUs": "お電話でのご相談",
+    "emailUs": "メールでのご相談",
+    "whatsappDesc": "迅速な返信をお約束します",
+    "tagline": "⚡ WhatsAppでの迅速な返答 • パーソナライズされたプランニング • ベストプライス保証"
+  },
+  "currency": {
+    "title": "通貨換算",
+    "amount": "金額",
+    "from": "換算元",
+    "to": "換算先",
+    "swap": "通貨を入れ替える",
+    "updated": "参考レート · {date} 更新",
+    "error": "現在、為替レートを取得できません。しばらくしてから再度お試しください。",
+    "note": "料金は {currency} 建てです。銀行のレートとは多少異なる場合があります。"
+  },
+  "rates": {
+    "title": "ツアーパッケージ料金表",
+    "subtitle": "空港（CMB）発 固定料金",
+    "headers": {
+      "destination": "目的地",
+      "car": "普通車 (USD)",
+      "van": "バン (USD)",
+      "bus": "バス (USD)",
+      "duration": "所要時間（目安）",
+      "distance": "距離"
+    },
+    "units": {
+      "km": "km"
+    }
+  },
+  "offer": {
+    "included": "含まれるもの",
+    "bonuses": "無料特典",
+    "priceLabel": "特別価格"
+  }
 }

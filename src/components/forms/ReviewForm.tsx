@@ -9,7 +9,7 @@ import { clean, reviewSchema, type ReviewValues } from "@/validations/public";
 import { submitPublic } from "@/lib/api/public-client";
 import { cn } from "@/lib/utils";
 import { buttonClass } from "@/components/ui/Button";
-import { Field, Honeypot, Input, SuccessPanel, Textarea, applyServerErrors } from "./fields";
+import { Field, Honeypot, Input, SuccessPanel, Textarea, applyServerErrors, failureKey, useSubmitLock } from "./fields";
 import { useValidationMessages } from "./useValidationMessages";
 
 /** Guest review submission – reviews are held as "pending" until approved in the admin. */
@@ -20,7 +20,8 @@ export function ReviewForm() {
   const messages = useValidationMessages();
   const schema = useMemo(() => reviewSchema(messages), [messages]);
   const [sent, setSent] = useState(false);
-  const [failure, setFailure] = useState(false);
+  const [failure, setFailure] = useState<string | null>(null);
+  const lock = useSubmitLock();
   const {
     register,
     handleSubmit,
@@ -31,15 +32,15 @@ export function ReviewForm() {
   } = useForm<ReviewValues>({ resolver: zodResolver(schema), defaultValues: { rating: 0, guestName: "", email: "", review: "" } });
   const rating = useWatch({ control, name: "rating" });
 
-  const onSubmit = handleSubmit(async (values) => {
-    setFailure(false);
+  const onSubmit = lock(handleSubmit(async (values) => {
+    setFailure(null);
     const res = await submitPublic("/reviews", clean(values));
     if (res.ok) setSent(true);
     else {
       applyServerErrors(res.errors, setError as never);
-      setFailure(!res.errors.length);
+      setFailure(tb(failureKey(res)));
     }
-  });
+  }));
 
   if (sent) return <SuccessPanel title={tb("successTitle")} text={t("success")} />;
 
@@ -48,10 +49,10 @@ export function ReviewForm() {
       <h2 className="text-2xl text-forest-900 sm:col-span-2">{t("writeReview")}</h2>
       <Honeypot register={register as never} />
       <fieldset className="sm:col-span-2">
-        <legend className="mb-2 text-sm font-medium text-forest-900">
+        <legend id="rRatingLabel" className="mb-2 text-sm font-medium text-forest-900">
           {t("rating")} <span className="text-red-600">*</span>
         </legend>
-        <div className="flex gap-1" role="radiogroup">
+        <div className="flex gap-1" role="radiogroup" aria-labelledby="rRatingLabel" aria-invalid={!!errors.rating}>
           {[1, 2, 3, 4, 5].map((n) => (
             <button
               key={n}
@@ -66,13 +67,17 @@ export function ReviewForm() {
             </button>
           ))}
         </div>
-        {errors.rating && <p className="mt-1 text-xs text-red-600">{errors.rating.message}</p>}
+        {errors.rating && (
+          <p className="mt-1 text-xs text-red-600" role="alert">
+            {errors.rating.message}
+          </p>
+        )}
       </fieldset>
       <Field label={tb("name")} htmlFor="rName" required error={errors.guestName?.message}>
-        <Input id="rName" {...register("guestName")} />
+        <Input id="rName" autoComplete="name" aria-invalid={!!errors.guestName} {...register("guestName")} />
       </Field>
       <Field label={tb("email")} htmlFor="rEmail" required error={errors.email?.message}>
-        <Input id="rEmail" type="email" {...register("email")} />
+        <Input id="rEmail" type="email" autoComplete="email" aria-invalid={!!errors.email} {...register("email")} />
       </Field>
       <Field label={tb("country")} htmlFor="rCountry">
         <Input id="rCountry" {...register("country")} />
@@ -81,11 +86,11 @@ export function ReviewForm() {
         <Input id="rTitle" {...register("title")} />
       </Field>
       <Field label={t("yourReview")} htmlFor="rReview" required error={errors.review?.message} className="sm:col-span-2">
-        <Textarea id="rReview" {...register("review")} />
+        <Textarea id="rReview" aria-invalid={!!errors.review} {...register("review")} />
       </Field>
       {failure && (
         <p role="alert" className="rounded-xl bg-red-50 p-3 text-sm text-red-700 sm:col-span-2">
-          {tb("errorGeneric")}
+          {failure}
         </p>
       )}
       <div className="sm:col-span-2">

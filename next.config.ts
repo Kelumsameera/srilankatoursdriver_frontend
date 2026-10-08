@@ -1,11 +1,12 @@
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
+import { API_URL } from "./src/lib/config";
 
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
 const apiOrigin = (() => {
   try {
-    return new URL(process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000/api").origin;
+    return new URL(API_URL).origin;
   } catch {
     return "http://localhost:5000";
   }

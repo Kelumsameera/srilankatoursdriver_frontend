@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useTranslations } from "next-intl";
 import { ChevronDown, Menu, Phone, X } from "lucide-react";
 import { usePathname } from "@/i18n/navigation";
@@ -8,6 +8,7 @@ import type { NavItem } from "@/types/cms";
 import { cn, telLink } from "@/lib/utils";
 import { CmsLink } from "@/components/ui/CmsLink";
 import { buttonClass } from "@/components/ui/Button";
+import { AccountMenu, MobileAccountLink } from "@/components/account/AccountMenu";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 
 interface Props {
@@ -52,10 +53,20 @@ export function SiteHeader({ nav, logoLight, logoDark, logoMobile, logoMobileLig
     setOpenSub(null);
   }
 
+  const toggleRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
+    if (!open) return;
+    // Escape closes the mobile menu and returns focus to the toggle button.
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      setOpen(false);
+      toggleRef.current?.focus();
+    };
+    document.addEventListener("keydown", onKey);
     return () => {
       document.body.style.overflow = "";
+      document.removeEventListener("keydown", onKey);
     };
   }, [open]);
 
@@ -107,6 +118,7 @@ export function SiteHeader({ nav, logoLight, logoDark, logoMobile, logoMobileLig
                   <CmsLink
                     href={item.url}
                     newTab={item.openInNewTab}
+                    current={isActive(pathname, item.url)}
                     className={cn(
                       "relative whitespace-nowrap rounded-full px-2.5 py-2 text-[0.88rem] font-medium transition-colors",
                       solid ? "text-forest-900 hover:text-forest-600" : "text-white/90 hover:text-white",
@@ -129,6 +141,7 @@ export function SiteHeader({ nav, logoLight, logoDark, logoMobile, logoMobileLig
               <Phone className="h-4 w-4" />
             </a>
           )}
+          <AccountMenu tone={solid ? "dark" : "light"} />
           {ctas.map((c) => (
             <span key={c._id} className="hidden sm:block">
               <CmsLink href={c.url} whatsapp={whatsapp} className={buttonClass("primary", "sm")}>
@@ -137,6 +150,7 @@ export function SiteHeader({ nav, logoLight, logoDark, logoMobile, logoMobileLig
             </span>
           ))}
           <button
+            ref={toggleRef}
             type="button"
             className={cn("rounded-full p-2 xl:hidden", solid ? "text-forest-900" : "text-white")}
             onClick={() => setOpen((o) => !o)}
@@ -179,12 +193,15 @@ export function SiteHeader({ nav, logoLight, logoDark, logoMobile, logoMobileLig
                       )}
                     </>
                   ) : (
-                    <CmsLink href={item.url} newTab={item.openInNewTab} className="block py-4 text-lg text-forest-900">
+                    <CmsLink href={item.url} newTab={item.openInNewTab} current={isActive(pathname, item.url)} className="block py-4 text-lg text-forest-900">
                       {item.label}
                     </CmsLink>
                   )}
                 </li>
               ))}
+              <li>
+                <MobileAccountLink />
+              </li>
             </ul>
             <div className="mt-6 flex flex-col gap-3">
               {ctas.map((c) => (

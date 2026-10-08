@@ -14,7 +14,8 @@ export function AdminProviders({ children }: { children: ReactNode }) {
           queries: {
             staleTime: 15_000,
             refetchOnWindowFocus: false,
-            retry: (count, err) => !(err instanceof AdminApiError && err.status < 500) && count < 2,
+            // Client errors (4xx incl. 401/403/404/429) are final; network failures (status 0) and 5xx retry twice.
+            retry: (count, err) => !(err instanceof AdminApiError && err.status > 0 && err.status < 500) && count < 2,
           },
         },
       }),

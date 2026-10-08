@@ -36,6 +36,15 @@ export interface FooterColumn {
   links: { label: string; url: string }[];
 }
 
+export interface TransferRate {
+  destination: string;
+  car?: number | null;
+  van?: number | null;
+  bus?: number | null;
+  duration?: string;
+  distanceKm?: number | null;
+}
+
 export interface SiteSettings {
   siteName: string;
   businessName: string;
@@ -65,6 +74,17 @@ export interface SiteSettings {
     cookieUrl?: string;
   };
   tripadvisor?: { enabled?: boolean; profileUrl?: string; ratingText?: string };
+  /** Fixed airport-transfer price table shown on destination pages. */
+  transferRates?: {
+    enabled?: boolean;
+    title?: string;
+    subtitle?: string;
+    currency?: string;
+    note?: string;
+    rows?: TransferRate[];
+  };
+  /** Accreditation / partner logos for the trust bar. */
+  partners?: { name: string; url?: string; logo?: MediaAsset | null }[];
   maintenanceMode?: boolean;
   updatedAt?: string;
 }
@@ -321,7 +341,9 @@ export type SectionType =
   | "richText"
   | "features"
   | "cta"
-  | "contact";
+  | "contact"
+  | "offer"
+  | "team";
 
 export interface PageSection {
   _id: string;
@@ -330,11 +352,17 @@ export interface PageSection {
   eyebrow?: string;
   title?: string;
   subtitle?: string;
+  /** Highlighted short line: a season ("November to April") or an offer badge. */
+  badge?: string;
+  /** Offer sections only. */
+  price?: string;
+  priceNote?: string;
   content?: string;
-  items?: { title?: string; description?: string; icon?: string; image?: MediaAsset | null; url?: string }[];
+  /** `role` is used by team sections (title = person's name). */
+  items?: { title?: string; role?: string; description?: string; icon?: string; image?: MediaAsset | null; url?: string }[];
   buttons?: LinkButton[];
   media?: MediaAsset | null;
-  settings?: { limit?: number; source?: "featured" | "latest" | "all"; theme?: "light" | "sand" | "forest" | "dark"; layout?: string };
+  settings?: { limit?: number; source?: "featured" | "latest" | "all"; theme?: "light" | "sand" | "forest" | "dark"; layout?: string; category?: string | null };
   enabled?: boolean;
   order?: number;
   data?: unknown;

@@ -1,5 +1,5 @@
 import { getTranslations } from "next-intl/server";
-import { Clock, Mail, MapPin, Phone } from "lucide-react";
+import { Clock, ExternalLink, Mail, MapPin, Phone } from "lucide-react";
 import type { Branding, Destination, SiteSettings, Tour } from "@/types/cms";
 import { interpolate, telLink, whatsappLink } from "@/lib/utils";
 import { CmsLink } from "@/components/ui/CmsLink";
@@ -16,45 +16,53 @@ interface Props {
 /** Every piece of footer content is managed in Admin → Footer / Site Settings / Social Media. */
 export async function SiteFooter({ settings, branding, tours, destinations }: Props) {
   const t = await getTranslations("footer");
+  const tc = await getTranslations("contact");
   const f = settings.footer ?? {};
   const columns = (f.columns ?? []).filter((c) => c.enabled !== false);
-  const social = Object.entries(settings.social ?? {}).filter(([, url]) => !!url) as [keyof typeof SocialIcons, string][];
+  const social = Object.entries(settings.social ?? {}).filter(([network, url]) => !!url && network in SocialIcons) as [keyof typeof SocialIcons, string][];
+  const showSocial = f.showSocial !== false && social.length > 0;
+  // Admin map embed, or a keyless Google Maps embed of the address.
+  const mapSrc = settings.mapEmbedUrl || (settings.address ? `https://www.google.com/maps?q=${encodeURIComponent(settings.address)}&output=embed` : "");
+  const mapsLink = settings.googleMapsUrl || (settings.address ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(settings.address)}` : "");
 
   return (
     <footer className="relative overflow-hidden bg-forest-950 text-white/75">
       <div className="pointer-events-none absolute -end-32 -top-32 h-96 w-96 rounded-full bg-forest-600/20 blur-3xl" aria-hidden />
-      <div className="container-page relative grid gap-12 py-16 sm:py-20 lg:grid-cols-12">
-        <div className="lg:col-span-4">
+      <div className="container-page relative grid gap-12 py-16 sm:py-20 lg:grid-cols-12 lg:gap-10">
+        <div className="lg:col-span-3">
           <CmsLink href="/" className="inline-block" ariaLabel={settings.siteName}>
             <Logo branding={branding} siteName={settings.siteName} tone="light" />
           </CmsLink>
           {f.description && <p className="mt-6 max-w-sm leading-relaxed">{f.description}</p>}
-          {f.showSocial !== false && social.length > 0 && (
-            <div className="mt-6">
-              <p className="mb-3 text-sm font-medium text-white">{t("followUs")}</p>
-              <ul className="flex flex-wrap gap-2">
-                {social.map(([network, url]) => {
-                  const Icon = SocialIcons[network];
-                  return Icon ? (
-                    <li key={network}>
-                      <a
-                        href={url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label={network}
-                        className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 transition-colors hover:border-gold-500 hover:text-gold-400"
-                      >
-                        <Icon className="h-4 w-4" />
-                      </a>
-                    </li>
-                  ) : null;
-                })}
-              </ul>
+          {/* Map + location under the logo and text, balancing the link columns on the right. */}
+          {mapSrc && (
+            <div className="mt-8 overflow-hidden rounded-2xl border border-white/10">
+              <iframe
+                src={mapSrc}
+                title={`${tc("findUs")} – ${settings.businessName}`}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                className="block h-48 w-full border-0 grayscale-[35%]"
+                data-testid="footer-map"
+              />
+              {mapsLink && (
+                <a
+                  href={mapsLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 bg-white/[0.04] px-4 py-3 text-sm text-gold-400 transition-colors hover:bg-white/[0.08] hover:text-white"
+                >
+                  <MapPin className="h-4 w-4 shrink-0" aria-hidden />
+                  {tc("openMaps")}
+                  <ExternalLink className="ms-auto h-3.5 w-3.5 shrink-0" aria-hidden />
+                </a>
+              )}
             </div>
           )}
         </div>
 
-        <div className="grid gap-10 sm:grid-cols-2 lg:col-span-5 lg:grid-cols-2">
+        {/* Link groups share one top line; the long destinations list runs underneath across the area. */}
+        <div className="grid content-start gap-10 sm:grid-cols-3 lg:col-span-6">
           {columns.map((col) => (
             <div key={col.title}>
               <h3 className="mb-4 font-sans text-sm font-semibold uppercase tracking-[0.18em] text-gold-400">{col.title}</h3>
@@ -84,9 +92,9 @@ export async function SiteFooter({ settings, branding, tours, destinations }: Pr
             </div>
           )}
           {f.showDestinationLinks !== false && destinations.length > 0 && (
-            <div>
+            <div className="sm:col-span-3">
               <h3 className="mb-4 font-sans text-sm font-semibold uppercase tracking-[0.18em] text-gold-400">{t("destinations")}</h3>
-              <ul className="grid grid-cols-2 gap-x-4 gap-y-2.5">
+              <ul className="grid grid-cols-2 gap-x-6 gap-y-2.5 sm:grid-cols-4">
                 {destinations.map((d) => (
                   <li key={d._id}>
                     <CmsLink href={`/destinations/${d.slug}`} className="transition-colors hover:text-white">
@@ -151,6 +159,29 @@ export async function SiteFooter({ settings, branding, tours, destinations }: Pr
               </li>
             )}
           </ul>
+          {showSocial && (
+            <div className="mt-8">
+              <p className="mb-3 text-sm font-medium text-white">{t("followUs")}</p>
+              <ul className="flex flex-wrap gap-2">
+                {social.map(([network, url]) => {
+                  const Icon = SocialIcons[network];
+                  return (
+                    <li key={network}>
+                      <a
+                        href={url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={network}
+                        className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 transition-colors hover:border-gold-500 hover:bg-gold-500 hover:text-forest-950"
+                      >
+                        <Icon className="h-4 w-4" />
+                      </a>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          )}
         </div>
       </div>
 

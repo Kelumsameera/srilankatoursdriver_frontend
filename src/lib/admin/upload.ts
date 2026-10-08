@@ -56,11 +56,29 @@ interface Signature {
  * then the API verifies the asset with Cloudinary and stores the metadata in MongoDB.
  * The Cloudinary API secret never reaches the browser.
  */
-export async function uploadToCloudinary(file: File, folder: MediaFolder, onProgress?: (pct: number) => void): Promise<MediaRecord> {
+/** Client-side type/size check (the API and Cloudinary validate again). Throws a user-facing Error. */
+export function checkUploadFile(file: File, expected?: "image" | "video"): "image" | "video" {
   const resourceType = file.type.startsWith("video/") ? "video" : "image";
   if (!file.type.startsWith("image/") && !file.type.startsWith("video/")) throw new Error(`${file.name}: only images and videos are allowed`);
+  if (expected && expected !== resourceType) throw new Error(`${file.name}: please choose ${expected === "video" ? "a video" : "an image"}`);
   if (file.size > (resourceType === "video" ? MAX_VIDEO : MAX_IMAGE)) {
     throw new Error(`${file.name} is too large (max ${resourceType === "video" ? "200" : "15"} MB)`);
+  }
+  return resourceType;
+}
+
+export async function uploadToCloudinary(file: File, folder: MediaFolder, onProgress?: (pct: number) => void): Promise<MediaRecord> {
+  const resourceType = checkUploadFile(file);
+  // SVG markup is inspected by the API before it reaches Cloudinary, so SVGs use the server upload route.
+  if (file.type === "image/svg+xml") {
+    const form = new FormData();
+    form.append("folder", folder);
+    form.append("title", file.name.replace(/\.[^.]+$/, ""));
+    form.append("files", file);
+    onProgress?.(50);
+    const { data } = await api.post<MediaRecord[]>("/admin/media/upload", form);
+    onProgress?.(100);
+    return data[0];
   }
   const { data: sig } = await api.post<Signature>("/admin/media/signature", { folder, resourceType });
 

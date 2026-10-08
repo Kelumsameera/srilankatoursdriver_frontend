@@ -77,7 +77,7 @@ export default function RolesPage() {
   const [busy, setBusy] = useState(false);
 
   if (roles.isLoading || perms.isLoading) return <LoadingBlock />;
-  if (roles.error || perms.error) return <ErrorBlock message={errorMessage(roles.error ?? perms.error)} />;
+  if (roles.error || perms.error) return <ErrorBlock message={errorMessage(roles.error ?? perms.error)} onRetry={() => void Promise.all([roles.refetch(), perms.refetch()])} />;
   const list = roles.data!.data;
   const active = draft ?? selected ?? list[0];
   const readOnly = !can(active?._id ? "roles:update" : "roles:create") || active?.permissions.includes("*");

@@ -8,6 +8,7 @@ export function SectionHeading({
   eyebrow,
   title,
   subtitle,
+  badge,
   align = "center",
   light,
   action,
@@ -15,6 +16,8 @@ export function SectionHeading({
   eyebrow?: string;
   title?: string;
   subtitle?: string;
+  /** Short highlighted line under the title, e.g. a season "(November to April)". */
+  badge?: string;
   align?: "center" | "left";
   light?: boolean;
   action?: ReactNode;
@@ -32,6 +35,7 @@ export function SectionHeading({
         {title && (
           <h2 className={cn("text-3xl leading-tight sm:text-4xl lg:text-[2.75rem]", light ? "text-white" : "text-forest-900")}>{title}</h2>
         )}
+        {badge && <p className={cn("mt-3 font-display text-xl italic sm:text-2xl", light ? "text-gold-400" : "text-gold-600")}>{badge}</p>}
         {subtitle && <p className={cn("mt-4 text-base leading-relaxed sm:text-lg", light ? "text-white/75" : "text-muted")}>{subtitle}</p>}
       </div>
       {action && <div className="shrink-0">{action}</div>}

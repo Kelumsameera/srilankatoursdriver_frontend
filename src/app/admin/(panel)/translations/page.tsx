@@ -10,7 +10,7 @@ import { useAuth } from "@/lib/admin/auth";
 import { cn } from "@/lib/utils";
 import { Button, Card, ErrorBlock, LoadingBlock, PageHeader, Select } from "@/components/admin/ui";
 
-type State = "missing" | "outdated" | "up_to_date";
+type State = "missing" | "outdated" | "failed" | "up_to_date";
 interface Overview {
   provider: string;
   configured: boolean;
@@ -23,7 +23,7 @@ interface Overview {
   }[];
 }
 
-const dot: Record<State, string> = { up_to_date: "bg-emerald-500", outdated: "bg-amber-400", missing: "bg-slate-200" };
+const dot: Record<State, string> = { up_to_date: "bg-emerald-500", outdated: "bg-amber-400", failed: "bg-red-500", missing: "bg-slate-200" };
 
 export default function TranslationStatusPage() {
   const { can } = useAuth();
@@ -79,6 +79,7 @@ export default function TranslationStatusPage() {
         <div className="flex gap-4 text-xs text-slate-500">
           <span className="flex items-center gap-1"><span className="h-2.5 w-2.5 rounded-full bg-emerald-500" /> up to date</span>
           <span className="flex items-center gap-1"><span className="h-2.5 w-2.5 rounded-full bg-amber-400" /> outdated</span>
+          <span className="flex items-center gap-1"><span className="h-2.5 w-2.5 rounded-full bg-red-500" /> failed</span>
           <span className="flex items-center gap-1"><span className="h-2.5 w-2.5 rounded-full bg-slate-200" /> missing</span>
           <span className="flex items-center gap-1"><Lock className="h-3 w-3" /> locked</span>
         </div>

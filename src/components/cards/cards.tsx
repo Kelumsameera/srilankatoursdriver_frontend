@@ -131,59 +131,68 @@ export function ExcursionCard({ excursion }: { excursion: Excursion }) {
   );
 }
 
+/** Vehicle card in the fleet layout: rate badge and type pill on the photo, a spec row, and a full-width "view details" bar. */
 export function VehicleCard({ vehicle }: { vehicle: Vehicle }) {
   const t = useTranslations("common");
   const tv = useTranslations("vehicle");
   const locale = useLocale();
   const rate = formatPrice(vehicle.dailyRate, vehicle.currency, locale);
+  const specs = [
+    vehicle.seats ? { icon: Users, label: t("seats", { count: vehicle.seats }) } : null,
+    vehicle.luggageCapacity ? { icon: Briefcase, label: t("bags", { count: vehicle.luggageCapacity }) } : null,
+    vehicle.airConditioning ? { icon: Snowflake, label: t("airConditioned") } : null,
+  ].filter(Boolean) as { icon: typeof Users; label: string }[];
   return (
-    <article className="flex h-full flex-col overflow-hidden rounded-3xl border border-sand-200 bg-white">
-      <CmsImage
-        media={vehicle.images?.[0]}
-        alt={vehicle.images?.[0]?.alt || vehicle.name}
-        sizes="(min-width: 1024px) 33vw, 100vw"
-        wrapperClassName="aspect-[16/10] bg-sand-100"
-      />
-      <div className="flex flex-1 flex-col p-6">
-        <div className="flex items-start justify-between gap-3">
-          <div>
-            {vehicle.type && <p className="eyebrow mb-1 text-[0.68rem]">{vehicle.type}</p>}
-            <h3 className="text-xl text-forest-900">{vehicle.name}</h3>
-          </div>
-          {vehicle.availability && vehicle.availability !== "available" && (
-            <Badge className="bg-gold-100 text-earth-700">{tv(vehicle.availability)}</Badge>
-          )}
-        </div>
-        <ul className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted">
-          {vehicle.seats ? (
-            <li className="flex items-center gap-1.5">
-              <Users className="h-4 w-4 text-forest-600" aria-hidden /> {t("seats", { count: vehicle.seats })}
-            </li>
-          ) : null}
-          {vehicle.luggageCapacity ? (
-            <li className="flex items-center gap-1.5">
-              <Briefcase className="h-4 w-4 text-forest-600" aria-hidden /> {t("bags", { count: vehicle.luggageCapacity })}
-            </li>
-          ) : null}
-          {vehicle.airConditioning && (
-            <li className="flex items-center gap-1.5">
-              <Snowflake className="h-4 w-4 text-forest-600" aria-hidden /> {t("airConditioned")}
-            </li>
-          )}
-        </ul>
-        {vehicle.description && <p className="mt-4 line-clamp-3 text-sm leading-relaxed text-muted">{vehicle.description}</p>}
-        <div className="mt-auto flex items-center justify-between pt-6">
+    <article className="group relative flex h-full flex-col overflow-hidden rounded-[1.25rem] border border-forest-950/10 bg-white transition-all duration-500 hover:-translate-y-2 hover:shadow-card">
+      <div className="relative">
+        <CmsImage
+          media={vehicle.images?.[0]}
+          alt={vehicle.images?.[0]?.alt || vehicle.name}
+          sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+          wrapperClassName="aspect-[16/10] bg-sand-100"
+          className="transition-transform duration-1000 group-hover:scale-105"
+        />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent from-40% to-forest-950/55" aria-hidden />
+        <span className="absolute end-4 top-4 rounded-full border border-white/80 bg-white/95 px-4 py-2 text-sm font-semibold text-forest-800 shadow-sm backdrop-blur">
           {rate ? (
-            <p className="text-sm text-muted">
-              <span className="text-lg font-semibold text-forest-800">{rate}</span> {tv("perDay")}
-            </p>
+            <>
+              {rate} <span className="text-[0.65rem] font-normal text-muted">/ {tv("perDay")}</span>
+            </>
           ) : (
-            <span className="text-sm text-forest-700">{t("priceOnRequest")}</span>
+            <span className="text-xs">{t("priceOnRequest")}</span>
           )}
-          <CmsLink href={`/booking?type=vehicle&vehicle=${vehicle._id}`} className="text-sm font-medium text-forest-700 hover:text-gold-600">
-            {t("bookNow")} →
+        </span>
+        {vehicle.type && (
+          <span className="absolute bottom-4 start-4 rounded-full bg-forest-950/85 px-3.5 py-1 text-[0.6rem] font-bold uppercase tracking-[0.18em] text-white/90 backdrop-blur">
+            {vehicle.type}
+          </span>
+        )}
+        {vehicle.availability && vehicle.availability !== "available" && (
+          <Badge className="absolute start-4 top-4 bg-gold-100 text-earth-700">{tv(vehicle.availability)}</Badge>
+        )}
+      </div>
+      <div className="flex flex-1 flex-col px-6 pb-5 pt-6">
+        <h3 className="mb-3 font-display text-2xl leading-tight text-forest-900">
+          {/* Stretched link: the whole card opens the vehicle overview. */}
+          <CmsLink href={`/vehicles/${vehicle.slug}`} className="after:absolute after:inset-0 focus:outline-none">
+            {vehicle.name}
           </CmsLink>
-        </div>
+        </h3>
+        {specs.length > 0 && (
+          <ul className="mb-6 flex flex-wrap items-center gap-y-2 border-y border-forest-950/5 py-4 text-xs font-medium text-muted">
+            {specs.map(({ icon: Icon, label }, i) => (
+              <li key={label} className={i > 0 ? "ms-4 flex items-center gap-1.5 border-s border-forest-950/10 ps-4" : "flex items-center gap-1.5"}>
+                <Icon className="h-3.5 w-3.5 text-gold-600" aria-hidden /> {label}
+              </li>
+            ))}
+          </ul>
+        )}
+        <span
+          className="mt-auto flex w-full items-center justify-center gap-2 rounded-xl bg-forest-900 px-5 py-3.5 text-xs font-semibold uppercase tracking-wider text-white transition-colors duration-300 group-hover:bg-gold-500 group-hover:text-forest-950"
+          aria-hidden
+        >
+          {t("viewDetails")} <ArrowRight className="h-3.5 w-3.5 rtl:rotate-180" />
+        </span>
       </div>
     </article>
   );

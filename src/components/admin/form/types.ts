@@ -8,6 +8,11 @@ interface Base {
   placeholder?: string;
   /** Grid columns to span (1–2) in a two-column section. */
   span?: 1 | 2;
+  /**
+   * Show the field only when a sibling field has (`in`) / doesn't have (`notIn`) one of the values.
+   * Hidden fields keep their value but are never required.
+   */
+  showWhen?: { field: string; in?: string[]; notIn?: string[] };
 }
 
 export type FieldDef =

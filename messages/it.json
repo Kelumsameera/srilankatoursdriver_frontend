@@ -35,6 +35,38 @@
     "home": "Home"
   },
   "nav": { "openMenu": "Apri menu", "closeMenu": "Chiudi menu" },
+  "account": {
+    "signIn": "Accedi",
+    "signOut": "Esci",
+    "myAccount": "Il mio account",
+    "createAccount": "Crea account",
+    "loginTitle": "Bentornato",
+    "loginSubtitle": "Accedi per prenotare più velocemente con i tuoi dati salvati.",
+    "registerTitle": "Crea il tuo account",
+    "registerSubtitle": "Salva i tuoi dati per prenotazioni più rapide.",
+    "name": "Nome completo",
+    "email": "Email",
+    "password": "Password",
+    "passwordRule": "Almeno 8 caratteri, con una lettera e un numero",
+    "or": "oppure",
+    "noAccount": "Sei nuovo?",
+    "haveAccount": "Hai già un account?",
+    "guestNote": "L'account è facoltativo: puoi sempre prenotare come ospite.",
+    "staffLogin": "Accesso admin / staff",
+    "invalidCredentials": "Email o password non corretti.",
+    "emailTaken": "Esiste già un account con questa email. Prova ad accedere.",
+    "locked": "Troppi tentativi falliti. Riprova tra 15 minuti.",
+    "rateLimited": "Troppi tentativi. Attendi qualche minuto e riprova.",
+    "checkFields": "Controlla i campi evidenziati.",
+    "errorGeneric": "Qualcosa è andato storto. Riprova.",
+    "errorNetwork": "Impossibile raggiungere il server. Controlla la connessione e riprova.",
+    "googleFailed": "Accesso con Google non riuscito. Riprova.",
+    "googleConflict": "Questa email è già collegata a un altro account Google.",
+    "loading": "Caricamento…",
+    "hello": "Ciao, {name}",
+    "accountIntro": "Hai effettuato l'accesso. I tuoi dati sono salvati per prenotazioni e richieste più rapide.",
+    "googleConnected": "Account Google collegato"
+  },
   "footer": {
     "contact": "Contatti",
     "popularTours": "Tour più richiesti",
@@ -90,7 +122,18 @@
     "available": "Disponibile",
     "limited": "Disponibilità limitata",
     "unavailable": "Al momento non disponibile",
-    "book": "Prenota questo veicolo"
+    "book": "Prenota questo veicolo",
+    "typeLabel": "Tipo di veicolo",
+    "passengers": "Passeggeri",
+    "luggage": "Bagagli",
+    "comfort": "Comfort",
+    "overview": "Panoramica",
+    "related": "Altri veicoli",
+    "fleetDesc": "Forniamo i migliori autisti multilingue per",
+    "fleetCount": "{count, plural, one {# veicolo} other {# veicoli}}",
+    "otherType": "Altri veicoli",
+    "startsFrom": "A partire da",
+    "disclaimer": "* Nessun costo nascosto. Pagamento diretto all'autista."
   },
   "booking": {
     "formTitle": "Richiesta di prenotazione",
@@ -115,7 +158,10 @@
     "successTitle": "Grazie!",
     "success": "Abbiamo ricevuto la tua richiesta. Ti risponderemo a breve.",
     "reference": "Il tuo riferimento: {reference}",
-    "errorGeneric": "Qualcosa è andato storto. Riprova o contattaci su WhatsApp."
+    "errorGeneric": "Qualcosa è andato storto. Riprova o contattaci su WhatsApp.",
+    "errorFields": "Controlla i campi evidenziati e riprova.",
+    "errorRateLimited": "Troppe richieste. Attendi qualche minuto e riprova.",
+    "errorNetwork": "Impossibile raggiungere il nostro server. Controlla la connessione a Internet e riprova."
   },
   "tailorMade": {
     "stepOf": "Passo {current} di {total}",
@@ -225,5 +271,96 @@
     "after": "Deve essere successiva alla data di inizio",
     "select": "Effettua una scelta"
   },
-  "preview": { "banner": "Modalità anteprima – le sezioni disattivate sono visibili. Questa pagina non è pubblica." }
+  "preview": { "banner": "Modalità anteprima – le sezioni disattivate sono visibili. Questa pagina non è pubblica." },
+  "about": {
+    "title": "Informazioni su Sri Lanka Tours Driver",
+    "label": "Chi Siamo",
+    "heading": "Ti Aiutiamo nella",
+    "headingHighlight": "Pianificazione",
+    "headingEnd": "del tuo Viaggio",
+    "desc1": "Sole tutto l'anno, spiagge dorate, città antiche, safari e persone meravigliose in un paradiso tropicale: lo Sri Lanka offre un'esperienza di viaggio indimenticabile. Siamo un team autorizzato con sede a Colombo.",
+    "desc2": "Con oltre un decennio di esperienza, creiamo viaggi privati e personalizzati che ti connettono con il vero cuore dello Sri Lanka.",
+    "checklist": {
+      "item1": "Guide professioniste autorizzate dal governo",
+      "item2": "Tour privati — nessun gruppo condiviso",
+      "item3": "Disponibili 24/7 per la tua assistenza",
+      "item4": "Prezzi trasparenti e tutto incluso"
+    },
+    "cta": "Contattaci",
+    "stats": {
+      "experience": "Anni di Esperienza",
+      "travelers": "Viaggiatori Felici",
+      "support": "Supporto Disponibile",
+      "certified": "Autorizzato e Certificato"
+    },
+    "reasons": {
+      "licensed": {
+        "title": "Guide Autorizzate",
+        "desc": "Tutte le nostre guide sono professionisti autorizzati dal governo con sede a Colombo."
+      },
+      "rated": {
+        "title": "Servizio a 5 Stelle",
+        "desc": "Costantemente lodati su TripAdvisor per l'eccezionale ospitalità e conoscenza locale."
+      },
+      "private": {
+        "title": "Privato e Personalizzato",
+        "desc": "Ogni viaggio è su misura per il tuo gruppo: niente autobus condivisi, niente estranei."
+      },
+      "passionate": {
+        "title": "Passione per lo Sri Lanka",
+        "desc": "Siamo locali che amano questa isola e vogliamo che tu la viva al meglio."
+      },
+      "pata": {
+        "title": "Certificato PATA e Turismo",
+        "desc": "Membri riconosciuti dello Sri Lanka Tourism e della Pacific Asia Travel Association."
+      },
+      "transparent": {
+        "title": "Prezzi Trasparenti",
+        "desc": "Nessun costo nascosto. Prezzi chiari e anticipati per viaggiare in totale tranquillità."
+      }
+    }
+  },
+  "trust": {
+    "accredited": "Accreditato e Riconosciuto",
+    "trustedBy": "Scelto dalle Autorità del Turismo",
+    "stayConnected": "Rimani Connesso",
+    "followUs": "Seguici sui Social Media",
+    "available247": "Siamo qui per te 24/7",
+    "planDream": "Pianifichiamo il tuo Viaggio da Sogno",
+    "planDesc": "Il nostro team è pronto a creare il tuo viaggio perfetto in Sri Lanka.",
+    "callUs": "Chiamaci quando vuoi",
+    "emailUs": "Inviaci un'email",
+    "whatsappDesc": "Risposte rapide garantite",
+    "tagline": "⚡ Risposte rapide su WhatsApp • Pianificazione personalizzata • Miglior prezzo garantito"
+  },
+  "currency": {
+    "title": "Convertitore di valuta",
+    "amount": "Importo",
+    "from": "Da",
+    "to": "A",
+    "swap": "Inverti valute",
+    "updated": "Tasso indicativo · aggiornato {date}",
+    "error": "I tassi di cambio non sono disponibili al momento. Riprova più tardi.",
+    "note": "I nostri prezzi sono indicati in {currency}; il tasso della tua banca può variare leggermente."
+  },
+  "rates": {
+    "title": "Tariffe dei Pacchetti Tour",
+    "subtitle": "Tariffe Fisse dall'Aeroporto (CMB)",
+    "headers": {
+      "destination": "Destinazione",
+      "car": "Auto (USD)",
+      "van": "Van (USD)",
+      "bus": "Autobus (USD)",
+      "duration": "Durata Est.",
+      "distance": "Distanza"
+    },
+    "units": {
+      "km": "km"
+    }
+  },
+  "offer": {
+    "included": "Incluso",
+    "bonuses": "Omaggi inclusi",
+    "priceLabel": "Prezzo esclusivo"
+  }
 }

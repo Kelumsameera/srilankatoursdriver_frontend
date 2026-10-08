@@ -9,7 +9,7 @@ import { Lock, Plus, Trash2 } from "lucide-react";
 import { api, errorMessage } from "@/lib/admin/api";
 import { useAuth } from "@/lib/admin/auth";
 import { formatDate } from "@/lib/utils";
-import { Button, ConfirmDialog, ErrorBlock, Input, Label, LoadingBlock, Modal, PageHeader, StatusBadge } from "@/components/admin/ui";
+import { Button, ConfirmDialog, ErrorBlock, FieldError, Input, Label, LoadingBlock, Modal, PageHeader, StatusBadge } from "@/components/admin/ui";
 
 interface PageRow {
   _id: string;
@@ -34,11 +34,14 @@ export default function PagesPage() {
   if (isLoading) return <LoadingBlock />;
   if (error) return <ErrorBlock message={errorMessage(error)} onRetry={() => refetch()} />;
   const pages = data?.data ?? [];
+  const slug = (form.slug || form.title).toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  const slugTaken = pages.some((p) => p.slug === slug);
+  const slugError = !form.title.trim() ? null : !slug ? "Enter a slug using Latin letters, numbers and hyphens" : slugTaken ? "A page with this slug already exists" : null;
 
   const create = async () => {
+    if (!form.title.trim() || slugError) return;
     setBusy(true);
     try {
-      const slug = (form.slug || form.title).toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
       await api.post("/admin/pages", { title: form.title, slug, status: "draft" });
       toast.success("Page created");
       setCreating(false);
@@ -113,7 +116,7 @@ export default function PagesPage() {
             <Button variant="outline" onClick={() => setCreating(false)}>
               Cancel
             </Button>
-            <Button onClick={create} loading={busy} disabled={!form.title}>
+            <Button onClick={create} loading={busy} disabled={!form.title.trim() || !!slugError}>
               Create
             </Button>
           </>
@@ -130,7 +133,9 @@ export default function PagesPage() {
             <Label htmlFor="np-slug" hint="lowercase-with-hyphens">
               Slug
             </Label>
-            <Input id="np-slug" value={form.slug} placeholder="about-us" onChange={(e) => setForm({ ...form, slug: e.target.value })} />
+            <Input id="np-slug" value={form.slug} placeholder={slug || "about-us"} aria-invalid={!!slugError} onChange={(e) => setForm({ ...form, slug: e.target.value })} />
+            <FieldError message={slugError ?? undefined} />
+            {!slugError && slug && <p className="mt-1 text-xs text-slate-500">URL: /{slug}</p>}
           </div>
         </div>
       </Modal>

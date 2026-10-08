@@ -38,6 +38,38 @@
     "openMenu": "Open menu",
     "closeMenu": "Close menu"
   },
+  "account": {
+    "signIn": "Sign in",
+    "signOut": "Sign out",
+    "myAccount": "My account",
+    "createAccount": "Create account",
+    "loginTitle": "Welcome back",
+    "loginSubtitle": "Sign in to book faster with your saved details.",
+    "registerTitle": "Create your account",
+    "registerSubtitle": "Save your details for faster bookings.",
+    "name": "Full name",
+    "email": "Email",
+    "password": "Password",
+    "passwordRule": "At least 8 characters, including a letter and a number",
+    "or": "or",
+    "noAccount": "New here?",
+    "haveAccount": "Already have an account?",
+    "guestNote": "An account is optional – you can always book as a guest.",
+    "staffLogin": "Admin / staff sign in",
+    "invalidCredentials": "Incorrect email or password.",
+    "emailTaken": "An account with this email already exists. Try signing in instead.",
+    "locked": "Too many failed attempts. Please try again in 15 minutes.",
+    "rateLimited": "Too many attempts. Please wait a few minutes and try again.",
+    "checkFields": "Please check the highlighted fields.",
+    "errorGeneric": "Something went wrong. Please try again.",
+    "errorNetwork": "We couldn't reach the server. Check your connection and try again.",
+    "googleFailed": "Google sign-in failed. Please try again.",
+    "googleConflict": "This email is already linked to a different Google account.",
+    "loading": "Loading…",
+    "hello": "Hello, {name}",
+    "accountIntro": "You're signed in. Your details are saved for faster bookings and enquiries.",
+    "googleConnected": "Google account connected"
+  },
   "footer": {
     "contact": "Contact",
     "popularTours": "Popular tours",
@@ -93,7 +125,18 @@
     "available": "Available",
     "limited": "Limited availability",
     "unavailable": "Currently unavailable",
-    "book": "Book this vehicle"
+    "book": "Book this vehicle",
+    "typeLabel": "Vehicle type",
+    "passengers": "Passengers",
+    "luggage": "Luggage",
+    "comfort": "Comfort",
+    "overview": "Overview",
+    "related": "More vehicles",
+    "fleetDesc": "We provide the best multilingual drivers for",
+    "fleetCount": "{count, plural, one {# vehicle} other {# vehicles}}",
+    "otherType": "Other vehicles",
+    "startsFrom": "Starting from",
+    "disclaimer": "* No hidden charges. Direct payment to driver."
   },
   "booking": {
     "formTitle": "Booking request",
@@ -118,7 +161,10 @@
     "successTitle": "Thank you!",
     "success": "Your request has been received. We'll reply shortly.",
     "reference": "Your reference: {reference}",
-    "errorGeneric": "Something went wrong. Please try again or contact us on WhatsApp."
+    "errorGeneric": "Something went wrong. Please try again or contact us on WhatsApp.",
+    "errorFields": "Please check the highlighted fields and try again.",
+    "errorRateLimited": "Too many requests. Please wait a few minutes and try again.",
+    "errorNetwork": "We could not reach our server. Please check your internet connection and try again."
   },
   "tailorMade": {
     "stepOf": "Step {current} of {total}",
@@ -236,5 +282,96 @@
   },
   "preview": {
     "banner": "Preview mode – disabled sections are visible. This page is not public."
+  },
+  "about": {
+    "title": "About Sri Lanka Tours Driver",
+    "label": "About Us",
+    "heading": "We Help You",
+    "headingHighlight": "Planning",
+    "headingEnd": "Your Journey",
+    "desc1": "A smiling sun all year round, golden beaches, ancient cities, safaris, lovely people in a tropical paradise — Sri Lanka offers an unforgettable travelling experience you can ever imagine.",
+    "desc2": "With over a decade of experience, we craft private, personalized journeys that connect you with the real heart of Sri Lanka.",
+    "checklist": {
+      "item1": "Government-licensed professional guides",
+      "item2": "Private tours — no shared groups",
+      "item3": "Available 24/7 for your assistance",
+      "item4": "Transparent, all-inclusive pricing"
+    },
+    "cta": "Contact Us",
+    "stats": {
+      "experience": "Years Experience",
+      "travelers": "Happy Travelers",
+      "support": "Available Support",
+      "certified": "Licensed & Certified"
+    },
+    "reasons": {
+      "licensed": {
+        "title": "Licensed Tour Guides",
+        "desc": "All our guides are government-licensed professionals based in Colombo."
+      },
+      "rated": {
+        "title": "5-Star Rated Service",
+        "desc": "Consistently praised on TripAdvisor for exceptional hospitality and local knowledge."
+      },
+      "private": {
+        "title": "Private & Personalized",
+        "desc": "Every journey is tailored to your group — no shared buses, no strangers."
+      },
+      "passionate": {
+        "title": "Passionate About Sri Lanka",
+        "desc": "We're locals who love this island and want you to experience it at its finest."
+      },
+      "pata": {
+        "title": "PATA & Tourism Certified",
+        "desc": "Recognized members of Sri Lanka Tourism and the Pacific Asia Travel Association."
+      },
+      "transparent": {
+        "title": "Transparent Pricing",
+        "desc": "No hidden fees. Clear, upfront pricing so you can travel with complete peace of mind."
+      }
+    }
+  },
+  "trust": {
+    "accredited": "Accredited & Recognized",
+    "trustedBy": "Trusted by Travel Authorities",
+    "stayConnected": "Stay Connected",
+    "followUs": "Follow Us on Social Media",
+    "available247": "We're here for you 24/7",
+    "planDream": "Let's Plan Your Dream Trip",
+    "planDesc": "Our team is ready to craft your perfect Sri Lanka journey.",
+    "callUs": "Call us anytime",
+    "emailUs": "Email us",
+    "whatsappDesc": "Quick replies guaranteed",
+    "tagline": "⚡ Quick replies on WhatsApp • Personalised tour planning • Best price guarantee"
+  },
+  "currency": {
+    "title": "Currency converter",
+    "amount": "Amount",
+    "from": "From",
+    "to": "To",
+    "swap": "Swap currencies",
+    "updated": "Indicative rate · updated {date}",
+    "error": "Exchange rates are unavailable right now. Please try again later.",
+    "note": "Our prices are quoted in {currency}; your bank's rate may differ slightly."
+  },
+  "rates": {
+    "title": "Tour Package Rates",
+    "subtitle": "Fixed Rates from Airport (CMB)",
+    "headers": {
+      "destination": "Destination",
+      "car": "Car (USD)",
+      "van": "Van (USD)",
+      "bus": "Bus (USD)",
+      "duration": "Est. Duration",
+      "distance": "Distance"
+    },
+    "units": {
+      "km": "Km"
+    }
+  },
+  "offer": {
+    "included": "Included",
+    "bonuses": "Complimentary bonuses",
+    "priceLabel": "Exclusive price"
   }
 }

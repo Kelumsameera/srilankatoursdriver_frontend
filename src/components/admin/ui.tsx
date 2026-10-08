@@ -3,6 +3,8 @@
 import {
   forwardRef,
   useEffect,
+  useId,
+  useRef,
   type ButtonHTMLAttributes,
   type InputHTMLAttributes,
   type ReactNode,
@@ -170,30 +172,76 @@ export function Empty({ children }: { children: ReactNode }) {
   return <div className="rounded-xl border border-dashed border-slate-300 p-10 text-center text-sm text-slate-500">{children}</div>;
 }
 
+/** Open dialogs, innermost last – only the top one reacts to Escape / traps focus (modals nest, e.g. media picker → details). */
+const modalStack: symbol[] = [];
+const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]):not([type="hidden"]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
 export function Modal({ open, onClose, title, children, wide, footer }: { open: boolean; onClose: () => void; title: string; children: ReactNode; wide?: boolean; footer?: ReactNode }) {
+  const dialog = useRef<HTMLDivElement>(null);
+  const titleId = useId();
+  const close = useRef(onClose);
+  useEffect(() => {
+    close.current = onClose;
+  }, [onClose]);
+
   useEffect(() => {
     if (!open) return;
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+    const me = Symbol("modal");
+    modalStack.push(me);
+    const previous = document.activeElement as HTMLElement | null;
+    // Prefer the first control in the body (or footer) over the header's close button.
+    const d = dialog.current;
+    const first = d?.querySelector<HTMLElement>("[autofocus]") ?? d?.querySelector<HTMLElement>(`[data-modal-body] :is(${FOCUSABLE}), footer :is(${FOCUSABLE})`);
+    (first ?? d)?.focus();
+    const onKey = (e: KeyboardEvent) => {
+      if (modalStack[modalStack.length - 1] !== me) return;
+      if (e.key === "Escape") {
+        e.stopPropagation();
+        close.current();
+      } else if (e.key === "Tab" && dialog.current) {
+        const items = Array.from(dialog.current.querySelectorAll<HTMLElement>(FOCUSABLE)).filter((el) => el.offsetParent !== null);
+        if (!items.length) return;
+        const [head, tail] = [items[0], items[items.length - 1]];
+        if (e.shiftKey && document.activeElement === head) {
+          e.preventDefault();
+          tail.focus();
+        } else if (!e.shiftKey && document.activeElement === tail) {
+          e.preventDefault();
+          head.focus();
+        }
+      }
+    };
     document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
-  }, [open, onClose]);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      modalStack.splice(modalStack.indexOf(me), 1);
+      if (previous?.isConnected) previous.focus();
+    };
+  }, [open]);
+
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-[60] flex items-start justify-center overflow-y-auto bg-slate-900/50 p-4 sm:p-8" onMouseDown={onClose}>
       <div
+        ref={dialog}
         role="dialog"
         aria-modal="true"
-        aria-label={title}
-        className={cn("w-full rounded-2xl bg-white shadow-2xl", wide ? "max-w-5xl" : "max-w-lg")}
+        aria-labelledby={titleId}
+        tabIndex={-1}
+        className={cn("w-full rounded-2xl bg-white shadow-2xl focus:outline-none", wide ? "max-w-5xl" : "max-w-lg")}
         onMouseDown={(e) => e.stopPropagation()}
       >
         <header className="flex items-center justify-between border-b border-slate-100 px-5 py-4">
-          <h2 className="font-sans text-base font-semibold text-slate-900">{title}</h2>
+          <h2 id={titleId} className="font-sans text-base font-semibold text-slate-900">
+            {title}
+          </h2>
           <button type="button" onClick={onClose} className="rounded-lg p-1 text-slate-500 hover:bg-slate-100" aria-label="Close">
             <X className="h-5 w-5" />
           </button>
         </header>
-        <div className="p-5">{children}</div>
+        <div className="p-5" data-modal-body>
+          {children}
+        </div>
         {footer && <footer className="flex justify-end gap-2 border-t border-slate-100 px-5 py-3">{footer}</footer>}
       </div>
     </div>

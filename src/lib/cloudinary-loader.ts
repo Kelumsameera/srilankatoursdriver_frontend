@@ -7,6 +7,11 @@ export default function cloudinaryLoader({ src, width, quality }: { src: string;
   return cloudinaryUrl(src, { width, quality });
 }
 
+/** True when the loader can resize the URL (Cloudinary upload or a local /public file). */
+export function isOptimizable(src: string): boolean {
+  return src.startsWith("/") || (src.includes("res.cloudinary.com") && src.includes("/upload/"));
+}
+
 export interface CloudinaryOptions {
   width?: number;
   height?: number;

@@ -35,6 +35,38 @@
     "home": "홈"
   },
   "nav": { "openMenu": "메뉴 열기", "closeMenu": "메뉴 닫기" },
+  "account": {
+    "signIn": "로그인",
+    "signOut": "로그아웃",
+    "myAccount": "내 계정",
+    "createAccount": "계정 만들기",
+    "loginTitle": "다시 오신 것을 환영합니다",
+    "loginSubtitle": "로그인하면 저장된 정보로 더 빠르게 예약할 수 있습니다.",
+    "registerTitle": "계정 만들기",
+    "registerSubtitle": "정보를 저장해 더 빠르게 예약하세요.",
+    "name": "이름",
+    "email": "이메일",
+    "password": "비밀번호",
+    "passwordRule": "8자 이상, 문자와 숫자 포함",
+    "or": "또는",
+    "noAccount": "처음이신가요?",
+    "haveAccount": "이미 계정이 있으신가요?",
+    "guestNote": "계정은 선택 사항입니다. 언제든지 게스트로 예약할 수 있습니다.",
+    "staffLogin": "관리자 / 직원 로그인",
+    "invalidCredentials": "이메일 또는 비밀번호가 올바르지 않습니다.",
+    "emailTaken": "이 이메일로 가입된 계정이 이미 있습니다. 로그인해 주세요.",
+    "locked": "실패 횟수가 너무 많습니다. 15분 후에 다시 시도해 주세요.",
+    "rateLimited": "시도 횟수가 너무 많습니다. 몇 분 후에 다시 시도해 주세요.",
+    "checkFields": "표시된 항목을 확인해 주세요.",
+    "errorGeneric": "문제가 발생했습니다. 다시 시도해 주세요.",
+    "errorNetwork": "서버에 연결할 수 없습니다. 연결을 확인하고 다시 시도해 주세요.",
+    "googleFailed": "Google 로그인에 실패했습니다. 다시 시도해 주세요.",
+    "googleConflict": "이 이메일은 이미 다른 Google 계정에 연결되어 있습니다.",
+    "loading": "불러오는 중…",
+    "hello": "안녕하세요, {name}님",
+    "accountIntro": "로그인되었습니다. 더 빠른 예약과 문의를 위해 정보가 저장되어 있습니다.",
+    "googleConnected": "Google 계정 연결됨"
+  },
   "footer": {
     "contact": "연락처",
     "popularTours": "인기 투어",
@@ -90,7 +122,18 @@
     "available": "이용 가능",
     "limited": "잔여 수량 적음",
     "unavailable": "현재 이용 불가",
-    "book": "이 차량 예약"
+    "book": "이 차량 예약",
+    "typeLabel": "차량 유형",
+    "passengers": "승객",
+    "luggage": "수하물",
+    "comfort": "편의",
+    "overview": "개요",
+    "related": "다른 차량",
+    "fleetDesc": "저희는 최고의 다국어 가능 드라이버를 제공합니다:",
+    "fleetCount": "차량 {count}대",
+    "otherType": "기타 차량",
+    "startsFrom": "시작 가격",
+    "disclaimer": "* 숨겨진 요금이 없습니다. 드라이버에게 직접 지불하세요."
   },
   "booking": {
     "formTitle": "예약 요청",
@@ -115,7 +158,10 @@
     "successTitle": "감사합니다!",
     "success": "요청이 접수되었습니다. 곧 연락드리겠습니다.",
     "reference": "예약 번호: {reference}",
-    "errorGeneric": "문제가 발생했습니다. 다시 시도하시거나 WhatsApp으로 문의해 주세요."
+    "errorGeneric": "문제가 발생했습니다. 다시 시도하시거나 WhatsApp으로 문의해 주세요.",
+    "errorFields": "표시된 항목을 확인한 후 다시 시도해 주세요.",
+    "errorRateLimited": "요청이 너무 많습니다. 몇 분 후 다시 시도해 주세요.",
+    "errorNetwork": "서버에 연결할 수 없습니다. 인터넷 연결을 확인한 후 다시 시도해 주세요."
   },
   "tailorMade": {
     "stepOf": "{total}단계 중 {current}단계",
@@ -225,5 +271,96 @@
     "after": "시작일 이후여야 합니다",
     "select": "항목을 선택해 주세요"
   },
-  "preview": { "banner": "미리보기 모드 – 비활성화된 섹션도 표시됩니다. 이 페이지는 공개되지 않았습니다." }
+  "preview": { "banner": "미리보기 모드 – 비활성화된 섹션도 표시됩니다. 이 페이지는 공개되지 않았습니다." },
+  "about": {
+    "title": "Sri Lanka Tours Driver 소개",
+    "label": "소개",
+    "heading": "여러분의 소중한",
+    "headingHighlight": "여행 계획을",
+    "headingEnd": "도와드립니다",
+    "desc1": "일 년 내내 빛나는 태양, 황금빛 해변, 고대 도시, 사파리, 그리고 따뜻한 사람들이 있는 열대의 낙원 스리랑카는 잊지 못할 경험을 선사합니다.",
+    "desc2": "10년 이상의 경험을 바탕으로 스리랑카의 진정한 매력을 느낄 수 있는 맞춤형 단독 여행을 제공합니다.",
+    "checklist": {
+      "item1": "정부 공인 전문 가이드",
+      "item2": "단독 투어 — 다른 그룹과의 합승 없음",
+      "item3": "24시간 연중무휴 고객 지원",
+      "item4": "투명한 정찰제 및 올인클루시브 가격"
+    },
+    "cta": "문의하기",
+    "stats": {
+      "experience": "년의 경력",
+      "travelers": "만족한 여행객",
+      "support": "연중무휴 지원",
+      "certified": "공인 및 인증 완료"
+    },
+    "reasons": {
+      "licensed": {
+        "title": "공인 투어 가이드",
+        "desc": "모든 가이드는 콜롬보를 기반으로 활동하는 정부 공인 전문가입니다."
+      },
+      "rated": {
+        "title": "별 5개 등급 서비스",
+        "desc": "뛰어난 환대와 지역 지식으로 트립어드바이저에서 꾸준히 높은 평가를 받고 있습니다."
+      },
+      "private": {
+        "title": "프라이빗 & 퍼스널",
+        "desc": "모든 여정은 여러분의 그룹만을 위해 준비됩니다. 합승 버스나 낯선 이와의 동행은 없습니다."
+      },
+      "passionate": {
+        "title": "스리랑카에 대한 열정",
+        "desc": "스리랑카를 사랑하는 현지인으로서, 여러분이 섬의 가장 아름다운 모습을 경험하시길 바랍니다."
+      },
+      "pata": {
+        "title": "PATA 및 관광청 인증",
+        "desc": "스리랑카 관광청 및 아시아 태평양 관광 협회(PATA)의 공식 회원사입니다."
+      },
+      "transparent": {
+        "title": "투명한 가격 정책",
+        "desc": "숨겨진 비용이 없습니다. 사전에 명확한 가격을 제시하여 안심하고 여행하실 수 있습니다."
+      }
+    }
+  },
+  "trust": {
+    "accredited": "공인 및 인증",
+    "trustedBy": "관광 당국의 신뢰",
+    "stayConnected": "SNS 연결",
+    "followUs": "소셜 미디어에서 팔로우하기",
+    "available247": "연중무휴 고객 지원",
+    "planDream": "꿈의 여행을 계획해 보세요",
+    "planDesc": "완벽한 스리랑카 여정을 만들어 드립니다. 원하시는 방법으로 문의주세요.",
+    "callUs": "전화 문의",
+    "emailUs": "이메일 문의",
+    "whatsappDesc": "빠른 응답 보장",
+    "tagline": "⚡ 왓츠앱 빠른 응답 • 개인별 맞춤 투어 계획 • 최저가 보장"
+  },
+  "currency": {
+    "title": "환율 계산기",
+    "amount": "금액",
+    "from": "보낼 통화",
+    "to": "받을 통화",
+    "swap": "통화 바꾸기",
+    "updated": "참고 환율 · {date} 업데이트",
+    "error": "현재 환율 정보를 불러올 수 없습니다. 잠시 후 다시 시도해 주세요.",
+    "note": "요금은 {currency} 기준이며, 은행 환율과 약간 다를 수 있습니다."
+  },
+  "rates": {
+    "title": "투어 패키지 요금표",
+    "subtitle": "공항(CMB) 출발 고정 요금",
+    "headers": {
+      "destination": "목적지",
+      "car": "승용차 (USD)",
+      "van": "밴 (USD)",
+      "bus": "버스 (USD)",
+      "duration": "예상 소요 시간",
+      "distance": "거리"
+    },
+    "units": {
+      "km": "km"
+    }
+  },
+  "offer": {
+    "included": "포함 사항",
+    "bonuses": "무료 혜택",
+    "priceLabel": "특별 가격"
+  }
 }

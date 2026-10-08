@@ -16,6 +16,7 @@ import {
   Wand2,
   type LucideIcon,
 } from "lucide-react";
+import { RESOURCES } from "./resources";
 
 export interface NavLink {
   label: string;
@@ -47,6 +48,7 @@ export const ADMIN_NAV: NavGroup[] = [
       { label: "Footer", href: "/admin/footer", perm: "settings:read" },
       { label: "Pages", href: "/admin/pages", perm: "pages:read" },
       { label: "SEO", href: "/admin/content/seo", perm: "seo:read" },
+      { label: "Transfer Rates", href: "/admin/rates", perm: "settings:read" },
       { label: "Social Media", href: "/admin/social", perm: "settings:read" },
     ],
   },
@@ -153,3 +155,21 @@ export const ADMIN_NAV: NavGroup[] = [
 ];
 
 export const ACTIVITY_ICON = Activity;
+
+const NAV_PERMS = ADMIN_NAV.flatMap((g) => [...(g.href ? [{ href: g.href, perm: g.perm }] : []), ...(g.children ?? [])])
+  .map((l) => ({ path: l.href.split("?")[0], perm: l.perm }))
+  .filter((l): l is { path: string; perm: string } => !!l.perm && l.path !== "/admin");
+
+/**
+ * Permission needed to open an admin route (UI guard only – the API still enforces every request).
+ * Content routes use their resource config; other pages use the most specific sidebar link.
+ */
+export function routePermission(pathname: string): string | null {
+  const content = pathname.match(/^\/admin\/content\/([^/]+)(?:\/([^/]+))?/);
+  if (content) {
+    const res = RESOURCES[content[1]];
+    return res ? `${res.permission}:${content[2] === "new" ? "create" : "read"}` : null;
+  }
+  const match = NAV_PERMS.filter((l) => pathname === l.path || pathname.startsWith(`${l.path}/`)).sort((a, b) => b.path.length - a.path.length)[0];
+  return match ? match.perm.replace(/:create$/, ":read") : null;
+}

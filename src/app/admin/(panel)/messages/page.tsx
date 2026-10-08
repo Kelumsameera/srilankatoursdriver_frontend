@@ -4,7 +4,7 @@ import { Suspense, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { CrmList } from "@/components/admin/CrmList";
-import { Button, Label, LoadingBlock, Modal, Select } from "@/components/admin/ui";
+import { Button, ErrorBlock, Label, LoadingBlock, Modal, Select } from "@/components/admin/ui";
 import { api, errorMessage } from "@/lib/admin/api";
 import { useAuth } from "@/lib/admin/auth";
 import { formatDate } from "@/lib/utils";
@@ -23,7 +23,8 @@ interface Msg {
 function MessageModal({ id, onClose }: { id: string; onClose: () => void }) {
   const qc = useQueryClient();
   const { can } = useAuth();
-  const { data, isLoading } = useQuery({ queryKey: ["msg", id], queryFn: () => api.get<Msg>(`/admin/contact-messages/${id}`) });
+  const { data, isLoading, error, refetch } = useQuery({ queryKey: ["msg", id], queryFn: () => api.get<Msg>(`/admin/contact-messages/${id}`) });
+  const [deleting, setDeleting] = useState(false);
   const m = data?.data;
   const setStatus = async (status: string) => {
     try {
@@ -49,10 +50,18 @@ function MessageModal({ id, onClose }: { id: string; onClose: () => void }) {
             <Button
               variant="danger"
               className="me-auto"
+              loading={deleting}
               onClick={async () => {
-                await api.del(`/admin/contact-messages/${id}`).catch((e) => toast.error(errorMessage(e)));
-                await qc.invalidateQueries({ queryKey: ["crm"] });
-                onClose();
+                setDeleting(true);
+                try {
+                  await api.del(`/admin/contact-messages/${id}`);
+                  toast.success("Message deleted");
+                  await qc.invalidateQueries({ queryKey: ["crm"] });
+                  onClose();
+                } catch (e) {
+                  toast.error(errorMessage(e));
+                  setDeleting(false);
+                }
               }}
             >
               Delete
@@ -66,7 +75,9 @@ function MessageModal({ id, onClose }: { id: string; onClose: () => void }) {
         </>
       }
     >
-      {isLoading || !m ? (
+      {error ? (
+        <ErrorBlock message={errorMessage(error)} onRetry={() => refetch()} />
+      ) : isLoading || !m ? (
         <LoadingBlock />
       ) : (
         <div className="space-y-4 text-sm">

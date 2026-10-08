@@ -5,14 +5,13 @@ import Image from "next/image";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Check, Copy, Film, ImagePlus, Pencil, RefreshCw, Search, Trash2, Upload } from "lucide-react";
-import { api, errorMessage, qs } from "@/lib/admin/api";
-import { MEDIA_FOLDERS, formatBytes, toAsset, uploadToCloudinary, type MediaFolder, type MediaRecord } from "@/lib/admin/upload";
+import { AdminApiError, adminRequest, api, errorMessage, qs } from "@/lib/admin/api";
+import { MEDIA_FOLDERS, checkUploadFile, formatBytes, toAsset, uploadToCloudinary, type MediaFolder, type MediaRecord } from "@/lib/admin/upload";
 import { videoPoster } from "@/lib/cloudinary-loader";
 import { useAuth } from "@/lib/admin/auth";
 import { cn } from "@/lib/utils";
 import type { MediaAsset } from "@/types/cms";
 import { Button, ConfirmDialog, Empty, ErrorBlock, Input, Label, LoadingBlock, Modal, PaginationBar, Select, Textarea } from "./ui";
-import { API_URL } from "@/lib/config";
 
 interface LibraryProps {
   /** When set, the library is in "pick" mode. */
@@ -31,12 +30,13 @@ export function MediaLibrary({ onPick, multiple, accept = "any", folder: default
   const [folder, setFolder] = useState<MediaFolder>(defaultFolder);
   const [filterFolder, setFilterFolder] = useState("");
   const [selected, setSelected] = useState<MediaRecord[]>([]);
-  const [uploads, setUploads] = useState<{ name: string; pct: number }[]>([]);
+  const [uploads, setUploads] = useState<{ id: number; name: string; pct: number }[]>([]);
   const [editing, setEditing] = useState<MediaRecord | null>(null);
   const [deleting, setDeleting] = useState<MediaRecord | null>(null);
   const [busy, setBusy] = useState(false);
   const fileInput = useRef<HTMLInputElement>(null);
   const replaceInput = useRef<HTMLInputElement>(null);
+  const uploadSeq = useRef(0);
 
   const key = ["media", page, search, type, filterFolder];
   const { data, isLoading, error, refetch } = useQuery({
@@ -46,19 +46,23 @@ export function MediaLibrary({ onPick, multiple, accept = "any", folder: default
 
   const upload = useCallback(
     async (files: FileList | File[]) => {
-      const list = Array.from(files).filter((f) => accept === "any" || f.type.startsWith(`${accept}/`));
+      const all = Array.from(files);
+      const list = all.filter((f) => accept === "any" || f.type.startsWith(`${accept}/`));
+      if (list.length < all.length) toast.error(`Only ${accept === "video" ? "videos" : "images"} can be used here – ${all.length - list.length} file(s) skipped`);
       if (!list.length) return;
       const done: MediaRecord[] = [];
       for (const file of list) {
-        setUploads((u) => [...u, { name: file.name, pct: 0 }]);
+        // Ids (not file names) key the progress rows – two files may share a name.
+        const id = ++uploadSeq.current;
+        setUploads((u) => [...u, { id, name: file.name, pct: 0 }]);
         try {
-          const rec = await uploadToCloudinary(file, folder, (pct) => setUploads((u) => u.map((x) => (x.name === file.name ? { ...x, pct } : x))));
+          const rec = await uploadToCloudinary(file, folder, (pct) => setUploads((u) => u.map((x) => (x.id === id ? { ...x, pct } : x))));
           done.push(rec);
           toast.success(`Uploaded ${file.name}`);
         } catch (err) {
-          toast.error(errorMessage(err));
+          toast.error(`${file.name}: ${errorMessage(err)}`);
         } finally {
-          setUploads((u) => u.filter((x) => x.name !== file.name));
+          setUploads((u) => u.filter((x) => x.id !== id));
         }
       }
       await qc.invalidateQueries({ queryKey: ["media"] });
@@ -89,13 +93,13 @@ export function MediaLibrary({ onPick, multiple, accept = "any", folder: default
     if (!editing) return;
     setBusy(true);
     try {
+      checkUploadFile(file, editing.resourceType);
       const form = new FormData();
       form.append("file", file);
-      const res = await fetch(`${API_URL}/admin/media/${editing._id}/replace`, { method: "POST", body: form, credentials: "include" });
-      const json = await res.json();
-      if (!res.ok) throw new Error(json.message);
+      // Goes through the shared client: session refresh, CSRF header and safe error messages.
+      const { data: replaced } = await adminRequest<MediaRecord>("POST", `/admin/media/${editing._id}/replace`, form);
       toast.success("File replaced – everywhere it is used now shows the new version");
-      setEditing(json.data);
+      setEditing(replaced);
       await qc.invalidateQueries({ queryKey: ["media"] });
     } catch (err) {
       toast.error(errorMessage(err));
@@ -108,7 +112,14 @@ export function MediaLibrary({ onPick, multiple, accept = "any", folder: default
     if (!deleting) return;
     setBusy(true);
     try {
-      await api.del(`/admin/media/${deleting._id}`);
+      try {
+        await api.del(`/admin/media/${deleting._id}`);
+      } catch (err) {
+        // 409 = still used by content; the API lists where. Only delete after an explicit second confirmation.
+        if (!(err instanceof AdminApiError && err.status === 409)) throw err;
+        if (!window.confirm(`${err.message}\n\nDelete it anyway? Those places will show a placeholder.`)) return;
+        await api.del(`/admin/media/${deleting._id}?force=true`);
+      }
       toast.success("Deleted from Cloudinary and the media library");
       setDeleting(null);
       setEditing(null);
@@ -121,6 +132,8 @@ export function MediaLibrary({ onPick, multiple, accept = "any", folder: default
   };
 
   const status = useQuery({ queryKey: ["media-status"], queryFn: () => api.get<{ configured: boolean }>("/admin/media/status"), staleTime: 60_000 });
+  const canUpload = can("media:create") && status.data?.data.configured !== false;
+  const canEdit = can("media:update");
   const items = data?.data ?? [];
   const acceptAttr = accept === "image" ? "image/*" : accept === "video" ? "video/mp4,video/webm,video/quicktime" : "image/*,video/mp4,video/webm,video/quicktime";
 
@@ -129,7 +142,7 @@ export function MediaLibrary({ onPick, multiple, accept = "any", folder: default
       onDragOver={(e) => e.preventDefault()}
       onDrop={(e) => {
         e.preventDefault();
-        if (can("media:create")) void upload(e.dataTransfer.files);
+        if (canUpload) void upload(e.dataTransfer.files);
       }}
     >
       <div className="mb-4 flex flex-wrap items-end gap-2">
@@ -137,6 +150,7 @@ export function MediaLibrary({ onPick, multiple, accept = "any", folder: default
           <Search className="absolute start-3 top-2.5 h-4 w-4 text-slate-400" />
           <Input
             placeholder="Search title, filename, alt text, tags…"
+            aria-label="Search media"
             className="ps-9"
             value={search}
             onChange={(e) => {
@@ -146,13 +160,29 @@ export function MediaLibrary({ onPick, multiple, accept = "any", folder: default
           />
         </div>
         {accept === "any" && (
-          <Select value={type} onChange={(e) => setType(e.target.value as "" | "image" | "video")} className="w-32" aria-label="Type">
+          <Select
+            value={type}
+            onChange={(e) => {
+              setType(e.target.value as "" | "image" | "video");
+              setPage(1);
+            }}
+            className="w-32"
+            aria-label="Type"
+          >
             <option value="">All types</option>
             <option value="image">Images</option>
             <option value="video">Videos</option>
           </Select>
         )}
-        <Select value={filterFolder} onChange={(e) => setFilterFolder(e.target.value)} className="w-40" aria-label="Filter folder">
+        <Select
+          value={filterFolder}
+          onChange={(e) => {
+            setFilterFolder(e.target.value);
+            setPage(1);
+          }}
+          className="w-40"
+          aria-label="Filter folder"
+        >
           <option value="">All folders</option>
           {MEDIA_FOLDERS.map((f) => (
             <option key={f} value={f}>
@@ -169,8 +199,20 @@ export function MediaLibrary({ onPick, multiple, accept = "any", folder: default
                 </option>
               ))}
             </Select>
-            <input ref={fileInput} type="file" multiple accept={acceptAttr} className="hidden" onChange={(e) => e.target.files && upload(e.target.files)} data-testid="media-file-input" />
-            <Button onClick={() => fileInput.current?.click()}>
+            <input
+              ref={fileInput}
+              type="file"
+              multiple
+              accept={acceptAttr}
+              className="hidden"
+              onChange={(e) => {
+                const files = e.target.files ? Array.from(e.target.files) : [];
+                e.target.value = ""; // allow picking the same file again
+                if (files.length) void upload(files);
+              }}
+              data-testid="media-file-input"
+            />
+            <Button onClick={() => fileInput.current?.click()} disabled={!canUpload || uploads.length > 0} title={canUpload ? undefined : "Uploads are disabled until Cloudinary is configured"}>
               <Upload className="h-4 w-4" /> Upload
             </Button>
           </>
@@ -184,14 +226,14 @@ export function MediaLibrary({ onPick, multiple, accept = "any", folder: default
         </div>
       )}
       {uploads.length > 0 && (
-        <div className="mb-4 space-y-2">
+        <div className="mb-4 space-y-2" aria-live="polite">
           {uploads.map((u) => (
-            <div key={u.name} className="rounded-lg bg-slate-50 p-2 text-xs">
+            <div key={u.id} className="rounded-lg bg-slate-50 p-2 text-xs">
               <div className="mb-1 flex justify-between">
                 <span className="truncate">{u.name}</span>
                 <span>{u.pct}%</span>
               </div>
-              <div className="h-1.5 rounded bg-slate-200">
+              <div className="h-1.5 rounded bg-slate-200" role="progressbar" aria-label={`Uploading ${u.name}`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={u.pct}>
                 <div className="h-full rounded bg-forest-600 transition-all" style={{ width: `${u.pct}%` }} />
               </div>
             </div>
@@ -214,32 +256,30 @@ export function MediaLibrary({ onPick, multiple, accept = "any", folder: default
             const isSel = selected.some((s) => s._id === m._id);
             const thumb = m.resourceType === "video" ? videoPoster(m.secureUrl, 400) : m.secureUrl;
             return (
-              <li key={m._id}>
+              <li key={m._id} className="group relative">
                 <button
                   type="button"
                   onClick={() => (onPick ? toggle(m) : setEditing(m))}
-                  className={cn("group relative block aspect-square w-full overflow-hidden rounded-lg border-2 bg-slate-100", isSel ? "border-forest-600" : "border-transparent hover:border-slate-300")}
+                  className={cn("relative block aspect-square w-full overflow-hidden rounded-lg border-2 bg-slate-100", isSel ? "border-forest-600" : "border-transparent hover:border-slate-300")}
                   title={m.title || m.originalFilename}
+                  aria-pressed={onPick ? isSel : undefined}
+                  aria-label={`${onPick ? "Select" : "Edit"} ${m.title || m.originalFilename || "media"}`}
                 >
                   <Image src={thumb} alt={m.altText || ""} fill sizes="200px" className="object-cover" />
                   {m.resourceType === "video" && <Film className="absolute start-2 top-2 h-5 w-5 rounded bg-black/60 p-0.5 text-white" />}
                   {isSel && <Check className="absolute end-2 top-2 h-6 w-6 rounded-full bg-forest-600 p-1 text-white" />}
-                  {onPick && (
-                    <span
-                      role="button"
-                      tabIndex={0}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setEditing(m);
-                      }}
-                      onKeyDown={(e) => e.key === "Enter" && setEditing(m)}
-                      className="absolute bottom-2 end-2 hidden rounded bg-white/90 p-1 text-slate-700 group-hover:block"
-                      aria-label="Edit details"
-                    >
-                      <Pencil className="h-3.5 w-3.5" />
-                    </span>
-                  )}
                 </button>
+                {/* A sibling, not nested: a button inside a button is invalid and unreachable by keyboard. */}
+                {onPick && (
+                  <button
+                    type="button"
+                    onClick={() => setEditing(m)}
+                    className="absolute bottom-7 end-2 hidden rounded bg-white/90 p-1 text-slate-700 focus:block group-focus-within:block group-hover:block"
+                    aria-label={`Edit details of ${m.title || m.originalFilename || "media"}`}
+                  >
+                    <Pencil className="h-3.5 w-3.5" />
+                  </button>
+                )}
                 <p className="mt-1 truncate text-xs text-slate-500">{m.title || m.originalFilename}</p>
               </li>
             );
@@ -272,7 +312,7 @@ export function MediaLibrary({ onPick, multiple, accept = "any", folder: default
             <Button variant="outline" onClick={() => setEditing(null)}>
               Cancel
             </Button>
-            {can("media:update") && (
+            {canEdit && (
               <Button onClick={saveMeta} loading={busy}>
                 Save
               </Button>
@@ -325,14 +365,18 @@ export function MediaLibrary({ onPick, multiple, accept = "any", folder: default
                 >
                   <Copy className="h-3.5 w-3.5" /> Copy URL
                 </Button>
-                {can("media:update") && (
+                {canEdit && (
                   <>
                     <input
                       ref={replaceInput}
                       type="file"
-                      accept={editing.resourceType === "video" ? "video/*" : "image/*"}
+                      accept={editing.resourceType === "video" ? "video/mp4,video/webm,video/quicktime" : "image/*"}
                       className="hidden"
-                      onChange={(e) => e.target.files?.[0] && replaceFile(e.target.files[0])}
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        e.target.value = "";
+                        if (file) void replaceFile(file);
+                      }}
                     />
                     <Button variant="outline" size="sm" onClick={() => replaceInput.current?.click()} loading={busy}>
                       <RefreshCw className="h-3.5 w-3.5" /> Replace file
@@ -344,24 +388,24 @@ export function MediaLibrary({ onPick, multiple, accept = "any", folder: default
             <div className="space-y-4">
               <div>
                 <Label htmlFor="m-title">Title</Label>
-                <Input id="m-title" value={editing.title ?? ""} onChange={(e) => setEditing({ ...editing, title: e.target.value })} />
+                <Input id="m-title" disabled={!canEdit} value={editing.title ?? ""} onChange={(e) => setEditing({ ...editing, title: e.target.value })} />
               </div>
               <div>
                 <Label htmlFor="m-alt" hint="Describe the image for screen readers & SEO">
                   Alt text
                 </Label>
-                <Input id="m-alt" value={editing.altText ?? ""} onChange={(e) => setEditing({ ...editing, altText: e.target.value })} />
+                <Input id="m-alt" disabled={!canEdit} value={editing.altText ?? ""} onChange={(e) => setEditing({ ...editing, altText: e.target.value })} />
               </div>
               <div>
                 <Label htmlFor="m-caption">Caption</Label>
-                <Textarea id="m-caption" value={editing.caption ?? ""} onChange={(e) => setEditing({ ...editing, caption: e.target.value })} />
+                <Textarea id="m-caption" disabled={!canEdit} value={editing.caption ?? ""} onChange={(e) => setEditing({ ...editing, caption: e.target.value })} />
               </div>
               <div>
                 <Label htmlFor="m-tags" hint="comma separated">
                   Tags
                 </Label>
                 <Input
-                  id="m-tags"
+                  id="m-tags" disabled={!canEdit}
                   value={(editing.tags ?? []).join(", ")}
                   onChange={(e) => setEditing({ ...editing, tags: e.target.value.split(",").map((t) => t.trim()).filter(Boolean) })}
                 />
@@ -457,7 +501,7 @@ export function MediaListField({ value, onChange, folder = "general", accept = "
         {list.map((m, i) => (
           <li key={`${m.publicId}-${i}`} className="group relative h-20 w-28 overflow-hidden rounded-lg bg-slate-100">
             {m.url && <Image src={m.resourceType === "video" ? videoPoster(m.url, 300) : m.url} alt={m.alt ?? ""} fill sizes="120px" className="object-cover" />}
-            <div className="absolute inset-x-0 bottom-0 hidden justify-between bg-black/60 p-1 text-[10px] text-white group-hover:flex">
+            <div className="absolute inset-x-0 bottom-0 hidden justify-between bg-black/60 p-1 text-[10px] text-white group-focus-within:flex group-hover:flex">
               <button type="button" onClick={() => move(i, -1)} aria-label="Move left">
                 ◀
               </button>

@@ -176,13 +176,23 @@ interface DetailTypes {
   blog: BlogPost;
 }
 
+/**
+ * A published item and related items. Returns null only when the API says it doesn't exist (404/400);
+ * outages throw, so the page shows the error boundary instead of a 404 that search engines would de-index.
+ */
 export const getDetail = cache(
-  async <K extends DetailKey>(key: K, slug: string, locale: string): Promise<{ item: DetailTypes[K]; related: DetailTypes[K][] } | null> =>
-    orNull(
-      apiGet<{ item: DetailTypes[K]; related: DetailTypes[K][] }>(`/${key}/${encodeURIComponent(slug)}${qs({ locale })}`, {
+  async <K extends DetailKey>(key: K, slug: string, locale: string): Promise<{ item: DetailTypes[K]; related: DetailTypes[K][] } | null> => {
+    try {
+      const { data } = await apiGet<{ item: DetailTypes[K]; related: DetailTypes[K][] }>(`/${key}/${encodeURIComponent(slug)}${qs({ locale })}`, {
         tags: [LIST_TAG[key], TAGS.categories, TAGS.destinations, TAGS.vehicles],
-      }),
-    ),
+      });
+      return data?.item ? { item: data.item, related: data.related ?? [] } : null;
+    } catch (err) {
+      if (err instanceof ApiRequestError && (err.status === 404 || err.status === 400)) return null;
+      console.error("[api]", (err as Error).message);
+      throw new Error("Content is temporarily unavailable");
+    }
+  },
 );
 
 export const getCategories = cache((kind: string, locale: string) =>

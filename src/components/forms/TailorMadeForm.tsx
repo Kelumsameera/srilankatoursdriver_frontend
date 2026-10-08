@@ -9,7 +9,7 @@ import { clean, tailorMadeSchema, type TailorMadeValues } from "@/validations/pu
 import { submitPublic } from "@/lib/api/public-client";
 import { cn, formatDate } from "@/lib/utils";
 import { buttonClass } from "@/components/ui/Button";
-import { Field, Honeypot, Input, Select, SuccessPanel, Textarea, applyServerErrors } from "./fields";
+import { Field, Honeypot, Input, Select, SuccessPanel, Textarea, applyServerErrors, failureKey, useSubmitLock } from "./fields";
 import { useValidationMessages } from "./useValidationMessages";
 
 interface Option {
@@ -89,6 +89,7 @@ export function TailorMadeForm({ destinations, vehicles, defaultCurrency = "USD"
     },
   });
 
+  const lock = useSubmitLock();
   const current = STEPS[step];
   const values = useWatch({ control }) as TailorMadeValues;
 
@@ -106,7 +107,10 @@ export function TailorMadeForm({ destinations, vehicles, defaultCurrency = "USD"
     setValue(field, list.includes(value) ? list.filter((v) => v !== value) : [...list, value], { shouldDirty: true });
   };
 
-  const onSubmit = handleSubmit(
+  const firstStepWithError = (errs: object) =>
+    STEPS.findIndex((s) => STEP_FIELDS[s].some((f) => f.split(".").reduce<unknown>((o, k) => (o as Record<string, unknown> | undefined)?.[k], errs)));
+
+  const onSubmit = lock(handleSubmit(
     async (v) => {
       setFailure(null);
       const payload = clean({ ...v, locale, vehicle: { ...v.vehicle, vehicleRef: v.vehicle.vehicleRef || undefined } });
@@ -116,15 +120,20 @@ export function TailorMadeForm({ destinations, vehicles, defaultCurrency = "USD"
         document.getElementById("tm-top")?.scrollIntoView({ behavior: "smooth" });
       } else {
         applyServerErrors(res.errors, setError as never);
-        setFailure(tb("errorGeneric"));
+        setFailure(tb(failureKey(res)));
+        // Server-side field errors: jump back to the step that contains the first one.
+        const bad = STEPS.findIndex((s) =>
+          STEP_FIELDS[s].some((f) => res.errors.some((er) => er.path === f || er.path.startsWith(`${f}.`) || f.startsWith(`${er.path}.`))),
+        );
+        if (bad >= 0) setStep(bad);
       }
     },
-    () => {
-      // Jump back to the first step that has an error.
-      const firstBad = STEPS.findIndex((s) => STEP_FIELDS[s].some((f) => f.split(".").reduce<unknown>((o, k) => (o as Record<string, unknown>)?.[k], errors)));
+    (errs) => {
+      // Jump back to the first step that has an error (uses the fresh errors, not the render-time snapshot).
+      const firstBad = firstStepWithError(errs);
       if (firstBad >= 0) setStep(firstBad);
     },
-  );
+  ));
 
   if (reference) return <SuccessPanel title={t("successTitle")} text={t("success")} extra={tb("reference", { reference })} />;
 
@@ -151,6 +160,7 @@ export function TailorMadeForm({ destinations, vehicles, defaultCurrency = "USD"
               <button
                 type="button"
                 onClick={() => i < step && setStep(i)}
+                aria-current={i === step ? "step" : undefined}
                 disabled={i > step}
                 className={cn(
                   "rounded-full px-3 py-1 text-xs",

@@ -21,6 +21,8 @@ export interface ApiResult<T> {
   statusCounts?: Record<string, number>;
 }
 
+const NETWORK_MESSAGE = "Cannot reach the server. Check your internet connection and try again.";
+
 let refreshing: Promise<boolean> | null = null;
 
 /** Rotates the refresh cookie once; concurrent 401s share the same refresh call. */
@@ -40,12 +42,17 @@ type Method = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
  */
 export async function adminRequest<T>(method: Method, path: string, body?: unknown, retry = true): Promise<ApiResult<T>> {
   const isForm = typeof FormData !== "undefined" && body instanceof FormData;
-  const res = await fetch(`${API_URL}${path}`, {
-    method,
-    credentials: "include",
-    headers: { accept: "application/json", "x-requested-with": "sltd-admin", ...(body && !isForm ? { "content-type": "application/json" } : {}) },
-    body: body === undefined ? undefined : isForm ? (body as FormData) : JSON.stringify(body),
-  });
+  let res: Response;
+  try {
+    res = await fetch(`${API_URL}${path}`, {
+      method,
+      credentials: "include",
+      headers: { accept: "application/json", "x-requested-with": "sltd-admin", ...(body && !isForm ? { "content-type": "application/json" } : {}) },
+      body: body === undefined ? undefined : isForm ? (body as FormData) : JSON.stringify(body),
+    });
+  } catch {
+    throw new AdminApiError(0, NETWORK_MESSAGE, [], "NETWORK");
+  }
   const authCall = ["/auth/login", "/auth/refresh", "/auth/logout"].some((p) => path.startsWith(p));
   if (res.status === 401 && retry && !authCall) {
     if (await refreshSession()) return adminRequest<T>(method, path, body, false);
@@ -79,9 +86,18 @@ export function qs(params: Record<string, string | number | boolean | undefined 
 }
 
 /** Downloads a CSV export (keeps cookies, works cross-origin). */
-export async function downloadFile(path: string, filename: string) {
-  const res = await fetch(`${API_URL}${path}`, { credentials: "include" });
-  if (!res.ok) throw new AdminApiError(res.status, "Export failed");
+export async function downloadFile(path: string, filename: string, retry = true) {
+  let res: Response;
+  try {
+    res = await fetch(`${API_URL}${path}`, { credentials: "include" });
+  } catch {
+    throw new AdminApiError(0, NETWORK_MESSAGE, [], "NETWORK");
+  }
+  if (res.status === 401 && retry && (await refreshSession())) return downloadFile(path, filename, false);
+  if (!res.ok) {
+    const json = (await res.json().catch(() => null)) as { message?: string } | null;
+    throw new AdminApiError(res.status, json?.message ?? "Export failed");
+  }
   const blob = await res.blob();
   const url = URL.createObjectURL(blob);
   const a = Object.assign(document.createElement("a"), { href: url, download: filename });
@@ -89,9 +105,32 @@ export async function downloadFile(path: string, filename: string) {
   URL.revokeObjectURL(url);
 }
 
+/**
+ * User-facing text for an API error. 4xx messages come from our API's curated ApiError/Zod messages;
+ * 5xx, rate-limit and network failures get a fixed message so internal details are never shown.
+ */
 export function errorMessage(err: unknown): string {
   if (err instanceof AdminApiError) {
+    switch (true) {
+      case err.status === 0:
+        return NETWORK_MESSAGE;
+      case err.status === 401:
+        return err.message && err.message !== "Request failed (401)" ? err.message : "Your session has expired. Please sign in again.";
+      case err.status === 403:
+        return err.message === "Origin not allowed" || !err.message ? "You do not have permission to perform this action." : err.message;
+      case err.status === 404:
+        return /^Route not found|^Request failed/.test(err.message) ? "The requested item could not be found. It may have been deleted." : err.message;
+      case err.status === 409:
+        return err.message || "This conflicts with an existing record.";
+      case err.status === 413:
+        return "The file or request is too large.";
+      case err.status === 429:
+        return "Too many requests. Please wait a moment and try again.";
+      case err.status >= 500:
+        return err.code === "CLOUDINARY_ERROR" ? "The media service (Cloudinary) could not process this file. Please try again." : "The server could not complete this request. Please try again shortly.";
+    }
     return err.errors.length ? `${err.message}: ${err.errors.map((e) => `${e.path ? `${e.path} – ` : ""}${e.message}`).join("; ")}` : err.message;
   }
-  return err instanceof Error ? err.message : "Something went wrong";
+  if (err instanceof TypeError) return NETWORK_MESSAGE;
+  return err instanceof Error && err.message ? err.message : "Something went wrong";
 }

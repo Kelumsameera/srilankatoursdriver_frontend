@@ -10,7 +10,7 @@ import { PageRenderer } from "@/components/sections/PageRenderer";
 type Props = { params: Promise<{ locale: string; slug: string }> };
 
 // System pages have their own routes; only custom CMS pages (privacy-policy, about-us …) render here.
-const SYSTEM = new Set(["home", "tours", "destinations", "excursions", "vehicles", "tailor-made-tours", "gallery", "blog", "reviews", "contact", "booking", "faqs"]);
+const SYSTEM = new Set(["home", "about", "tours", "destinations", "excursions", "vehicles", "tailor-made-tours", "gallery", "blog", "reviews", "contact", "booking", "faqs"]);
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params;

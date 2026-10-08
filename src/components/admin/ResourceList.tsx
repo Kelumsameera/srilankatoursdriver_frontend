@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { ArrowDown, ArrowUp, Copy, ExternalLink, Eye, EyeOff, Languages, Pencil, Plus, Search, Star, Trash2 } from "lucide-react";
+import { ArrowDown, ArrowUp, Copy, ExternalLink, Eye, EyeOff, FileSearch, Languages, Pencil, Plus, Search, Star, Trash2 } from "lucide-react";
 import { api, errorMessage, qs } from "@/lib/admin/api";
 import { useAuth } from "@/lib/admin/auth";
 import { cn, formatDate } from "@/lib/utils";
@@ -118,6 +118,7 @@ export function ResourceList({ resource }: { resource: AdminResource }) {
           <Input
             className="ps-9"
             placeholder={`Search ${resource.title.toLowerCase()}…`}
+            aria-label={`Search ${resource.title.toLowerCase()}`}
             value={search}
             onChange={(e) => {
               setSearch(e.target.value);
@@ -126,7 +127,15 @@ export function ResourceList({ resource }: { resource: AdminResource }) {
           />
         </div>
         {resource.statusField === "status" && resource.statusOptions && (
-          <Select className="w-40" value={status} onChange={(e) => setStatus(e.target.value)} aria-label="Status">
+          <Select
+            className="w-40"
+            value={status}
+            onChange={(e) => {
+              setStatus(e.target.value);
+              setPage(1);
+            }}
+            aria-label="Status"
+          >
             <option value="">All statuses</option>
             {resource.statusOptions.map((s) => (
               <option key={s} value={s}>
@@ -136,7 +145,10 @@ export function ResourceList({ resource }: { resource: AdminResource }) {
           </Select>
         )}
         {resource.filters?.map((f) => (
-          <Select key={f.key} className="w-40" value={filters[f.key] ?? ""} onChange={(e) => setFilters((x) => ({ ...x, [f.key]: e.target.value }))} aria-label={f.label}>
+          <Select key={f.key} className="w-40" value={filters[f.key] ?? ""} onChange={(e) => {
+              setFilters((x) => ({ ...x, [f.key]: e.target.value }));
+              setPage(1);
+            }} aria-label={f.label}>
             <option value="">{f.label}: all</option>
             {f.options.map((o) => (
               <option key={o.value} value={o.value}>
@@ -152,7 +164,7 @@ export function ResourceList({ resource }: { resource: AdminResource }) {
       ) : error ? (
         <ErrorBlock message={errorMessage(error)} onRetry={() => refetch()} />
       ) : rows.length === 0 ? (
-        <Empty>No {resource.title.toLowerCase()} yet.</Empty>
+        <Empty>{search || status || Object.values(filters).some(Boolean) ? `No ${resource.title.toLowerCase()} match these filters.` : `No ${resource.title.toLowerCase()} yet.`}</Empty>
       ) : (
         <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
           <div className="overflow-x-auto">
@@ -224,12 +236,12 @@ export function ResourceList({ resource }: { resource: AdminResource }) {
                           </Button>
                         )}
                         {resource.publicPath?.(row) && (
-                          <a href={resource.publicPath(row)!} target="_blank" rel="noopener noreferrer" className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100" title="View on website">
+                          <a href={resource.publicPath(row)!} target="_blank" rel="noopener noreferrer" className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100" title="View on website" aria-label="View on website">
                             <ExternalLink className="h-3.5 w-3.5" />
                           </a>
                         )}
                         {resource.translationType && can("translations:read") && (
-                          <Link href={`/admin/translations/editor?type=${resource.translationType}&id=${row._id}`} className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100" title="Translations">
+                          <Link href={`/admin/translations/editor?type=${resource.translationType}&id=${row._id}`} className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100" title="Translations" aria-label="Translations">
                             <Languages className="h-3.5 w-3.5" />
                           </Link>
                         )}
@@ -249,9 +261,15 @@ export function ResourceList({ resource }: { resource: AdminResource }) {
                             <Copy className="h-3.5 w-3.5" />
                           </Button>
                         )}
-                        <Link href={`${base}/${row._id}`} className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100" title="Edit" aria-label="Edit">
-                          <Pencil className="h-3.5 w-3.5" />
-                        </Link>
+                        {can(`${p}:update`) ? (
+                          <Link href={`${base}/${row._id}`} className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100" title="Edit" aria-label="Edit">
+                            <Pencil className="h-3.5 w-3.5" />
+                          </Link>
+                        ) : (
+                          <Link href={`${base}/${row._id}`} className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100" title="View (read-only)" aria-label="View">
+                            <FileSearch className="h-3.5 w-3.5" />
+                          </Link>
+                        )}
                         {can(`${p}:delete`) && (
                           <Button variant="ghost" size="sm" onClick={() => setDeleting(row)} aria-label="Delete" title="Delete">
                             <Trash2 className="h-3.5 w-3.5 text-red-600" />

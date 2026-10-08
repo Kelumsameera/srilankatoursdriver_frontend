@@ -6,6 +6,7 @@ import { EmptyState, PageHero } from "@/components/ui/misc";
 import { DestinationCard } from "@/components/cards/cards";
 import { CategoryFilter, Pagination, pageParam, param, type SearchParams } from "@/components/site/listing";
 import { PageRenderer } from "@/components/sections/PageRenderer";
+import { TransferRates } from "@/components/site/TransferRates";
 
 type Props = { params: Promise<{ locale: string }>; searchParams: SearchParams };
 
@@ -46,6 +47,7 @@ export default async function DestinationsPage({ params, searchParams }: Props) 
           {list && <Pagination meta={list.meta} basePath="/destinations" query={{ category }} />}
         </div>
       </section>
+      <TransferRates settings={settings} />
       {data && <PageRenderer sections={data.sections.filter((s) => s.type !== "hero")} settings={settings} />}
     </>
   );
