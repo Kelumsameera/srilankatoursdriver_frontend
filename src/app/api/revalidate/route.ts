@@ -23,9 +23,16 @@ const ALLOWED = new Set([
   "languages",
 ]);
 
+/** Shorter secrets can be guessed; the backend also refuses to start with one. */
+const MIN_SECRET_LENGTH = 32;
+
 function secretMatches(given: string | null): boolean {
   const expected = process.env.REVALIDATE_SECRET;
   if (!expected || !given) return false;
+  if (expected.length < MIN_SECRET_LENGTH) {
+    console.error(`[revalidate] REVALIDATE_SECRET must be at least ${MIN_SECRET_LENGTH} characters – revalidation is disabled until it is.`);
+    return false;
+  }
   const a = Buffer.from(given);
   const b = Buffer.from(expected);
   return a.length === b.length && timingSafeEqual(a, b);

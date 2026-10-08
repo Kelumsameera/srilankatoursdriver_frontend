@@ -23,6 +23,16 @@ interface Overview {
   }[];
 }
 
+/** A bulk translation running on the server (it can take minutes, so the page polls it). */
+interface TranslationJob {
+  id: string;
+  status: "running" | "done" | "failed" | "interrupted";
+  total: number;
+  processed: number;
+  failed: number;
+  error: string | null;
+}
+
 const dot: Record<State, string> = { up_to_date: "bg-emerald-500", outdated: "bg-amber-400", failed: "bg-red-500", missing: "bg-slate-200" };
 
 export default function TranslationStatusPage() {
@@ -30,6 +40,7 @@ export default function TranslationStatusPage() {
   const qc = useQueryClient();
   const [type, setType] = useState("tour");
   const [busy, setBusy] = useState(false);
+  const [progress, setProgress] = useState<TranslationJob | null>(null);
   const { data, isLoading, error, refetch } = useQuery({ queryKey: ["translations", type], queryFn: () => api.get<Overview>(`/admin/translations${qs({ type })}`) });
 
   if (isLoading) return <LoadingBlock />;
@@ -37,16 +48,29 @@ export default function TranslationStatusPage() {
   const o = data.data;
   const group = o.groups[0];
 
+  // The server translates in the background; poll the job until it finishes.
   const generateAll = async () => {
     setBusy(true);
     try {
-      await api.post("/admin/translations/generate", { entityType: type });
-      toast.success("Missing and outdated translations generated");
+      let job = (await api.post<TranslationJob>("/admin/translations/generate", { entityType: type })).data;
+      while (job.status === "running") {
+        setProgress(job);
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        job = (await api.get<TranslationJob>(`/admin/translations/jobs/${job.id}`)).data;
+      }
+      if (job.status === "done") {
+        toast.success(job.failed ? `Translated ${job.processed - job.failed} items (${job.failed} skipped)` : "Missing and outdated translations generated");
+      } else if (job.status === "interrupted") {
+        toast.error("Translation stopped before it finished because the server restarted. Run it again to continue.");
+      } else {
+        toast.error(job.error ?? "Translation failed");
+      }
       await qc.invalidateQueries({ queryKey: ["translations"] });
     } catch (err) {
       toast.error(errorMessage(err));
     } finally {
       setBusy(false);
+      setProgress(null);
     }
   };
 
@@ -58,7 +82,8 @@ export default function TranslationStatusPage() {
         actions={
           can("translations:update") && (
             <Button onClick={generateAll} loading={busy} disabled={!o.configured}>
-              <Sparkles className="h-4 w-4" /> Translate all missing ({group?.label})
+              <Sparkles className="h-4 w-4" />
+              {progress ? `Translating… ${progress.processed}/${progress.total}` : `Translate all missing (${group?.label})`}
             </Button>
           )
         }

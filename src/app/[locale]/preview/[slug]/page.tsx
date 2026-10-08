@@ -5,7 +5,7 @@ import { getPreviewPage, getSiteSettings } from "@/lib/api/server";
 import { PageHero } from "@/components/ui/misc";
 import { Markdown } from "@/components/ui/Markdown";
 import { PageRenderer } from "@/components/sections/PageRenderer";
-import { param, type SearchParams } from "@/components/site/listing";
+import type { SearchParams } from "@/components/site/listing";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { robots: { index: false, follow: false } };
@@ -16,7 +16,10 @@ type Props = { params: Promise<{ locale: string; slug: string }>; searchParams: 
 export default async function PreviewPage({ params, searchParams }: Props) {
   const { locale, slug } = await params;
   setRequestLocale(locale);
-  const token = param(await searchParams, "token");
+  // Read directly: param() drops values over 120 characters (meant for filters), and a JWT is longer.
+  // The API checks the token itself; 2000 matches the API's own limit.
+  const raw = (await searchParams).token;
+  const token = typeof raw === "string" && raw.length <= 2000 ? raw : undefined;
   if (!token) notFound();
   const [data, settings, t] = await Promise.all([getPreviewPage(slug, locale, token), getSiteSettings(locale), getTranslations("preview")]);
   if (!data) notFound();

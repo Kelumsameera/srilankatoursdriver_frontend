@@ -316,7 +316,7 @@ export default function PageEditor({ params }: { params: Promise<{ slug: string 
 
   const preview = async () => {
     try {
-      const { data: tok } = await api.post<{ token: string }>("/admin/preview-token");
+      const { data: tok } = await api.post<{ token: string }>("/admin/preview-token", { slug: page.slug });
       window.open(`/en/preview/${page.slug}?token=${encodeURIComponent(tok.token)}`, "_blank", "noopener");
     } catch (err) {
       toast.error(errorMessage(err));

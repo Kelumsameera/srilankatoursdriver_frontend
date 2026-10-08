@@ -25,12 +25,24 @@ const NETWORK_MESSAGE = "Cannot reach the server. Check your internet connection
 
 let refreshing: Promise<boolean> | null = null;
 
-/** Rotates the refresh cookie once; concurrent 401s share the same refresh call. */
+/**
+ * Runs `fn` while holding a lock shared by every tab of this site, so tabs refresh one after another:
+ * the second tab then sends the cookie the first one just received. (The API also tolerates two
+ * near-simultaneous refreshes, so browsers without the Web Locks API still work.)
+ */
+async function withRefreshLock<T>(fn: () => Promise<T>): Promise<T> {
+  // `await` is needed: the DOM typings declare request() as returning Promise<Promise<T>> here.
+  if (typeof navigator !== "undefined" && navigator.locks) return await navigator.locks.request("sltd-admin-refresh", fn);
+  return fn();
+}
+
+/** Rotates the refresh cookie once; concurrent 401s in this tab share the same refresh call. */
 async function refreshSession(): Promise<boolean> {
-  refreshing ??= fetch(`${API_URL}/auth/refresh`, { method: "POST", credentials: "include" })
-    .then((r) => r.ok)
-    .catch(() => false)
-    .finally(() => setTimeout(() => (refreshing = null), 0));
+  refreshing ??= withRefreshLock(() =>
+    fetch(`${API_URL}/auth/refresh`, { method: "POST", credentials: "include" })
+      .then((r) => r.ok)
+      .catch(() => false),
+  ).finally(() => setTimeout(() => (refreshing = null), 0));
   return refreshing;
 }
 
