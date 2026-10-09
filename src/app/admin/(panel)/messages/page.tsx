@@ -1,6 +1,7 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { CrmList } from "@/components/admin/CrmList";
@@ -104,10 +105,20 @@ function MessageModal({ id, onClose }: { id: string; onClose: () => void }) {
   );
 }
 
+/** `?open=<id>` (e.g. from Customers → Guests) opens that message once the page loads. */
+function OpenFromLink({ onOpen }: { onOpen: (id: string) => void }) {
+  const id = useSearchParams().get("open");
+  useEffect(() => {
+    if (id && /^[a-f0-9]{24}$/i.test(id)) onOpen(id);
+  }, [id, onOpen]);
+  return null;
+}
+
 export default function MessagesPage() {
   const [open, setOpen] = useState<string | null>(null);
   return (
     <Suspense>
+      <OpenFromLink onOpen={setOpen} />
       <CrmList
         title="Contact Messages"
         description="Messages from the contact form."

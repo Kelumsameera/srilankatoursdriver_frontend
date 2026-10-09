@@ -18,6 +18,8 @@ export async function submitPublic<T = unknown>(path: string, body: unknown): Pr
   try {
     const res = await fetch(`${API_URL}${path}`, {
       method: "POST",
+      // Sends the customer session (if any) so a signed-in visitor's booking appears under "My bookings".
+      credentials: "include",
       headers: { "content-type": "application/json", accept: "application/json" },
       body: JSON.stringify(body),
     });
