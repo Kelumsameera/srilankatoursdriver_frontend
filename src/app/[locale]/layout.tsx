@@ -15,6 +15,7 @@ import { TrustBar } from "@/components/site/TrustBar";
 import { CurrencyConverter } from "@/components/site/CurrencyConverter";
 import { Logo } from "@/components/site/Logo";
 import { CustomerAuthProvider } from "@/lib/customer/auth";
+import { PageViewTracker } from "@/components/site/PageViewTracker";
 import type { SiteSettings } from "@/types/cms";
 
 export function generateStaticParams() {
@@ -116,6 +117,7 @@ export default async function LocaleLayout({ children, params }: Props) {
           )}
           <CurrencyConverter siteCurrency={settings.currency} />
           <WhatsAppFloat phone={settings.whatsapp} message={settings.whatsappMessage} />
+          <PageViewTracker />
           </CustomerAuthProvider>
         </NextIntlClientProvider>
         {settingsRes && (

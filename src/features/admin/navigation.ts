@@ -1,5 +1,6 @@
 import {
   Activity,
+  BarChart3,
   BookOpen,
   CalendarCheck,
   Car,
@@ -12,6 +13,7 @@ import {
   MapPin,
   MessageSquare,
   Settings,
+  UserRound,
   Users,
   Wand2,
   type LucideIcon,
@@ -37,6 +39,7 @@ const statusLinks = (base: string, statuses: string[], perm: string) =>
 
 export const ADMIN_NAV: NavGroup[] = [
   { label: "Dashboard", icon: LayoutDashboard, href: "/admin", perm: "dashboard:read" },
+  { label: "Analytics", icon: BarChart3, href: "/admin/analytics", perm: "analytics:read" },
   {
     label: "Website",
     icon: Globe2,
@@ -124,6 +127,7 @@ export const ADMIN_NAV: NavGroup[] = [
       { label: "Gallery Categories", href: "/admin/content/gallery-categories", perm: "categories:read" },
     ],
   },
+  { label: "Customers", icon: UserRound, href: "/admin/customers", perm: "customers:read" },
   { label: "Contact Messages", icon: MessageSquare, href: "/admin/messages", perm: "contacts:read" },
   {
     label: "Translations",

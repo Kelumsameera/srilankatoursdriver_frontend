@@ -19,6 +19,8 @@ export interface ApiResult<T> {
   meta?: PaginationMeta;
   message: string;
   statusCounts?: Record<string, number>;
+  /** Summary figures some list endpoints add (e.g. customers). */
+  stats?: Record<string, number>;
 }
 
 const NETWORK_MESSAGE = "Cannot reach the server. Check your internet connection and try again.";
@@ -74,12 +76,12 @@ export async function adminRequest<T>(method: Method, path: string, body?: unkno
     }
   }
   const json = (await res.json().catch(() => null)) as
-    | { success: boolean; message: string; data: T; meta?: PaginationMeta; errors?: { path: string; message: string }[]; code?: string; statusCounts?: Record<string, number> }
+    | { success: boolean; message: string; data: T; meta?: PaginationMeta; errors?: { path: string; message: string }[]; code?: string; statusCounts?: Record<string, number>; stats?: Record<string, number> }
     | null;
   if (!res.ok || !json?.success) {
     throw new AdminApiError(res.status, json?.message ?? `Request failed (${res.status})`, json?.errors ?? [], json?.code);
   }
-  return { data: json.data, meta: json.meta, message: json.message, statusCounts: json.statusCounts };
+  return { data: json.data, meta: json.meta, message: json.message, statusCounts: json.statusCounts, stats: json.stats };
 }
 
 export const api = {

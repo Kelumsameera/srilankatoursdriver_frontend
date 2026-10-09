@@ -1,12 +1,14 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useLocale, useTranslations } from "next-intl";
 import { Loader2 } from "lucide-react";
 import { bookingSchema, clean, type BookingValues } from "@/validations/public";
 import { submitPublic } from "@/lib/api/public-client";
+import { useCustomerAuth } from "@/lib/customer/auth";
+import { Link } from "@/i18n/navigation";
 import { buttonClass } from "@/components/ui/Button";
 import { Field, Honeypot, Input, Select, SuccessPanel, Textarea, applyServerErrors, failureKey, useSubmitLock } from "./fields";
 import { useValidationMessages } from "./useValidationMessages";
@@ -27,6 +29,8 @@ export function BookingForm({ tours, excursions, vehicles, initial }: Props) {
   const t = useTranslations("booking");
   const tc = useTranslations("common");
   const locale = useLocale();
+  const ta = useTranslations("account");
+  const { customer } = useCustomerAuth();
   const messages = useValidationMessages();
   const schema = useMemo(() => bookingSchema(messages), [messages]);
   const [reference, setReference] = useState<string | null>(null);
@@ -38,6 +42,8 @@ export function BookingForm({ tours, excursions, vehicles, initial }: Props) {
     handleSubmit,
     control,
     setError,
+    getValues,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<BookingValues>({
     resolver: zodResolver(schema),
@@ -53,6 +59,13 @@ export function BookingForm({ tours, excursions, vehicles, initial }: Props) {
     },
   });
   const type = useWatch({ control, name: "type" });
+
+  // Signed-in customers: fill in the saved name/email (never overwriting what was already typed).
+  useEffect(() => {
+    if (!customer) return;
+    if (!getValues("customer.name")) setValue("customer.name", customer.name);
+    if (!getValues("customer.email")) setValue("customer.email", customer.email);
+  }, [customer, getValues, setValue]);
   const lock = useSubmitLock();
 
   const onSubmit = lock(handleSubmit(async (values) => {
@@ -69,7 +82,23 @@ export function BookingForm({ tours, excursions, vehicles, initial }: Props) {
     }
   }));
 
-  if (reference) return <SuccessPanel title={t("successTitle")} text={t("success")} extra={t("reference", { reference })} />;
+  if (reference)
+    return (
+      <SuccessPanel
+        title={t("successTitle")}
+        text={t("success")}
+        extra={
+          <>
+            {t("reference", { reference })}
+            {customer && (
+              <Link href="/account" className="mt-4 block font-sans text-sm text-white underline underline-offset-4 hover:text-gold-400">
+                {ta("trackBooking")}
+              </Link>
+            )}
+          </>
+        }
+      />
+    );
 
   const options: Record<string, Option[]> = { tour: tours, excursion: excursions, vehicle: vehicles };
   const e = errors;

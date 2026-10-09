@@ -10,6 +10,7 @@ export interface Customer {
   avatar: string | null;
   hasPassword: boolean;
   google: boolean;
+  createdAt?: string;
 }
 
 export interface AuthResult {
