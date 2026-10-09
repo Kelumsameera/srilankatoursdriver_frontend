@@ -1,12 +1,12 @@
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
-import { API_URL } from "./src/lib/config";
+import { API_PROXY_ENABLED, BACKEND_API_URL, SERVER_API_URL } from "./src/lib/config";
 
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
 const apiOrigin = (() => {
   try {
-    return new URL(API_URL).origin;
+    return new URL(BACKEND_API_URL).origin;
   } catch {
     return "http://localhost:5000";
   }
@@ -70,7 +70,22 @@ const nextConfig: NextConfig = {
       { source: "/:path*", headers: securityHeaders },
       // Never let search engines index the admin.
       { source: "/admin/:path*", headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }] },
+      // Proxied API responses can carry a signed-in user's data – never let Vercel's CDN cache them.
+      ...(API_PROXY_ENABLED ? [{ source: "/api/:path*", headers: [{ key: "x-vercel-enable-rewrite-caching", value: "0" }] }] : []),
     ];
+  },
+  /**
+   * Same-origin API proxy (see API_PROXY_ENABLED): /api/* is forwarded to the Express API, so its httpOnly
+   * session cookies belong to this site. The target is read at build time and is the private
+   * API_URL_INTERNAL when set. `afterFiles` keeps this app's own route handlers (/api/currency,
+   * /api/revalidate) in front of the proxy; src/proxy.ts adds the visitor's IP for the API's rate limits.
+   */
+  async rewrites() {
+    return {
+      beforeFiles: [],
+      afterFiles: API_PROXY_ENABLED ? [{ source: "/api/:path*", destination: `${SERVER_API_URL}/:path*` }] : [],
+      fallback: [],
+    };
   },
   env: { NEXT_PUBLIC_API_ORIGIN: apiOrigin },
 };

@@ -3,7 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { CheckCircle2, XCircle } from "lucide-react";
 import { api, errorMessage } from "@/lib/admin/api";
-import { API_URL } from "@/lib/config";
+import { BACKEND_API_URL } from "@/lib/config";
 import { Card, ErrorBlock, LoadingBlock, PageHeader } from "@/components/admin/ui";
 
 type Info = Record<string, Record<string, unknown> | string>;
@@ -50,7 +50,7 @@ export default function ApiSettingsPage() {
           <dl className="space-y-1 text-sm">
             <div className="flex justify-between">
               <dt className="text-slate-500">API URL</dt>
-              <dd className="font-mono text-xs">{API_URL}</dd>
+              <dd className="font-mono text-xs">{BACKEND_API_URL}</dd>
             </div>
             <div className="flex justify-between">
               <dt className="text-slate-500">Environment</dt>
