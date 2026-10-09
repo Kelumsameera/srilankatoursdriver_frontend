@@ -4,6 +4,9 @@ import { createContext, useCallback, useContext, useMemo, type ReactNode } from 
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { AdminApiError, api } from "./api";
 
+
+export { roleLandingPath, type StaffRole } from "./roles";
+
 export interface AdminUser {
   id: string;
   name: string;

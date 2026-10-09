@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Lock } from "lucide-react";
-import { useAuth } from "@/lib/admin/auth";
+import { roleLandingPath, useAuth } from "@/lib/admin/auth";
 import { errorMessage } from "@/lib/admin/api";
 import { Button, FieldError, Input, Label } from "@/components/admin/ui";
 
@@ -21,7 +21,7 @@ function LoginForm() {
   const router = useRouter();
   const params = useSearchParams();
   const next = params.get("next");
-  const safeNext = next && next.startsWith("/admin") && !next.startsWith("//") ? next : "/admin";
+  const safeNext = next && (next.startsWith("/admin") || next.startsWith("/manager") || next.startsWith("/staff")) && !next.startsWith("//") ? next : null;
   const [error, setError] = useState<string | null>(null);
   const {
     register,
@@ -30,14 +30,14 @@ function LoginForm() {
   } = useForm<Values>({ resolver: zodResolver(schema) });
 
   useEffect(() => {
-    if (!loading && user) router.replace(safeNext);
+    if (!loading && user) router.replace(safeNext ?? roleLandingPath(user.role?.name));
   }, [loading, user, router, safeNext]);
 
   const onSubmit = handleSubmit(async ({ email, password }) => {
     setError(null);
     try {
-      await login(email, password);
-      router.replace(safeNext);
+      const signedIn = await login(email, password);
+      router.replace(safeNext ?? roleLandingPath(signedIn.role?.name));
     } catch (err) {
       setError(errorMessage(err));
     }
@@ -75,8 +75,8 @@ export default function AdminLoginPage() {
           <span className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-forest-800 text-gold-400">
             <Lock className="h-5 w-5" />
           </span>
-          <h1 className="font-sans text-xl font-semibold text-slate-900">Admin sign in</h1>
-          <p className="mt-1 text-sm text-slate-500">Sri Lanka Tours Driver CRM & CMS</p>
+          <h1 className="font-sans text-xl font-semibold text-slate-900">Team sign in</h1>
+          <p className="mt-1 text-sm text-slate-500">Admin, manager & staff portal</p>
         </div>
         <Suspense>
           <LoginForm />
