@@ -5,10 +5,10 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useTranslations } from "next-intl";
-import NextLink from "next/link";
 import { Loader2 } from "lucide-react";
 import { Link, useRouter } from "@/i18n/navigation";
 import { useCustomerAuth, type AuthResult } from "@/lib/customer/auth";
+import { roleLandingPath, staffLogin } from "@/lib/admin/roles";
 import { buttonClass } from "@/components/ui/Button";
 import { Field, Input, useSubmitLock } from "@/components/forms/fields";
 import { useValidationMessages } from "@/components/forms/useValidationMessages";
@@ -69,6 +69,19 @@ export function AuthForm({ mode }: { mode: Mode }) {
   const onSubmit = lock(
     handleSubmit(async (v) => {
       setFailure(null);
+      // One sign-in page for everyone: team accounts go to their role's dashboard, everyone else is a customer.
+      if (mode === "login") {
+        const staff = await staffLogin(v.email, v.password);
+        if (staff.status >= 200 && staff.status < 300) {
+          // The admin area has its own root layout, so this is a full page load anyway.
+          window.location.assign(roleLandingPath(staff.role));
+          return;
+        }
+        if (staff.status === 0 || staff.status === 423) {
+          setFailure(explain({ ok: false, status: staff.status, errors: [] }));
+          return;
+        }
+      }
       const res = mode === "register" ? await register(v.name, v.email, v.password) : await login(v.email, v.password);
       if (res.ok) return;
       for (const e of res.errors) if (e.path === "name" || e.path === "email" || e.path === "password") setError(e.path, { message: e.message });
@@ -94,26 +107,14 @@ export function AuthForm({ mode }: { mode: Mode }) {
   }
 
   const busy = isSubmitting || googleBusy;
+  const isLogin = mode === "login";
   return (
     <div className="mx-auto w-full max-w-md rounded-3xl bg-white p-6 shadow-card sm:p-10" data-testid={`${mode}-form`}>
-      <h1 className="text-3xl text-forest-900">{mode === "login" ? t("loginTitle") : t("registerTitle")}</h1>
-      <p className="mt-2 text-sm text-muted">{mode === "login" ? t("loginSubtitle") : t("registerSubtitle")}</p>
+      <h1 className="text-center text-3xl text-forest-900">{isLogin ? t("signIn") : t("registerTitle")}</h1>
+      {!isLogin && <p className="mt-2 text-center text-sm text-muted">{t("registerSubtitle")}</p>}
 
-      {GOOGLE_CLIENT_ID && (
-        <>
-          <div className="mt-8">
-            <GoogleSignInButton onCredential={onGoogle} onError={() => setFailure(t("googleFailed"))} />
-          </div>
-          <div className="my-6 flex items-center gap-3 text-xs uppercase tracking-wider text-muted">
-            <span className="h-px flex-1 bg-sand-200" />
-            {t("or")}
-            <span className="h-px flex-1 bg-sand-200" />
-          </div>
-        </>
-      )}
-
-      <form onSubmit={onSubmit} noValidate className={GOOGLE_CLIENT_ID ? "grid gap-5" : "mt-8 grid gap-5"}>
-        {mode === "register" && (
+      <form onSubmit={onSubmit} noValidate className="mt-8 grid gap-5">
+        {!isLogin && (
           <Field label={t("name")} htmlFor="accName" required error={errors.name?.message}>
             <Input id="accName" autoComplete="name" aria-invalid={!!errors.name} {...field("name")} />
           </Field>
@@ -121,11 +122,11 @@ export function AuthForm({ mode }: { mode: Mode }) {
         <Field label={t("email")} htmlFor="accEmail" required error={errors.email?.message}>
           <Input id="accEmail" type="email" autoComplete="email" aria-invalid={!!errors.email} {...field("email")} />
         </Field>
-        <Field label={t("password")} htmlFor="accPassword" required error={errors.password?.message} hint={mode === "register" ? t("passwordRule") : undefined}>
+        <Field label={t("password")} htmlFor="accPassword" required error={errors.password?.message} hint={isLogin ? undefined : t("passwordRule")}>
           <Input
             id="accPassword"
             type="password"
-            autoComplete={mode === "register" ? "new-password" : "current-password"}
+            autoComplete={isLogin ? "current-password" : "new-password"}
             aria-invalid={!!errors.password}
             {...field("password")}
           />
@@ -137,24 +138,36 @@ export function AuthForm({ mode }: { mode: Mode }) {
         )}
         <button type="submit" disabled={busy} className={buttonClass("primary", "lg", "w-full")}>
           {busy && <Loader2 className="h-4 w-4 animate-spin" />}
-          {mode === "login" ? t("signIn") : t("createAccount")}
+          {isLogin ? t("signIn") : t("createAccount")}
         </button>
       </form>
 
-      <p className="mt-6 text-center text-sm text-muted">
-        {mode === "login" ? t("noAccount") : t("haveAccount")}{" "}
-        <Link href={mode === "login" ? "/account/register" : "/account/login"} className="font-medium text-forest-700 hover:underline">
-          {mode === "login" ? t("createAccount") : t("signIn")}
-        </Link>
-      </p>
-      <p className="mt-2 text-center text-sm text-muted">{t("guestNote")}</p>
-      {mode === "login" && (
-        <p className="mt-6 border-t border-sand-100 pt-4 text-center text-xs">
-          <NextLink href="/admin/login" className="text-muted hover:text-forest-700 hover:underline">
-            {t("staffLogin")}
-          </NextLink>
+      {isLogin && (
+        <p className="mt-4 text-center text-sm">
+          <Link href="/account/forgot-password" className="text-forest-700 hover:underline">
+            {t("forgotPassword")}
+          </Link>
         </p>
       )}
+
+      {GOOGLE_CLIENT_ID && (
+        <>
+          <div className="my-6 flex items-center gap-3 text-xs uppercase tracking-wider text-muted">
+            <span className="h-px flex-1 bg-sand-200" />
+            {t("or")}
+            <span className="h-px flex-1 bg-sand-200" />
+          </div>
+          <GoogleSignInButton onCredential={onGoogle} onError={() => setFailure(t("googleFailed"))} />
+        </>
+      )}
+
+      <p className="mt-8 text-center text-sm text-muted">
+        {isLogin ? t("noAccount") : t("haveAccount")}
+        <Link href={isLogin ? "/account/register" : "/account/login"} className="mt-1 block font-medium text-forest-700 hover:underline">
+          {isLogin ? t("createAccount") : t("signIn")}
+        </Link>
+      </p>
+      {!isLogin && <p className="mt-2 text-center text-sm text-muted">{t("guestNote")}</p>}
     </div>
   );
 }
