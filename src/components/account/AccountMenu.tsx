@@ -77,7 +77,7 @@ export function AccountMenu({ tone }: { tone: "light" | "dark" }) {
         <Avatar customer={customer} />
       </button>
       {open && (
-        <div role="menu" className="absolute end-0 top-full mt-2 w-60 rounded-2xl border border-sand-200 bg-white p-2 shadow-soft">
+        <div role="menu" className="absolute inset-e-0 top-full mt-2 w-60 rounded-2xl border border-sand-200 bg-white p-2 shadow-soft">
           <div className="px-3 py-2">
             <p className="truncate text-sm font-medium text-forest-900">{customer.name}</p>
             <p className="truncate text-xs text-muted">{customer.email}</p>
