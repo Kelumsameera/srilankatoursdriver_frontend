@@ -36,6 +36,8 @@ export function cloudinaryUrl(src: string, opts: CloudinaryOptions = {}): string
   // next/image requires the loader to use the width, so local files get a sized variant or a ?w= hint.
   if (src.startsWith("/") && opts.width) return localImageUrl(src, opts.width);
   if (!src || !src.includes("res.cloudinary.com") || !src.includes("/upload/")) return src;
+  // A video poster's original width must not override the responsive width injected by next/image.
+  if (opts.width) src = src.replace(/\/upload\/so_1,w_\d+,c_limit,q_auto,f_jpg\//, "/upload/so_1/");
   const parts = [
     `f_${opts.format ?? "auto"}`,
     `q_${opts.quality ?? "auto"}`,

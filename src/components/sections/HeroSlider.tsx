@@ -5,7 +5,7 @@ import Image from "next/image";
 import { ArrowRight, ChevronLeft, ChevronRight, Pause, Play, Star } from "lucide-react";
 import type { HeroSlide } from "@/types/cms";
 import { cn } from "@/lib/utils";
-import { videoPoster, videoUrl } from "@/lib/cloudinary-loader";
+import { cloudinaryUrl, videoPoster, videoUrl } from "@/lib/cloudinary-loader";
 import { CmsLink } from "@/components/ui/CmsLink";
 import { buttonClass, type ButtonVariant } from "@/components/ui/Button";
 import { editorialImages } from "@/lib/editorial-images";
@@ -35,6 +35,16 @@ function motionAllowed() {
   return !window.matchMedia("(prefers-reduced-motion: reduce)").matches && !saveData;
 }
 
+function subscribeVideo(onChange: () => void) {
+  const mq = window.matchMedia("(min-width: 1024px)");
+  mq.addEventListener("change", onChange);
+  return () => mq.removeEventListener("change", onChange);
+}
+function videoAllowed() {
+  const connection = (navigator as Navigator & { connection?: { saveData?: boolean; effectiveType?: string } }).connection;
+  return window.matchMedia("(min-width: 1024px)").matches && !connection?.saveData && !/^(slow-2g|2g|3g)$/.test(connection?.effectiveType ?? "");
+}
+
 const thumbOf = (s: HeroSlide) => s.desktopImage?.url ?? (s.video?.url ? videoPoster(s.video.url, 480) : undefined);
 
 /**
@@ -46,15 +56,24 @@ export function HeroSlider({ slides, rating, whatsapp, labels }: Props) {
   const [paused, setPaused] = useState(false); // hover / focus
   const [stopped, setStopped] = useState(false); // pause button (WCAG 2.2.2)
   const motion = useSyncExternalStore(subscribeMotion, motionAllowed, () => false);
+  const allowVideo = useSyncExternalStore(subscribeVideo, videoAllowed, () => false);
+  const [videoReady, setVideoReady] = useState(false);
   const count = slides.length;
   const go = useCallback((i: number) => setIndex(((i % count) + count) % count), [count]);
   const playing = motion && !stopped;
 
   useEffect(() => {
-    if (count < 2 || paused || !playing) return;
+    if (!allowVideo) return;
+    // Give the poster, fonts and primary content a head start before decorative video competes for bandwidth.
+    const timer = window.setTimeout(() => setVideoReady(true), 5000);
+    return () => window.clearTimeout(timer);
+  }, [allowVideo]);
+
+  useEffect(() => {
+    if (count < 2 || paused || !playing || !allowVideo) return;
     const id = window.setTimeout(() => go(index + 1), INTERVAL);
     return () => window.clearTimeout(id);
-  }, [index, count, paused, playing, go]);
+  }, [index, count, paused, playing, allowVideo, go]);
 
   if (count === 0) return null;
   const slide = slides[index];
@@ -71,6 +90,8 @@ export function HeroSlider({ slides, rating, whatsapp, labels }: Props) {
       {/* Backgrounds (cross-fade). */}
       {slides.map((s, i) => {
         const active = i === index;
+        // Hidden slides are not lazy-load candidates: opacity alone still lets browsers fetch their images.
+        if (!active) return null;
         const mobile = s.mobileImage?.url ?? s.desktopImage?.url;
         const desktop = s.desktopImage?.url ?? mobile;
         const video = s.video?.url;
@@ -82,18 +103,18 @@ export function HeroSlider({ slides, rating, whatsapp, labels }: Props) {
             // No uploaded media → AI-generated fallback, labelled near the top (the bottom holds the slide controls).
             data-illustrative={!video && !desktop ? "top" : undefined}
           >
-            {video && active && playing ? (
+            {video && active && playing && allowVideo && videoReady ? (
               // Only the visible slide gets a <video>: `autoPlay` would otherwise download every slide's video at once.
-              <video className="h-full w-full object-cover" src={videoUrl(video)} poster={desktop ?? videoPoster(video)} autoPlay muted loop playsInline preload="metadata" />
+              <video className="h-full w-full object-cover" src={videoUrl(video, 1280)} poster={desktop ?? videoPoster(video)} autoPlay muted loop playsInline preload="none" />
             ) : video ? (
-              <Image src={desktop ?? videoPoster(video)} alt="" fill fetchPriority={i === 0 ? "high" : undefined} sizes="100vw" className="object-cover" />
+              <Image src={desktop ?? videoPoster(video)} alt="" fill loading="eager" fetchPriority={i === 0 ? "high" : undefined} sizes="100vw" className="object-cover" />
             ) : desktop ? (
-              <>
-                <Image src={desktop} alt="" fill fetchPriority={i === 0 ? "high" : undefined} sizes="100vw" className={cn("hidden object-cover sm:block", active && playing && "animate-ken-burns")} />
-                <Image src={mobile!} alt="" fill fetchPriority={i === 0 ? "high" : undefined} sizes="100vw" className={cn("object-cover sm:hidden", active && playing && "animate-ken-burns")} />
-              </>
+              <picture>
+                {mobile !== desktop && <source media="(max-width: 639px)" sizes="100vw" srcSet={[640, 1080, 1920].map(width => `${cloudinaryUrl(mobile!, { width })} ${width}w`).join(", ")} />}
+                <Image src={desktop} alt="" fill loading="eager" fetchPriority={i === 0 ? "high" : undefined} sizes="100vw" className={cn("object-cover", active && playing && "animate-ken-burns")} />
+              </picture>
             ) : (
-              <Image src={editorialImages.hero.url} alt="" fill fetchPriority={i === 0 ? "high" : undefined} sizes="100vw" className="object-cover" />
+              <Image src={editorialImages.hero.url} alt="" fill loading="eager" fetchPriority={i === 0 ? "high" : undefined} sizes="100vw" className="object-cover" />
             )}
             {s.overlay !== false && <div className="absolute inset-0" style={{ backgroundColor: s.overlayColor ?? "#06261b", opacity: Math.min(s.overlayOpacity ?? 0.45, 0.35) }} />}
             {/* Readability: darker on the text side, lighter on the photo side. */}

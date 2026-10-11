@@ -19,6 +19,7 @@ import { CustomerAuthProvider } from "@/lib/customer/auth";
 import { PageViewTracker } from "@/components/site/PageViewTracker";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import type { SiteSettings } from "@/types/cms";
+import { travelSans, travelDisplay } from "@/lib/fonts";
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -92,7 +93,7 @@ export default async function LocaleLayout({ children, params }: Props) {
   return (
     // Browser extensions (password managers, launchers, translators…) add attributes to <html>/<body> before
     // React hydrates; suppressHydrationWarning ignores attribute differences on these two elements only.
-    <html lang={locale} dir={dir} style={brandStyle} data-site="public" suppressHydrationWarning>
+    <html lang={locale} dir={dir} style={brandStyle} className={`${travelSans.variable} ${travelDisplay.variable}`} data-site="public" suppressHydrationWarning>
       <body className="flex min-h-dvh flex-col" suppressHydrationWarning>
         <a href="#main" className="sr-only z-50 rounded bg-white px-4 py-2 focus:not-sr-only focus:fixed focus:start-4 focus:top-4">
           {t("skipToContent")}

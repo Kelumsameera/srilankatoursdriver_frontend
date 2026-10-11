@@ -12,7 +12,7 @@ const variants: Record<ButtonVariant, string> = {
   primary: "bg-gold-500 text-forest-950 hover:bg-gold-400 shadow-[0_8px_24px_-10px_rgb(201_154_59/0.8)]",
   secondary: "bg-forest-800 text-white hover:bg-forest-700",
   outline: "border border-forest-800/25 text-forest-800 hover:border-forest-800 hover:bg-forest-800 hover:text-white",
-  whatsapp: "bg-whatsapp text-white hover:brightness-95",
+  whatsapp: "bg-whatsapp text-forest-950 hover:brightness-95",
   link: "text-forest-700 underline-offset-4 hover:underline px-0 py-0",
   "ghost-light": "bg-white/10 text-white backdrop-blur hover:bg-white/20",
   "outline-light": "border border-white/50 text-white hover:bg-white hover:text-forest-900",

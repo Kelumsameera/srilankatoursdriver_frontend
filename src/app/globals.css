@@ -12,8 +12,8 @@
 }
 
 @theme inline {
-  --font-sans: "Poppins", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Playfair Display", ui-serif, Georgia, serif;
+  --font-sans: var(--font-travel-sans, "Poppins"), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-travel-display, "Playfair Display"), ui-serif, Georgia, serif;
 
   --color-forest-950: #04170f;
   --color-forest-900: #08261a;
@@ -24,7 +24,7 @@
   --color-forest-100: #e3efe8;
   --color-forest-50: #f1f7f3;
 
-  --color-gold-600: #a97c24;
+  --color-gold-600: #89621c;
   --color-gold-500: var(--brand-accent);
   --color-gold-400: #dcb76a;
   --color-gold-200: #efdcb1;

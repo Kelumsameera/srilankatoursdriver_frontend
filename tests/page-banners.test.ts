@@ -1,7 +1,7 @@
 import { existsSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import cloudinaryLoader, { localImageUrl } from "@/lib/cloudinary-loader";
+import cloudinaryLoader, { localImageUrl, videoPoster } from "@/lib/cloudinary-loader";
 import { pageBanner, type PageBannerKey } from "@/lib/page-banners";
 import { editorialImages } from "@/lib/editorial-images";
 
@@ -9,6 +9,15 @@ const KEYS: PageBannerKey[] = ["tours", "destinations", "vehicles", "tailor-made
 const publicFile = (url: string) => path.join(process.cwd(), "public", url);
 
 describe("localImageUrl", () => {
+  it("resizes video posters without retaining a conflicting original width", () => {
+    const poster = videoPoster("https://res.cloudinary.com/x/video/upload/v1/hero.mp4");
+    const responsive = cloudinaryLoader({ src: poster, width: 640 });
+    expect(responsive).toContain("w_640");
+    expect(responsive).not.toContain("w_1280");
+    expect(responsive).toContain("so_1/");
+    expect(responsive).toMatch(/hero\.jpg$/);
+  });
+
   it("serves the smallest pre-rendered variant that covers the width", () => {
     expect(localImageUrl("/images/banners/tours-banner.webp", 384)).toBe("/images/banners/tours-banner-640.webp");
     expect(localImageUrl("/images/banners/tours-banner.webp", 640)).toBe("/images/banners/tours-banner-640.webp");

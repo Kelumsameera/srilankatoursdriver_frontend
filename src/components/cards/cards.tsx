@@ -97,8 +97,8 @@ export function DestinationCard({ destination, tall, framed }: { destination: De
       <CmsImage
         media={cover}
         alt={cover.alt || destination.name}
-        sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
-        wrapperClassName={framed ? "aspect-[5/4]" : tall ? "aspect-[3/4]" : "aspect-[4/5]"}
+        sizes={framed ? "(min-width: 1024px) 25vw, (min-width: 768px) 33vw, (min-width: 640px) 50vw, 100vw" : "(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"}
+        wrapperClassName={framed ? "aspect-[3/2] lg:aspect-[5/4]" : tall ? "aspect-[3/4]" : "aspect-[4/5]"}
         className="transition-transform duration-700 group-hover:scale-105"
       />
       <div className="absolute inset-0 bg-gradient-to-t from-forest-950/85 via-forest-950/15 to-transparent" />

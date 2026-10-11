@@ -80,7 +80,7 @@ export function FernBranch({ className }: LeafProps) {
  * reach past the section boundary (the section needs `relative isolate` and a z-index above its neighbours).
  * The image has a transparent background, leaving the section content readable.
  */
-export function FoliageCluster({ side, className, front }: { side: "start" | "end"; className?: string; front?: boolean }) {
+export function FoliageCluster({ side, className, front, inset = false }: { side: "start" | "end"; className?: string; front?: boolean; inset?: boolean }) {
   return (
     <div
       aria-hidden
@@ -88,18 +88,21 @@ export function FoliageCluster({ side, className, front }: { side: "start" | "en
         // Behind the section's content by default (-z-10; the section isolates its own stacking context), so leaves never
         // cover text. `front` places them over a photo instead (hero corners, kept clear of text and controls).
         "pointer-events-none absolute overflow-visible",
-        front
+        inset ? "z-0 aspect-[1129/1393] w-16 sm:w-20 md:w-[clamp(5rem,8vw,7rem)]" : front
           ? "z-0 h-40 w-32 sm:h-56 sm:w-48 lg:h-[22rem] lg:w-72 2xl:h-[27rem] 2xl:w-80"
           : "-z-10 hidden h-80 w-64 md:block xl:h-[26rem] xl:w-80",
-        side === "start" ? "start-0 -translate-x-1/3 rtl:translate-x-1/3" : "end-0 translate-x-1/3 -scale-x-100 rtl:-translate-x-1/3",
+        inset
+          ? side === "start" ? "start-0" : "end-0 -scale-x-100"
+          : side === "start" ? "start-0 -translate-x-1/3 rtl:translate-x-1/3" : "end-0 translate-x-1/3 -scale-x-100 rtl:-translate-x-1/3",
         className,
       )}
+      style={inset ? { maskImage: "linear-gradient(to bottom, transparent, black 18%, black 78%, transparent)" } : undefined}
     >
       <Image
-        src="/images/decor/homepage-tropical-foliage-corner-v2-640.png"
+        src="/images/decor/homepage-tropical-foliage-corner-v2.webp"
         alt=""
         fill
-        sizes="(max-width: 639px) 8rem, (max-width: 1023px) 12rem, 20rem"
+        sizes={inset ? "112px" : "(max-width: 639px) 8rem, (max-width: 1023px) 12rem, 20rem"}
         className="object-contain object-left-bottom"
       />
     </div>

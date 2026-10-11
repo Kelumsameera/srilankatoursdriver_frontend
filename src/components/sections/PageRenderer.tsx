@@ -165,9 +165,9 @@ function TrustHighlights({ items }: { items: SectionItem[] }) {
 function OverlapGallery({ photos }: { photos: MediaAsset[] }) {
   const [a, b, c] = photos;
   return (
-    <div className="relative mx-auto w-full max-w-xl pb-12 pt-4 sm:pb-20 sm:pt-6" aria-hidden>
+    <div className="relative mx-auto w-full max-w-[28rem] pb-12 pt-4 sm:pb-16 sm:pt-6 xl:max-w-xl" aria-hidden>
       <div className="relative z-0 w-[74%] -rotate-2 rounded-2xl bg-white p-2 shadow-card sm:p-2.5">
-        <CmsImage media={a} alt="" sizes="(min-width: 1024px) 32vw, 72vw" wrapperClassName="aspect-[4/5] rounded-xl" />
+        <CmsImage media={a} alt="" sizes="(min-width: 1280px) 420px, (min-width: 768px) 33vw, 74vw" wrapperClassName="aspect-[5/6] rounded-xl" />
       </div>
       {b && (
         <div className="absolute end-0 top-0 z-10 w-[48%] rotate-3 rounded-2xl bg-white p-2 shadow-card sm:p-2.5">
@@ -331,7 +331,7 @@ async function SectionView({ section, ctx }: { section: PageSection; ctx: Ctx })
       return (
         <section className={cn("relative overflow-x-clip pb-14 pt-16 sm:pb-16 sm:pt-20 lg:pb-20 lg:pt-24", light ? "bg-forest-900 text-white" : "bg-sand-50")}>
           <FernBranch className={cn("absolute -bottom-10 -start-10 hidden w-44 md:block lg:w-52", light ? "text-white/10" : "text-forest-700/20")} />
-          <div className={cn("container-page relative grid items-center gap-10 lg:gap-12", gallery.length && "lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]")}>
+          <div className={cn("container-page relative grid items-center gap-10 lg:gap-12", gallery.length && "md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]")}>
             <div>
               {section.eyebrow && <p className={cn("eyebrow mb-4", light && "text-gold-400")}>{section.eyebrow}</p>}
               {section.title && (
@@ -443,13 +443,13 @@ async function SectionView({ section, ctx }: { section: PageSection; ctx: Ctx })
       if (!items.length) return null;
       // Design: "Popular Destinations" is a forest-green band between torn-paper edges.
       return (
-        // overflow-x-clip (not hidden): the foliage may reach up and down into the neighbouring sections; z-10 keeps it on top.
-        <Section theme={light ? theme : "forest"} className="relative isolate overflow-hidden">
+        // Keep decorative foliage inside the green band and clear of neighbouring content.
+        <Section theme={light ? theme : "forest"} className="relative isolate overflow-hidden pb-28 md:pb-20 md:[&>.container-page]:px-[clamp(6rem,10vw,9rem)]">
           <PaperEdge flip className="text-sand-50" />
-          <FoliageCluster side="start" className="top-1/2 -translate-y-1/2" />
-          <FoliageCluster side="end" className="bottom-0" />
+          <FoliageCluster inset side="start" className="bottom-8 md:bottom-auto md:top-[38%]" />
+          <FoliageCluster inset side="end" className="bottom-8 md:bottom-[15%]" />
           <Heading section={section} light ctx={ctx} />
-          <div className="relative grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="relative z-10 grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {items.map((d) => (
               <DestinationCard key={d._id} destination={d} framed />
             ))}
