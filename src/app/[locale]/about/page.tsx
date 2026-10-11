@@ -53,7 +53,7 @@ export default async function AboutPage({ params }: Props) {
 
   return (
     <>
-      <section className="relative isolate overflow-hidden bg-gradient-to-br from-forest-800 via-forest-900 to-forest-950 text-white">
+      <section className="relative isolate overflow-hidden bg-linear-to-br from-forest-800 via-forest-900 to-forest-950 text-white">
         <div
           className="pointer-events-none absolute inset-0 -z-10 opacity-[0.07]"
           style={{ backgroundImage: "repeating-linear-gradient(-45deg, #fff 0, #fff 1px, transparent 0, transparent 50%)", backgroundSize: "16px 16px" }}
@@ -68,7 +68,12 @@ export default async function AboutPage({ params }: Props) {
       <section className="bg-white py-20 sm:py-28">
         <div className="container-page grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
           <div className="relative">
-            <CmsImage media={page?.heroImage} alt={page?.heroImage?.alt || page?.title || t("title")} sizes="(min-width: 1024px) 50vw, 100vw" wrapperClassName="aspect-[4/5] rounded-[2.5rem] shadow-card" />
+            <CmsImage
+              media={page?.heroImage}
+              alt={page?.heroImage?.alt || page?.title || t("title")}
+              sizes="(min-width: 1024px) 50vw, 100vw"
+              wrapperClassName="aspect-[4/5] rounded-[2.5rem] shadow-card"
+            />
             <div className="absolute inset-x-6 bottom-6 rounded-2xl bg-white/90 p-6 shadow-card backdrop-blur sm:inset-x-8 sm:bottom-8">
               <p className="font-display text-xl italic text-forest-700">{t("heading")}</p>
               <p className="font-display text-3xl font-semibold uppercase tracking-tight text-gold-600">{t("headingHighlight")}</p>
@@ -81,8 +86,7 @@ export default async function AboutPage({ params }: Props) {
               <span className="eyebrow">{t("label")}</span>
             </div>
             <h2 className="mb-8 text-4xl leading-[1.1] text-forest-900 lg:text-5xl">
-              {t("heading")}{" "}
-              <span className="text-forest-600 underline decoration-gold-400 decoration-2 underline-offset-8">{t("headingHighlight")}</span> {t("headingEnd")}
+              {t("heading")} <span className="text-forest-600 underline decoration-gold-400 decoration-2 underline-offset-8">{t("headingHighlight")}</span> {t("headingEnd")}
             </h2>
             {page?.content ? (
               <Markdown content={page.content} className="mb-10 text-lg" />
@@ -116,7 +120,7 @@ export default async function AboutPage({ params }: Props) {
       <section className="bg-white pb-20 sm:pb-28">
         <dl className="container-page grid grid-cols-2 gap-5 lg:grid-cols-4">
           {STATS.map((s) => (
-            <div key={s.key} className="flex flex-col-reverse rounded-[2rem] border border-sand-200 bg-sand-50 p-8 text-center sm:p-10">
+            <div key={s.key} className="flex flex-col-reverse rounded-4xl border border-sand-200 bg-sand-50 p-8 text-center sm:p-10">
               <dt className="mt-2 text-[0.65rem] font-bold uppercase tracking-[0.2em] text-gold-600">{t(`stats.${s.key}`)}</dt>
               <dd className="font-display text-4xl text-forest-900 sm:text-5xl">{s.value}</dd>
             </div>
