@@ -13,9 +13,11 @@ import { SiteFooter } from "@/components/site/SiteFooter";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
 import { TrustBar } from "@/components/site/TrustBar";
 import { CurrencyConverter } from "@/components/site/CurrencyConverter";
+import { WhatsAppClickTracker } from "@/components/site/Analytics";
 import { Logo } from "@/components/site/Logo";
 import { CustomerAuthProvider } from "@/lib/customer/auth";
 import { PageViewTracker } from "@/components/site/PageViewTracker";
+import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import type { SiteSettings } from "@/types/cms";
 
 export function generateStaticParams() {
@@ -82,12 +84,16 @@ export default async function LocaleLayout({ children, params }: Props) {
     ...(branding?.colors?.primary ? { "--brand-primary": branding.colors.primary } : {}),
     ...(branding?.colors?.secondary ? { "--brand-secondary": branding.colors.secondary } : {}),
     ...(branding?.colors?.accent ? { "--brand-accent": branding.colors.accent } : {}),
+    // Text of the badge on AI-generated fallback images (see [data-illustrative] in globals.css).
+    "--illustrative-label": JSON.stringify(t("illustrativeLabel")),
   } as CSSProperties;
   const whatsapp = { phone: settings.whatsapp, message: settings.whatsappMessage };
 
   return (
-    <html lang={locale} dir={dir} style={brandStyle}>
-      <body className="flex min-h-dvh flex-col">
+    // Browser extensions (password managers, launchers, translators…) add attributes to <html>/<body> before
+    // React hydrates; suppressHydrationWarning ignores attribute differences on these two elements only.
+    <html lang={locale} dir={dir} style={brandStyle} data-site="public" suppressHydrationWarning>
+      <body className="flex min-h-dvh flex-col" suppressHydrationWarning>
         <a href="#main" className="sr-only z-50 rounded bg-white px-4 py-2 focus:not-sr-only focus:fixed focus:start-4 focus:top-4">
           {t("skipToContent")}
         </a>
@@ -98,7 +104,7 @@ export default async function LocaleLayout({ children, params }: Props) {
             languages={enabledLanguages}
             phone={settings.phone}
             whatsapp={whatsapp}
-            logoLight={<Logo branding={branding} siteName={settings.siteName} tone="light" priority />}
+            logoLight={<Logo branding={branding} siteName={settings.siteName} tone="light" preload />}
             logoDark={<Logo branding={branding} siteName={settings.siteName} tone="dark" />}
             logoMobile={<Logo branding={branding} siteName={settings.siteName} tone="dark" mobile className="max-h-10" />}
             logoMobileLight={<Logo branding={branding} siteName={settings.siteName} tone="light" mobile className="max-h-10" />}
@@ -109,7 +115,7 @@ export default async function LocaleLayout({ children, params }: Props) {
             </div>
           )}
           <main id="main" className="flex-1">
-            {children}
+            <ScrollReveal>{children}</ScrollReveal>
           </main>
           {settingsRes && <TrustBar settings={settings} />}
           {settingsRes && (
@@ -117,6 +123,7 @@ export default async function LocaleLayout({ children, params }: Props) {
           )}
           <CurrencyConverter siteCurrency={settings.currency} />
           <WhatsAppFloat phone={settings.whatsapp} message={settings.whatsappMessage} />
+          <WhatsAppClickTracker />
           <PageViewTracker />
           </CustomerAuthProvider>
         </NextIntlClientProvider>

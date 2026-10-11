@@ -4,8 +4,9 @@ import { CmsLink } from "./CmsLink";
 
 export type ButtonVariant = "primary" | "secondary" | "outline" | "whatsapp" | "link" | "ghost-light" | "outline-light";
 
+// No `whitespace-nowrap`: in long languages (e.g. Tamil) a label wraps to a second line instead of overflowing.
 const base =
-  "inline-flex items-center justify-center gap-2 rounded-full font-medium transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-60 whitespace-nowrap";
+  "inline-flex items-center justify-center gap-2 rounded-full font-medium transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-60 max-w-full text-center [&>svg]:shrink-0";
 const sizes = { sm: "px-4 py-2 text-sm", md: "px-6 py-3 text-sm", lg: "px-7 py-3.5 text-base" };
 const variants: Record<ButtonVariant, string> = {
   primary: "bg-gold-500 text-forest-950 hover:bg-gold-400 shadow-[0_8px_24px_-10px_rgb(201_154_59/0.8)]",

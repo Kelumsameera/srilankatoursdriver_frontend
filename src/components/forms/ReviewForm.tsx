@@ -45,7 +45,7 @@ export function ReviewForm() {
   if (sent) return <SuccessPanel title={tb("successTitle")} text={t("success")} />;
 
   return (
-    <form onSubmit={onSubmit} noValidate className="relative grid gap-5 rounded-3xl bg-white p-6 shadow-card sm:grid-cols-2 sm:p-10">
+    <form onSubmit={onSubmit} noValidate className="relative grid grid-cols-1 gap-5 rounded-3xl bg-white p-6 shadow-card sm:grid-cols-2 sm:p-10">
       <h2 className="text-2xl text-forest-900 sm:col-span-2">{t("writeReview")}</h2>
       <Honeypot register={register as never} />
       <fieldset className="sm:col-span-2">

@@ -1,5 +1,9 @@
 {
   "common": {
+    "pauseSlideshow": "슬라이드쇼 일시정지",
+    "playSlideshow": "슬라이드쇼 재생",
+    "illustrativeImage": "차량 예시 이미지",
+    "illustrativeLabel": "예시 이미지",
     "bookNow": "지금 예약",
     "viewDetails": "자세히 보기",
     "readMore": "더 읽기",
@@ -34,7 +38,11 @@
     "enquire": "문의하기",
     "home": "홈"
   },
-  "nav": { "openMenu": "메뉴 열기", "closeMenu": "메뉴 닫기" },
+  "nav": {
+    "more": "더보기",
+    "openMenu": "메뉴 열기",
+    "closeMenu": "메뉴 닫기"
+  },
   "account": {
     "signIn": "로그인",
     "signOut": "로그아웃",
@@ -176,7 +184,7 @@
     "luggage": "수하물",
     "comfort": "편의",
     "overview": "개요",
-    "related": "다른 차량",
+    "related": "다른 차량",
     "fleetDesc": "저희는 최고의 다국어 가능 드라이버를 제공합니다:",
     "fleetCount": "차량 {count}대",
     "otherType": "기타 차량",
@@ -300,8 +308,14 @@
     "readOnTripadvisor": "TripAdvisor에서 리뷰 보기",
     "basedOn": "{count, plural, other {리뷰 #개 기준}}"
   },
-  "gallery": { "photos": "사진", "videos": "동영상" },
-  "blog": { "by": "작성자: {author}", "related": "다른 글" },
+  "gallery": {
+    "photos": "사진",
+    "videos": "동영상"
+  },
+  "blog": {
+    "by": "작성자: {author}",
+    "related": "다른 글"
+  },
   "errors": {
     "notFoundTitle": "페이지를 찾을 수 없습니다",
     "notFoundText": "찾으시는 페이지가 없거나 이동되었습니다.",
@@ -319,7 +333,9 @@
     "after": "시작일 이후여야 합니다",
     "select": "항목을 선택해 주세요"
   },
-  "preview": { "banner": "미리보기 모드 – 비활성화된 섹션도 표시됩니다. 이 페이지는 공개되지 않았습니다." },
+  "preview": {
+    "banner": "미리보기 모드 – 비활성화된 섹션도 표시됩니다. 이 페이지는 공개되지 않았습니다."
+  },
   "about": {
     "title": "Sri Lanka Tours Driver 소개",
     "label": "소개",

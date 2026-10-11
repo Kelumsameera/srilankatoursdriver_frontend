@@ -205,6 +205,19 @@ function sectionForm(type: string): FormSection[] {
                   },
                 ] as FieldDef[])
               : []),
+            ...(type === "popularTours"
+              ? ([
+                  {
+                    name: "layout",
+                    label: "Layout",
+                    type: "select",
+                    options: [
+                      { value: "grid", label: "Grid of cards" },
+                      { value: "split", label: "Featured tour band (first tour large, dark green)" },
+                    ],
+                  },
+                ] as FieldDef[])
+              : []),
             ...(data
               ? ([
                   { name: "limit", label: "Number of items", type: "number", min: 1, max: 24 },

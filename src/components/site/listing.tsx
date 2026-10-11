@@ -22,21 +22,26 @@ export function CategoryFilter({ basePath, categories, active }: { basePath: str
   const t = useTranslations("common");
   if (!categories.length) return null;
   const chip = (href: string, label: string, selected: boolean) => (
-    <CmsLink
-      key={href}
-      href={href}
-      className={cn(
-        "rounded-full border px-4 py-2 text-sm font-medium transition-colors",
-        selected ? "border-forest-800 bg-forest-800 text-white" : "border-sand-200 bg-white text-forest-800 hover:border-forest-800",
-      )}
-    >
-      {label}
-    </CmsLink>
+    <li key={href} className="shrink-0">
+      <CmsLink
+        href={href}
+        current={selected}
+        className={cn(
+          "block whitespace-nowrap rounded-full border px-5 py-2 text-xs font-semibold tracking-wide transition-colors sm:text-sm",
+          selected ? "border-forest-800 bg-forest-800 text-white shadow-card" : "border-sand-200 bg-white text-forest-800 hover:border-forest-800",
+        )}
+      >
+        {label}
+      </CmsLink>
+    </li>
   );
   return (
-    <nav aria-label="Filter" className="mb-10 flex flex-wrap justify-center gap-2">
-      {chip(basePath, t("all"), !active)}
-      {categories.map((c) => chip(`${basePath}?category=${c.slug}`, c.name, active === c.slug))}
+    // One swipeable row on phones, centred and wrapping on larger screens.
+    <nav aria-label="Filter" className="-mx-5 mb-10 overflow-x-auto px-5 sm:mx-0 sm:px-0">
+      <ul className="flex w-max gap-2 sm:w-auto sm:flex-wrap sm:justify-center">
+        {chip(basePath, t("all"), !active)}
+        {categories.map((c) => chip(`${basePath}?category=${c.slug}`, c.name, active === c.slug))}
+      </ul>
     </nav>
   );
 }

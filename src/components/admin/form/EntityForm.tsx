@@ -50,7 +50,7 @@ export function EntityForm({ sections, initial, onSubmit, submitLabel = "Save", 
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={submit} className="grid gap-6 xl:grid-cols-[1fr_320px]" noValidate>
+      <form onSubmit={submit} className="grid grid-cols-1 gap-6 xl:grid-cols-[1fr_320px]" noValidate>
         <div className="min-w-0 space-y-6">
           {sections.map((section) => (
             <Card key={section.title} title={section.title}>

@@ -30,7 +30,7 @@ export default async function BlogPage({ params, searchParams }: Props) {
   ]);
   return (
     <>
-      <PageHero title={data?.page.title ?? ""} subtitle={data?.page.subtitle} image={data?.page.heroImage} />
+      <PageHero title={data?.page.title ?? ""} subtitle={data?.page.subtitle} image={data?.page.heroImage} banner="blog" />
       <section className="py-16 sm:py-20">
         <div className="container-page">
           <CategoryFilter basePath="/blog" categories={categories ?? []} active={category} />

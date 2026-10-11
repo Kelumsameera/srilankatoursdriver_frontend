@@ -9,11 +9,11 @@ interface Props {
   tone?: "light" | "dark";
   mobile?: boolean;
   className?: string;
-  priority?: boolean;
+  preload?: boolean;
 }
 
 /** The logo always comes from Admin → Branding (Cloudinary). Falls back to the site name. */
-export function Logo({ branding, siteName, tone = "dark", mobile, className, priority }: Props) {
+export function Logo({ branding, siteName, tone = "dark", mobile, className, preload }: Props) {
   const logo =
     (mobile && tone === "dark" && branding?.mobileLogo?.url ? branding.mobileLogo : null) ??
     (tone === "light" ? branding?.lightLogo ?? branding?.primaryLogo : branding?.primaryLogo ?? branding?.darkLogo);
@@ -28,10 +28,10 @@ export function Logo({ branding, siteName, tone = "dark", mobile, className, pri
         alt={alt}
         width={width}
         height={height}
-        priority={priority}
+        preload={preload}
         sizes={`${width}px`}
         className={cn("h-auto max-h-14 w-auto object-contain", className)}
-        style={{ maxWidth: width }}
+        style={{ maxWidth: `min(${width}px, 100%)` }}
       />
     );
   }

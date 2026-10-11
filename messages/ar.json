@@ -1,5 +1,9 @@
 {
   "common": {
+    "pauseSlideshow": "إيقاف عرض الشرائح مؤقتًا",
+    "playSlideshow": "تشغيل عرض الشرائح",
+    "illustrativeImage": "صورة توضيحية للمركبة",
+    "illustrativeLabel": "صورة توضيحية",
     "bookNow": "احجز الآن",
     "viewDetails": "عرض التفاصيل",
     "readMore": "اقرأ المزيد",
@@ -34,7 +38,11 @@
     "enquire": "استفسر",
     "home": "الرئيسية"
   },
-  "nav": { "openMenu": "فتح القائمة", "closeMenu": "إغلاق القائمة" },
+  "nav": {
+    "more": "المزيد",
+    "openMenu": "فتح القائمة",
+    "closeMenu": "إغلاق القائمة"
+  },
   "account": {
     "signIn": "تسجيل الدخول",
     "signOut": "تسجيل الخروج",
@@ -176,7 +184,7 @@
     "luggage": "الأمتعة",
     "comfort": "الراحة",
     "overview": "نظرة عامة",
-    "related": "مركبات أخرى",
+    "related": "مركبات أخرى",
     "fleetDesc": "نحن نقدم أفضل السائقين الذين يتحدثون",
     "fleetCount": "{count} مركبات",
     "otherType": "مركبات أخرى",
@@ -300,8 +308,14 @@
     "readOnTripadvisor": "اقرأ تقييماتنا على TripAdvisor",
     "basedOn": "{count, plural, one {بناءً على تقييم واحد} two {بناءً على تقييمين} few {بناءً على # تقييمات} many {بناءً على # تقييمًا} other {بناءً على # تقييم}}"
   },
-  "gallery": { "photos": "الصور", "videos": "الفيديوهات" },
-  "blog": { "by": "بقلم {author}", "related": "مقالات أخرى" },
+  "gallery": {
+    "photos": "الصور",
+    "videos": "الفيديوهات"
+  },
+  "blog": {
+    "by": "بقلم {author}",
+    "related": "مقالات أخرى"
+  },
   "errors": {
     "notFoundTitle": "الصفحة غير موجودة",
     "notFoundText": "الصفحة التي تبحث عنها غير موجودة أو تم نقلها.",
@@ -319,7 +333,9 @@
     "after": "يجب أن يكون بعد تاريخ البدء",
     "select": "يرجى الاختيار"
   },
-  "preview": { "banner": "وضع المعاينة – الأقسام المعطلة ظاهرة. هذه الصفحة غير منشورة." },
+  "preview": {
+    "banner": "وضع المعاينة – الأقسام المعطلة ظاهرة. هذه الصفحة غير منشورة."
+  },
   "about": {
     "title": "عن Sri Lanka Tours Driver",
     "label": "من نحن",

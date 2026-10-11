@@ -26,7 +26,7 @@ export default async function TailorMadePage({ params }: Props) {
   ]);
   return (
     <>
-      <PageHero title={data?.page.title ?? ""} subtitle={data?.page.subtitle} image={data?.page.heroImage} />
+      <PageHero title={data?.page.title ?? ""} subtitle={data?.page.subtitle} image={data?.page.heroImage} banner="tailor-made-tours" />
       <section className="py-14 sm:py-20">
         <div className="container-page max-w-5xl">
           {data?.page.content && <Markdown content={data.page.content} className="mb-10" />}

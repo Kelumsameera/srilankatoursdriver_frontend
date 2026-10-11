@@ -1,7 +1,10 @@
 import type { ReactNode } from "react";
-import { Star } from "lucide-react";
+import { Camera, Star } from "lucide-react";
+import { getLocale, getTranslations } from "next-intl/server";
 import { cn } from "@/lib/utils";
 import type { MediaAsset } from "@/types/cms";
+import { bannerMedia, pageBanner, type PageBannerKey } from "@/lib/page-banners";
+import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 import { CmsImage } from "./CmsImage";
 
 export function SectionHeading({
@@ -65,30 +68,64 @@ export function EmptyState({ text }: { text: string }) {
   return <p className="rounded-2xl border border-dashed border-sand-200 bg-white/60 p-10 text-center text-muted">{text}</p>;
 }
 
-/** Inner-page header: CMS page title / subtitle / image. */
-export function PageHero({
+/**
+ * Inner-page header: CMS page title / subtitle / image. Until the admin uploads a hero image, the
+ * bundled photo for `banner` is shown instead (with its Creative Commons credit).
+ */
+export async function PageHero({
   title,
   subtitle,
   image,
+  banner = "default",
   eyebrow,
   children,
 }: {
   title: string;
   subtitle?: string;
   image?: MediaAsset | null;
+  banner?: PageBannerKey;
   eyebrow?: string;
   children?: ReactNode;
 }) {
+  const [locale, t] = await Promise.all([getLocale(), getTranslations("common")]);
+  const fallback = image?.url && image.resourceType !== "video" ? null : pageBanner(banner);
   return (
-    <section className="relative isolate overflow-hidden bg-forest-900 text-white">
-      <CmsImage media={image} alt="" priority wrapperClassName="absolute inset-0 -z-10 opacity-60" className="animate-ken-burns" />
-      <div className="absolute inset-0 -z-10 bg-gradient-to-b from-forest-950/70 via-forest-950/50 to-forest-950/80" />
-      <div className="container-page pb-16 pt-36 sm:pb-20 sm:pt-44">
+    <section className="page-banner relative isolate flex min-h-[20rem] items-end overflow-hidden bg-forest-900 text-white sm:min-h-[23rem] lg:min-h-[25rem]" data-scroll-reveal>
+      <CmsImage
+        media={fallback ? bannerMedia(fallback) : image}
+        alt={fallback?.alt ?? ""}
+        preload
+        wrapperClassName="absolute inset-0 -z-10"
+        className="animate-ken-burns object-center"
+        objectPosition={fallback?.focus}
+        markIllustrative={false}
+      />
+      <div className="absolute inset-0 -z-10 bg-gradient-to-r from-forest-950/85 via-forest-950/55 to-forest-950/20 rtl:bg-gradient-to-l" />
+      <div className="absolute inset-0 -z-10 bg-gradient-to-t from-forest-950/60 via-transparent to-forest-950/15" />
+      <div className="container-page w-full pb-10 pt-28 sm:pb-12 sm:pt-32 lg:pb-14 lg:pt-36">
+        <Breadcrumbs locale={locale} items={[{ label: t("home"), href: "/" }, { label: title }]} />
         {eyebrow && <p className="eyebrow mb-4 text-gold-400">{eyebrow}</p>}
-        <h1 className="max-w-3xl animate-fade-up text-4xl leading-tight sm:text-5xl lg:text-6xl">{title}</h1>
-        {subtitle && <p className="mt-5 max-w-2xl animate-fade-up text-lg text-white/80 [animation-delay:120ms]">{subtitle}</p>}
+        <h1 className="max-w-3xl text-balance text-4xl leading-tight sm:text-5xl lg:text-6xl">{title}</h1>
+        {subtitle && <p className="mt-5 max-w-2xl text-pretty text-lg text-white/80 sm:text-xl">{subtitle}</p>}
         {children}
       </div>
+      {fallback?.illustrative ? (
+        <p className="absolute bottom-2 end-3 flex items-center gap-1 text-[0.625rem] leading-none text-white/70">
+          <Camera className="h-3 w-3" aria-hidden />
+          {t("illustrativeImage")}
+        </p>
+      ) : fallback?.credit ? (
+        <p className="absolute bottom-2 end-3 flex items-center gap-1 text-[0.625rem] leading-none text-white/55">
+          <Camera className="h-3 w-3" aria-hidden />
+          <a href={fallback.credit.source} target="_blank" rel="noopener noreferrer" className="hover:text-white">
+            {fallback.credit.author}
+          </a>
+          <span aria-hidden>·</span>
+          <a href={fallback.credit.licenseUrl} target="_blank" rel="noopener noreferrer license" className="hover:text-white">
+            {fallback.credit.license}
+          </a>
+        </p>
+      ) : null}
     </section>
   );
 }
@@ -101,7 +138,7 @@ export function Section({ children, theme = "light", className, id }: { children
     dark: "bg-forest-950 text-white",
   };
   return (
-    <section id={id} className={cn("py-20 sm:py-24", themes[theme] ?? themes.light, className)}>
+    <section id={id} className={cn("section-shell py-14 sm:py-16 lg:py-20", themes[theme] ?? themes.light, className)}>
       <div className="container-page">{children}</div>
     </section>
   );

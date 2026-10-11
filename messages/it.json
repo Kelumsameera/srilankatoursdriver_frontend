@@ -1,5 +1,9 @@
 {
   "common": {
+    "pauseSlideshow": "Metti in pausa la presentazione",
+    "playSlideshow": "Avvia la presentazione",
+    "illustrativeImage": "Immagine illustrativa del veicolo",
+    "illustrativeLabel": "Immagine illustrativa",
     "bookNow": "Prenota ora",
     "viewDetails": "Vedi dettagli",
     "readMore": "Leggi di più",
@@ -34,7 +38,11 @@
     "enquire": "Richiedi info",
     "home": "Home"
   },
-  "nav": { "openMenu": "Apri menu", "closeMenu": "Chiudi menu" },
+  "nav": {
+    "more": "Altro",
+    "openMenu": "Apri menu",
+    "closeMenu": "Chiudi menu"
+  },
   "account": {
     "signIn": "Accedi",
     "signOut": "Esci",
@@ -176,7 +184,7 @@
     "luggage": "Bagagli",
     "comfort": "Comfort",
     "overview": "Panoramica",
-    "related": "Altri veicoli",
+    "related": "Altri veicoli",
     "fleetDesc": "Forniamo i migliori autisti multilingue per",
     "fleetCount": "{count, plural, one {# veicolo} other {# veicoli}}",
     "otherType": "Altri veicoli",
@@ -300,8 +308,14 @@
     "readOnTripadvisor": "Leggi le nostre recensioni su TripAdvisor",
     "basedOn": "{count, plural, one {Basato su # recensione} other {Basato su # recensioni}}"
   },
-  "gallery": { "photos": "Foto", "videos": "Video" },
-  "blog": { "by": "Di {author}", "related": "Altri articoli" },
+  "gallery": {
+    "photos": "Foto",
+    "videos": "Video"
+  },
+  "blog": {
+    "by": "Di {author}",
+    "related": "Altri articoli"
+  },
   "errors": {
     "notFoundTitle": "Pagina non trovata",
     "notFoundText": "La pagina che cerchi non esiste o è stata spostata.",
@@ -319,7 +333,9 @@
     "after": "Deve essere successiva alla data di inizio",
     "select": "Effettua una scelta"
   },
-  "preview": { "banner": "Modalità anteprima – le sezioni disattivate sono visibili. Questa pagina non è pubblica." },
+  "preview": {
+    "banner": "Modalità anteprima – le sezioni disattivate sono visibili. Questa pagina non è pubblica."
+  },
   "about": {
     "title": "Informazioni su Sri Lanka Tours Driver",
     "label": "Chi Siamo",

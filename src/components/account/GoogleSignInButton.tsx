@@ -68,5 +68,5 @@ export function GoogleSignInButton({ onCredential, onError }: { onCredential: (c
   }, [locale]);
 
   if (!GOOGLE_CLIENT_ID) return null;
-  return <div ref={ref} className="flex min-h-11 w-full justify-center" data-testid="google-signin" />;
+  return <div ref={ref} className="flex min-h-11 w-full max-w-full justify-center overflow-hidden" data-testid="google-signin" />;
 }

@@ -37,16 +37,17 @@ export default async function ContactPage({ params }: Props) {
     <>
       <PageHero title={data?.page.title ?? ""} subtitle={data?.page.subtitle} image={data?.page.heroImage} />
       <section className="py-14 sm:py-20">
-        <div className="container-page grid gap-10 lg:grid-cols-[380px_1fr]">
+        <div className="container-page grid grid-cols-1 gap-10 lg:grid-cols-[380px_1fr]">
           <div className="space-y-4">
             {rows.map((row) => {
               const r = row as { icon: ReactNode; label: string; value: string; href?: string; testId: string };
               const body = (
                 <>
                   <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-forest-50 text-forest-700">{r.icon}</span>
-                  <span>
+                  {/* min-w-0 lets long values (e-mail addresses) wrap instead of widening the card on small phones. */}
+                  <span className="min-w-0">
                     <span className="block text-xs uppercase tracking-wider text-muted">{r.label}</span>
-                    <span className="block break-words font-medium text-forest-900" data-testid={r.testId}>
+                    <span className="block break-words font-medium text-forest-900 [overflow-wrap:anywhere]" data-testid={r.testId}>
                       {r.value}
                     </span>
                   </span>

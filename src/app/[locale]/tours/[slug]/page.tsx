@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getLocale, getTranslations, setRequestLocale } from "next-intl/server";
-import { BedDouble, Calendar, Car, Flag, MapPin, Mountain, UserRound } from "lucide-react";
+import { ArrowRight, BedDouble, Calendar, Car, MapPin, Mountain, UserRound } from "lucide-react";
 import { getDetail, getPage, getSiteSettings } from "@/lib/api/server";
 import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 import { buildMetadata, jsonLd } from "@/lib/seo";
@@ -13,9 +13,12 @@ import { ButtonLink, buttonClass } from "@/components/ui/Button";
 import { Markdown } from "@/components/ui/Markdown";
 import { Badge } from "@/components/ui/misc";
 import { SocialIcons } from "@/components/ui/icons";
-import { TourCard } from "@/components/cards/cards";
+import { TourCard, sharedDescriptions } from "@/components/cards/cards";
+import { TrackView } from "@/components/site/Analytics";
 import { FaqList } from "@/components/sections/FaqList";
-import { CheckList, DetailSection, FactList, MediaStrip } from "@/components/site/DetailBits";
+import { CheckList, DetailSection, MediaStrip } from "@/components/site/DetailBits";
+import { SectionTabs } from "@/components/site/SectionTabs";
+import { tourImage } from "@/lib/editorial-images";
 
 type Props = { params: Promise<{ locale: string; slug: string }> };
 
@@ -24,7 +27,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const data = await getDetail("tours", slug, locale);
   if (!data) return {};
   const tour = data.item;
-  return buildMetadata({ locale, path: `/tours/${tour.slug}`, title: tour.title, description: tour.shortDescription || tour.description, image: tour.heroMedia, seo: tour.seo });
+  const image = tour.heroMedia?.url && tour.heroMedia.resourceType !== "video" ? tour.heroMedia : tourImage(tour);
+  return buildMetadata({ locale, path: `/tours/${tour.slug}`, title: tour.title, description: tour.shortDescription || tour.description, image, seo: tour.seo });
 }
 
 export default async function TourDetailPage({ params }: Props) {
@@ -39,9 +43,21 @@ export default async function TourDetailPage({ params }: Props) {
   ]);
   if (!data) notFound();
   const tour = data.item;
+  const heroImage = tour.heroMedia?.url && tour.heroMedia.resourceType !== "video" ? tour.heroMedia : tourImage(tour);
   const price = formatPrice(tour.price, tour.currency, await getLocale());
   const bookHref = `/booking?type=tour&tour=${tour._id}`;
   const enquireMsg = `${settings?.whatsappMessage ?? ""} ${tour.title}`.trim();
+  // Unique itinerary stops for the hero card ("Habarana · Kandy · Ella …").
+  const stops = Array.from(new Set((tour.itinerary ?? []).map((d) => d.location?.trim()).filter((x): x is string => Boolean(x)))).slice(0, 4);
+  const tabs = [
+    { id: "overview", label: t("overview"), show: true },
+    { id: "itinerary", label: t("itinerary"), show: Boolean(tour.itinerary?.length) },
+    { id: "included", label: t("included"), show: Boolean(tour.included?.length || tour.excluded?.length) },
+    { id: "hotels", label: t("hotels"), show: Boolean(tour.hotels?.length) },
+    { id: "faqs", label: t("faqs"), show: Boolean(tour.faqs?.length) },
+  ]
+    .filter((tab) => tab.show)
+    .map(({ id, label }) => ({ id, label }));
 
   const schema = {
     "@context": "https://schema.org",
@@ -49,7 +65,7 @@ export default async function TourDetailPage({ params }: Props) {
     name: tour.title,
     description: tour.shortDescription,
     url: `${SITE_URL}/${locale}/tours/${tour.slug}`,
-    ...(tour.heroMedia?.url ? { image: tour.heroMedia.url } : {}),
+    ...(heroImage.url ? { image: heroImage.url } : {}),
     ...(tour.itinerary?.length
       ? { itinerary: { "@type": "ItemList", itemListElement: tour.itinerary.map((d, i) => ({ "@type": "ListItem", position: i + 1, name: d.title })) } }
       : {}),
@@ -59,11 +75,12 @@ export default async function TourDetailPage({ params }: Props) {
 
   return (
     <>
+      <TrackView event="view_tour" itemId={tour.slug} />
       <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(schema)} />
-      <section className="relative isolate overflow-hidden bg-forest-900 text-white">
-        <CmsImage media={tour.heroMedia} alt={tour.heroMedia?.alt || tour.title} priority wrapperClassName="absolute inset-0 -z-10" className="animate-ken-burns" />
-        <div className="absolute inset-0 -z-10 bg-gradient-to-t from-forest-950 via-forest-950/60 to-forest-950/30" />
-        <div className="container-page pb-14 pt-40 sm:pt-52">
+      <section className="relative isolate flex min-h-[32rem] items-end overflow-hidden bg-forest-900 text-white sm:min-h-[38rem]">
+        <CmsImage media={heroImage} alt={heroImage.alt || tour.title} preload wrapperClassName="absolute inset-0 -z-10" className="animate-ken-burns" />
+        <div className="absolute inset-0 -z-10 bg-gradient-to-t from-forest-950/80 via-forest-950/25 to-forest-950/40" />
+        <div className="container-page w-full pb-12 pt-32 sm:pb-16 sm:pt-40">
           <Breadcrumbs
             locale={locale}
             items={[
@@ -72,35 +89,53 @@ export default async function TourDetailPage({ params }: Props) {
               { label: tour.title },
             ]}
           />
-          {tour.category?.name && <Badge className="mb-4 bg-gold-500/20 text-gold-200">{tour.category.name}</Badge>}
-          <h1 className="max-w-4xl text-4xl leading-tight sm:text-5xl lg:text-6xl" data-testid="tour-title">
-            {tour.title}
-          </h1>
-          {tour.shortDescription && <p className="mt-5 max-w-3xl text-lg text-white/80">{tour.shortDescription}</p>}
-          <div className="mt-10 border-t border-white/15 pt-8">
-            <FactList
-              facts={[
-                {
-                  icon: <Calendar className="h-5 w-5" />,
-                  label: t("duration"),
-                  value: tour.durationDays
-                    ? `${tc("days", { count: tour.durationDays })}${tour.durationNights ? ` / ${tc("nights", { count: tour.durationNights })}` : ""}`
-                    : undefined,
-                },
-                {
-                  icon: <MapPin className="h-5 w-5" />,
-                  label: t("route"),
-                  value: tour.startLocation ? `${tour.startLocation}${tour.endLocation && tour.endLocation !== tour.startLocation ? ` → ${tour.endLocation}` : ""}` : undefined,
-                },
-                { icon: <Mountain className="h-5 w-5" />, label: t("difficulty"), value: tour.difficulty ? t(tour.difficulty) : undefined },
-                { icon: <Flag className="h-5 w-5" />, label: t("destinations"), value: tour.destinations?.length ? String(tour.destinations.length) : undefined },
-              ]}
-            />
+          {/* Frosted summary card, as in the design: title, days, route, price and the main call to action. */}
+          <div className="mt-4 max-w-xl rounded-2xl border border-white/15 bg-forest-950/55 p-6 shadow-2xl backdrop-blur-md sm:p-8">
+            {tour.category?.name && <Badge className="mb-3 bg-gold-500/20 text-gold-200">{tour.category.name}</Badge>}
+            <h1 className="font-display text-3xl leading-tight sm:text-4xl lg:text-5xl" data-testid="tour-title">
+              {tour.title}
+            </h1>
+            <ul className="mt-4 flex flex-wrap gap-x-4 gap-y-2 text-sm text-white/85">
+              {tour.durationDays ? (
+                <li className="flex items-center gap-1.5">
+                  <Calendar className="h-4 w-4 text-gold-400" aria-hidden />
+                  {tc("days", { count: tour.durationDays })}
+                  {tour.durationNights ? ` / ${tc("nights", { count: tour.durationNights })}` : ""}
+                </li>
+              ) : null}
+              {stops.map((place) => (
+                <li key={place} className="flex items-center gap-1.5">
+                  <MapPin className="h-4 w-4 text-gold-400" aria-hidden /> {place}
+                </li>
+              ))}
+              {tour.difficulty && (
+                <li className="flex items-center gap-1.5">
+                  <Mountain className="h-4 w-4 text-gold-400" aria-hidden /> {t(tour.difficulty)}
+                </li>
+              )}
+            </ul>
+            <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-4">
+              <p className="text-sm text-white/70">
+                {price ? (
+                  <>
+                    {tc("from")} <span className="font-display text-3xl text-gold-400">{price}</span>
+                    {tour.priceNote && <span className="block text-xs">{tour.priceNote}</span>}
+                  </>
+                ) : (
+                  <span className="font-display text-xl text-gold-400">{tour.priceNote || tc("priceOnRequest")}</span>
+                )}
+              </p>
+              <ButtonLink href={bookHref} className="rounded-md">
+                {t("bookThisTour")} <ArrowRight className="h-4 w-4 rtl:rotate-180" aria-hidden />
+              </ButtonLink>
+            </div>
           </div>
         </div>
       </section>
 
-      <div className="container-page grid gap-12 py-14 lg:grid-cols-[1fr_360px]">
+      <SectionTabs label={tour.title} tabs={tabs} />
+
+      <div className="container-page grid grid-cols-1 gap-12 py-14 lg:grid-cols-[1fr_360px]">
         <div className="min-w-0">
           <DetailSection title={t("overview")} id="overview">
             <Markdown content={tour.description} />
@@ -146,7 +181,7 @@ export default async function TourDetailPage({ params }: Props) {
 
           {tour.included?.length || tour.excluded?.length ? (
             <DetailSection id="included">
-              <div className="grid gap-10 sm:grid-cols-2">
+              <div className="grid grid-cols-1 gap-10 sm:grid-cols-2">
                 {tour.included?.length ? (
                   <div>
                     <h2 className="mb-5 text-2xl text-forest-900">{t("included")}</h2>
@@ -164,8 +199,8 @@ export default async function TourDetailPage({ params }: Props) {
           ) : null}
 
           {tour.hotels?.length ? (
-            <DetailSection title={t("hotels")}>
-              <ul className="grid gap-4 sm:grid-cols-2">
+            <DetailSection title={t("hotels")} id="hotels">
+              <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 {tour.hotels.map((h, i) => (
                   <li key={`${h.name}-${i}`} className="rounded-2xl border border-sand-200 bg-white p-5">
                     <p className="font-medium text-forest-900">{h.url ? <a href={h.url} target="_blank" rel="noopener noreferrer" className="hover:underline">{h.name}</a> : h.name}</p>
@@ -178,7 +213,7 @@ export default async function TourDetailPage({ params }: Props) {
 
           {(tour.vehicle || tour.driver?.description) && (
             <DetailSection>
-              <div className="grid gap-6 sm:grid-cols-2">
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                 {tour.vehicle && (
                   <div className="overflow-hidden rounded-3xl border border-sand-200 bg-white">
                     <CmsImage media={tour.vehicle.images?.[0]} alt={tour.vehicle.name} sizes="400px" wrapperClassName="aspect-[16/9] bg-sand-100" />
@@ -224,7 +259,7 @@ export default async function TourDetailPage({ params }: Props) {
           ) : null}
 
           {tour.faqs?.length ? (
-            <DetailSection title={t("faqs")}>
+            <DetailSection title={t("faqs")} id="faqs">
               <FaqList items={tour.faqs} />
             </DetailSection>
           ) : null}
@@ -260,9 +295,9 @@ export default async function TourDetailPage({ params }: Props) {
         <section className="bg-sand-100 py-16">
           <div className="container-page">
             <h2 className="mb-10 text-3xl text-forest-900">{t("related")}</h2>
-            <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
-              {data.related.map((r) => (
-                <TourCard key={r._id} tour={r} />
+            <div className="grid grid-cols-1 gap-7 sm:grid-cols-2 lg:grid-cols-3">
+              {data.related.map((r, _i, all) => (
+                <TourCard key={r._id} tour={r} hideDescription={sharedDescriptions(all).has(r.shortDescription?.trim() ?? "")} />
               ))}
             </div>
           </div>

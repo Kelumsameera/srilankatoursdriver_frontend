@@ -76,7 +76,7 @@ export function AccountPanel() {
   };
 
   return (
-    <div className="mx-auto grid w-full max-w-6xl gap-6 lg:grid-cols-[320px_1fr]" data-testid="account-panel">
+    <div className="mx-auto grid grid-cols-1 w-full max-w-6xl gap-6 lg:grid-cols-[320px_1fr]" data-testid="account-panel">
       {/* Profile */}
       <aside className="h-fit rounded-3xl bg-white p-6 shadow-card sm:p-8 lg:sticky lg:top-28">
         <div className="flex flex-col items-center text-center">

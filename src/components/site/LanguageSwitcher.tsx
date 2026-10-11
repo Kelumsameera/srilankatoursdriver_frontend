@@ -45,14 +45,14 @@ export function LanguageSwitcher({ enabled, tone = "dark", align = "end" }: { en
         aria-label={t("language")}
         data-testid="language-switcher"
         className={cn(
-          "flex items-center gap-1.5 rounded-full px-3 py-2 text-sm font-medium transition-colors",
+          "flex items-center gap-1 rounded-full px-2 py-2 text-sm font-medium transition-colors sm:gap-1.5 sm:px-3",
           tone === "light" ? "text-white hover:bg-white/10" : "text-forest-900 hover:bg-forest-50",
           pending && "opacity-60",
         )}
       >
         <Globe className="h-4 w-4" aria-hidden />
         <span className="uppercase">{locale}</span>
-        <ChevronDown className="h-3.5 w-3.5" aria-hidden />
+        <ChevronDown className="hidden h-3.5 w-3.5 sm:block" aria-hidden />
       </button>
       {open && (
         <ul

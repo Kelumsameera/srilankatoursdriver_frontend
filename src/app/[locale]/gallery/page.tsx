@@ -31,7 +31,7 @@ export default async function GalleryPage({ params, searchParams }: Props) {
   ]);
   return (
     <>
-      <PageHero title={data?.page.title ?? ""} subtitle={data?.page.subtitle} image={data?.page.heroImage} />
+      <PageHero title={data?.page.title ?? ""} subtitle={data?.page.subtitle} image={data?.page.heroImage} banner="gallery" />
       <section className="py-14 sm:py-20">
         <div className="container-page">
           <CategoryFilter basePath="/gallery" categories={categories ?? []} active={category} />
