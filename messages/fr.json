@@ -1,5 +1,9 @@
 {
   "common": {
+    "pauseSlideshow": "Mettre le diaporama en pause",
+    "playSlideshow": "Lire le diaporama",
+    "illustrativeImage": "Image indicative du véhicule",
+    "illustrativeLabel": "Image d'illustration",
     "bookNow": "Réserver",
     "viewDetails": "Voir les détails",
     "readMore": "Lire la suite",
@@ -34,7 +38,11 @@
     "enquire": "Se renseigner",
     "home": "Accueil"
   },
-  "nav": { "openMenu": "Ouvrir le menu", "closeMenu": "Fermer le menu" },
+  "nav": {
+    "more": "Plus",
+    "openMenu": "Ouvrir le menu",
+    "closeMenu": "Fermer le menu"
+  },
   "account": {
     "signIn": "Se connecter",
     "signOut": "Se déconnecter",
@@ -176,7 +184,7 @@
     "luggage": "Bagages",
     "comfort": "Confort",
     "overview": "Aperçu",
-    "related": "Autres véhicules",
+    "related": "Autres véhicules",
     "fleetDesc": "Nous fournissons les meilleurs chauffeurs multilingues pour",
     "fleetCount": "{count, plural, one {# véhicule} other {# véhicules}}",
     "otherType": "Autres véhicules",
@@ -300,8 +308,14 @@
     "readOnTripadvisor": "Lire nos avis sur TripAdvisor",
     "basedOn": "{count, plural, one {Basé sur # avis} other {Basé sur # avis}}"
   },
-  "gallery": { "photos": "Photos", "videos": "Vidéos" },
-  "blog": { "by": "Par {author}", "related": "Autres articles" },
+  "gallery": {
+    "photos": "Photos",
+    "videos": "Vidéos"
+  },
+  "blog": {
+    "by": "Par {author}",
+    "related": "Autres articles"
+  },
   "errors": {
     "notFoundTitle": "Page introuvable",
     "notFoundText": "La page que vous cherchez n'existe pas ou a été déplacée.",
@@ -319,7 +333,9 @@
     "after": "Doit être après la date de début",
     "select": "Veuillez faire un choix"
   },
-  "preview": { "banner": "Mode aperçu – les sections désactivées sont visibles. Cette page n'est pas publique." },
+  "preview": {
+    "banner": "Mode aperçu – les sections désactivées sont visibles. Cette page n'est pas publique."
+  },
   "about": {
     "title": "À propos de Sri Lanka Tours Driver",
     "label": "À Propos",

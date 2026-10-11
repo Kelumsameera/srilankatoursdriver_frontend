@@ -30,12 +30,12 @@ export default async function ExcursionsPage({ params, searchParams }: Props) {
   ]);
   return (
     <>
-      <PageHero title={data?.page.title ?? ""} subtitle={data?.page.subtitle} image={data?.page.heroImage} />
+      <PageHero title={data?.page.title ?? ""} subtitle={data?.page.subtitle} image={data?.page.heroImage} banner="excursions" />
       <section className="py-16 sm:py-20">
         <div className="container-page">
           <CategoryFilter basePath="/excursions" categories={categories ?? []} active={category} />
           {list?.items.length ? (
-            <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-7 sm:grid-cols-2 lg:grid-cols-3">
               {list.items.map((e) => (
                 <ExcursionCard key={e._id} excursion={e} />
               ))}

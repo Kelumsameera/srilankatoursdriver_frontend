@@ -1,20 +1,33 @@
 "use client";
 
-import { forwardRef, useCallback, useRef, type InputHTMLAttributes, type ReactNode, type SelectHTMLAttributes, type TextareaHTMLAttributes } from "react";
+import { cloneElement, forwardRef, isValidElement, useCallback, useRef, type InputHTMLAttributes, type ReactNode, type SelectHTMLAttributes, type TextareaHTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
 
 const control =
   "w-full rounded-xl border border-sand-200 bg-white px-4 py-3 text-[0.95rem] text-ink placeholder:text-muted/70 transition-colors focus:border-forest-600 focus:outline-none focus:ring-2 focus:ring-forest-600/20 aria-[invalid=true]:border-red-500";
 
 export function Field({ label, error, children, hint, required, htmlFor, className }: { label: string; error?: string; children: ReactNode; hint?: string; required?: boolean; htmlFor: string; className?: string }) {
+  // Tie the control to its error / hint text so screen readers announce them with the field.
+  const describedBy = error ? `${htmlFor}-error` : hint ? `${htmlFor}-hint` : undefined;
+  const control = isValidElement<Record<string, unknown>>(children)
+    ? cloneElement(children, {
+        "aria-describedby": describedBy,
+        "aria-invalid": error ? true : children.props["aria-invalid"],
+        "aria-required": required || undefined,
+      })
+    : children;
   return (
     <div className={cn("flex flex-col gap-1.5", className)}>
       <label htmlFor={htmlFor} className="text-sm font-medium text-forest-900">
         {label}
         {required && <span className="text-red-600"> *</span>}
       </label>
-      {children}
-      {hint && !error && <p className="text-xs text-muted">{hint}</p>}
+      {control}
+      {hint && !error && (
+        <p className="text-xs text-muted" id={`${htmlFor}-hint`}>
+          {hint}
+        </p>
+      )}
       {error && (
         <p className="text-xs text-red-600" role="alert" id={`${htmlFor}-error`}>
           {error}
@@ -43,7 +56,8 @@ export const Select = forwardRef<HTMLSelectElement, SelectHTMLAttributes<HTMLSel
 /** Invisible honeypot field – bots fill it, humans never see it. */
 export function Honeypot({ register }: { register: (name: "website") => object }) {
   return (
-    <div aria-hidden className="absolute -left-[9999px] h-px w-px overflow-hidden">
+    // Clipped in place rather than pushed off-screen: a "-left-9999px" offset makes RTL (Arabic) pages scroll sideways.
+    <div aria-hidden className="pointer-events-none absolute start-0 top-0 h-px w-px overflow-hidden opacity-0 [clip-path:inset(50%)]">
       <label>
         Website
         <input type="text" tabIndex={-1} autoComplete="off" {...register("website")} />
@@ -78,6 +92,11 @@ export function failureKey(res: { status: number; errors: unknown[] }): "errorFi
   if (res.status === 429) return "errorRateLimited";
   if (res.status === 0) return "errorNetwork";
   return "errorGeneric";
+}
+
+/** Analytics label for a failed submission (no personal data). */
+export function failureType(res: { status: number; errors: unknown[] }) {
+  return { errorFields: "fields", errorRateLimited: "rate_limited", errorNetwork: "network", errorGeneric: "generic" }[failureKey(res)];
 }
 
 /** Guards a submit handler against re-entry (double click / repeated Enter before the button disables). */

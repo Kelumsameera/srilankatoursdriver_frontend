@@ -76,7 +76,7 @@ export default async function AboutPage({ params }: Props) {
             />
             <div className="absolute inset-x-6 bottom-6 rounded-2xl bg-white/90 p-6 shadow-card backdrop-blur sm:inset-x-8 sm:bottom-8">
               <p className="font-display text-xl italic text-forest-700">{t("heading")}</p>
-              <p className="font-display text-3xl font-semibold uppercase tracking-tight text-gold-600">{t("headingHighlight")}</p>
+              <p className="font-display text-2xl font-semibold uppercase tracking-tight text-gold-600 [overflow-wrap:anywhere] [hyphens:auto] sm:text-3xl">{t("headingHighlight")}</p>
             </div>
           </div>
 
@@ -120,6 +120,9 @@ export default async function AboutPage({ params }: Props) {
       <section className="bg-white pb-20 sm:pb-28">
         <dl className="container-page grid grid-cols-2 gap-5 lg:grid-cols-4">
           {STATS.map((s) => (
+            <div key={s.key} className="flex min-w-0 flex-col-reverse rounded-[2rem] border border-sand-200 bg-sand-50 px-3 py-6 text-center sm:p-10">
+              <dt className="mt-2 text-[0.65rem] font-bold uppercase tracking-[0.08em] text-gold-600 sm:tracking-[0.2em]">{t(`stats.${s.key}`)}</dt>
+              <dd className="font-display text-3xl text-forest-900 sm:text-5xl">{s.value}</dd>
             <div key={s.key} className="flex flex-col-reverse rounded-4xl border border-sand-200 bg-sand-50 p-8 text-center sm:p-10">
               <dt className="mt-2 text-[0.65rem] font-bold uppercase tracking-[0.2em] text-gold-600">{t(`stats.${s.key}`)}</dt>
               <dd className="font-display text-4xl text-forest-900 sm:text-5xl">{s.value}</dd>

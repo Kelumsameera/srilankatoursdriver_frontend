@@ -33,7 +33,7 @@ export default async function ReviewsPage({ params, searchParams }: Props) {
       <section className="py-14 sm:py-20">
         <div className="container-page">
           {list?.items.length ? (
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
               {list.items.map((r) => (
                 <ReviewCard key={r._id} review={r} />
               ))}

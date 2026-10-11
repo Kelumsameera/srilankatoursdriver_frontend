@@ -8,34 +8,47 @@ interface Props {
   media?: MediaAsset | null;
   alt?: string;
   sizes?: string;
-  priority?: boolean;
+  /** Preload the one image that determines the route's largest contentful paint. */
+  preload?: boolean;
   className?: string;
   /** Classes for the wrapper (must set a size / aspect ratio). */
   wrapperClassName?: string;
   fallbackLabel?: string;
+  /** CSS object-position, e.g. "60% 40%" to keep the subject in frame when cropped. */
+  objectPosition?: string;
+  /** Set false where the page already labels an AI-generated fallback itself (or the image is a tiny thumbnail). */
+  markIllustrative?: boolean;
 }
+
+/** AI-generated fallback art (see lib/editorial-images) – never presented as a real photo. */
+export const isIllustrative = (url?: string) => Boolean(url?.startsWith("/images/editorial/"));
 
 /**
  * Responsive Cloudinary image (via the custom next/image loader) inside a positioned wrapper.
  * When the admin hasn't uploaded an image yet, an on-brand placeholder is shown instead of a broken image.
  */
-export function CmsImage({ media, alt, sizes = "100vw", priority, className, wrapperClassName, fallbackLabel }: Props) {
+export function CmsImage({ media, alt, sizes = "100vw", preload, className, wrapperClassName, fallbackLabel, objectPosition, markIllustrative = true }: Props) {
   const url = media?.resourceType === "video" ? undefined : media?.url;
   // `cn` doesn't de-duplicate Tailwind classes: adding "relative" next to a caller's "absolute inset-0"
   // lets "relative" win and the background image collapses to 0×0, so only default the position.
   const positioned = /(^|\s)(absolute|fixed|sticky)(\s|$)/.test(wrapperClassName ?? "");
   return (
-    <div className={cn(!positioned && "relative", "overflow-hidden bg-forest-800", wrapperClassName)}>
+    <div
+      className={cn(!positioned && "relative", "overflow-hidden bg-forest-800", wrapperClassName)}
+      // Visible "Illustrative image" badge (text from --illustrative-label, see globals.css).
+      data-illustrative={markIllustrative && isIllustrative(url) ? "" : undefined}
+    >
       {url ? (
         <Image
           src={url}
           alt={alt ?? media?.alt ?? ""}
           fill
           sizes={sizes}
-          priority={priority}
+          preload={preload}
           // Foreign URLs can't be resized by the Cloudinary loader – serve them as-is instead of a fake srcset.
           unoptimized={!isOptimizable(url)}
           className={cn("object-cover", className)}
+          style={objectPosition ? { objectPosition } : undefined}
         />
       ) : (
         <div

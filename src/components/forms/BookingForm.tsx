@@ -10,7 +10,8 @@ import { submitPublic } from "@/lib/api/public-client";
 import { useCustomerAuth } from "@/lib/customer/auth";
 import { Link } from "@/i18n/navigation";
 import { buttonClass } from "@/components/ui/Button";
-import { Field, Honeypot, Input, Select, SuccessPanel, Textarea, applyServerErrors, failureKey, useSubmitLock } from "./fields";
+import { Field, Honeypot, Input, Select, SuccessPanel, Textarea, applyServerErrors, failureKey, failureType, useSubmitLock } from "./fields";
+import { track } from "@/lib/analytics";
 import { useValidationMessages } from "./useValidationMessages";
 
 interface Option {
@@ -72,13 +73,16 @@ export function BookingForm({ tours, excursions, vehicles, initial }: Props) {
     setFailure(null);
     const payload = clean({ ...values, locale });
     for (const k of ["tour", "excursion", "vehicle"] as const) if (k !== values.type) delete payload[k];
+    track("submit_trip_inquiry", { form: "booking" });
     const res = await submitPublic<{ reference: string }>("/bookings", payload);
     if (res.ok && res.data) {
+      track("trip_inquiry_success", { form: "booking" });
       setReference(res.data.reference);
       window.scrollTo({ top: 0, behavior: "smooth" });
     } else {
       applyServerErrors(res.errors, setError as never);
       setFailure(t(failureKey(res)));
+      track("trip_inquiry_error", { form: "booking", error_type: failureType(res) });
     }
   }));
 
@@ -104,7 +108,7 @@ export function BookingForm({ tours, excursions, vehicles, initial }: Props) {
   const e = errors;
 
   return (
-    <form onSubmit={onSubmit} noValidate className="relative grid gap-5 rounded-3xl bg-white p-6 shadow-card sm:grid-cols-2 sm:p-10" data-testid="booking-form">
+    <form onSubmit={onSubmit} noValidate className="relative grid grid-cols-1 gap-5 rounded-3xl bg-white p-6 shadow-card sm:grid-cols-2 sm:p-10" data-testid="booking-form">
       <h2 className="text-2xl text-forest-900 sm:col-span-2">{t("formTitle")}</h2>
       <Honeypot register={register as never} />
       <Field label={t("type")} htmlFor="type" className="sm:col-span-2">

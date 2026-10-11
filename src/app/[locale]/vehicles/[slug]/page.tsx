@@ -12,6 +12,7 @@ import { SocialIcons } from "@/components/ui/icons";
 import { VehicleCard } from "@/components/cards/cards";
 import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 import { VehicleGallery } from "@/components/site/VehicleGallery";
+import { TrackView } from "@/components/site/Analytics";
 
 type Props = { params: Promise<{ locale: string; slug: string }> };
 
@@ -60,8 +61,9 @@ export default async function VehicleDetailPage({ params }: Props) {
 
   return (
     <div className="bg-sand-50">
+      <TrackView event="view_vehicle" itemId={v.slug} />
       <section className="relative isolate flex min-h-[26rem] items-end overflow-hidden bg-forest-950 text-white sm:min-h-[32rem]">
-        <CmsImage media={images[0]} alt="" priority wrapperClassName="absolute inset-0 -z-10 opacity-75" className="animate-ken-burns" />
+        <CmsImage media={images[0]} alt="" preload wrapperClassName="absolute inset-0 -z-10 opacity-75" className="animate-ken-burns" />
         <div className="absolute inset-0 -z-10 bg-gradient-to-b from-forest-950/10 via-forest-950/35 to-forest-950/95" />
         <div className="container-page w-full pb-24 pt-36">
           <Breadcrumbs locale={locale} items={[{ label: tc("home"), href: "/" }, { label: listing?.page.title ?? "", href: "/vehicles" }, { label: v.name }]} />
@@ -77,7 +79,7 @@ export default async function VehicleDetailPage({ params }: Props) {
         </div>
       </section>
 
-      <div className="container-page relative z-10 -mt-16 grid items-start gap-12 pb-20 lg:grid-cols-[1fr_360px]">
+      <div className="container-page relative z-10 -mt-16 grid grid-cols-1 items-start gap-12 pb-20 lg:grid-cols-[1fr_360px]">
         <div className="min-w-0 space-y-12">
           <VehicleGallery images={images} name={v.name} labels={{ previous: tc("previous"), next: tc("next") }} />
 
@@ -105,7 +107,7 @@ export default async function VehicleDetailPage({ params }: Props) {
           {v.features?.length ? (
             <section className="rounded-2xl border border-forest-950/5 bg-white p-8 shadow-sm">
               <SectionLabel label={t("features")} />
-              <ul className="grid gap-3 sm:grid-cols-2">
+              <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 {v.features.map((f, i) => (
                   <li key={`${i}-${f}`} className="flex items-start gap-3 text-sm text-ink">
                     <Check className="mt-0.5 h-4 w-4 shrink-0 text-forest-600" aria-hidden /> {f}
@@ -148,7 +150,7 @@ export default async function VehicleDetailPage({ params }: Props) {
         <section className="border-t border-forest-950/5 bg-white py-16">
           <div className="container-page">
             <h2 className="mb-10 text-3xl text-forest-900">{t("related")}</h2>
-            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
               {data.related.map((r) => (
                 <VehicleCard key={r._id} vehicle={r} />
               ))}

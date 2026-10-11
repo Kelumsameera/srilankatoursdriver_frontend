@@ -1,5 +1,9 @@
 {
   "common": {
+    "pauseSlideshow": "Pausar la presentación",
+    "playSlideshow": "Reproducir la presentación",
+    "illustrativeImage": "Imagen ilustrativa del vehículo",
+    "illustrativeLabel": "Imagen ilustrativa",
     "bookNow": "Reservar",
     "viewDetails": "Ver detalles",
     "readMore": "Leer más",
@@ -34,7 +38,11 @@
     "enquire": "Consultar",
     "home": "Inicio"
   },
-  "nav": { "openMenu": "Abrir menú", "closeMenu": "Cerrar menú" },
+  "nav": {
+    "more": "Más",
+    "openMenu": "Abrir menú",
+    "closeMenu": "Cerrar menú"
+  },
   "account": {
     "signIn": "Iniciar sesión",
     "signOut": "Cerrar sesión",
@@ -176,7 +184,7 @@
     "luggage": "Equipaje",
     "comfort": "Comodidad",
     "overview": "Descripción general",
-    "related": "Más vehículos",
+    "related": "Más vehículos",
     "fleetDesc": "Ofrecemos los mejores conductores multilingües para",
     "fleetCount": "{count, plural, one {# vehículo} other {# vehículos}}",
     "otherType": "Otros vehículos",
@@ -300,8 +308,14 @@
     "readOnTripadvisor": "Lee nuestras reseñas en TripAdvisor",
     "basedOn": "{count, plural, one {Basado en # reseña} other {Basado en # reseñas}}"
   },
-  "gallery": { "photos": "Fotos", "videos": "Vídeos" },
-  "blog": { "by": "Por {author}", "related": "Más artículos" },
+  "gallery": {
+    "photos": "Fotos",
+    "videos": "Vídeos"
+  },
+  "blog": {
+    "by": "Por {author}",
+    "related": "Más artículos"
+  },
   "errors": {
     "notFoundTitle": "Página no encontrada",
     "notFoundText": "La página que buscas no existe o se ha movido.",
@@ -319,7 +333,9 @@
     "after": "Debe ser posterior a la fecha de inicio",
     "select": "Selecciona una opción"
   },
-  "preview": { "banner": "Modo vista previa: las secciones desactivadas son visibles. Esta página no es pública." },
+  "preview": {
+    "banner": "Modo vista previa: las secciones desactivadas son visibles. Esta página no es pública."
+  },
   "about": {
     "title": "Sobre Sri Lanka Tours Driver",
     "label": "Nosotros",

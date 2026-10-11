@@ -8,10 +8,11 @@ import { SITE_URL } from "@/lib/config";
 import { CmsImage } from "@/components/ui/CmsImage";
 import { ButtonLink } from "@/components/ui/Button";
 import { Markdown } from "@/components/ui/Markdown";
-import { DestinationCard, TourCard } from "@/components/cards/cards";
+import { DestinationCard, TourCard, sharedDescriptions } from "@/components/cards/cards";
 import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 import { CheckList, DetailSection, MediaStrip } from "@/components/site/DetailBits";
 import { TransferRates } from "@/components/site/TransferRates";
+import { destinationImage } from "@/lib/editorial-images";
 
 type Props = { params: Promise<{ locale: string; slug: string }> };
 
@@ -20,7 +21,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const data = await getDetail("destinations", slug, locale);
   if (!data) return {};
   const d = data.item;
-  return buildMetadata({ locale, path: `/destinations/${d.slug}`, title: d.name, description: d.shortDescription || d.description, image: d.heroMedia, seo: d.seo });
+  const image = d.heroMedia?.url && d.heroMedia.resourceType !== "video" ? d.heroMedia : destinationImage(d);
+  return buildMetadata({ locale, path: `/destinations/${d.slug}`, title: d.name, description: d.shortDescription || d.description, image, seo: d.seo });
 }
 
 export default async function DestinationDetailPage({ params }: Props) {
@@ -35,6 +37,7 @@ export default async function DestinationDetailPage({ params }: Props) {
   ]);
   if (!data) notFound();
   const d = data.item;
+  const heroImage = d.heroMedia?.url && d.heroMedia.resourceType !== "video" ? d.heroMedia : destinationImage(d);
   const tours = await getList("tours", { locale, destination: d._id, limit: 3 });
 
   const schema = {
@@ -43,7 +46,7 @@ export default async function DestinationDetailPage({ params }: Props) {
     name: d.name,
     description: d.shortDescription,
     url: `${SITE_URL}/${locale}/destinations/${d.slug}`,
-    ...(d.heroMedia?.url ? { image: d.heroMedia.url } : {}),
+    ...(heroImage.url ? { image: heroImage.url } : {}),
     ...(d.location?.lat && d.location?.lng ? { geo: { "@type": "GeoCoordinates", latitude: d.location.lat, longitude: d.location.lng } } : {}),
   };
 
@@ -51,7 +54,7 @@ export default async function DestinationDetailPage({ params }: Props) {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(schema)} />
       <section className="relative isolate flex min-h-[70vh] items-end overflow-hidden bg-forest-900 text-white">
-        <CmsImage media={d.heroMedia} alt={d.heroMedia?.alt || d.name} priority wrapperClassName="absolute inset-0 -z-10" className="animate-ken-burns" />
+        <CmsImage media={heroImage} alt={heroImage.alt || d.name} preload wrapperClassName="absolute inset-0 -z-10" className="animate-ken-burns" />
         <div className="absolute inset-0 -z-10 bg-gradient-to-t from-forest-950 via-forest-950/40 to-forest-950/20" />
         <div className="container-page pb-14 pt-40">
           <Breadcrumbs locale={locale} items={[{ label: tc("home"), href: "/" }, { label: listing?.page.title ?? "", href: "/destinations" }, { label: d.name }]} />
@@ -67,7 +70,7 @@ export default async function DestinationDetailPage({ params }: Props) {
         </div>
       </section>
 
-      <div className="container-page grid gap-12 py-14 lg:grid-cols-[1fr_340px]">
+      <div className="container-page grid grid-cols-1 gap-12 py-14 lg:grid-cols-[1fr_340px]">
         <div className="min-w-0">
           <DetailSection>
             <Markdown content={d.description} />
@@ -114,9 +117,9 @@ export default async function DestinationDetailPage({ params }: Props) {
       {tours?.items.length ? (
         <section className="py-14">
           <div className="container-page">
-            <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
-              {tours.items.map((tour) => (
-                <TourCard key={tour._id} tour={tour} />
+            <div className="grid grid-cols-1 gap-7 sm:grid-cols-2 lg:grid-cols-3">
+              {tours.items.map((tour, _i, all) => (
+                <TourCard key={tour._id} tour={tour} hideDescription={sharedDescriptions(all).has(tour.shortDescription?.trim() ?? "")} />
               ))}
             </div>
           </div>
@@ -129,7 +132,7 @@ export default async function DestinationDetailPage({ params }: Props) {
         <section className="bg-sand-100 py-16">
           <div className="container-page">
             <h2 className="mb-10 text-3xl text-forest-900">{t("related")}</h2>
-            <div className="grid gap-5 sm:grid-cols-3">
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
               {data.related.map((r) => (
                 <DestinationCard key={r._id} destination={r} />
               ))}

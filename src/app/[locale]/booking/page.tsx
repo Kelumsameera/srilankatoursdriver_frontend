@@ -35,7 +35,7 @@ export default async function BookingPage({ params, searchParams }: Props) {
     <>
       <PageHero title={data?.page.title ?? ""} subtitle={data?.page.subtitle} image={data?.page.heroImage} />
       <section className="py-14 sm:py-20">
-        <div className="container-page grid gap-10 lg:grid-cols-[1fr_340px]">
+        <div className="container-page grid grid-cols-1 gap-10 lg:grid-cols-[1fr_340px]">
           <BookingForm
             tours={(tours?.items ?? []).map((x) => ({ id: x._id, label: x.title }))}
             excursions={(excursions?.items ?? []).map((x) => ({ id: x._id, label: x.title }))}

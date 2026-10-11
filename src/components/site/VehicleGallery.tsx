@@ -29,7 +29,7 @@ export function VehicleGallery({ images, name, labels }: { images: MediaAsset[];
           key={current.url}
           media={current}
           alt={current.alt || name}
-          priority={index === 0}
+          preload={index === 0}
           sizes="(min-width: 1024px) 66vw, 100vw"
           wrapperClassName="absolute inset-0"
         />

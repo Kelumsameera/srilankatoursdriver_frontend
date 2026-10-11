@@ -112,7 +112,7 @@ export default function RolesPage() {
           )
         }
       />
-      <div className="grid gap-6 lg:grid-cols-[260px_1fr]">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[260px_1fr]">
         <Card>
           <ul className="space-y-1">
             {list.map((r) => (

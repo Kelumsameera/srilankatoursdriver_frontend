@@ -1,5 +1,9 @@
 {
   "common": {
+    "pauseSlideshow": "Pause slideshow",
+    "playSlideshow": "Play slideshow",
+    "illustrativeImage": "Illustrative vehicle image",
+    "illustrativeLabel": "Illustrative image",
     "bookNow": "Book now",
     "viewDetails": "View details",
     "readMore": "Read more",
@@ -35,6 +39,7 @@
     "home": "Home"
   },
   "nav": {
+    "more": "More",
     "openMenu": "Open menu",
     "closeMenu": "Close menu"
   },
@@ -179,7 +184,7 @@
     "luggage": "Luggage",
     "comfort": "Comfort",
     "overview": "Overview",
-    "related": "More vehicles",
+    "related": "More vehicles",
     "fleetDesc": "We provide the best multilingual drivers for",
     "fleetCount": "{count, plural, one {# vehicle} other {# vehicles}}",
     "otherType": "Other vehicles",
@@ -330,7 +335,7 @@
   },
   "preview": {
     "banner": "Preview mode – disabled sections are visible. This page is not public."
-  },
+  },
   "about": {
     "title": "About Sri Lanka Tours Driver",
     "label": "About Us",

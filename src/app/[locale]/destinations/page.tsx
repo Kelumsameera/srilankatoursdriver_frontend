@@ -6,6 +6,7 @@ import { EmptyState, PageHero } from "@/components/ui/misc";
 import { DestinationCard } from "@/components/cards/cards";
 import { CategoryFilter, Pagination, pageParam, param, type SearchParams } from "@/components/site/listing";
 import { PageRenderer } from "@/components/sections/PageRenderer";
+import { DestinationExplorer } from "@/components/sections/DestinationExplorer";
 import { TransferRates } from "@/components/site/TransferRates";
 
 type Props = { params: Promise<{ locale: string }>; searchParams: SearchParams };
@@ -31,12 +32,16 @@ export default async function DestinationsPage({ params, searchParams }: Props) 
   ]);
   return (
     <>
-      <PageHero title={data?.page.title ?? ""} subtitle={data?.page.subtitle} image={data?.page.heroImage} />
+      <PageHero title={data?.page.title ?? ""} subtitle={data?.page.subtitle} image={data?.page.heroImage} banner="destinations" />
       <section className="py-16 sm:py-20">
         <div className="container-page">
           <CategoryFilter basePath="/destinations" categories={categories ?? []} active={category} />
           {list?.items.length ? (
-            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4" data-testid="destination-list">
+            <DestinationExplorer destinations={list.items} labels={{ details: t("viewDetails"), list: data?.page.title ?? "" }} />
+          ) : null}
+          {list?.items.length ? (
+            // Phones / tablets keep the card grid; large screens use the explorer above.
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:hidden" data-testid="destination-list">
               {list.items.map((d) => (
                 <DestinationCard key={d._id} destination={d} />
               ))}
