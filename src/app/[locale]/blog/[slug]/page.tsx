@@ -10,6 +10,7 @@ import { Markdown } from "@/components/ui/Markdown";
 import { Badge } from "@/components/ui/misc";
 import { BlogCard } from "@/components/cards/cards";
 import { Breadcrumbs } from "@/components/site/Breadcrumbs";
+import { travelImageFor } from "@/lib/editorial-images";
 
 type Props = { params: Promise<{ locale: string; slug: string }> };
 
@@ -18,12 +19,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const data = await getDetail("blog", slug, locale);
   if (!data) return {};
   const p = data.item;
+  const image = p.coverImage?.url && p.coverImage.resourceType !== "video" ? p.coverImage : travelImageFor(`${p.slug} ${p.title} ${p.category?.name ?? ""}`);
   return buildMetadata({
     locale,
     path: `/blog/${p.slug}`,
     title: p.title,
     description: p.excerpt || p.content,
-    image: p.coverImage,
+    image,
     seo: p.seo,
     type: "article",
     publishedTime: p.publishDate,
@@ -42,6 +44,9 @@ export default async function BlogPostPage({ params }: Props) {
   ]);
   if (!data) notFound();
   const post = data.item;
+  const coverImage = post.coverImage?.url && post.coverImage.resourceType !== "video"
+    ? post.coverImage
+    : travelImageFor(`${post.slug} ${post.title} ${post.category?.name ?? ""}`);
   const loc = await getLocale();
   const schema = {
     "@context": "https://schema.org",
@@ -51,7 +56,7 @@ export default async function BlogPostPage({ params }: Props) {
     datePublished: post.publishDate,
     dateModified: post.updatedAt ?? post.publishDate,
     url: `${SITE_URL}/${locale}/blog/${post.slug}`,
-    ...(post.coverImage?.url ? { image: post.coverImage.url } : {}),
+    ...(coverImage.url ? { image: coverImage.url } : {}),
     author: { "@type": post.author ? "Person" : "Organization", name: post.author || settings?.businessName },
     publisher: settings ? { "@type": "Organization", name: settings.businessName } : undefined,
   };
@@ -60,7 +65,7 @@ export default async function BlogPostPage({ params }: Props) {
     <article>
       <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(schema)} />
       <header className="relative isolate overflow-hidden bg-forest-900 text-white">
-        <CmsImage media={post.coverImage} alt={post.coverImage?.alt || post.title} priority wrapperClassName="absolute inset-0 -z-10 opacity-70" />
+        <CmsImage media={coverImage} alt={coverImage.alt || post.title} preload wrapperClassName="absolute inset-0 -z-10 opacity-70" />
         <div className="absolute inset-0 -z-10 bg-gradient-to-t from-forest-950 via-forest-950/60 to-forest-950/30" />
         <div className="container-page max-w-4xl pb-14 pt-40 sm:pt-48">
           <Breadcrumbs locale={locale} items={[{ label: tc("home"), href: "/" }, { label: listing?.page.title ?? "", href: "/blog" }, { label: post.title }]} />
@@ -90,7 +95,7 @@ export default async function BlogPostPage({ params }: Props) {
         <section className="bg-sand-100 py-16">
           <div className="container-page">
             <h2 className="mb-10 text-3xl text-forest-900">{t("related")}</h2>
-            <div className="grid gap-10 md:grid-cols-3">
+            <div className="grid grid-cols-1 gap-10 md:grid-cols-3">
               {data.related.map((p) => (
                 <BlogCard key={p._id} post={p} />
               ))}

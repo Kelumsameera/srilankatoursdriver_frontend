@@ -119,7 +119,7 @@ function Editor() {
       ) : entity.error ? (
         <ErrorBlock message={errorMessage(entity.error)} />
       ) : (
-        <div className="grid gap-6 xl:grid-cols-[1fr_300px]">
+        <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1fr_300px]">
           <Card title={`English → ${meta?.name ?? locale}`}>
             {paths.length === 0 ? (
               <p className="text-sm text-slate-500">This item has no translatable text yet.</p>

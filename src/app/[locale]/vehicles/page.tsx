@@ -54,7 +54,7 @@ export default async function VehiclesPage({ params }: Props) {
 
   return (
     <>
-      <PageHero title={data?.page.title ?? ""} subtitle={data?.page.subtitle} image={data?.page.heroImage}>
+      <PageHero title={data?.page.title ?? ""} subtitle={data?.page.subtitle} image={data?.page.heroImage} banner="vehicles">
         {spoken.length > 1 && (
           <p className="mt-4 text-sm tracking-wide text-white/70">
             {tv("fleetDesc")}{" "}
@@ -72,7 +72,7 @@ export default async function VehiclesPage({ params }: Props) {
                   <div className="h-px flex-1 bg-forest-950/10" aria-hidden />
                   <span className="font-medium tracking-[0.2em] text-muted">{tv("fleetCount", { count: g.items.length })}</span>
                 </div>
-                <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+                <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
                   {g.items.map((v) => (
                     <VehicleCard key={v._id} vehicle={v} />
                   ))}

@@ -3,7 +3,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getCategories, getList, getPage, getSiteSettings } from "@/lib/api/server";
 import { buildMetadata } from "@/lib/seo";
 import { PageHero, EmptyState } from "@/components/ui/misc";
-import { TourCard } from "@/components/cards/cards";
+import { TourCard, sharedDescriptions } from "@/components/cards/cards";
 import { CategoryFilter, Pagination, pageParam, param, type SearchParams } from "@/components/site/listing";
 import { PageRenderer } from "@/components/sections/PageRenderer";
 
@@ -31,14 +31,14 @@ export default async function ToursPage({ params, searchParams }: Props) {
 
   return (
     <>
-      <PageHero title={data?.page.title ?? ""} subtitle={data?.page.subtitle} image={data?.page.heroImage} />
+      <PageHero title={data?.page.title ?? ""} subtitle={data?.page.subtitle} image={data?.page.heroImage} banner="tours" />
       <section className="py-16 sm:py-20">
         <div className="container-page">
           <CategoryFilter basePath="/tours" categories={categories ?? []} active={category} />
           {list?.items.length ? (
-            <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3" data-testid="tour-list">
-              {list.items.map((tour) => (
-                <TourCard key={tour._id} tour={tour} />
+            <div className="grid grid-cols-1 gap-7 sm:grid-cols-2 lg:grid-cols-3" data-testid="tour-list">
+              {list.items.map((tour, _i, all) => (
+                <TourCard key={tour._id} tour={tour} hideDescription={sharedDescriptions(all).has(tour.shortDescription?.trim() ?? "")} />
               ))}
             </div>
           ) : (

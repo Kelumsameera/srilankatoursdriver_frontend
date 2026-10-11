@@ -1,5 +1,9 @@
 {
   "common": {
+    "pauseSlideshow": "暂停幻灯片",
+    "playSlideshow": "播放幻灯片",
+    "illustrativeImage": "车辆示意图",
+    "illustrativeLabel": "示意图",
     "bookNow": "立即预订",
     "viewDetails": "查看详情",
     "readMore": "阅读更多",
@@ -34,7 +38,11 @@
     "enquire": "咨询",
     "home": "首页"
   },
-  "nav": { "openMenu": "打开菜单", "closeMenu": "关闭菜单" },
+  "nav": {
+    "more": "更多",
+    "openMenu": "打开菜单",
+    "closeMenu": "关闭菜单"
+  },
   "account": {
     "signIn": "登录",
     "signOut": "退出登录",
@@ -176,7 +184,7 @@
     "luggage": "行李",
     "comfort": "舒适度",
     "overview": "概览",
-    "related": "更多车辆",
+    "related": "更多车辆",
     "fleetDesc": "我们提供最优秀的多语种司机，服务于",
     "fleetCount": "{count} 辆车",
     "otherType": "其他车辆",
@@ -300,8 +308,14 @@
     "readOnTripadvisor": "在 TripAdvisor 查看我们的评价",
     "basedOn": "{count, plural, other {基于 # 条评价}}"
   },
-  "gallery": { "photos": "照片", "videos": "视频" },
-  "blog": { "by": "作者：{author}", "related": "更多文章" },
+  "gallery": {
+    "photos": "照片",
+    "videos": "视频"
+  },
+  "blog": {
+    "by": "作者：{author}",
+    "related": "更多文章"
+  },
   "errors": {
     "notFoundTitle": "页面未找到",
     "notFoundText": "您访问的页面不存在或已被移动。",
@@ -319,7 +333,9 @@
     "after": "必须晚于开始日期",
     "select": "请选择"
   },
-  "preview": { "banner": "预览模式——已停用的版块可见。此页面未公开。" },
+  "preview": {
+    "banner": "预览模式——已停用的版块可见。此页面未公开。"
+  },
   "about": {
     "title": "关于 Sri Lanka Tours Driver",
     "label": "关于我们",

@@ -22,11 +22,20 @@ export interface CloudinaryOptions {
   dpr?: "auto" | number;
 }
 
+/** Widths pre-rendered next to each bundled photo in /public/images (name-640.webp, name-1080.webp, name.webp = full size). */
+const LOCAL_WIDTHS = [640, 1080];
+
+/** Picks the smallest pre-rendered variant of a bundled /images/*.webp that covers the requested width. */
+export function localImageUrl(src: string, width: number): string {
+  if (!/^\/images\/[^?#]+\.webp$/.test(src)) return `${src}${src.includes("?") ? "&" : "?"}w=${width}`;
+  const w = LOCAL_WIDTHS.find((x) => x >= width);
+  return w ? src.replace(/\.webp$/, `-${w}.webp`) : src;
+}
+
 export function cloudinaryUrl(src: string, opts: CloudinaryOptions = {}): string {
-  if (!src || !src.includes("res.cloudinary.com") || !src.includes("/upload/")) {
-    // next/image requires the loader to use the width; harmless for local/static files.
-    return src.startsWith("/") && opts.width ? `${src}${src.includes("?") ? "&" : "?"}w=${opts.width}` : src;
-  }
+  // next/image requires the loader to use the width, so local files get a sized variant or a ?w= hint.
+  if (src.startsWith("/") && opts.width) return localImageUrl(src, opts.width);
+  if (!src || !src.includes("res.cloudinary.com") || !src.includes("/upload/")) return src;
   const parts = [
     `f_${opts.format ?? "auto"}`,
     `q_${opts.quality ?? "auto"}`,

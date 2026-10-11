@@ -41,7 +41,7 @@ export function ContactForm() {
   if (sent) return <SuccessPanel title={tb("successTitle")} text={t("success")} />;
 
   return (
-    <form onSubmit={onSubmit} noValidate className="relative grid gap-5 rounded-3xl bg-white p-6 shadow-card sm:grid-cols-2 sm:p-10" data-testid="contact-form">
+    <form onSubmit={onSubmit} noValidate className="relative grid grid-cols-1 gap-5 rounded-3xl bg-white p-6 shadow-card sm:grid-cols-2 sm:p-10" data-testid="contact-form">
       <h2 className="text-2xl text-forest-900 sm:col-span-2">{t("formTitle")}</h2>
       <Honeypot register={register as never} />
       <Field label={tb("name")} htmlFor="cName" required error={errors.name?.message}>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useForm, useWatch, type FieldPath } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useLocale, useTranslations } from "next-intl";
@@ -9,7 +9,8 @@ import { clean, tailorMadeSchema, type TailorMadeValues } from "@/validations/pu
 import { submitPublic } from "@/lib/api/public-client";
 import { cn, formatDate } from "@/lib/utils";
 import { buttonClass } from "@/components/ui/Button";
-import { Field, Honeypot, Input, Select, SuccessPanel, Textarea, applyServerErrors, failureKey, useSubmitLock } from "./fields";
+import { Field, Honeypot, Input, Select, SuccessPanel, Textarea, applyServerErrors, failureKey, failureType, useSubmitLock } from "./fields";
+import { track } from "@/lib/analytics";
 import { useValidationMessages } from "./useValidationMessages";
 
 interface Option {
@@ -93,9 +94,15 @@ export function TailorMadeForm({ destinations, vehicles, defaultCurrency = "USD"
   const current = STEPS[step];
   const values = useWatch({ control }) as TailorMadeValues;
 
+  const started = useRef(false);
   const next = async () => {
     const ok = await trigger(STEP_FIELDS[current]);
     if (ok) {
+      // Counted once, when the visitor completes the first step (not on mere page views).
+      if (!started.current) {
+        started.current = true;
+        track("start_trip_inquiry", { form: "tailor_made" });
+      }
       setStep((s) => Math.min(s + 1, STEPS.length - 1));
       document.getElementById("tm-top")?.scrollIntoView({ behavior: "smooth", block: "start" });
     }
@@ -114,13 +121,16 @@ export function TailorMadeForm({ destinations, vehicles, defaultCurrency = "USD"
     async (v) => {
       setFailure(null);
       const payload = clean({ ...v, locale, vehicle: { ...v.vehicle, vehicleRef: v.vehicle.vehicleRef || undefined } });
+      track("submit_trip_inquiry", { form: "tailor_made" });
       const res = await submitPublic<{ reference: string }>("/tailor-made-enquiries", payload);
       if (res.ok && res.data) {
+        track("trip_inquiry_success", { form: "tailor_made" });
         setReference(res.data.reference);
         document.getElementById("tm-top")?.scrollIntoView({ behavior: "smooth" });
       } else {
         applyServerErrors(res.errors, setError as never);
         setFailure(tb(failureKey(res)));
+        track("trip_inquiry_error", { form: "tailor_made", error_type: failureType(res) });
         // Server-side field errors: jump back to the step that contains the first one.
         const bad = STEPS.findIndex((s) =>
           STEP_FIELDS[s].some((f) => res.errors.some((er) => er.path === f || er.path.startsWith(`${f}.`) || f.startsWith(`${er.path}.`))),
@@ -146,32 +156,39 @@ export function TailorMadeForm({ destinations, vehicles, defaultCurrency = "USD"
 
   return (
     <div id="tm-top" className="scroll-mt-28">
-      <div className="mb-8">
-        <div className="mb-3 flex items-center justify-between text-sm">
-          <span className="font-medium text-forest-900">{t(`steps.${current}`)}</span>
-          <span className="text-muted">{t("stepOf", { current: step + 1, total: STEPS.length })}</span>
-        </div>
-        <div className="h-1.5 overflow-hidden rounded-full bg-sand-200" role="progressbar" aria-valuemin={1} aria-valuemax={STEPS.length} aria-valuenow={step + 1}>
-          <div className="h-full rounded-full bg-gold-500 transition-all duration-500" style={{ width: `${((step + 1) / STEPS.length) * 100}%` }} />
-        </div>
-        <ol className="mt-4 hidden flex-wrap gap-2 lg:flex">
+      {/* Stepper (design): numbered circles on a line – done steps are checked and clickable, the current one is gold. */}
+      <div className="mb-10">
+        <ol className="relative flex items-center justify-between" aria-label={t("stepOf", { current: step + 1, total: STEPS.length })}>
+          <span className="absolute inset-x-3 top-1/2 -z-0 h-px -translate-y-1/2 bg-sand-200" aria-hidden />
+          <span
+            className="absolute start-3 top-1/2 h-0.5 -translate-y-1/2 bg-gold-500 transition-all duration-500"
+            style={{ width: `calc((100% - 1.5rem) * ${step / (STEPS.length - 1)})` }}
+            aria-hidden
+          />
           {STEPS.map((s, i) => (
-            <li key={s}>
+            <li key={s} className="relative">
               <button
                 type="button"
                 onClick={() => i < step && setStep(i)}
                 aria-current={i === step ? "step" : undefined}
+                aria-label={`${i + 1}. ${t(`steps.${s}`)}`}
                 disabled={i > step}
                 className={cn(
-                  "rounded-full px-3 py-1 text-xs",
-                  i === step ? "bg-forest-800 text-white" : i < step ? "bg-forest-100 text-forest-800 hover:bg-forest-50" : "bg-sand-100 text-muted",
+                  "flex h-6 w-6 items-center justify-center rounded-full text-[0.65rem] font-semibold ring-4 ring-sand-50 transition-colors sm:h-8 sm:w-8 sm:text-xs",
+                  i === step ? "bg-gold-500 text-forest-950" : i < step ? "bg-forest-800 text-white hover:bg-forest-700" : "bg-white text-muted ring-sand-50 [box-shadow:inset_0_0_0_1px_var(--color-sand-200)]",
                 )}
               >
-                {i + 1}. {t(`steps.${s}`)}
+                {i < step ? <Check className="h-3 w-3 sm:h-3.5 sm:w-3.5" aria-hidden /> : i + 1}
               </button>
             </li>
           ))}
         </ol>
+        <p className="mt-5 flex items-baseline justify-between gap-4">
+          <span className="font-display text-2xl text-forest-900">
+            {step + 1}. {t(`steps.${current}`)}
+          </span>
+          <span className="shrink-0 text-sm text-muted">{t("stepOf", { current: step + 1, total: STEPS.length })}</span>
+        </p>
       </div>
 
       <form
@@ -186,7 +203,7 @@ export function TailorMadeForm({ destinations, vehicles, defaultCurrency = "USD"
         <h2 className="mb-6 text-2xl text-forest-900">{t(`steps.${current}`)}</h2>
 
         {current === "personal" && (
-          <div className="grid gap-5 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
             <Field label={t("firstName")} htmlFor="firstName" required error={e.personal?.firstName?.message}>
               <Input id="firstName" autoComplete="given-name" aria-invalid={!!e.personal?.firstName} {...register("personal.firstName")} />
             </Field>
@@ -209,7 +226,7 @@ export function TailorMadeForm({ destinations, vehicles, defaultCurrency = "USD"
         )}
 
         {current === "dates" && (
-          <div className="grid gap-5 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
             <Field label={t("arrivalDate")} htmlFor="arrivalDate" required error={e.travel?.arrivalDate?.message}>
               <Input id="arrivalDate" type="date" aria-invalid={!!e.travel?.arrivalDate} {...register("travel.arrivalDate")} />
             </Field>
@@ -224,7 +241,7 @@ export function TailorMadeForm({ destinations, vehicles, defaultCurrency = "USD"
         )}
 
         {current === "travelers" && (
-          <div className="grid gap-5 sm:grid-cols-3">
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
             <Field label={tb("adults")} htmlFor="tmAdults" required error={e.travelers?.adults?.message}>
               <Input id="tmAdults" type="number" min={1} {...register("travelers.adults", { valueAsNumber: true })} />
             </Field>
@@ -241,7 +258,7 @@ export function TailorMadeForm({ destinations, vehicles, defaultCurrency = "USD"
         )}
 
         {(current === "arrival" || current === "departure") && (
-          <div className="grid gap-5 sm:grid-cols-3">
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
             <Field label={t("airport")} htmlFor={`${current}Airport`} className="sm:col-span-3">
               <Input id={`${current}Airport`} {...register(`${current}.airport`)} />
             </Field>
@@ -301,7 +318,7 @@ export function TailorMadeForm({ destinations, vehicles, defaultCurrency = "USD"
         )}
 
         {current === "hotels" && (
-          <div className="grid gap-5 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
             <fieldset className="sm:col-span-2">
               <legend className="mb-3 text-sm font-medium text-forest-900">{t("hotelCategory")}</legend>
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
@@ -323,7 +340,7 @@ export function TailorMadeForm({ destinations, vehicles, defaultCurrency = "USD"
         )}
 
         {current === "vehicle" && (
-          <div className="grid gap-5 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
             <Field label={t("vehiclePreference")} htmlFor="vehicleRef">
               <Select id="vehicleRef" {...register("vehicle.vehicleRef")}>
                 <option value="">{t("noPreference")}</option>
@@ -341,7 +358,7 @@ export function TailorMadeForm({ destinations, vehicles, defaultCurrency = "USD"
         )}
 
         {current === "budget" && (
-          <div className="grid gap-5 sm:grid-cols-3">
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
             <Field label={t("budgetAmount")} htmlFor="budgetAmount" error={e.budget?.amount?.message}>
               <Input id="budgetAmount" type="number" min={0} step={50} {...register("budget.amount", { valueAsNumber: true })} />
             </Field>

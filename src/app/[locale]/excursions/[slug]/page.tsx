@@ -12,6 +12,7 @@ import { SocialIcons } from "@/components/ui/icons";
 import { ExcursionCard } from "@/components/cards/cards";
 import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 import { CheckList, DetailSection, FactList, MediaStrip } from "@/components/site/DetailBits";
+import { travelImageFor } from "@/lib/editorial-images";
 
 type Props = { params: Promise<{ locale: string; slug: string }> };
 
@@ -20,7 +21,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const data = await getDetail("excursions", slug, locale);
   if (!data) return {};
   const e = data.item;
-  return buildMetadata({ locale, path: `/excursions/${e.slug}`, title: e.title, description: e.shortDescription || e.description, image: e.heroMedia, seo: e.seo });
+  const image = e.heroMedia?.url && e.heroMedia.resourceType !== "video" ? e.heroMedia : travelImageFor(`${e.slug} ${e.title} ${e.location ?? ""} ${e.destination?.name ?? ""}`);
+  return buildMetadata({ locale, path: `/excursions/${e.slug}`, title: e.title, description: e.shortDescription || e.description, image, seo: e.seo });
 }
 
 export default async function ExcursionDetailPage({ params }: Props) {
@@ -36,12 +38,15 @@ export default async function ExcursionDetailPage({ params }: Props) {
   ]);
   if (!data) notFound();
   const e = data.item;
+  const heroImage = e.heroMedia?.url && e.heroMedia.resourceType !== "video"
+    ? e.heroMedia
+    : travelImageFor(`${e.slug} ${e.title} ${e.location ?? ""} ${e.destination?.name ?? ""}`);
   const price = formatPrice(e.price, e.currency, await getLocale());
 
   return (
     <>
       <section className="relative isolate overflow-hidden bg-forest-900 text-white">
-        <CmsImage media={e.heroMedia} alt={e.heroMedia?.alt || e.title} priority wrapperClassName="absolute inset-0 -z-10" className="animate-ken-burns" />
+        <CmsImage media={heroImage} alt={heroImage.alt || e.title} preload wrapperClassName="absolute inset-0 -z-10" className="animate-ken-burns" />
         <div className="absolute inset-0 -z-10 bg-gradient-to-t from-forest-950 via-forest-950/55 to-forest-950/25" />
         <div className="container-page pb-14 pt-40 sm:pt-52">
           <Breadcrumbs locale={locale} items={[{ label: tc("home"), href: "/" }, { label: listing?.page.title ?? "", href: "/excursions" }, { label: e.title }]} />
@@ -58,7 +63,7 @@ export default async function ExcursionDetailPage({ params }: Props) {
           </div>
         </div>
       </section>
-      <div className="container-page grid gap-12 py-14 lg:grid-cols-[1fr_340px]">
+      <div className="container-page grid grid-cols-1 gap-12 py-14 lg:grid-cols-[1fr_340px]">
         <div className="min-w-0">
           <DetailSection>
             <Markdown content={e.description} />
@@ -99,7 +104,7 @@ export default async function ExcursionDetailPage({ params }: Props) {
         <section className="bg-sand-100 py-16">
           <div className="container-page">
             <h2 className="mb-10 text-3xl text-forest-900">{t("related")}</h2>
-            <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-7 sm:grid-cols-2 lg:grid-cols-3">
               {data.related.map((r) => (
                 <ExcursionCard key={r._id} excursion={r} />
               ))}

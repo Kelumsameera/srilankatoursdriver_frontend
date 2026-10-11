@@ -18,6 +18,9 @@ export function alternates(path: string, locale: string) {
   };
 }
 
+/** AI-generated fallback art (public/images/editorial) must never be used as a link-preview "photo". */
+const isEditorial = (url: string) => url.startsWith("/images/editorial/");
+
 function ogImage(media?: MediaAsset | null) {
   if (!media?.url) return undefined;
   // Wide logos are padded (not cropped) so the whole mark stays visible in link previews.
@@ -60,7 +63,7 @@ export async function buildMetadata(input: BuildInput): Promise<Metadata> {
     ? s.ogImage
     : route?.ogImage?.url
       ? route.ogImage
-      : input.image?.url
+      : input.image?.url && !isEditorial(input.image.url)
         ? input.image
         : global?.ogImage?.url
           ? global.ogImage

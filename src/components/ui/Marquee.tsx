@@ -34,6 +34,8 @@ export function Marquee<T>({
         className={cn("shrink-0 pe-6", copy && "motion-reduce:hidden", itemClassName)}
         aria-hidden={copy || undefined}
         inert={copy || undefined}
+        // The loop copy is visual only – keep it out of search snippets and text extraction.
+        data-nosnippet={copy || undefined}
       >
         {render(item)}
       </li>

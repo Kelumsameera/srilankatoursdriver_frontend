@@ -1,6 +1,6 @@
-import type { ComponentType } from "react";
-import { getTranslations } from "next-intl/server";
-import { Check, ExternalLink, MapPin, Phone, Mail, Clock, Star } from "lucide-react";
+import type { ComponentType, CSSProperties } from "react";
+import { getLocale, getTranslations } from "next-intl/server";
+import { ArrowRight, Calendar, Check, ExternalLink, Landmark, MapPin, Mountain, PawPrint, Phone, Mail, Clock, Snowflake, Star, TreePalm } from "lucide-react";
 import type {
   BlogPost,
   Destination,
@@ -9,6 +9,7 @@ import type {
   GalleryItem,
   GuestShort,
   HeroSlide,
+  MediaAsset,
   PageSection,
   Review,
   SiteSettings,
@@ -16,25 +17,49 @@ import type {
   TripAdvisorSummary,
   Vehicle,
 } from "@/types/cms";
-import { cn, telLink, whatsappLink } from "@/lib/utils";
+import { cn, formatPrice, telLink, whatsappLink } from "@/lib/utils";
 import { ButtonLink, type ButtonVariant } from "@/components/ui/Button";
 import { CmsImage } from "@/components/ui/CmsImage";
+import { CmsLink } from "@/components/ui/CmsLink";
 import { Markdown } from "@/components/ui/Markdown";
 import { Section, SectionHeading, Stars } from "@/components/ui/misc";
 import { FeatureIcon, SocialIcons } from "@/components/ui/icons";
-import { BlogCard, DestinationCard, ExcursionCard, ReviewCard, TourCard, VehicleCard } from "@/components/cards/cards";
+import { BlogCard, DestinationCard, ExcursionCard, ReviewCard, TourCard, VehicleCard, sharedDescriptions } from "@/components/cards/cards";
 import { HeroSlider } from "./HeroSlider";
 import { GalleryGrid } from "@/components/gallery/GalleryGrid";
 import { GuestShortsGrid } from "./GuestShorts";
 import { FaqList } from "./FaqList";
 import { Marquee } from "@/components/ui/Marquee";
+import { Botanical, GoldText, PaperEdge } from "./home/Decor";
+import { FernBranch, FoliageCluster } from "./home/Foliage";
+import { editorialImages } from "@/lib/editorial-images";
 
 interface Ctx {
   settings: SiteSettings | null;
   preview?: boolean;
+  /** Ids of tours shown by category-filtered tour sections on this page. */
+  categorisedTours?: Set<string>;
+  /** The page's "Why travel with us" items – also shown as the hero's selling points. */
+  highlights?: NonNullable<PageSection["items"]>;
+  /** Real CMS photos from this page (destinations, tours) for decorative collages. */
+  photos?: MediaAsset[];
+  /** The page opens with a hero, so the highlights are shown in the trust row under it. */
+  hasHero?: boolean;
+  /** A real coastal/landscape photo from this page for the closing call to action. */
+  ctaPhoto?: MediaAsset;
+  /** Real TripAdvisor rating of the business (only when the TripAdvisor section returned one). */
+  rating?: { value: number; count: number };
 }
 
 const isDark = (theme?: string) => theme === "forest" || theme === "dark";
+
+/** Interest tiles of the tailor-made section (keys of `tailorMade.interests`). */
+const INTEREST_TILES = [
+  { key: "culture", icon: Landmark },
+  { key: "beach", icon: TreePalm },
+  { key: "wildlife", icon: PawPrint },
+  { key: "adventure", icon: Mountain },
+] as const;
 
 function Buttons({ section, ctx, light }: { section: PageSection; ctx: Ctx; light?: boolean }) {
   if (!section.buttons?.length) return null;
@@ -70,8 +95,33 @@ function Heading({ section, light, withAction = true, ctx }: { section: PageSect
       badge={section.badge}
       light={light}
       align={withAction && section.buttons?.length ? "left" : "center"}
-      action={withAction ? <Buttons section={section} ctx={ctx} light={light} /> : undefined}
+      action={withAction ? <HeadingLinks section={section} ctx={ctx} light={light} /> : undefined}
     />
+  );
+}
+
+/** Section-heading actions as quiet text links ("View all destinations →"), as in the design. */
+function HeadingLinks({ section, ctx, light }: { section: PageSection; ctx: Ctx; light?: boolean }) {
+  const links = (section.buttons ?? []).filter((b) => b.label && b.url);
+  if (!links.length) return null;
+  return (
+    <div className="flex flex-wrap gap-x-6 gap-y-2">
+      {links.map((b, i) => (
+        <CmsLink
+          key={`${b.label}-${i}`}
+          href={b.url}
+          newTab={b.openInNewTab}
+          whatsapp={{ phone: ctx.settings?.whatsapp, message: ctx.settings?.whatsappMessage }}
+          className={cn(
+            "group/link inline-flex items-center gap-2 border-b pb-0.5 text-sm font-semibold transition-colors",
+            light ? "border-gold-400/60 text-white hover:text-gold-400" : "border-forest-800/30 text-forest-800 hover:border-gold-500 hover:text-gold-600",
+          )}
+        >
+          {b.label}
+          <ArrowRight className="h-4 w-4 transition-transform group-hover/link:translate-x-1 rtl:rotate-180" aria-hidden />
+        </CmsLink>
+      ))}
+    </div>
   );
 }
 
@@ -95,15 +145,123 @@ function TeamPhoto({ person, className, sizes }: { person: SectionItem; classNam
   );
 }
 
+/** Trust row under the hero: the page's "Why travel with us" items as gold line icons (design: below the hero). */
+function TrustHighlights({ items }: { items: SectionItem[] }) {
+  return (
+    <div className="relative z-10 bg-sand-50">
+      <ul className="container-page grid grid-cols-2 gap-y-4 py-5 sm:py-6 lg:grid-cols-4 lg:divide-x lg:divide-sand-200 rtl:lg:divide-x-reverse">
+        {items.map((item, i) => (
+          <li key={`${item.title}-${i}`} className="flex min-w-0 items-center gap-3 px-2 lg:justify-center lg:px-5">
+            <FeatureIcon name={item.icon} className="h-7 w-7 shrink-0 text-gold-600 sm:h-8 sm:w-8" />
+            <span className="min-w-0 text-sm font-semibold leading-tight text-forest-900 [overflow-wrap:anywhere] hyphens-auto">{item.title}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+/** Three overlapping photos (design: one large photo with two smaller cards laid over it at different angles). */
+function OverlapGallery({ photos }: { photos: MediaAsset[] }) {
+  const [a, b, c] = photos;
+  return (
+    <div className="relative mx-auto w-full max-w-xl pb-12 pt-4 sm:pb-20 sm:pt-6" aria-hidden>
+      <div className="relative z-0 w-[74%] -rotate-2 rounded-2xl bg-white p-2 shadow-card sm:p-2.5">
+        <CmsImage media={a} alt="" sizes="(min-width: 1024px) 32vw, 72vw" wrapperClassName="aspect-[4/5] rounded-xl" />
+      </div>
+      {b && (
+        <div className="absolute end-0 top-0 z-10 w-[48%] rotate-3 rounded-2xl bg-white p-2 shadow-card sm:p-2.5">
+          <CmsImage media={b} alt="" sizes="(min-width: 1024px) 20vw, 46vw" wrapperClassName="aspect-[4/3] rounded-xl" />
+        </div>
+      )}
+      {c && (
+        <div className="absolute bottom-0 end-[3%] z-20 w-[52%] -rotate-[4deg] rounded-2xl bg-white p-2 shadow-card sm:p-2.5">
+          <CmsImage media={c} alt="" sizes="(min-width: 1024px) 22vw, 50vw" wrapperClassName="aspect-[4/3] rounded-xl" />
+        </div>
+      )}
+    </div>
+  );
+}
+
+/** Wavy vertical edge between a full-bleed photo and the content beside it (colour = the section background). */
+function OrganicEdge({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 64 800" preserveAspectRatio="none" aria-hidden className={cn("pointer-events-none absolute inset-y-0 h-full w-10 xl:w-16", className)}>
+      <path fill="currentColor" d="M64 0H38C22 70 46 130 30 200s-30 120-8 200 28 130 8 200-18 140 8 200h26Z" />
+    </svg>
+  );
+}
+
+/** Distinct photos (by URL), in order. */
+const distinctPhotos = (list: (MediaAsset | null | undefined)[], max: number) => {
+  const seen = new Set<string>();
+  return list
+    .filter((m): m is MediaAsset => Boolean(m?.url && m.resourceType !== "video" && !seen.has(m.url) && seen.add(m.url)))
+    .slice(0, max);
+};
+
+/** Dark-green "featured tour" band: one tour presented large (popular-tours sections with the Split layout). */
+async function FeaturedTourBand({ section, tour }: { section: PageSection; tour: Tour }) {
+  const [t, tt, locale] = await Promise.all([getTranslations("common"), getTranslations("tour"), getLocale()]);
+  const price = formatPrice(tour.price, tour.currency, locale);
+  const stops = Array.from(new Set((tour.itinerary ?? []).map((d) => d.location?.trim()).filter((x): x is string => Boolean(x)))).slice(0, 4);
+  return (
+    <section className="relative overflow-hidden bg-forest-900 py-24 text-white sm:py-28" data-testid="featured-tour">
+      <PaperEdge flip className="text-sand-50" />
+      <Botanical className="text-white opacity-[0.05]" />
+      <div className="container-page relative grid items-center gap-14 lg:grid-cols-2">
+        <div className="relative">
+          <CmsImage media={tour.heroMedia} alt={tour.heroMedia?.alt || tour.title} sizes="(min-width: 1024px) 50vw, 100vw" wrapperClassName="aspect-[4/3] rounded-[2rem] shadow-2xl" />
+          <div className="absolute -end-4 -top-6 h-32 w-32 overflow-hidden rounded-full border-4 border-gold-500 shadow-xl sm:h-40 sm:w-40" aria-hidden>
+            <CmsImage media={tour.heroMedia} alt="" sizes="160px" wrapperClassName="absolute inset-0" className="scale-150" />
+          </div>
+        </div>
+        <div>
+          {section.eyebrow && <p className="eyebrow mb-4 text-gold-400">{section.eyebrow}</p>}
+          {section.title && <p className="mb-2 font-display text-xl text-white/70">{section.title}{section.badge ? ` ${section.badge}` : ""}</p>}
+          <h2 className="text-4xl leading-tight sm:text-5xl">{tour.title}</h2>
+          <ul className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-sm text-white/80">
+            {tour.durationDays ? (
+              <li className="flex items-center gap-1.5">
+                <Calendar className="h-4 w-4 text-gold-400" aria-hidden /> {t("days", { count: tour.durationDays })}
+              </li>
+            ) : null}
+            {stops.map((s) => (
+              <li key={s} className="flex items-center gap-1.5">
+                <MapPin className="h-4 w-4 text-gold-400" aria-hidden /> {s}
+              </li>
+            ))}
+          </ul>
+          {section.subtitle && <p className="mt-6 max-w-xl text-lg leading-relaxed text-white/80">{section.subtitle}</p>}
+          <div className="mt-9 flex flex-wrap items-center gap-6">
+            <ButtonLink href={`/tours/${tour.slug}`} variant="outline-light" className="rounded-md border-gold-400 text-gold-400 hover:bg-gold-400 hover:text-forest-950">
+              {tt("itinerary")} <ArrowRight className="h-4 w-4 rtl:rotate-180" aria-hidden />
+            </ButtonLink>
+            {price && (
+              <p className="text-sm text-white/70">
+                {t("from")} <span className="font-display text-2xl text-gold-400">{price}</span>
+              </p>
+            )}
+          </div>
+        </div>
+      </div>
+      <PaperEdge className="text-sand-50" />
+    </section>
+  );
+}
+
 /** Centred call-to-action banner (CTA sections, and tailor-made sections without a photo). */
 function CtaBanner({ section, ctx, light }: { section: PageSection; ctx: Ctx; light: boolean }) {
-  const hasMedia = Boolean(section.media?.url);
+  // Design: a wide landscape photo behind the call to action. Without an uploaded one, a real photo from this page.
+  const media = section.media?.url ? section.media : ctx.hasHero ? ctx.ctaPhoto : undefined;
+  const hasMedia = Boolean(media?.url);
   return (
     <section className={cn("relative isolate overflow-hidden py-24 sm:py-28", light ? "bg-forest-900 text-white" : "bg-sand-100")}>
       {hasMedia && (
         <>
-          <CmsImage media={section.media} alt="" wrapperClassName="absolute inset-0 -z-20" />
-          <div className="absolute inset-0 -z-10 bg-forest-950/70" />
+          <CmsImage media={media} alt="" wrapperClassName="absolute inset-0 -z-20" />
+          <div className="absolute inset-0 -z-10 bg-gradient-to-b from-forest-950/55 via-forest-950/65 to-forest-950/80" />
+          <PaperEdge flip className="text-sand-50" />
         </>
       )}
       {!hasMedia && light && (
@@ -144,16 +302,83 @@ async function SectionView({ section, ctx }: { section: PageSection; ctx: Ctx })
     case "hero": {
       const slides = list<HeroSlide>();
       if (!slides.length) return null;
+      const tr = await getTranslations("reviews");
+      const points = (ctx.highlights ?? []).filter((h) => h.title).slice(0, 4);
       return (
-        <HeroSlider
-          slides={slides}
-          whatsapp={{ phone: ctx.settings?.whatsapp, message: ctx.settings?.whatsappMessage }}
-          labels={{ previous: t("previous"), next: t("next") }}
-        />
+        // z-10 + isolate: the foliage (behind the hero and trust row) reaches over the edge into the next section.
+        <div className="relative isolate z-10 overflow-x-clip">
+          <div className="relative">
+          <HeroSlider
+            slides={slides}
+            rating={ctx.rating ? { value: ctx.rating.value, label: tr("basedOn", { count: ctx.rating.count }), source: "TripAdvisor" } : undefined}
+            whatsapp={{ phone: ctx.settings?.whatsapp, message: ctx.settings?.whatsappMessage }}
+            labels={{ previous: t("previous"), next: t("next"), pause: t("pauseSlideshow"), play: t("playSlideshow") }}
+          />
+            <FoliageCluster front side="start" className="bottom-0 translate-y-[18%]" />
+            <FoliageCluster front side="end" className="bottom-0 translate-y-[18%]" />
+          </div>
+          {points.length > 0 && <TrustHighlights items={points} />}
+        </div>
       );
     }
 
-    case "whyChooseUs":
+    case "whyChooseUs": {
+      const items = (section.items ?? []).filter((it) => it.title);
+      const gallery = distinctPhotos([section.media, ...(section.items ?? []).map((it) => it.image), ...(ctx.photos ?? [])], 3);
+      // With a hero on the page the items' titles and icons are already in the trust row, so here the benefits are
+      // listed by their descriptions (design: a short check list).
+      const asChecklist = ctx.hasHero && items.some((it) => it.description);
+      return (
+        <section className={cn("relative overflow-x-clip pb-14 pt-16 sm:pb-16 sm:pt-20 lg:pb-20 lg:pt-24", light ? "bg-forest-900 text-white" : "bg-sand-50")}>
+          <FernBranch className={cn("absolute -bottom-10 -start-10 hidden w-44 md:block lg:w-52", light ? "text-white/10" : "text-forest-700/20")} />
+          <div className={cn("container-page relative grid items-center gap-10 lg:gap-12", gallery.length && "lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]")}>
+            <div>
+              {section.eyebrow && <p className={cn("eyebrow mb-4", light && "text-gold-400")}>{section.eyebrow}</p>}
+              {section.title && (
+                <h2 className={cn("max-w-xl text-4xl leading-[1.08] sm:text-5xl", light ? "text-white" : "text-forest-900")}>
+                  <GoldText text={section.title} goldClass="font-display italic text-gold-600" />
+                </h2>
+              )}
+              {section.subtitle && <p className={cn("mt-5 max-w-xl text-lg leading-relaxed", light ? "text-white/75" : "text-muted")}>{section.subtitle}</p>}
+              {section.content && <Markdown content={section.content} className="mt-5 max-w-xl" />}
+              {asChecklist ? (
+                <ul className="mt-8 max-w-xl space-y-3">
+                  {items
+                    .filter((it) => it.description)
+                    .map((item, i) => (
+                      <li key={`${item.title}-${i}`} className={cn("flex items-start gap-3 text-[0.95rem] leading-snug", light ? "text-white/85" : "text-ink/85")}>
+                        <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-gold-500 text-white" aria-hidden>
+                          <Check className="h-3 w-3" strokeWidth={3} />
+                        </span>
+                        {item.description}
+                      </li>
+                    ))}
+                </ul>
+              ) : items.length > 0 ? (
+                <ul className={cn("mt-10 grid gap-x-6 gap-y-7 sm:grid-cols-2", !gallery.length && "lg:grid-cols-4")}>
+                  {items.map((item, i) => (
+                    <li key={`${item.title}-${i}`} className="flex items-start gap-4">
+                      <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-gold-500/50 bg-white/60 text-gold-600">
+                        <FeatureIcon name={item.icon} className="h-6 w-6" />
+                      </span>
+                      <span>
+                        <span className={cn("block font-semibold leading-tight", light ? "text-white" : "text-forest-900")}>{item.title}</span>
+                        {item.description && <span className={cn("mt-1 block text-sm leading-snug", light ? "text-white/70" : "text-muted")}>{item.description}</span>}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
+              <div className="mt-10">
+                <Buttons section={section} ctx={ctx} light={light} />
+              </div>
+            </div>
+            {gallery.length > 0 && <OverlapGallery photos={gallery} />}
+          </div>
+        </section>
+      );
+    }
+
     case "features": {
       const items = section.items ?? [];
       return (
@@ -179,14 +404,34 @@ async function SectionView({ section, ctx }: { section: PageSection; ctx: Ctx })
     }
 
     case "popularTours": {
-      const tours = list<Tour>();
+      // A general (uncategorised) tour section skips tours that a category section on the same page already shows.
+      const tours = list<Tour>().filter((t) => section.settings?.category || !ctx.categorisedTours?.has(t._id));
       if (!tours.length) return null;
+      const shared = sharedDescriptions(tours);
+      if (section.settings?.layout === "split") {
+        const [lead, ...more] = tours;
+        return (
+          <>
+            <FeaturedTourBand section={section} tour={lead} />
+            {more.length > 0 && (
+              <Section theme={theme}>
+                <div className="grid grid-cols-1 gap-7 sm:grid-cols-2 lg:grid-cols-3">
+                  {more.map((tour) => (
+                    <TourCard key={tour._id} tour={tour} hideDescription={shared.has(tour.shortDescription?.trim() ?? "")} />
+                  ))}
+                </div>
+              </Section>
+            )}
+          </>
+        );
+      }
       return (
-        <Section theme={theme}>
+        <Section theme={theme} className="relative overflow-hidden">
+          {!light && <Botanical />}
           <Heading section={section} light={light} ctx={ctx} />
-          <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="relative grid grid-cols-1 gap-7 sm:grid-cols-2 lg:grid-cols-3">
             {tours.map((tour) => (
-              <TourCard key={tour._id} tour={tour} />
+              <TourCard key={tour._id} tour={tour} hideDescription={shared.has(tour.shortDescription?.trim() ?? "")} />
             ))}
           </div>
         </Section>
@@ -196,16 +441,20 @@ async function SectionView({ section, ctx }: { section: PageSection; ctx: Ctx })
     case "destinations": {
       const items = list<Destination>();
       if (!items.length) return null;
+      // Design: "Popular Destinations" is a forest-green band between torn-paper edges.
       return (
-        <Section theme={theme}>
-          <Heading section={section} light={light} ctx={ctx} />
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {items.map((d, i) => (
-              <div key={d._id} className={cn(i % 4 === 1 || i % 4 === 3 ? "lg:translate-y-8" : "")}>
-                <DestinationCard destination={d} />
-              </div>
+        // overflow-x-clip (not hidden): the foliage may reach up and down into the neighbouring sections; z-10 keeps it on top.
+        <Section theme={light ? theme : "forest"} className="relative isolate overflow-hidden">
+          <PaperEdge flip className="text-sand-50" />
+          <FoliageCluster side="start" className="top-1/2 -translate-y-1/2" />
+          <FoliageCluster side="end" className="bottom-0" />
+          <Heading section={section} light ctx={ctx} />
+          <div className="relative grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {items.map((d) => (
+              <DestinationCard key={d._id} destination={d} framed />
             ))}
           </div>
+          <PaperEdge className="text-sand-50" />
         </Section>
       );
     }
@@ -216,7 +465,7 @@ async function SectionView({ section, ctx }: { section: PageSection; ctx: Ctx })
       return (
         <Section theme={theme}>
           <Heading section={section} light={light} ctx={ctx} />
-          <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-7 sm:grid-cols-2 lg:grid-cols-3">
             {items.map((e) => (
               <ExcursionCard key={e._id} excursion={e} />
             ))}
@@ -228,66 +477,122 @@ async function SectionView({ section, ctx }: { section: PageSection; ctx: Ctx })
     case "vehicles": {
       const items = list<Vehicle>();
       if (!items.length) return null;
+      // Design: text and button beside a row of real vehicle photos, then a few facts taken from the fleet data.
+      const shown = items.filter((v) => v.images?.[0]?.url).slice(0, 3);
+      // Only facts true for every vehicle shown (the section may list just part of the fleet, so no "up to" claims).
+      const facts = items.every((v) => v.airConditioning) ? [{ icon: Snowflake, label: t("airConditioned") }] : [];
       return (
-        <Section theme={theme}>
-          <Heading section={section} light={light} ctx={ctx} />
-          <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
-            {items.map((v) => (
-              <VehicleCard key={v._id} vehicle={v} />
-            ))}
+        <section className={cn("relative overflow-x-clip py-20 sm:py-24", light ? "bg-forest-900 text-white" : "bg-sand-100")}>
+          <div className="container-page grid items-center gap-12 lg:grid-cols-[minmax(0,0.6fr)_minmax(0,1.4fr)]">
+            <div>
+              {section.eyebrow && <p className={cn("eyebrow mb-4", light && "text-gold-400")}>{section.eyebrow}</p>}
+              {section.title && <h2 className={cn("text-4xl leading-tight sm:text-5xl", light ? "text-white" : "text-forest-900")}>{section.title}</h2>}
+              {section.subtitle && <p className={cn("mt-5 max-w-md text-lg leading-relaxed", light ? "text-white/75" : "text-muted")}>{section.subtitle}</p>}
+              <div className="mt-8">
+                <Buttons section={section} ctx={ctx} light={light} />
+              </div>
+            </div>
+            {shown.length > 0 ? (
+              <ul className="flex items-end justify-center">
+                {shown.map((v, i) => (
+                  <li
+                    key={v._id}
+                    className={cn(
+                      "relative min-w-0 flex-1",
+                      i > 0 && "-ms-6 sm:-ms-10",
+                      shown.length === 3 && i === 1 ? "z-10 -translate-y-3" : "z-0",
+                    )}
+                  >
+                    <CmsLink href={`/vehicles/${v.slug}`} className="group block">
+                      <CmsImage
+                        media={v.images![0]}
+                        alt={v.images![0].alt || v.name}
+                        sizes="(min-width: 1024px) 22vw, 33vw"
+                        wrapperClassName="aspect-[5/4] rounded-2xl border-4 border-white shadow-card"
+                        className="transition-transform duration-700 group-hover:scale-105"
+                      />
+                      <span className={cn("mt-3 block truncate text-center text-sm font-semibold", light ? "text-white" : "text-forest-900")}>{v.name}</span>
+                    </CmsLink>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <div className="grid grid-cols-1 gap-7 sm:grid-cols-2">
+                {items.slice(0, 2).map((v) => (
+                  <VehicleCard key={v._id} vehicle={v} />
+                ))}
+              </div>
+            )}
           </div>
-        </Section>
+          {facts.length > 0 && (
+            <ul className={cn("container-page mt-12 flex flex-wrap justify-center gap-x-10 gap-y-3 text-sm lg:justify-end", light ? "text-white/80" : "text-forest-800")}>
+              {facts.map(({ icon: Icon, label }) => (
+                <li key={label} className="flex items-center gap-2">
+                  <Icon className={cn("h-5 w-5", light ? "text-gold-400" : "text-gold-600")} aria-hidden /> {label}
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
       );
     }
 
     case "tailorMade": {
-      if (!section.media?.url) return <CtaBanner section={section} ctx={ctx} light={light} />;
+      const tm = await getTranslations("tailorMade");
+      // Design: an ivory content panel beside a full-bleed photo, whatever theme is stored for the section.
+      const light = false;
+      const photo = section.media?.url ? section.media : ctx.photos?.[2] ?? ctx.photos?.[0] ?? editorialImages.road;
       return (
-        <section className={cn("relative overflow-hidden py-20 sm:py-24", light ? "bg-forest-900 text-white" : "bg-sand-100")}>
-          <div className="pointer-events-none absolute -end-24 -top-20 h-96 w-96 rounded-full bg-gold-200/40 blur-[100px]" aria-hidden />
-          <div className="container-page relative grid items-center gap-14 lg:grid-cols-2 xl:gap-24">
-            <div className="relative">
-              <div className="pointer-events-none absolute -start-5 -top-5 h-52 w-52 rounded-3xl border border-gold-400/60" aria-hidden />
-              <div className="pointer-events-none absolute -bottom-5 -end-5 h-36 w-36 rounded-2xl border border-forest-600/30" aria-hidden />
-              <div className="group relative h-[26rem] overflow-hidden rounded-3xl border border-gold-400/70 shadow-card">
-                <CmsImage
-                  media={section.media}
-                  alt={section.media.alt || section.title || ""}
-                  sizes="(min-width: 1024px) 50vw, 100vw"
-                  wrapperClassName="absolute inset-0"
-                  className="transition-transform duration-1000 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-forest-950/80 via-forest-950/15 to-transparent" aria-hidden />
-                <div className="absolute inset-x-0 bottom-0 p-8 sm:p-10">
-                  {section.eyebrow && <p className="mb-3 text-xs font-semibold uppercase tracking-[0.3em] text-gold-400">{section.eyebrow}</p>}
-                  {section.items?.length ? (
-                    <ul className="flex flex-wrap gap-2">
-                      {section.items.slice(0, 4).map((it, i) => (
-                        <li key={`${it.title}-${i}`} className="rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-medium text-white/85 backdrop-blur-sm">
-                          {it.title}
-                        </li>
-                      ))}
-                    </ul>
-                  ) : null}
-                </div>
-              </div>
+        <section className={cn("relative overflow-x-clip", light ? "bg-forest-900 text-white" : "bg-sand-50")}>
+          <div className="grid lg:grid-cols-2">
+            {/* Full-bleed photo with a wavy edge towards the content (design). */}
+            <div className="relative min-h-[18rem] sm:min-h-[24rem] lg:min-h-[36rem]">
+              <CmsImage media={photo} alt={photo.alt || section.title || ""} sizes="(min-width: 1024px) 50vw, 100vw" wrapperClassName="absolute inset-0" />
+              <OrganicEdge className={cn("end-0 hidden lg:block rtl:-scale-x-100", light ? "text-forest-900" : "text-sand-50")} />
+              <PaperEdge className={cn("lg:hidden", light ? "text-forest-900" : "text-sand-50")} />
               {section.badge && (
-                <p className="absolute -end-4 top-1/2 max-w-[9rem] -translate-y-1/2 rounded-2xl bg-gold-500 px-5 py-4 text-sm font-semibold leading-tight text-forest-950 shadow-card">
+                <p className="absolute start-5 top-5 max-w-[11rem] rounded-2xl bg-gold-500 px-4 py-3 text-sm font-semibold leading-tight text-forest-950 shadow-card">
                   {section.badge}
                 </p>
               )}
             </div>
-            <div>
-              {section.eyebrow && (
-                <div className="mb-6 flex items-center gap-3">
-                  <span className="h-px w-10 bg-gold-500" aria-hidden />
-                  <span className={cn("eyebrow", light && "text-gold-400")}>{section.eyebrow}</span>
-                </div>
-              )}
-              {section.title && <h2 className={cn("mb-6 text-3xl leading-tight sm:text-5xl", light ? "text-white" : "text-forest-900")}>{section.title}</h2>}
-              {section.subtitle && <p className={cn("mb-6 text-lg leading-relaxed", light ? "text-white/80" : "text-muted")}>{section.subtitle}</p>}
-              {section.content && <Markdown content={section.content} className={cn("mb-8", light && "[&_*]:text-white/85")} />}
-              <Buttons section={section} ctx={ctx} light={light} />
+            <div className="px-5 py-14 sm:px-10 sm:py-16 lg:px-14 lg:py-20 xl:px-20">
+              <div className="max-w-xl">
+                {section.eyebrow && <p className={cn("eyebrow mb-4", light && "text-gold-400")}>{section.eyebrow}</p>}
+                {section.title && (
+                  <h2 className={cn("mb-5 text-3xl leading-tight sm:text-5xl", light ? "text-white" : "text-forest-900")}>
+                    <GoldText text={section.title} goldClass="font-display italic text-gold-500" />
+                  </h2>
+                )}
+                {section.subtitle && <p className={cn("mb-6 text-lg leading-relaxed", light ? "text-white/80" : "text-muted")}>{section.subtitle}</p>}
+                {section.content && <Markdown content={section.content} className={cn("mb-8", light && "[&_*]:text-white/85")} />}
+                {section.items?.length ? (
+                  <ul className="mb-8 flex flex-wrap gap-2">
+                    {section.items.slice(0, 6).map((it, i) => (
+                      <li key={`${it.title}-${i}`} className={cn("rounded-full border px-3 py-1.5 text-xs font-medium", light ? "border-white/20 text-white/85" : "border-forest-950/10 text-forest-800")}>
+                        {it.title}
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
+                <Buttons section={section} ctx={ctx} light={light} />
+                <ul className={cn("mt-10 grid grid-cols-2 border-t pt-8 sm:grid-cols-4", light ? "border-white/15" : "border-forest-950/10")}>
+                  {INTEREST_TILES.map(({ key, icon: Icon }, i) => (
+                    <li key={key} className={cn(i > 0 && "sm:border-s", light ? "border-white/15" : "border-forest-950/10")}>
+                      <CmsLink
+                        href="/tailor-made-tours"
+                        className={cn(
+                          "flex h-full flex-col items-center gap-2 px-2 py-3 text-center text-xs font-medium transition-colors",
+                          light ? "text-white/85 hover:text-gold-400" : "text-forest-800 hover:text-gold-600",
+                        )}
+                      >
+                        <Icon className={cn("h-8 w-8", light ? "text-gold-400" : "text-gold-600")} strokeWidth={1.4} aria-hidden />
+                        {tm(`interests.${key}`)}
+                      </CmsLink>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           </div>
         </section>
@@ -305,7 +610,7 @@ async function SectionView({ section, ctx }: { section: PageSection; ctx: Ctx })
       return (
         <Section theme={theme}>
           <Heading section={section} light={light} withAction={false} ctx={ctx} />
-          <article className="mx-auto grid max-w-5xl items-center gap-8 overflow-hidden rounded-[2rem] bg-white shadow-card md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]" data-testid="team-lead">
+          <article className="mx-auto grid grid-cols-1 max-w-5xl items-center gap-8 overflow-hidden rounded-[2rem] bg-white shadow-card md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]" data-testid="team-lead">
             <TeamPhoto person={lead} sizes="(min-width: 768px) 40vw, 100vw" className="relative aspect-[4/5] w-full md:h-full md:min-h-[24rem]" />
             <div className="p-8 md:p-10 md:ps-2">
               {lead.role && <p className="eyebrow mb-3">{lead.role}</p>}
@@ -363,7 +668,7 @@ async function SectionView({ section, ctx }: { section: PageSection; ctx: Ctx })
               )}
               {section.title && <h3 className="mb-6 text-center text-3xl text-forest-900 lg:text-start lg:text-5xl">{section.title}</h3>}
               {section.subtitle && <p className="mb-12 max-w-2xl text-center text-lg leading-relaxed text-muted lg:text-start">{section.subtitle}</p>}
-              <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
+              <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-16">
                 {included.length > 0 && (
                   <div>
                     <h4 className="mb-6 font-sans text-xl font-semibold text-forest-900">{to("included")}</h4>
@@ -449,7 +754,7 @@ async function SectionView({ section, ctx }: { section: PageSection; ctx: Ctx })
               render={(r) => <ReviewCard review={r} />}
             />
           ) : (
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
               {items.map((r) => (
                 <ReviewCard key={r._id} review={r} />
               ))}
@@ -510,7 +815,7 @@ async function SectionView({ section, ctx }: { section: PageSection; ctx: Ctx })
       return (
         <Section theme={theme}>
           <Heading section={section} light={light} ctx={ctx} />
-          <div className="grid gap-10 md:grid-cols-3">
+          <div className="grid grid-cols-1 gap-10 md:grid-cols-3">
             {items.map((p) => (
               <BlogCard key={p._id} post={p} />
             ))}
@@ -551,7 +856,7 @@ async function SectionView({ section, ctx }: { section: PageSection; ctx: Ctx })
       return (
         <Section theme={theme}>
           <Heading section={section} light={light} withAction={false} ctx={ctx} />
-          <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <ul className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {[
               s.phone && { icon: Phone, label: s.phone, href: telLink(s.phone) },
               s.whatsapp && { icon: SocialIcons.whatsapp, label: s.whatsapp, href: whatsappLink(s.whatsapp, s.whatsappMessage) },
@@ -566,7 +871,7 @@ async function SectionView({ section, ctx }: { section: PageSection; ctx: Ctx })
                 const inner = (
                   <>
                     <Icon className="h-5 w-5 shrink-0 text-gold-600" />
-                    <span className="break-words">{r.label}</span>
+                    <span className="min-w-0 break-words [overflow-wrap:anywhere]">{r.label}</span>
                   </>
                 );
                 return (
@@ -592,17 +897,63 @@ async function SectionView({ section, ctx }: { section: PageSection; ctx: Ctx })
 }
 
 /** Renders CMS page sections in the order configured in Admin → Pages. */
+function sectionSurface(section?: PageSection) {
+  if (!section) return "var(--color-sand-50)";
+  const theme = section.settings?.theme ?? "light";
+  if (section.type === "hero" || section.type === "tailorMade") return "var(--color-sand-50)";
+  if (section.type === "destinations") return isDark(theme) ? surfaceForTheme(theme) : "var(--color-forest-800)";
+  if (section.type === "vehicles" || section.type === "cta") return isDark(theme) ? "var(--color-forest-900)" : "var(--color-sand-100)";
+  if (section.type === "whyChooseUs") return isDark(theme) ? "var(--color-forest-900)" : "var(--color-sand-50)";
+  if (section.type === "popularTours" && section.settings?.layout === "split") return "var(--color-forest-900)";
+  return surfaceForTheme(theme);
+}
+
+function surfaceForTheme(theme: string) {
+  return ({ light: "var(--color-sand-50)", sand: "var(--color-sand-100)", forest: "var(--color-forest-800)", dark: "var(--color-forest-950)" } as Record<string, string>)[theme] ?? "var(--color-sand-50)";
+}
+
 export async function PageRenderer({ sections, settings, preview }: { sections: PageSection[]; settings: SiteSettings | null; preview?: boolean }) {
-  const ctx: Ctx = { settings, preview };
+  const visibleSections = sections.filter((section) => preview || section.enabled !== false);
+  const categorisedTours = new Set(
+    sections
+      .filter((s) => s.type === "popularTours" && s.settings?.category && s.enabled !== false && Array.isArray(s.data))
+      .flatMap((s) => (s.data as Tour[]).map((t) => t._id)),
+  );
+  const highlights = sections.find((s) => s.type === "whyChooseUs" && s.enabled !== false)?.items ?? [];
+  const photos = sections
+    .filter((s) => (s.type === "destinations" || s.type === "popularTours") && Array.isArray(s.data))
+    .flatMap((s) => (s.data as (Destination | Tour)[]).map((d) => d.heroMedia))
+    .filter((m): m is MediaAsset => Boolean(m?.url && m.resourceType !== "video"));
+  const hasHero = sections.some((s) => s.type === "hero" && s.enabled !== false && Array.isArray(s.data) && s.data.length > 0);
+  const ta = sections.find((s) => s.type === "tripadvisor" && s.enabled !== false)?.data as TripAdvisorSummary | null | undefined;
+  const rating = ta?.configured && ta.rating && ta.numReviews ? { value: ta.rating, count: ta.numReviews } : undefined;
+  // Closing CTA (design: a sunset beach): prefer a coastal destination's photo, else the first tour/destination photo.
+  const coastal = sections
+    .filter((s) => s.type === "destinations" && Array.isArray(s.data))
+    .flatMap((s) => s.data as Destination[])
+    .find((d) => d.heroMedia?.url && d.heroMedia.resourceType !== "video" && /beach|coast|bay|mirissa|bentota|unawatuna|trincomalee|arugam|hikkaduwa|galle|pasikudah/i.test(`${d.name} ${d.slug} ${d.category?.name ?? ""}`));
+  const ctx: Ctx = { settings, preview, categorisedTours, highlights, photos: distinctPhotos(photos, 12), hasHero, rating, ctaPhoto: coastal?.heroMedia ?? photos[0] };
+  // Empty CMS sections do not form a visual boundary. Resolve them before choosing neighbouring colours.
+  const renderedSections = (await Promise.all(visibleSections.map(async (section) => ({
+    section,
+    content: await SectionView({ section, ctx }),
+  })))).filter(({ content }) => content !== null);
   return (
     <>
-      {sections.map((section) => (
+      {renderedSections.map(({ section, content }, index) => (
         <div
           key={section._id}
+          style={{
+            "--previous-section-color": sectionSurface(renderedSections[index - 1]?.section),
+            "--next-section-color": sectionSurface(renderedSections[index + 1]?.section),
+          } as CSSProperties}
           data-section={section.type}
+          // The hero contains the LCP text and image. It must paint at full opacity immediately instead of
+          // waiting for the below-the-fold reveal observer to mark it visible.
+          data-scroll-reveal={section.type === "hero" ? undefined : true}
           className={cn(preview && section.enabled === false && "relative opacity-60 outline-2 outline-dashed outline-gold-500")}
         >
-          <SectionView section={section} ctx={ctx} />
+          {content}
         </div>
       ))}
     </>

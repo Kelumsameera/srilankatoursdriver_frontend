@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight, Play, X } from "lucide-react";
 import type { GalleryItem } from "@/types/cms";
@@ -20,7 +20,8 @@ interface Props {
 export function GalleryGrid({ items, labels, filters, variant = "masonry" }: Props) {
   const [type, setType] = useState<"all" | "image" | "video">("all");
   const [open, setOpen] = useState<number | null>(null);
-  const shown = items.filter((i) => type === "all" || (i.media.resourceType ?? "image") === type);
+  // A gallery shows real photos only: items without uploaded media are skipped (never filled with AI-generated art).
+  const shown = useMemo(() => items.filter((i) => i.media?.url && (type === "all" || (i.media.resourceType ?? "image") === type)), [items, type]);
 
   const close = useCallback(() => setOpen(null), []);
   const step = useCallback((d: number) => setOpen((o) => (o === null ? o : (o + d + shown.length) % shown.length)), [shown.length]);
@@ -51,7 +52,7 @@ export function GalleryGrid({ items, labels, filters, variant = "masonry" }: Pro
   }, [isOpen]);
 
   const current = open !== null ? shown[open] : null;
-  const hasVideos = items.some((i) => i.media.resourceType === "video");
+  const hasVideos = items.some((i) => i.media?.url && i.media.resourceType === "video");
 
   const tile = (item: GalleryItem, i: number) => {
     const isVideo = item.media.resourceType === "video";

@@ -30,8 +30,8 @@
   --color-gold-200: #efdcb1;
   --color-gold-100: #f8efdc;
 
-  --color-sand-50: #fcfaf5;
-  --color-sand-100: #f6f0e4;
+  --color-sand-50: #faf6ec;
+  --color-sand-100: #f3ead7;
   --color-sand-200: #ece2cf;
   --color-earth-700: #6b4f3a;
   --color-earth-500: #9a7a5f;
@@ -82,6 +82,83 @@
   }
 }
 
+/* Public website: no visible scrollbars (scrolling by wheel, touch and keyboard still works).
+   The admin keeps normal scrollbars – its wide tables need them. */
+html[data-site="public"],
+html[data-site="public"] * {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+html[data-site="public"]::-webkit-scrollbar,
+html[data-site="public"] *::-webkit-scrollbar {
+  display: none;
+}
+
+/*
+ * Design background (public site): warm ivory paper with a faint grain, pencil-line palm fronds in the corners of
+ * light bands and dark leaf silhouettes on the forest-green bands. Pure CSS/SVG, purely decorative.
+ */
+html[data-site="public"] {
+  --paper-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .42 0 0 0 0 .34 0 0 0 0 .22 .16 0 0 0 -.04'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url%28%23n%29'/%3E%3C/svg%3E");
+  --frond-line: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 320' fill='none' stroke='%232f5240' stroke-width='1' stroke-linecap='round'%3E%3Cpath d='M318 4Q160 80 52 316' fill='none'/%3E%3Cpath d='M305 11Q291 31 293 48' fill='none'/%3E%3Cpath d='M305 11Q283 -0 277 -17' fill='none'/%3E%3Cpath d='M292 18Q277 41 280 61' fill='none'/%3E%3Cpath d='M292 18Q266 6 258 -12' fill='none'/%3E%3Cpath d='M279 26Q263 53 267 75' fill='none'/%3E%3Cpath d='M279 26Q250 13 240 -7' fill='none'/%3E%3Cpath d='M267 34Q250 64 255 89' fill='none'/%3E%3Cpath d='M267 34Q234 22 222 -1' fill='none'/%3E%3Cpath d='M254 43Q237 76 244 103' fill='none'/%3E%3Cpath d='M254 43Q218 31 205 7' fill='none'/%3E%3Cpath d='M242 52Q225 89 234 117' fill='none'/%3E%3Cpath d='M242 52Q203 41 188 16' fill='none'/%3E%3Cpath d='M230 62Q214 101 224 130' fill='none'/%3E%3Cpath d='M230 62Q189 51 172 26' fill='none'/%3E%3Cpath d='M218 72Q203 114 214 144' fill='none'/%3E%3Cpath d='M218 72Q175 63 156 37' fill='none'/%3E%3Cpath d='M207 84Q192 126 204 157' fill='none'/%3E%3Cpath d='M207 84Q162 75 142 50' fill='none'/%3E%3Cpath d='M195 95Q182 139 195 169' fill='none'/%3E%3Cpath d='M195 95Q150 88 129 63' fill='none'/%3E%3Cpath d='M184 107Q172 151 186 181' fill='none'/%3E%3Cpath d='M184 107Q138 102 116 77' fill='none'/%3E%3Cpath d='M172 120Q162 164 177 193' fill='none'/%3E%3Cpath d='M172 120Q128 116 105 92' fill='none'/%3E%3Cpath d='M162 133Q152 176 168 204' fill='none'/%3E%3Cpath d='M162 133Q118 130 95 108' fill='none'/%3E%3Cpath d='M151 147Q143 189 159 215' fill='none'/%3E%3Cpath d='M151 147Q108 146 86 125' fill='none'/%3E%3Cpath d='M140 162Q134 201 149 226' fill='none'/%3E%3Cpath d='M140 162Q100 161 78 142' fill='none'/%3E%3Cpath d='M130 176Q125 214 140 236' fill='none'/%3E%3Cpath d='M130 176Q92 177 71 159' fill='none'/%3E%3Cpath d='M119 192Q116 226 130 247' fill='none'/%3E%3Cpath d='M119 192Q85 193 65 178' fill='none'/%3E%3Cpath d='M109 208Q107 239 120 257' fill='none'/%3E%3Cpath d='M109 208Q78 210 60 196' fill='none'/%3E%3Cpath d='M99 225Q97 252 110 268' fill='none'/%3E%3Cpath d='M99 225Q72 227 56 215' fill='none'/%3E%3Cpath d='M89 242Q88 266 99 279' fill='none'/%3E%3Cpath d='M89 242Q66 244 51 234' fill='none'/%3E%3Cpath d='M80 260Q79 280 89 291' fill='none'/%3E%3Cpath d='M80 260Q59 262 47 254' fill='none'/%3E%3Cpath d='M70 278Q70 298 80 310' fill='none'/%3E%3Cpath d='M70 278Q50 281 37 273' fill='none'/%3E%3Cpath d='M61 297Q62 317 72 328' fill='none'/%3E%3Cpath d='M61 297Q41 300 28 292' fill='none'/%3E%3Cpath d='M318 40Q230 120 200 300' fill='none'/%3E%3Cpath d='M307 50Q301 66 306 77' fill='none'/%3E%3Cpath d='M307 50Q291 49 283 40' fill='none'/%3E%3Cpath d='M297 62Q291 80 297 93' fill='none'/%3E%3Cpath d='M297 62Q277 61 267 51' fill='none'/%3E%3Cpath d='M287 74Q281 95 289 110' fill='none'/%3E%3Cpath d='M287 74Q264 74 252 63' fill='none'/%3E%3Cpath d='M278 86Q273 111 282 127' fill='none'/%3E%3Cpath d='M278 86Q253 88 238 76' fill='none'/%3E%3Cpath d='M269 100Q265 126 275 143' fill='none'/%3E%3Cpath d='M269 100Q242 103 226 91' fill='none'/%3E%3Cpath d='M260 114Q257 142 269 159' fill='none'/%3E%3Cpath d='M260 114Q232 118 215 107' fill='none'/%3E%3Cpath d='M252 129Q251 158 263 174' fill='none'/%3E%3Cpath d='M252 129Q224 135 206 124' fill='none'/%3E%3Cpath d='M244 145Q244 173 257 188' fill='none'/%3E%3Cpath d='M244 145Q217 152 199 142' fill='none'/%3E%3Cpath d='M237 162Q238 189 251 203' fill='none'/%3E%3Cpath d='M237 162Q212 169 194 161' fill='none'/%3E%3Cpath d='M231 179Q232 204 245 217' fill='none'/%3E%3Cpath d='M231 179Q207 187 190 180' fill='none'/%3E%3Cpath d='M224 197Q227 220 239 231' fill='none'/%3E%3Cpath d='M224 197Q203 205 188 199' fill='none'/%3E%3Cpath d='M219 216Q221 235 232 245' fill='none'/%3E%3Cpath d='M219 216Q201 224 187 219' fill='none'/%3E%3Cpath d='M213 236Q216 252 225 259' fill='none'/%3E%3Cpath d='M213 236Q199 243 188 239' fill='none'/%3E%3Cpath d='M208 257Q211 269 218 275' fill='none'/%3E%3Cpath d='M208 257Q197 262 188 260' fill='none'/%3E%3Cpath d='M204 278Q207 290 214 296' fill='none'/%3E%3Cpath d='M204 278Q193 284 184 282' fill='none'/%3E%3C/svg%3E");
+  --frond-solid: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 320' fill='%2304170f' stroke='%2304170f' stroke-width='2'%3E%3Cpath d='M318 4Q160 80 52 316' fill='none'/%3E%3Cpath d='M305 11Q291 31 293 48Q303 33 305 11Z'/%3E%3Cpath d='M305 11Q283 -0 277 -17Q292 -8 305 11Z'/%3E%3Cpath d='M292 18Q277 41 280 61Q291 44 292 18Z'/%3E%3Cpath d='M292 18Q266 6 258 -12Q277 -4 292 18Z'/%3E%3Cpath d='M279 26Q263 53 267 75Q279 55 279 26Z'/%3E%3Cpath d='M279 26Q250 13 240 -7Q261 2 279 26Z'/%3E%3Cpath d='M267 34Q250 64 255 89Q267 66 267 34Z'/%3E%3Cpath d='M267 34Q234 22 222 -1Q246 9 267 34Z'/%3E%3Cpath d='M254 43Q237 76 244 103Q256 78 254 43Z'/%3E%3Cpath d='M254 43Q218 31 205 7Q231 16 254 43Z'/%3E%3Cpath d='M242 52Q225 89 234 117Q246 90 242 52Z'/%3E%3Cpath d='M242 52Q203 41 188 16Q216 25 242 52Z'/%3E%3Cpath d='M230 62Q214 101 224 130Q235 101 230 62Z'/%3E%3Cpath d='M230 62Q189 51 172 26Q201 34 230 62Z'/%3E%3Cpath d='M218 72Q203 114 214 144Q225 113 218 72Z'/%3E%3Cpath d='M218 72Q175 63 156 37Q188 45 218 72Z'/%3E%3Cpath d='M207 84Q192 126 204 157Q215 125 207 84Z'/%3E%3Cpath d='M207 84Q162 75 142 50Q174 56 207 84Z'/%3E%3Cpath d='M195 95Q182 139 195 169Q204 137 195 95Z'/%3E%3Cpath d='M195 95Q150 88 129 63Q161 68 195 95Z'/%3E%3Cpath d='M184 107Q172 151 186 181Q194 149 184 107Z'/%3E%3Cpath d='M184 107Q138 102 116 77Q149 82 184 107Z'/%3E%3Cpath d='M172 120Q162 164 177 193Q184 161 172 120Z'/%3E%3Cpath d='M172 120Q128 116 105 92Q138 96 172 120Z'/%3E%3Cpath d='M162 133Q152 176 168 204Q174 172 162 133Z'/%3E%3Cpath d='M162 133Q118 130 95 108Q127 111 162 133Z'/%3E%3Cpath d='M151 147Q143 189 159 215Q164 184 151 147Z'/%3E%3Cpath d='M151 147Q108 146 86 125Q117 126 151 147Z'/%3E%3Cpath d='M140 162Q134 201 149 226Q153 197 140 162Z'/%3E%3Cpath d='M140 162Q100 161 78 142Q108 143 140 162Z'/%3E%3Cpath d='M130 176Q125 214 140 236Q143 209 130 176Z'/%3E%3Cpath d='M130 176Q92 177 71 159Q99 159 130 176Z'/%3E%3Cpath d='M119 192Q116 226 130 247Q132 222 119 192Z'/%3E%3Cpath d='M119 192Q85 193 65 178Q91 177 119 192Z'/%3E%3Cpath d='M109 208Q107 239 120 257Q121 234 109 208Z'/%3E%3Cpath d='M109 208Q78 210 60 196Q83 195 109 208Z'/%3E%3Cpath d='M99 225Q97 252 110 268Q111 248 99 225Z'/%3E%3Cpath d='M99 225Q72 227 56 215Q76 214 99 225Z'/%3E%3Cpath d='M89 242Q88 266 99 279Q100 262 89 242Z'/%3E%3Cpath d='M89 242Q66 244 51 234Q69 233 89 242Z'/%3E%3Cpath d='M80 260Q79 280 89 291Q89 276 80 260Z'/%3E%3Cpath d='M80 260Q59 262 47 254Q62 252 80 260Z'/%3E%3Cpath d='M70 278Q70 298 80 310Q80 295 70 278Z'/%3E%3Cpath d='M70 278Q50 281 37 273Q52 271 70 278Z'/%3E%3Cpath d='M61 297Q62 317 72 328Q71 313 61 297Z'/%3E%3Cpath d='M61 297Q41 300 28 292Q43 290 61 297Z'/%3E%3Cpath d='M318 40Q230 120 200 300' fill='none'/%3E%3Cpath d='M307 50Q301 66 306 77Q310 65 307 50Z'/%3E%3Cpath d='M307 50Q291 49 283 40Q295 41 307 50Z'/%3E%3Cpath d='M297 62Q291 80 297 93Q301 80 297 62Z'/%3E%3Cpath d='M297 62Q277 61 267 51Q281 52 297 62Z'/%3E%3Cpath d='M287 74Q281 95 289 110Q293 94 287 74Z'/%3E%3Cpath d='M287 74Q264 74 252 63Q269 63 287 74Z'/%3E%3Cpath d='M278 86Q273 111 282 127Q285 109 278 86Z'/%3E%3Cpath d='M278 86Q253 88 238 76Q257 76 278 86Z'/%3E%3Cpath d='M269 100Q265 126 275 143Q278 123 269 100Z'/%3E%3Cpath d='M269 100Q242 103 226 91Q246 90 269 100Z'/%3E%3Cpath d='M260 114Q257 142 269 159Q271 138 260 114Z'/%3E%3Cpath d='M260 114Q232 118 215 107Q236 105 260 114Z'/%3E%3Cpath d='M252 129Q251 158 263 174Q264 153 252 129Z'/%3E%3Cpath d='M252 129Q224 135 206 124Q227 121 252 129Z'/%3E%3Cpath d='M244 145Q244 173 257 188Q257 168 244 145Z'/%3E%3Cpath d='M244 145Q217 152 199 142Q219 138 244 145Z'/%3E%3Cpath d='M237 162Q238 189 251 203Q250 183 237 162Z'/%3E%3Cpath d='M237 162Q212 169 194 161Q213 156 237 162Z'/%3E%3Cpath d='M231 179Q232 204 245 217Q244 199 231 179Z'/%3E%3Cpath d='M231 179Q207 187 190 180Q208 174 231 179Z'/%3E%3Cpath d='M224 197Q227 220 239 231Q237 214 224 197Z'/%3E%3Cpath d='M224 197Q203 205 188 199Q204 194 224 197Z'/%3E%3Cpath d='M219 216Q221 235 232 245Q230 231 219 216Z'/%3E%3Cpath d='M219 216Q201 224 187 219Q201 214 219 216Z'/%3E%3Cpath d='M213 236Q216 252 225 259Q223 248 213 236Z'/%3E%3Cpath d='M213 236Q199 243 188 239Q198 234 213 236Z'/%3E%3Cpath d='M208 257Q211 269 218 275Q216 266 208 257Z'/%3E%3Cpath d='M208 257Q197 262 188 260Q196 256 208 257Z'/%3E%3Cpath d='M204 278Q207 290 214 296Q212 287 204 278Z'/%3E%3Cpath d='M204 278Q193 284 184 282Q192 277 204 278Z'/%3E%3C/svg%3E");
+}
+html[data-site="public"] body,
+html[data-site="public"] main section.bg-sand-50,
+html[data-site="public"] main section.bg-sand-100 {
+  background-image: var(--paper-grain);
+  background-size: 220px 220px;
+}
+html[data-site="public"] main section:is(.bg-sand-50, .bg-sand-100, .bg-forest-800, .bg-forest-900, .bg-forest-950) {
+  position: relative;
+  isolation: isolate;
+}
+html[data-site="public"] main section:is(.bg-sand-50, .bg-sand-100, .bg-forest-800, .bg-forest-900, .bg-forest-950)::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset-block-start: 0;
+  inset-inline-end: 0;
+  width: clamp(11rem, 26vw, 22rem);
+  aspect-ratio: 1;
+  pointer-events: none;
+  background: var(--frond-line) no-repeat top right / contain;
+  opacity: 0.2;
+}
+[dir="rtl"] main section:is(.bg-sand-50, .bg-sand-100, .bg-forest-800, .bg-forest-900, .bg-forest-950)::before {
+  scale: -1 1;
+}
+
+/* A fixed utility control must never cover a mobile form field or submit action. Form pages already
+   provide their own contact actions, so the two floating controls stay out of the small-screen flow. */
+@media (max-width: 639px) {
+  html[data-site="public"] body:has(form) [data-testid="currency-toggle"],
+  html[data-site="public"] body:has(form) [data-testid="whatsapp-float"] {
+    display: none;
+  }
+}
+
+/* AI-generated fallback images carry a visible label so they are never mistaken for real tour/vehicle photos. */
+[data-illustrative]::after {
+  content: var(--illustrative-label, "Illustrative image");
+  position: absolute;
+  inset-block-end: 0.5rem;
+  inset-inline-end: 0.5rem;
+  z-index: 1;
+  pointer-events: none;
+  border-radius: 9999px;
+  background: rgb(6 38 27 / 0.7);
+  padding: 0.2rem 0.55rem;
+  font-size: 0.625rem;
+  font-weight: 500;
+  line-height: 1.2;
+  color: rgb(255 255 255 / 0.9);
+}
+[data-illustrative="top"]::after {
+  inset-block-start: 6rem;
+  inset-block-end: auto;
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;
@@ -100,6 +177,17 @@
   .font-display {
     font-family: var(--font-display);
     letter-spacing: -0.01em;
+  }
+  /* Long single words (Tamil, German, Russian …) wrap instead of pushing the layout wider than the screen. */
+  h1,
+  h2,
+  h3,
+  h4,
+  label,
+  dt,
+  dd {
+    overflow-wrap: anywhere;
+    hyphens: auto;
   }
   :focus-visible {
     outline: 2px solid var(--brand-accent);
@@ -212,5 +300,40 @@
     border-bottom: 1px solid var(--color-sand-200);
     padding: 0.5em;
     text-align: start;
+  }
+}
+
+/* Editorial pacing and restrained reveals for CMS-driven public sections. */
+.page-banner {
+  isolation: isolate;
+}
+
+.section-shell {
+  position: relative;
+  scroll-margin-top: 6rem;
+}
+
+html.motion-ready [data-scroll-reveal]:not(.is-visible) {
+  opacity: 0;
+  transform: translateY(18px);
+}
+
+[data-scroll-reveal] {
+  transition: opacity 700ms cubic-bezier(0.22, 1, 0.36, 1), transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+[data-scroll-reveal].is-visible {
+  opacity: 1;
+  /* "none", not translateY(0): any transform creates a stacking context, which would stop decorative foliage from
+     reaching over the edge into the next section. */
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-scroll-reveal],
+  html.motion-ready [data-scroll-reveal]:not(.is-visible) {
+    opacity: 1;
+    transform: none;
+    transition: none;
   }
 }

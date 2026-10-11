@@ -1,5 +1,9 @@
 {
   "common": {
+    "pauseSlideshow": "Pausar apresentação",
+    "playSlideshow": "Reproduzir apresentação",
+    "illustrativeImage": "Imagem ilustrativa do veículo",
+    "illustrativeLabel": "Imagem ilustrativa",
     "bookNow": "Reservar",
     "viewDetails": "Ver detalhes",
     "readMore": "Ler mais",
@@ -34,7 +38,11 @@
     "enquire": "Pedir informações",
     "home": "Início"
   },
-  "nav": { "openMenu": "Abrir menu", "closeMenu": "Fechar menu" },
+  "nav": {
+    "more": "Mais",
+    "openMenu": "Abrir menu",
+    "closeMenu": "Fechar menu"
+  },
   "account": {
     "signIn": "Entrar",
     "signOut": "Sair",
@@ -176,7 +184,7 @@
     "luggage": "Bagagem",
     "comfort": "Conforto",
     "overview": "Visão geral",
-    "related": "Mais veículos",
+    "related": "Mais veículos",
     "fleetDesc": "Oferecemos os melhores motoristas multilíngues para",
     "fleetCount": "{count, plural, one {# veículo} other {# veículos}}",
     "otherType": "Outros veículos",
@@ -300,8 +308,14 @@
     "readOnTripadvisor": "Leia as nossas avaliações no TripAdvisor",
     "basedOn": "{count, plural, one {Com base em # avaliação} other {Com base em # avaliações}}"
   },
-  "gallery": { "photos": "Fotos", "videos": "Vídeos" },
-  "blog": { "by": "Por {author}", "related": "Mais artigos" },
+  "gallery": {
+    "photos": "Fotos",
+    "videos": "Vídeos"
+  },
+  "blog": {
+    "by": "Por {author}",
+    "related": "Mais artigos"
+  },
   "errors": {
     "notFoundTitle": "Página não encontrada",
     "notFoundText": "A página que procura não existe ou foi movida.",
@@ -319,7 +333,9 @@
     "after": "Deve ser posterior à data de início",
     "select": "Faça uma seleção"
   },
-  "preview": { "banner": "Modo de pré-visualização – as secções desativadas estão visíveis. Esta página não é pública." },
+  "preview": {
+    "banner": "Modo de pré-visualização – as secções desativadas estão visíveis. Esta página não é pública."
+  },
   "about": {
     "title": "Sobre Sri Lanka Tours Driver",
     "label": "Sobre Nós",

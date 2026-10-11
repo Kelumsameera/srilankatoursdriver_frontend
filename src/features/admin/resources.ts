@@ -377,7 +377,7 @@ export const RESOURCES: Record<string, AdminResource> = {
       {
         title: "Content",
         fields: [
-          { name: "title", label: "Title", type: "text", required: true, span: 2 },
+          { name: "title", label: "Title", type: "text", required: true, span: 2, hint: "wrap words in *asterisks* to show them in gold, e.g. Discover *Sri Lanka*" },
           { name: "subtitle", label: "Subtitle (small text above title)", type: "text", span: 2 },
           { name: "description", label: "Description", type: "textarea", span: 2 },
           linkFields("button1", "Button 1"),

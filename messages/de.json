@@ -1,5 +1,9 @@
 {
   "common": {
+    "pauseSlideshow": "Diashow pausieren",
+    "playSlideshow": "Diashow abspielen",
+    "illustrativeImage": "Symbolbild eines Fahrzeugs",
+    "illustrativeLabel": "Symbolbild",
     "bookNow": "Jetzt buchen",
     "viewDetails": "Details ansehen",
     "readMore": "Weiterlesen",
@@ -34,7 +38,11 @@
     "enquire": "Anfragen",
     "home": "Startseite"
   },
-  "nav": { "openMenu": "Menü öffnen", "closeMenu": "Menü schließen" },
+  "nav": {
+    "more": "Mehr",
+    "openMenu": "Menü öffnen",
+    "closeMenu": "Menü schließen"
+  },
   "account": {
     "signIn": "Anmelden",
     "signOut": "Abmelden",
@@ -176,7 +184,7 @@
     "luggage": "Gepäck",
     "comfort": "Komfort",
     "overview": "Überblick",
-    "related": "Weitere Fahrzeuge",
+    "related": "Weitere Fahrzeuge",
     "fleetDesc": "Wir bieten die besten mehrsprachigen Fahrer für",
     "fleetCount": "{count, plural, one {# Fahrzeug} other {# Fahrzeuge}}",
     "otherType": "Weitere Fahrzeuge",
@@ -300,8 +308,14 @@
     "readOnTripadvisor": "Unsere Bewertungen auf TripAdvisor lesen",
     "basedOn": "{count, plural, one {Basierend auf # Bewertung} other {Basierend auf # Bewertungen}}"
   },
-  "gallery": { "photos": "Fotos", "videos": "Videos" },
-  "blog": { "by": "Von {author}", "related": "Weitere Artikel" },
+  "gallery": {
+    "photos": "Fotos",
+    "videos": "Videos"
+  },
+  "blog": {
+    "by": "Von {author}",
+    "related": "Weitere Artikel"
+  },
   "errors": {
     "notFoundTitle": "Seite nicht gefunden",
     "notFoundText": "Die gesuchte Seite existiert nicht oder wurde verschoben.",
@@ -319,7 +333,9 @@
     "after": "Muss nach dem Startdatum liegen",
     "select": "Bitte treffen Sie eine Auswahl"
   },
-  "preview": { "banner": "Vorschaumodus – deaktivierte Abschnitte sind sichtbar. Diese Seite ist nicht öffentlich." },
+  "preview": {
+    "banner": "Vorschaumodus – deaktivierte Abschnitte sind sichtbar. Diese Seite ist nicht öffentlich."
+  },
   "about": {
     "title": "Über Sri Lanka Tours Driver",
     "label": "Über uns",

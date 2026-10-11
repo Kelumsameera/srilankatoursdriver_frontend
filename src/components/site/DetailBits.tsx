@@ -6,7 +6,7 @@ import { CmsImage } from "@/components/ui/CmsImage";
 
 export function DetailSection({ title, children, id, className }: { title?: string; children: ReactNode; id?: string; className?: string }) {
   return (
-    <section id={id} className={cn("scroll-mt-28 border-t border-sand-200 py-10 first:border-t-0 first:pt-0", className)}>
+    <section id={id} className={cn("scroll-mt-40 border-t border-sand-200 py-10 first:border-t-0 first:pt-0", className)}>
       {title && <h2 className="mb-6 text-2xl text-forest-900 sm:text-3xl">{title}</h2>}
       {children}
     </section>
