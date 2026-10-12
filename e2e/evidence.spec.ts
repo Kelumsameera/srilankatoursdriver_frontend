@@ -4,7 +4,7 @@ import { createRequire } from "node:module";
 import path from "node:path";
 
 // Read-only, real API evidence. Never submits forms or replaces API responses.
-const output = path.resolve("../qa-evidence");
+const output = path.resolve("test-results/qa-evidence");
 const locales = ["en", "si", "ta", "de", "fr", "es", "it", "zh", "ja", "ko", "ru", "ar", "hi", "pt"];
 const resolveDependency = createRequire(path.resolve("package.json"));
 test("published locale pages, screenshots, SEO and automated accessibility evidence", async ({ page }) => {

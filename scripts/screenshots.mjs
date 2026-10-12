@@ -2,8 +2,8 @@
 // READ-ONLY: every non-GET request from the browser is blocked, so no form, beacon or analytics call reaches the API.
 //
 //   node scripts/screenshots.mjs <outDir> [baseUrl] [pageFilter]
-//   node scripts/screenshots.mjs ../_archive/baseline-screenshots http://localhost:3000
-//   node scripts/screenshots.mjs ../_archive/part2a-after http://localhost:3000 tours
+//   node scripts/screenshots.mjs "$LOCALAPPDATA/sltd-qa/baseline-screenshots" http://localhost:3000
+//   node scripts/screenshots.mjs "$LOCALAPPDATA/sltd-qa/part2a-after" http://localhost:3000 tours
 //
 // Writes <outDir>/<width>/<locale>-<page>.jpg and <outDir>/report.json.
 import { mkdirSync, writeFileSync } from "node:fs";

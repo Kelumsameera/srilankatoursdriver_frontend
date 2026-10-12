@@ -31,8 +31,8 @@ test("real hero sources and local timing evidence", async ({ page }) => {
       ...(window as unknown as { qaTiming: { lcp: number; cls: number } }).qaTiming,
       resources: performance.getEntriesByType("resource").filter(entry => entry.name.includes("cloudinary")).map(entry => ({ name: entry.name, duration: entry.duration, transferSize: (entry as PerformanceResourceTiming).transferSize })),
     })) });
-    await page.screenshot({ path: path.resolve(`../qa-evidence/home-hero-${width}.png`) });
+    await page.screenshot({ path: path.resolve(`test-results/qa-evidence/home-hero-${width}.png`) });
   }
-  mkdirSync(path.resolve("../qa-evidence"), { recursive: true });
-  writeFileSync(path.resolve("../qa-evidence/local-performance.json"), JSON.stringify({ runtime: process.env.QA_RUNTIME || "unspecified", note: "Single local Chromium run. LCP/CLS are page-entry observations through slide switching; not field CWV. Cross-origin transferSize=0 can mean unavailable. No INP measured.", results }, null, 2));
+  mkdirSync(path.resolve("test-results/qa-evidence"), { recursive: true });
+  writeFileSync(path.resolve("test-results/qa-evidence/local-performance.json"), JSON.stringify({ runtime: process.env.QA_RUNTIME || "unspecified", note: "Single local Chromium run. LCP/CLS are page-entry observations through slide switching; not field CWV. Cross-origin transferSize=0 can mean unavailable. No INP measured.", results }, null, 2));
 });
