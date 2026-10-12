@@ -9,7 +9,7 @@ import { defaultLocale } from "@/i18n/routing";
 import { CmsImage, isIllustrative } from "@/components/ui/CmsImage";
 import { ButtonLink } from "@/components/ui/Button";
 import { Markdown } from "@/components/ui/Markdown";
-import { TourCard, sharedDescriptions } from "@/components/cards/cards";
+import { TourCard, sharedDescriptions } from "@/components/cards/TourCard";
 import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 import { CheckList, DetailSection, MediaStrip } from "@/components/site/DetailBits";
 import { destinationCover } from "@/lib/editorial-images";

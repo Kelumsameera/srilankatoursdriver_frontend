@@ -19,6 +19,7 @@ const PUBLIC_PAGES = [
   "about",
   "tours",
   "tours/galle-one-day-tour",
+  "tours/08-days-east-coast-hotels",
   "excursions",
   "excursions/colombo",
   "vehicles",
@@ -50,7 +51,10 @@ function buildTargets(pageFilter) {
     }
   }
   targets.push({ name: "admin-login", url: "/admin/login" });
-  return pageFilter ? targets.filter((target) => target.name.includes(pageFilter)) : targets;
+  if (!pageFilter) return targets;
+  // "tours,blog" keeps pages whose name (without the locale) starts with tours or blog, e.g. en-tours_galle-one-day-tour
+  const prefixes = pageFilter.split(",");
+  return targets.filter((target) => prefixes.some((prefix) => target.name.replace(/^(en|ar)-/, "").startsWith(prefix)));
 }
 
 // Scroll to the bottom in steps so lazy images load, then back to the top
