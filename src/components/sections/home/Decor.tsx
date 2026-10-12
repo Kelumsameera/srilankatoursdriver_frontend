@@ -27,13 +27,14 @@ export function PaperEdge({ className, flip }: { className?: string; flip?: bool
   );
 }
 
-/** Faint palm fronds in a section corner (decorative, hidden from assistive tech). */
-export function Botanical({ className, side = "end" }: { className?: string; side?: "start" | "end" }) {
+/** Faint palm fronds in a section corner (decorative, hidden from assistive tech).
+ * Decorations do not mirror in RTL: `side` is a physical left/right, so Arabic shows them exactly like English. */
+export function Botanical({ className, side = "right" }: { className?: string; side?: "left" | "right" }) {
   return (
     <svg
       viewBox="0 0 300 300"
       aria-hidden
-      className={cn("pointer-events-none absolute top-0 h-64 w-64 text-forest-700 opacity-[0.07] sm:h-80 sm:w-80", side === "end" ? "end-0" : "start-0 -scale-x-100", className)}
+      className={cn("pointer-events-none absolute top-0 h-64 w-64 text-forest-700 opacity-[0.07] sm:h-80 sm:w-80", side === "right" ? "right-0" : "left-0 -scale-x-100", className)}
     >
       <g fill="currentColor">
         <path d="M290 10C210 40 140 100 90 190c-12 22-22 46-30 70l8 3c8-24 18-47 30-69C147 106 216 48 293 18z" />

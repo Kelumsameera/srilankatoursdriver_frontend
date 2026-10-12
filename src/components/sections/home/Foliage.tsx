@@ -61,7 +61,7 @@ const FERN_LINES = leaflets(...FERN_STEM, 22, 46, 58, false);
 
 type LeafProps = { className?: string };
 
-/** Long arching palm frond (viewBox 400×400, grows from the bottom-start corner). */
+/** Long arching palm frond (viewBox 400×400, grows from the bottom-left corner). */
 export function PalmLeaf({ className }: LeafProps) {
   return (
     <svg viewBox="0 0 400 400" preserveAspectRatio="xMidYMid meet" aria-hidden focusable="false" className={cn("pointer-events-none", className)}>
@@ -87,8 +87,11 @@ export function FernBranch({ className }: LeafProps) {
  * A photographic tropical foliage cluster for a band's edge. It is positioned absolutely so it can
  * reach past the section boundary (the section needs `relative isolate` and a z-index above its neighbours).
  * The image has a transparent background, leaving the section content readable.
+ *
+ * Decorations do not mirror in RTL: `side` is a physical left/right, so Arabic shows the leaves exactly like English.
+ * Only physical classes (left-0, right-0, translate-x, scale-x) are used here, never start/end or rtl: variants.
  */
-export function FoliageCluster({ side, className, front, inset = false }: { side: "start" | "end"; className?: string; front?: boolean; inset?: boolean }) {
+export function FoliageCluster({ side, className, front, inset = false }: { side: "left" | "right"; className?: string; front?: boolean; inset?: boolean }) {
   return (
     <div
       aria-hidden
@@ -101,13 +104,14 @@ export function FoliageCluster({ side, className, front, inset = false }: { side
           : front
             ? "z-0 h-40 w-32 sm:h-56 sm:w-48 lg:h-88 lg:w-72 2xl:h-108 2xl:w-80"
             : "-z-10 hidden h-80 w-64 md:block xl:h-104 xl:w-80",
+        // The photo grows from its bottom-left corner, so the right-hand cluster is the same photo flipped
         inset
-          ? side === "start"
-            ? "inset-s-0"
-            : "inset-e-0 -scale-x-100"
-          : side === "start"
-            ? "inset-s-0 -translate-x-1/3 rtl:translate-x-1/3"
-            : "inset-e-0 translate-x-1/3 -scale-x-100 rtl:-translate-x-1/3",
+          ? side === "left"
+            ? "left-0"
+            : "right-0 -scale-x-100"
+          : side === "left"
+            ? "left-0 -translate-x-1/3"
+            : "right-0 translate-x-1/3 -scale-x-100",
         className,
       )}
       style={inset ? { maskImage: "linear-gradient(to bottom, transparent, black 18%, black 78%, transparent)" } : undefined}

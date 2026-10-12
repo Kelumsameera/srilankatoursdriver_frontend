@@ -153,16 +153,14 @@ html[data-site="public"] main section:is(.bg-sand-50, .bg-sand-100, .bg-forest-8
   content: "";
   position: absolute;
   z-index: -1;
-  inset-block-start: 0;
-  inset-inline-end: 0;
+  /* Physical top/right, not inline-end: decorations do not mirror in RTL, so Arabic shows the frond exactly like English */
+  top: 0;
+  right: 0;
   width: clamp(11rem, 26vw, 22rem);
   aspect-ratio: 1;
   pointer-events: none;
   background: var(--frond-line) no-repeat top right / contain;
   opacity: 0.2;
-}
-[dir="rtl"] main section:is(.bg-sand-50, .bg-sand-100, .bg-forest-800, .bg-forest-900, .bg-forest-950)::before {
-  scale: -1 1;
 }
 
 /* A fixed utility control must never cover a mobile form field or submit action. Form pages already

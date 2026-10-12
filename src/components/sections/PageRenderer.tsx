@@ -315,8 +315,8 @@ async function SectionView({ section, ctx }: { section: PageSection; ctx: Ctx })
             whatsapp={{ phone: ctx.settings?.whatsapp, message: ctx.settings?.whatsappMessage }}
             labels={{ previous: t("previous"), next: t("next"), pause: t("pauseSlideshow"), play: t("playSlideshow"), playVideo: t("playVideo"), pauseVideo: t("pauseVideo") }}
           />
-            <FoliageCluster front side="start" className="bottom-0 translate-y-[18%]" />
-            <FoliageCluster front side="end" className="bottom-0 translate-y-[18%]" />
+            <FoliageCluster front side="left" className="bottom-0 translate-y-[18%]" />
+            <FoliageCluster front side="right" className="bottom-0 translate-y-[18%]" />
           </div>
           {points.length > 0 && <TrustHighlights items={points} />}
         </div>
@@ -331,7 +331,7 @@ async function SectionView({ section, ctx }: { section: PageSection; ctx: Ctx })
       const asChecklist = ctx.hasHero && items.some((it) => it.description);
       return (
         <section className={cn("relative overflow-x-clip pb-14 pt-16 sm:pb-16 sm:pt-20 lg:pb-20 lg:pt-24", light ? "bg-forest-900 text-white" : "bg-sand-50")}>
-          <FernBranch className={cn("absolute -bottom-10 -start-10 hidden w-44 md:block lg:w-52", light ? "text-white/10" : "text-forest-700/20")} />
+          <FernBranch className={cn("absolute -bottom-10 -left-10 hidden w-44 md:block lg:w-52", light ? "text-white/10" : "text-forest-700/20")} />
           <div className={cn("container-page relative grid items-center gap-10 lg:gap-12", gallery.length && "md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]")}>
             <div>
               {section.eyebrow && <p className={cn("eyebrow mb-4", light && "text-gold-400")}>{section.eyebrow}</p>}
@@ -447,8 +447,8 @@ async function SectionView({ section, ctx }: { section: PageSection; ctx: Ctx })
         // Keep decorative foliage inside the green band and clear of neighbouring content.
         <Section theme={light ? theme : "forest"} className="relative isolate overflow-hidden pb-28 md:pb-20 md:[&>.container-page]:px-[clamp(6rem,10vw,9rem)]">
           <PaperEdge flip className="text-sand-50" />
-          <FoliageCluster inset side="start" className="bottom-8 md:bottom-auto md:top-[38%]" />
-          <FoliageCluster inset side="end" className="bottom-8 md:bottom-[15%]" />
+          <FoliageCluster inset side="left" className="bottom-8 md:bottom-auto md:top-[38%]" />
+          <FoliageCluster inset side="right" className="bottom-8 md:bottom-[15%]" />
           <Heading section={section} light ctx={ctx} />
           <div className="relative z-10 grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {items.map((d) => (
