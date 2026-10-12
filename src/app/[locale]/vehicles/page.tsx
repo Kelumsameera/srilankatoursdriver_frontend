@@ -67,8 +67,8 @@ export default async function VehiclesPage({ params }: Props) {
           {groups.length ? (
             groups.map((g) => (
               <div key={g.label} data-testid="vehicle-group">
-                <div className="mb-10 flex items-center gap-5 text-[0.68rem] font-bold uppercase tracking-[0.3em] text-gold-600">
-                  <h2 className="font-sans text-[0.68rem] font-bold uppercase tracking-[0.3em] text-gold-600">{g.label}</h2>
+                <div className="mb-10 flex items-center gap-5 text-[0.72rem] font-bold uppercase tracking-[0.3em] text-gold-600">
+                  <h2 className="font-sans text-[0.72rem] font-bold uppercase tracking-[0.3em] text-gold-600">{g.label}</h2>
                   <div className="h-px flex-1 bg-forest-950/10" aria-hidden />
                   <span className="font-medium tracking-[0.2em] text-muted">{tv("fleetCount", { count: g.items.length })}</span>
                 </div>

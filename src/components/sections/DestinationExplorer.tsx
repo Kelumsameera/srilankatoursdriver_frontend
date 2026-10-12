@@ -6,9 +6,7 @@ import type { Destination } from "@/types/cms";
 import { cn } from "@/lib/utils";
 import { CmsImage } from "@/components/ui/CmsImage";
 import { CmsLink } from "@/components/ui/CmsLink";
-import { destinationImage } from "@/lib/editorial-images";
-
-const cover = (d: Destination) => (d.heroMedia?.url && d.heroMedia.resourceType !== "video" ? d.heroMedia : destinationImage(d));
+import { destinationCover as cover } from "@/lib/editorial-images";
 
 /**
  * Desktop destinations explorer (design: list with thumbnails on the left, the selected destination large
@@ -22,17 +20,14 @@ export function DestinationExplorer({ destinations, labels }: { destinations: De
 
   return (
     <div className="hidden gap-10 lg:grid lg:grid-cols-[17rem_minmax(0,1fr)]" data-testid="destination-explorer">
-      <ul className="max-h-[36rem] space-y-1 overflow-y-auto pe-2" aria-label={labels.list}>
+      <ul className="max-h-144 space-y-1 overflow-y-auto pe-2" aria-label={labels.list}>
         {destinations.map((d, i) => (
           <li key={d._id}>
             <button
               type="button"
               onClick={() => setIndex(i)}
               aria-pressed={i === index}
-              className={cn(
-                "flex w-full items-center gap-3 rounded-xl p-2 text-start transition-colors",
-                i === index ? "bg-white shadow-card" : "hover:bg-white/70",
-              )}
+              className={cn("flex w-full items-center gap-3 rounded-xl p-2 text-start transition-colors", i === index ? "bg-white shadow-card" : "hover:bg-white/70")}
             >
               <CmsImage media={cover(d)} alt="" sizes="64px" wrapperClassName="h-12 w-16 shrink-0 rounded-lg" markIllustrative={false} />
               <span className={cn("min-w-0 flex-1 truncate text-sm font-medium", i === index ? "text-forest-900" : "text-forest-800/80")}>{d.name}</span>
@@ -43,12 +38,7 @@ export function DestinationExplorer({ destinations, labels }: { destinations: De
       </ul>
 
       <article key={current._id} className="min-w-0 animate-fade-up" aria-live="polite">
-        <CmsImage
-          media={cover(current)}
-          alt={current.heroMedia?.alt || current.name}
-          sizes="(min-width: 1280px) 900px, 70vw"
-          wrapperClassName="aspect-[16/9] rounded-2xl shadow-card"
-        />
+        <CmsImage media={cover(current)} alt={current.heroMedia?.alt || current.name} placeholderName={current.name} sizes="(min-width: 1280px) 900px, 70vw" wrapperClassName="aspect-[16/9] rounded-2xl shadow-card" />
         <div className="mt-6 flex flex-wrap items-end justify-between gap-6">
           <div className="max-w-2xl">
             {subtitle && (

@@ -92,7 +92,7 @@ export default async function TourDetailPage({ params }: Props) {
           {/* Frosted summary card, as in the design: title, days, route, price and the main call to action. */}
           <div className="mt-4 max-w-xl rounded-2xl border border-white/15 bg-forest-950/55 p-6 shadow-2xl backdrop-blur-md sm:p-8">
             {tour.category?.name && <Badge className="mb-3 bg-gold-500/20 text-gold-200">{tour.category.name}</Badge>}
-            <h1 className="font-display text-3xl leading-tight sm:text-4xl lg:text-5xl" data-testid="tour-title">
+            <h1 className="font-display text-3xl leading-tight sm:text-5xl lg:text-6xl" data-testid="tour-title">
               {tour.title}
             </h1>
             <ul className="mt-4 flex flex-wrap gap-x-4 gap-y-2 text-sm text-white/85">
@@ -155,7 +155,7 @@ export default async function TourDetailPage({ params }: Props) {
                     <span className="absolute -start-[2.85rem] top-0 flex h-10 w-10 items-center justify-center rounded-full bg-forest-800 text-xs font-semibold text-gold-400 ring-4 ring-sand-50">
                       {day.day}
                     </span>
-                    <p className="eyebrow text-[0.68rem]">{t("dayLabel", { day: day.day })}</p>
+                    <p className="eyebrow text-[0.72rem]">{t("dayLabel", { day: day.day })}</p>
                     <h3 className="mt-1 text-xl text-forest-900">{day.title}</h3>
                     {day.image?.url && <CmsImage media={day.image} alt={day.title} sizes="(min-width:1024px) 600px, 100vw" wrapperClassName="mt-4 aspect-[16/9] rounded-2xl" />}
                     <Markdown content={day.description} className="mt-3 text-[0.95rem]" />
@@ -218,7 +218,7 @@ export default async function TourDetailPage({ params }: Props) {
                   <div className="overflow-hidden rounded-3xl border border-sand-200 bg-white">
                     <CmsImage media={tour.vehicle.images?.[0]} alt={tour.vehicle.name} sizes="400px" wrapperClassName="aspect-[16/9] bg-sand-100" />
                     <div className="p-5">
-                      <p className="eyebrow mb-1 flex items-center gap-1 text-[0.68rem]"><Car className="h-3.5 w-3.5" /> {t("vehicle")}</p>
+                      <p className="eyebrow mb-1 flex items-center gap-1 text-[0.72rem]"><Car className="h-3.5 w-3.5" /> {t("vehicle")}</p>
                       <p className="text-lg text-forest-900">{tour.vehicle.name}</p>
                       <p className="text-sm text-muted">
                         {[tour.vehicle.seats ? tc("seats", { count: tour.vehicle.seats }) : null, tour.vehicle.airConditioning ? tc("airConditioned") : null].filter(Boolean).join(" · ")}

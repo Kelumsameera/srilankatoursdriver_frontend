@@ -29,7 +29,7 @@ export async function TransferRates({ settings, id = "rates" }: { settings: Site
           </h2>
           <div className="mx-auto mt-6 h-1 w-20 rounded-full bg-gold-500" aria-hidden />
         </div>
-        <div className="overflow-x-auto rounded-3xl border border-sand-200 shadow-card">
+        <div role="region" aria-labelledby={`${id}-title`} tabIndex={0} className="overflow-x-auto rounded-3xl border border-sand-200 shadow-card focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-forest-800">
           <table className="min-w-full border-collapse bg-white text-start">
             <thead>
               <tr className="bg-forest-900 text-[0.7rem] uppercase tracking-widest text-white">

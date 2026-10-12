@@ -18,6 +18,8 @@ interface Props {
   objectPosition?: string;
   /** Set false where the page already labels an AI-generated fallback itself (or the image is a tiny thumbnail). */
   markIllustrative?: boolean;
+  /** Shown (in the display font) on the neutral placeholder when there is no image, e.g. the destination name. */
+  placeholderName?: string;
 }
 
 /** AI-generated fallback art (see lib/editorial-images) – never presented as a real photo. */
@@ -27,7 +29,7 @@ export const isIllustrative = (url?: string) => Boolean(url?.startsWith("/images
  * Responsive Cloudinary image (via the custom next/image loader) inside a positioned wrapper.
  * When the admin hasn't uploaded an image yet, an on-brand placeholder is shown instead of a broken image.
  */
-export function CmsImage({ media, alt, sizes = "100vw", preload, className, wrapperClassName, fallbackLabel, objectPosition, markIllustrative = true }: Props) {
+export function CmsImage({ media, alt, sizes = "100vw", preload, className, wrapperClassName, fallbackLabel, objectPosition, markIllustrative = true, placeholderName }: Props) {
   const url = media?.resourceType === "video" ? undefined : media?.url;
   // `cn` doesn't de-duplicate Tailwind classes: adding "relative" next to a caller's "absolute inset-0"
   // lets "relative" win and the background image collapses to 0×0, so only default the position.
@@ -65,7 +67,14 @@ export function CmsImage({ media, alt, sizes = "100vw", preload, className, wrap
             </defs>
             <rect width="100%" height="100%" fill="url(#leaf)" />
           </svg>
-          <Mountain className="h-10 w-10 text-gold-400/70" strokeWidth={1.2} />
+          {placeholderName ? (
+            <span className="relative flex flex-col items-center gap-3 px-6 text-center">
+              <Mountain className="h-8 w-8 text-gold-400/70" strokeWidth={1.2} aria-hidden />
+              <span className="font-display text-xl uppercase tracking-[0.18em] text-white/85 break-words">{placeholderName}</span>
+            </span>
+          ) : (
+            <Mountain className="h-10 w-10 text-gold-400/70" strokeWidth={1.2} />
+          )}
         </div>
       )}
     </div>

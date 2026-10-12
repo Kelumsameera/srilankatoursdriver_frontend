@@ -12,6 +12,7 @@ AGENTS.md
 # testing
 /coverage
 /test-results/
+/test-results-mobile/
 /playwright-report/
 /blob-report/
 

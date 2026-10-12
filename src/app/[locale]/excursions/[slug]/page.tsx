@@ -50,7 +50,7 @@ export default async function ExcursionDetailPage({ params }: Props) {
         <div className="absolute inset-0 -z-10 bg-gradient-to-t from-forest-950 via-forest-950/55 to-forest-950/25" />
         <div className="container-page pb-14 pt-40 sm:pt-52">
           <Breadcrumbs locale={locale} items={[{ label: tc("home"), href: "/" }, { label: listing?.page.title ?? "", href: "/excursions" }, { label: e.title }]} />
-          <h1 className="max-w-4xl text-4xl leading-tight sm:text-6xl">{e.title}</h1>
+          <h1 className="max-w-4xl text-4xl leading-tight sm:text-5xl lg:text-6xl">{e.title}</h1>
           {e.shortDescription && <p className="mt-5 max-w-3xl text-lg text-white/80">{e.shortDescription}</p>}
           <div className="mt-10 border-t border-white/15 pt-8">
             <FactList

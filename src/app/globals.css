@@ -337,3 +337,37 @@ html.motion-ready [data-scroll-reveal]:not(.is-visible) {
     transition: none;
   }
 }
+
+/* Destination pages. The reference palette (gold / magenta accent / ink / muted / soft) is mapped onto the
+   existing brand tokens, so Admin → Branding colours still apply. The accent dot uses the brand accent. */
+:root {
+  --gold: var(--brand-accent);
+  --magenta: var(--brand-accent);
+  --ink: #17201b;
+  --muted: #5d6b63;
+  --soft: #faf6ec;
+}
+
+.dest-dot {
+  display: inline-block;
+  width: 0.4375rem;
+  height: 0.4375rem;
+  flex-shrink: 0;
+  border-radius: 9999px;
+  background: var(--magenta);
+}
+
+.dest-card {
+  transition: transform 250ms ease, box-shadow 250ms ease;
+}
+.dest-card:hover,
+.dest-card:focus-within {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-soft);
+}
+@media (prefers-reduced-motion: reduce) {
+  .dest-card:hover,
+  .dest-card:focus-within {
+    transform: none;
+  }
+}

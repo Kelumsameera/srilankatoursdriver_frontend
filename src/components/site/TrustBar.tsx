@@ -126,19 +126,29 @@ export async function TrustBar({ settings }: { settings: SiteSettings }) {
               {t("planDream")}
             </h2>
             <p className="mx-auto mb-12 mt-6 max-w-2xl text-lg text-white/75">{t("planDesc")}</p>
-            <ul className={`mx-auto grid max-w-5xl gap-5 ${contacts.length === 3 ? "md:grid-cols-3" : contacts.length === 2 ? "md:grid-cols-2" : ""}`}>
+            <ul className={`mx-auto grid max-w-5xl gap-5 ${contacts.length === 3 ? "lg:grid-cols-3" : contacts.length === 2 ? "md:grid-cols-2" : ""}`}>
               {contacts.map((c) => (
                 <li key={c.sub}>
                   <a
                     href={c.href}
                     target={c.external ? "_blank" : undefined}
                     rel={c.external ? "noopener noreferrer" : undefined}
-                    className="group flex h-full flex-col items-center gap-4 rounded-[2rem] border border-white/15 bg-white/5 p-8 backdrop-blur transition-all duration-500 hover:-translate-y-2 hover:bg-white hover:text-forest-900"
+                    className="group flex h-full flex-col items-center gap-4 rounded-[2rem] border border-white/15 bg-white/5 p-6 backdrop-blur sm:p-8 transition-all duration-500 hover:-translate-y-2 hover:bg-white hover:text-forest-900"
                   >
                     <span className="flex h-14 w-14 items-center justify-center rounded-full bg-white/10 text-gold-400 transition-colors duration-500 group-hover:bg-forest-800">
                       {c.icon}
                     </span>
-                    <span className="break-all text-lg font-semibold leading-tight">{c.label}</span>
+                    <span className="text-base font-semibold leading-tight [overflow-wrap:anywhere] lg:text-lg">
+                      {/* Long e-mail addresses wrap after the "@" instead of mid-word. */}
+                      {c.label.includes("@") ? (
+                        <>
+                          {c.label.split("@")[0]}@<wbr />
+                          {c.label.split("@").slice(1).join("@")}
+                        </>
+                      ) : (
+                        c.label
+                      )}
+                    </span>
                     <span className="text-xs font-semibold uppercase tracking-[0.2em] text-white/60 group-hover:text-muted">{c.sub}</span>
                   </a>
                 </li>

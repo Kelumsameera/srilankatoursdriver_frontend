@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 function SectionLabel({ label }: { label: string }) {
   return (
     <div className="mb-6 flex items-center gap-6">
-      <h2 className="whitespace-nowrap font-sans text-[0.68rem] font-bold uppercase tracking-[0.4em] text-gold-600">{label}</h2>
+      <h2 className="whitespace-nowrap font-sans text-[0.72rem] font-bold uppercase tracking-[0.4em] text-gold-600">{label}</h2>
       <div className="h-px flex-1 bg-forest-950/10" aria-hidden />
     </div>
   );
@@ -68,11 +68,11 @@ export default async function VehicleDetailPage({ params }: Props) {
         <div className="container-page w-full pb-24 pt-36">
           <Breadcrumbs locale={locale} items={[{ label: tc("home"), href: "/" }, { label: listing?.page.title ?? "", href: "/vehicles" }, { label: v.name }]} />
           {v.type && (
-            <span className="mb-4 inline-flex rounded-full border border-gold-500/40 bg-gold-500/15 px-3 py-1 text-[0.6rem] font-bold uppercase tracking-[0.2em] text-gold-400 backdrop-blur">
+            <span className="mb-4 inline-flex rounded-full border border-gold-500/40 bg-gold-500/15 px-3 py-1 text-[0.7rem] font-bold uppercase tracking-[0.2em] text-gold-400 backdrop-blur">
               {v.type}
             </span>
           )}
-          <h1 className="animate-fade-up font-display text-5xl leading-[0.95] tracking-tight sm:text-7xl lg:text-8xl">
+          <h1 className="animate-fade-up font-display text-4xl leading-[0.95] tracking-tight sm:text-6xl lg:text-7xl">
             {namePrefix && <span className="block font-light text-white/90">{namePrefix}</span>}
             <em className="font-semibold text-gold-400">{nameLast}</em>
           </h1>
@@ -86,8 +86,8 @@ export default async function VehicleDetailPage({ params }: Props) {
           {v.description && (
             <section>
               <SectionLabel label={t("overview")} />
-              <div className="rounded-e-2xl border-s-4 border-gold-500 bg-white p-8 shadow-sm">
-                <Markdown content={v.description} className="text-lg leading-relaxed" />
+              <div className="rounded-e-2xl border-s-4 border-gold-500 bg-white p-5 shadow-sm sm:p-8">
+                <Markdown content={v.description} className="text-base leading-relaxed sm:text-lg" />
               </div>
             </section>
           )}
@@ -97,7 +97,7 @@ export default async function VehicleDetailPage({ params }: Props) {
               {specs.map((s) => (
                 <div key={s.label} className="rounded-2xl border border-forest-950/5 bg-white p-6 text-center shadow-sm">
                   <s.icon className="mx-auto mb-3 h-5 w-5 text-gold-600" aria-hidden />
-                  <dt className="mb-1 text-[0.6rem] font-bold uppercase tracking-widest text-muted">{s.label}</dt>
+                  <dt className="mb-1 text-[0.7rem] font-bold uppercase tracking-widest text-muted">{s.label}</dt>
                   <dd className="font-display text-lg text-forest-900">{s.value}</dd>
                 </div>
               ))}
@@ -105,7 +105,7 @@ export default async function VehicleDetailPage({ params }: Props) {
           )}
 
           {v.features?.length ? (
-            <section className="rounded-2xl border border-forest-950/5 bg-white p-8 shadow-sm">
+            <section className="rounded-2xl border border-forest-950/5 bg-white p-5 shadow-sm sm:p-8">
               <SectionLabel label={t("features")} />
               <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 {v.features.map((f, i) => (
@@ -119,11 +119,11 @@ export default async function VehicleDetailPage({ params }: Props) {
         </div>
 
         <aside className="lg:sticky lg:top-28">
-          <div className="relative overflow-hidden rounded-3xl border border-forest-950/5 bg-white p-8 text-center shadow-card sm:p-10" data-testid="vehicle-booking-card">
+          <div className="relative overflow-hidden rounded-3xl border border-forest-950/5 bg-white p-6 text-center shadow-card sm:p-10" data-testid="vehicle-booking-card">
             <div className="absolute inset-x-0 top-0 h-1 bg-gold-500" aria-hidden />
             {rate ? (
               <>
-                <span className="mb-3 block text-[0.65rem] font-bold uppercase tracking-widest text-muted">{t("startsFrom")}</span>
+                <span className="mb-3 block text-[0.72rem] font-bold uppercase tracking-widest text-muted">{t("startsFrom")}</span>
                 <p className="font-display text-5xl italic leading-none tracking-tight text-forest-900">{rate}</p>
                 <p className="mt-2 text-sm text-muted">{t("perDay")}</p>
               </>
@@ -141,7 +141,7 @@ export default async function VehicleDetailPage({ params }: Props) {
                 </a>
               )}
             </div>
-            <p className="mt-6 text-[0.65rem] uppercase tracking-tight text-muted">{t("disclaimer")}</p>
+            <p className="mt-6 text-[0.72rem] uppercase tracking-tight text-muted">{t("disclaimer")}</p>
           </div>
         </aside>
       </div>

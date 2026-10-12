@@ -68,7 +68,7 @@ export function Honeypot({ register }: { register: (name: "website") => object }
 
 export function SuccessPanel({ title, text, extra }: { title: string; text: string; extra?: ReactNode }) {
   return (
-    <div role="status" className="rounded-3xl bg-forest-800 p-10 text-center text-white">
+    <div role="status" className="rounded-3xl bg-forest-800 p-6 text-center sm:p-10 text-white">
       <span className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-gold-500 text-3xl text-forest-950">✓</span>
       <h2 className="text-3xl">{title}</h2>
       <p className="mt-3 text-white/80">{text}</p>

@@ -312,7 +312,7 @@ async function SectionView({ section, ctx }: { section: PageSection; ctx: Ctx })
             slides={slides}
             rating={ctx.rating ? { value: ctx.rating.value, label: tr("basedOn", { count: ctx.rating.count }), source: "TripAdvisor" } : undefined}
             whatsapp={{ phone: ctx.settings?.whatsapp, message: ctx.settings?.whatsappMessage }}
-            labels={{ previous: t("previous"), next: t("next"), pause: t("pauseSlideshow"), play: t("playSlideshow") }}
+            labels={{ previous: t("previous"), next: t("next"), pause: t("pauseSlideshow"), play: t("playSlideshow"), playVideo: t("playVideo"), pauseVideo: t("pauseVideo") }}
           />
             <FoliageCluster front side="start" className="bottom-0 translate-y-[18%]" />
             <FoliageCluster front side="end" className="bottom-0 translate-y-[18%]" />

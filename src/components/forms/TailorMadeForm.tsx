@@ -174,7 +174,7 @@ export function TailorMadeForm({ destinations, vehicles, defaultCurrency = "USD"
                 aria-label={`${i + 1}. ${t(`steps.${s}`)}`}
                 disabled={i > step}
                 className={cn(
-                  "flex h-6 w-6 items-center justify-center rounded-full text-[0.65rem] font-semibold ring-4 ring-sand-50 transition-colors sm:h-8 sm:w-8 sm:text-xs",
+                  "relative flex h-7 w-7 items-center justify-center rounded-full text-xs font-semibold ring-4 ring-sand-50 transition-colors after:absolute after:inset-x-0 after:-inset-y-1.5 after:content-[''] sm:h-8 sm:w-8",
                   i === step ? "bg-gold-500 text-forest-950" : i < step ? "bg-forest-800 text-white hover:bg-forest-700" : "bg-white text-muted ring-sand-50 [box-shadow:inset_0_0_0_1px_var(--color-sand-200)]",
                 )}
               >

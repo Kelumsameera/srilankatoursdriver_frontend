@@ -31,7 +31,7 @@ export function toFormValues(fields: FieldDef[], data: Rec = {}): Rec {
         out[f.name] = toDateTimeInput(v);
         break;
       case "switch":
-        out[f.name] = Boolean(v);
+        out[f.name] = v == null ? Boolean(f.defaultValue) : Boolean(v);
         break;
       case "tags":
       case "list":

@@ -65,7 +65,7 @@ export function Badge({ children, className }: { children: ReactNode; className?
 }
 
 export function EmptyState({ text }: { text: string }) {
-  return <p className="rounded-2xl border border-dashed border-sand-200 bg-white/60 p-10 text-center text-muted">{text}</p>;
+  return <p className="rounded-2xl border border-dashed border-sand-200 bg-white/60 p-6 text-center sm:p-10 text-muted">{text}</p>;
 }
 
 /**
@@ -110,12 +110,12 @@ export async function PageHero({
         {children}
       </div>
       {fallback?.illustrative ? (
-        <p className="absolute bottom-2 end-3 flex items-center gap-1 text-[0.625rem] leading-none text-white/70">
+        <p className="absolute bottom-2 end-3 flex items-center gap-1 text-[0.7rem] leading-none text-white/70">
           <Camera className="h-3 w-3" aria-hidden />
           {t("illustrativeImage")}
         </p>
       ) : fallback?.credit ? (
-        <p className="absolute bottom-2 end-3 flex items-center gap-1 text-[0.625rem] leading-none text-white/55">
+        <p className="absolute bottom-2 end-3 flex items-center gap-1 text-[0.7rem] leading-none text-white/55">
           <Camera className="h-3 w-3" aria-hidden />
           <a href={fallback.credit.source} target="_blank" rel="noopener noreferrer" className="hover:text-white">
             {fallback.credit.author}

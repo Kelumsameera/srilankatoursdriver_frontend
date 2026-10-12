@@ -1,10 +1,12 @@
 import { defineConfig, devices } from "@playwright/test";
 
 /**
- * End-to-end tests. Start the API (backend: `npm run dev`, seeded with `npm run seed`)
- * and the frontend (`npm run build && npm start`, or `npm run dev`) first, then:
+ * Read-only public tests. Start the real API from backend/ with
+ * `node --import tsx scripts/qa-readonly.ts`, then start the frontend locally.
+ * Do not seed or mutate an unverified database. If using an installed Chrome:
  *
- *   E2E_ADMIN_EMAIL=... E2E_ADMIN_PASSWORD=... npm run test:e2e
+ *   PLAYWRIGHT_CHROMIUM_PATH=... npm run test:e2e
+ * Run invocations sequentially, or use distinct --output directories.
  */
 export default defineConfig({
   testDir: "./e2e",

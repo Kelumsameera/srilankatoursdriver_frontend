@@ -1,141 +1,318 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { CalendarDays, MapPin } from "lucide-react";
-import { getDetail, getList, getPage, getSiteSettings } from "@/lib/api/server";
+import { CalendarDays, Car, Route } from "lucide-react";
+import { getDetail, getList, getNearbyDestinations, getPage, getSiteSettings, getSitemapData } from "@/lib/api/server";
 import { buildMetadata, jsonLd } from "@/lib/seo";
 import { SITE_URL } from "@/lib/config";
-import { CmsImage } from "@/components/ui/CmsImage";
+import { defaultLocale } from "@/i18n/routing";
+import { CmsImage, isIllustrative } from "@/components/ui/CmsImage";
 import { ButtonLink } from "@/components/ui/Button";
 import { Markdown } from "@/components/ui/Markdown";
-import { DestinationCard, TourCard, sharedDescriptions } from "@/components/cards/cards";
+import { TourCard, sharedDescriptions } from "@/components/cards/cards";
 import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 import { CheckList, DetailSection, MediaStrip } from "@/components/site/DetailBits";
+import { destinationCover } from "@/lib/editorial-images";
+import { DestinationMap } from "@/components/site/DestinationMap";
 import { TransferRates } from "@/components/site/TransferRates";
-import { destinationImage } from "@/lib/editorial-images";
+import { FeaturedExperiences } from "@/components/site/FeaturedExperiences";
+import { DotEyebrow } from "@/components/destinations/Eyebrow";
+import { NearbyCarousel } from "@/components/destinations/NearbyCarousel";
+import { validCoordinates } from "@/lib/destination-map";
+import { stripMarkdown } from "@/lib/utils";
+import type { Destination, MediaAsset } from "@/types/cms";
 
+// /en/destinations/kandy -> Next.js gives us { locale: "en", slug: "kandy" }
 type Props = { params: Promise<{ locale: string; slug: string }> };
 
+// Next.js keeps the built page for 300 seconds (5 minutes), then builds a fresh copy in the background.
+// Saving a destination in the admin also refreshes it straight away.
+export const revalidate = 300;
+
+// generateStaticParams tells Next.js which pages to build ahead of time ("npm run build").
+// We build the English page of every published destination; other languages are built on the first visit.
+export async function generateStaticParams({ params }: { params: { locale: string } }) {
+  if (params.locale !== defaultLocale) return [];
+  const sitemap = await getSitemapData();
+  return (sitemap?.destinations ?? []).map((destination) => ({ slug: destination.slug }));
+}
+
+// generateMetadata sets the <title>, description and share image for this destination
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params;
   const data = await getDetail("destinations", slug, locale);
   if (!data) return {};
-  const d = data.item;
-  const image = d.heroMedia?.url && d.heroMedia.resourceType !== "video" ? d.heroMedia : destinationImage(d);
-  return buildMetadata({ locale, path: `/destinations/${d.slug}`, title: d.name, description: d.shortDescription || d.description, image, seo: d.seo });
+  const destination = data.item;
+  return buildMetadata({
+    locale,
+    path: `/destinations/${destination.slug}`,
+    title: destination.name,
+    description: destination.shortDescription || destination.description,
+    image: destinationCover(destination) ?? undefined,
+    seo: destination.seo,
+  });
 }
 
+// Structured data for Google (schema.org "TouristDestination"), added to the page as JSON-LD
+function buildSchema(destination: Destination, locale: string, cover: MediaAsset | null | undefined) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "TouristDestination",
+    name: destination.name,
+    description: stripMarkdown(destination.shortDescription || destination.description || "", 300),
+    url: `${SITE_URL}/${locale}/destinations/${destination.slug}`,
+    // AI / illustrative images are never sent to Google as a real photo
+    ...(cover?.url && !isIllustrative(cover.url) ? { image: cover.url } : {}),
+    ...(validCoordinates(destination.location)
+      ? { geo: { "@type": "GeoCoordinates", latitude: destination.location?.lat, longitude: destination.location?.lng } }
+      : {}),
+    ...(destination.featuredExperiences?.length
+      ? {
+          includesAttraction: destination.featuredExperiences
+            .filter((experience) => experience.title)
+            .map((experience) => ({ "@type": "TouristAttraction", name: experience.title })),
+        }
+      : {}),
+    containedInPlace: { "@type": "Country", name: "Sri Lanka" },
+  };
+}
+
+// Server component: everything below runs on the server and the visitor gets ready-made HTML
 export default async function DestinationDetailPage({ params }: Props) {
   const { locale, slug } = await params;
+  // Tells next-intl which language this page is rendered in
   setRequestLocale(locale);
-  const [data, listing, settings, t, tc] = await Promise.all([
+
+  const [data, listingPage, settings, nearbyDestinations, t, tCommon] = await Promise.all([
     getDetail("destinations", slug, locale),
     getPage("destinations", locale),
     getSiteSettings(locale),
+    getNearbyDestinations(slug, locale),
     getTranslations("destination"),
     getTranslations("common"),
   ]);
+  // notFound() shows the Next.js 404 page
   if (!data) notFound();
-  const d = data.item;
-  const heroImage = d.heroMedia?.url && d.heroMedia.resourceType !== "video" ? d.heroMedia : destinationImage(d);
-  const tours = await getList("tours", { locale, destination: d._id, limit: 3 });
 
-  const schema = {
-    "@context": "https://schema.org",
-    "@type": "TouristDestination",
-    name: d.name,
-    description: d.shortDescription,
-    url: `${SITE_URL}/${locale}/destinations/${d.slug}`,
-    ...(heroImage.url ? { image: heroImage.url } : {}),
-    ...(d.location?.lat && d.location?.lng ? { geo: { "@type": "GeoCoordinates", latitude: d.location.lat, longitude: d.location.lng } } : {}),
-  };
+  const destination = data.item;
+  const cover = destinationCover(destination);
+  const tours = await getList("tours", { locale, destination: destination._id, limit: 3 });
+
+  const intro = destination.shortDescription || stripMarkdown(destination.description || "", 400) || t("descriptionFallback", { name: destination.name });
+  // The longer story text is only shown when it says more than the intro
+  const story = destination.description && stripMarkdown(destination.description, 400) !== intro ? destination.description : "";
+  const eyebrow = destination.tagline || destination.category?.name || destination.region;
+  const whatsapp = settings?.whatsapp ? { phone: settings.whatsapp, message: t("whatsappMessage", { name: destination.name }) } : null;
+  // Nearby destinations, or the same-category ones from the detail API when nearby is empty
+  const relatedDestinations = nearbyDestinations?.length ? nearbyDestinations : data.related;
+  const hasTours = Boolean(tours?.items.length);
+
+  // The two "practical information" cards that have the same layout
+  const infoCards = [
+    { key: "best", icon: CalendarDays, title: t("bestTime"), body: destination.bestTimeToVisit, fallback: t("bestTimeFallback") },
+    { key: "travel", icon: Car, title: t("howToGetThere"), body: destination.howToGetThere, fallback: t("howToGetThereFallback") },
+  ];
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(schema)} />
-      <section className="relative isolate flex min-h-[70vh] items-end overflow-hidden bg-forest-900 text-white">
-        <CmsImage media={heroImage} alt={heroImage.alt || d.name} preload wrapperClassName="absolute inset-0 -z-10" className="animate-ken-burns" />
-        <div className="absolute inset-0 -z-10 bg-gradient-to-t from-forest-950 via-forest-950/40 to-forest-950/20" />
-        <div className="container-page pb-14 pt-40">
-          <Breadcrumbs locale={locale} items={[{ label: tc("home"), href: "/" }, { label: listing?.page.title ?? "", href: "/destinations" }, { label: d.name }]} />
-          {d.region && (
-            <p className="eyebrow mb-3 flex items-center gap-1 text-gold-400">
-              <MapPin className="h-3.5 w-3.5" /> {d.region}
-            </p>
-          )}
-          <h1 className="text-5xl sm:text-7xl" data-testid="destination-title">
-            {d.name}
-          </h1>
-          {d.shortDescription && <p className="mt-5 max-w-2xl text-lg text-white/80">{d.shortDescription}</p>}
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(buildSchema(destination, locale, cover))} />
+
+      {/* BREADCRUMB + BANNER IMAGE + INTRO + MAP */}
+      <div className="bg-white pt-24 sm:pt-28">
+        <div className="container-page">
+          <Breadcrumbs
+            locale={locale}
+            onLight
+            dots
+            label={t("breadcrumb")}
+            items={[
+              { label: tCommon("home"), href: "/" },
+              { label: listingPage?.page.title || t("destinationsLabel"), href: "/destinations" },
+              { label: destination.name },
+            ]}
+          />
+
+          {/* BANNER IMAGE (uploaded photo or exact-place art, otherwise a plain panel with the name) */}
+          <CmsImage
+            media={cover}
+            alt={cover?.alt || destination.name}
+            placeholderName={destination.name}
+            preload
+            sizes="(max-width: 1279px) 100vw, 1280px"
+            wrapperClassName="mt-6 aspect-[16/9] max-h-[520px] w-full rounded-lg sm:aspect-[21/9]"
+          />
+
+          <section className="grid items-center gap-10 py-8 sm:py-12 md:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] md:gap-10 lg:gap-16" aria-labelledby="destination-title">
+            {/* INTRO TEXT + BUTTONS */}
+            <div className="min-w-0" data-scroll-reveal>
+              {eyebrow && <DotEyebrow>{eyebrow}</DotEyebrow>}
+              {destination.subtitle && <p className="mt-6 text-lg font-light text-muted sm:text-xl">{destination.subtitle}</p>}
+              <h1
+                id="destination-title"
+                className="mt-3 break-words font-display text-[clamp(1.85rem,7vw,3.75rem)] uppercase md:text-[clamp(2.25rem,4.6vw,3.75rem)] leading-[1.05] tracking-[0.04em] text-ink sm:tracking-[0.08em]"
+                data-testid="destination-title"
+              >
+                {destination.name}
+              </h1>
+              <p className="mt-7 max-w-prose whitespace-pre-line text-base leading-8 text-muted">{intro}</p>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <ButtonLink href="#plan-trip">{t("planTrip")}</ButtonLink>
+                {hasTours && (
+                  <ButtonLink variant="outline" href="#destination-tours">
+                    {t("exploreTours")}
+                  </ButtonLink>
+                )}
+              </div>
+            </div>
+
+            {/* MAP */}
+            <div className="min-w-0" data-scroll-reveal>
+              <div className="rounded-[2.5rem] bg-sand-50 px-4 pt-6">
+                <DestinationMap
+                  destination={destination}
+                  label={t("mapLabel", { name: destination.name })}
+                  unavailable={t("locationUnavailable")}
+                  caption={t("mapCaption")}
+                />
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <div className="container-page">
+        {/* THINGS TO SEE */}
+        <div className="mt-6 sm:mt-10">
+          <FeaturedExperiences
+            items={destination.featuredExperiences || []}
+            labels={{
+              eyebrow: t("thingsToSee"),
+              heading: t("featuredExperiences"),
+              subheading: t("inName", { name: destination.name }),
+              readMore: tCommon("readMore"),
+              readLess: t("readLess"),
+            }}
+          />
+        </div>
+
+        {/* STORY, HIGHLIGHTS, THINGS TO DO, GALLERY (each one only when it has content) */}
+        {(story || destination.highlights?.length || destination.thingsToDo?.length || destination.gallery?.length) && (
+          <div className="max-w-3xl border-t border-sand-200 py-14">
+            {story && (
+              <DetailSection>
+                <Markdown content={story} />
+              </DetailSection>
+            )}
+            {destination.highlights?.length ? (
+              <DetailSection title={t("highlights")}>
+                <CheckList items={destination.highlights} />
+              </DetailSection>
+            ) : null}
+            {destination.thingsToDo?.length ? (
+              <DetailSection title={t("thingsToDo")}>
+                <CheckList items={destination.thingsToDo} />
+              </DetailSection>
+            ) : null}
+            {destination.gallery?.length ? (
+              <DetailSection>
+                <MediaStrip items={destination.gallery} label={destination.name} />
+              </DetailSection>
+            ) : null}
+          </div>
+        )}
+
+        {/* PRACTICAL INFORMATION */}
+        <section className="border-t border-sand-200 py-14 sm:py-20" aria-labelledby="practical-title">
+          <DotEyebrow>{t("practicalEyebrow")}</DotEyebrow>
+          <h2 id="practical-title" className="mt-4 font-display text-3xl uppercase tracking-[0.12em] text-ink sm:text-4xl">
+            {t("practicalTitle")}
+          </h2>
+          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {/* BEST TIME + HOW TO GET THERE */}
+            {infoCards.map(({ key, icon: Icon, title, body, fallback }) => (
+              <div key={key} className="rounded-lg border border-sand-200 bg-white p-7" data-scroll-reveal>
+                <Icon className="h-6 w-6 text-gold-600" aria-hidden strokeWidth={1.5} />
+                <h3 className="mt-4 font-display text-xl text-ink">{title}</h3>
+                <p className="mt-3 whitespace-pre-line text-sm leading-7 text-muted">{body?.trim() || fallback}</p>
+              </div>
+            ))}
+
+            {/* SUGGESTED ITINERARY */}
+            <div className="rounded-lg border border-sand-200 bg-white p-7" data-scroll-reveal>
+              <Route className="h-6 w-6 text-gold-600" aria-hidden strokeWidth={1.5} />
+              <h3 className="mt-4 font-display text-xl text-ink">{t("itinerary")}</h3>
+              {destination.itinerary?.length ? (
+                <ol className="mt-3 space-y-3 text-sm leading-7 text-muted">
+                  {destination.itinerary.map((step, index) => (
+                    <li key={`${step.title}-${index}`} className="flex gap-3">
+                      <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sand-100 text-xs font-semibold text-forest-800">{index + 1}</span>
+                      <span>
+                        <span className="font-medium text-ink">{step.title}</span>
+                        {step.description && <span className="block">{step.description}</span>}
+                      </span>
+                    </li>
+                  ))}
+                </ol>
+              ) : (
+                <p className="mt-3 text-sm leading-7 text-muted">{t("itineraryFallback", { name: destination.name })}</p>
+              )}
+            </div>
+          </div>
+        </section>
+      </div>
+
+      {/* PLAN YOUR TRIP (green band with enquiry + WhatsApp buttons) */}
+      <section id="plan-trip" className="scroll-mt-28 bg-forest-800 py-16 text-white sm:py-20" aria-labelledby="plan-trip-title">
+        <div className="container-page flex flex-col items-start gap-8 lg:flex-row lg:items-center lg:justify-between">
+          <div className="max-w-2xl">
+            <DotEyebrow className="text-gold-400">{t("ctaEyebrow")}</DotEyebrow>
+            <h2 id="plan-trip-title" className="mt-4 font-display text-3xl text-white sm:text-4xl">
+              {t("ctaTitle", { name: destination.name })}
+            </h2>
+            <p className="mt-4 text-white/80">{t("ctaText")}</p>
+          </div>
+          <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
+            <ButtonLink href="/tailor-made-tours" variant="secondary" size="lg">
+              {t("enquire")}
+            </ButtonLink>
+            {whatsapp && (
+              <ButtonLink href="whatsapp" variant="whatsapp" size="lg" whatsapp={whatsapp}>
+                {t("whatsapp")}
+              </ButtonLink>
+            )}
+          </div>
         </div>
       </section>
 
-      <div className="container-page grid grid-cols-1 gap-12 py-14 lg:grid-cols-[1fr_340px]">
-        <div className="min-w-0">
-          <DetailSection>
-            <Markdown content={d.description} />
-          </DetailSection>
-          {d.highlights?.length ? (
-            <DetailSection title={t("highlights")}>
-              <CheckList items={d.highlights} />
-            </DetailSection>
-          ) : null}
-          {d.thingsToDo?.length ? (
-            <DetailSection title={t("thingsToDo")}>
-              <CheckList items={d.thingsToDo} />
-            </DetailSection>
-          ) : null}
-          {d.gallery?.length ? (
-            <DetailSection>
-              <MediaStrip items={d.gallery} label={d.name} />
-            </DetailSection>
-          ) : null}
-        </div>
-        <aside className="space-y-6 lg:sticky lg:top-28 lg:self-start">
-          {d.bestTimeToVisit && (
-            <div className="rounded-3xl bg-forest-800 p-7 text-white">
-              <p className="eyebrow mb-2 flex items-center gap-1 text-gold-400">
-                <CalendarDays className="h-4 w-4" /> {t("bestTime")}
-              </p>
-              <p className="text-white/85">{d.bestTimeToVisit}</p>
-            </div>
-          )}
-          <div className="rounded-3xl bg-white p-7 shadow-card">
-            <p className="font-display text-2xl text-forest-900">{t("planTrip")}</p>
-            <div className="mt-5 flex flex-col gap-3">
-              <ButtonLink href="/tailor-made-tours" className="w-full">
-                {t("planTrip")}
-              </ButtonLink>
-              <ButtonLink href="/booking" variant="outline" className="w-full">
-                {tc("bookNow")}
-              </ButtonLink>
-            </div>
-          </div>
-        </aside>
-      </div>
-
-      {tours?.items.length ? (
-        <section className="py-14">
+      {/* TOURS THAT VISIT THIS DESTINATION */}
+      {tours && hasTours && (
+        <section id="destination-tours" className="scroll-mt-28 py-14 sm:py-20" aria-labelledby="destination-tours-title">
           <div className="container-page">
+            <h2 id="destination-tours-title" className="mb-8 font-display text-3xl text-ink">
+              {t("exploreTours")}
+            </h2>
             <div className="grid grid-cols-1 gap-7 sm:grid-cols-2 lg:grid-cols-3">
-              {tours.items.map((tour, _i, all) => (
-                <TourCard key={tour._id} tour={tour} hideDescription={sharedDescriptions(all).has(tour.shortDescription?.trim() ?? "")} />
+              {tours.items.map((tour, _index, allTours) => (
+                <TourCard key={tour._id} tour={tour} hideDescription={sharedDescriptions(allTours).has(tour.shortDescription?.trim() ?? "")} />
               ))}
             </div>
           </div>
         </section>
-      ) : null}
+      )}
 
+      {/* TRANSFER RATES */}
       <TransferRates settings={settings} />
 
-      {data.related.length > 0 && (
-        <section className="bg-sand-100 py-16">
+      {/* NEARBY DESTINATIONS */}
+      {relatedDestinations.length > 0 && (
+        <section className="bg-sand-50 py-16 sm:py-20" aria-labelledby="nearby-title">
           <div className="container-page">
-            <h2 className="mb-10 text-3xl text-forest-900">{t("related")}</h2>
-            <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
-              {data.related.map((r) => (
-                <DestinationCard key={r._id} destination={r} />
-              ))}
+            <DotEyebrow>{t("nearbyEyebrow")}</DotEyebrow>
+            <h2 id="nearby-title" className="mt-4 font-display text-3xl uppercase tracking-[0.12em] text-ink sm:text-4xl">
+              {t("nearby")}
+            </h2>
+            <div className="mt-6">
+              <NearbyCarousel items={relatedDestinations} />
             </div>
           </div>
         </section>

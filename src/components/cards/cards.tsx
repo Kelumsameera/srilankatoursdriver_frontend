@@ -5,7 +5,7 @@ import { cn, formatDate, formatPrice } from "@/lib/utils";
 import { CmsImage } from "@/components/ui/CmsImage";
 import { CmsLink } from "@/components/ui/CmsLink";
 import { Badge, Stars } from "@/components/ui/misc";
-import { destinationImage, tourImage, travelImageFor } from "@/lib/editorial-images";
+import { destinationCover, tourImage, travelImageFor } from "@/lib/editorial-images";
 
 /**
  * Descriptions used by more than one tour in a list (e.g. a generic import placeholder). Cards with such a
@@ -88,7 +88,7 @@ export function TourCard({ tour, hideDescription }: { tour: Tour; hideDescriptio
 /** `framed`: landscape crop with a fine gold outline (homepage destinations band). */
 export function DestinationCard({ destination, tall, framed }: { destination: Destination; tall?: boolean; framed?: boolean }) {
   const subtitle = destination.category?.name || destination.region;
-  const cover = destination.heroMedia?.url && destination.heroMedia.resourceType !== "video" ? destination.heroMedia : destinationImage(destination);
+  const cover = destinationCover(destination);
   return (
     <CmsLink
       href={`/destinations/${destination.slug}`}
@@ -96,7 +96,8 @@ export function DestinationCard({ destination, tall, framed }: { destination: De
     >
       <CmsImage
         media={cover}
-        alt={cover.alt || destination.name}
+        alt={cover?.alt || destination.name}
+        placeholderName={destination.name}
         sizes={framed ? "(min-width: 1024px) 25vw, (min-width: 768px) 33vw, (min-width: 640px) 50vw, 100vw" : "(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"}
         wrapperClassName={framed ? "aspect-[3/2] lg:aspect-[5/4]" : tall ? "aspect-[3/4]" : "aspect-[4/5]"}
         className="transition-transform duration-700 group-hover:scale-105"
@@ -186,7 +187,7 @@ export function VehicleCard({ vehicle }: { vehicle: Vehicle }) {
           className="transition-transform duration-700 group-hover:scale-105"
         />
         {vehicle.type && (
-          <span className="absolute start-4 top-4 rounded-full bg-forest-950/80 px-3 py-1 text-[0.6rem] font-bold uppercase tracking-[0.18em] text-white/90 backdrop-blur">
+          <span className="absolute start-4 top-4 rounded-full bg-forest-950/80 px-3 py-1 text-[0.7rem] font-bold uppercase tracking-[0.18em] text-white/90 backdrop-blur">
             {vehicle.type}
           </span>
         )}

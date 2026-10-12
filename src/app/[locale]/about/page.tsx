@@ -121,7 +121,7 @@ export default async function AboutPage({ params }: Props) {
         <dl className="container-page grid grid-cols-2 gap-5 lg:grid-cols-4">
           {STATS.map((s) => (
             <div key={s.key} className="flex min-w-0 flex-col-reverse rounded-4xl border border-sand-200 bg-sand-50 px-3 py-6 text-center sm:p-10">
-              <dt className="mt-2 text-[0.65rem] font-bold uppercase tracking-[0.08em] text-gold-600 sm:tracking-[0.2em]">{t(`stats.${s.key}`)}</dt>
+              <dt className="mt-2 text-[0.72rem] font-bold uppercase tracking-[0.08em] text-gold-600 sm:tracking-[0.2em]">{t(`stats.${s.key}`)}</dt>
               <dd className="font-display text-3xl text-forest-900 sm:text-5xl">{s.value}</dd>
             </div>
           ))}

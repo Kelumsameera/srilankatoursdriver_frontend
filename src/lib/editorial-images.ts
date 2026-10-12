@@ -70,8 +70,27 @@ export function travelImageFor(value: string) {
   return editorialImages.hero;
 }
 
-export function destinationImage(destination: Pick<Destination, "name" | "slug">): MediaAsset {
-  return travelImageFor(`${destination.slug} ${destination.name}`);
+/** Illustrative art that depicts exactly this destination. */
+const DESTINATION_ART: Record<string, MediaAsset> = {
+  sigiriya: editorialImages.sigiriya,
+  ella: editorialImages.ella,
+  kandy: editorialImages.kandy,
+  mirissa: editorialImages.mirissa,
+  yala: editorialImages.yala,
+};
+
+/**
+ * Fallback for a destination without an uploaded image: only art that shows that very place, otherwise null
+ * so the caller renders the neutral named placeholder. A destination never borrows another place's picture.
+ */
+export function destinationImage(destination: Pick<Destination, "name" | "slug">): MediaAsset | null {
+  return DESTINATION_ART[destination.slug] ?? null;
+}
+
+/** Uploaded hero image, else exact-place fallback art, else null (placeholder). */
+export function destinationCover(destination: Pick<Destination, "name" | "slug" | "heroMedia">): MediaAsset | null {
+  const hero = destination.heroMedia;
+  return hero?.url && hero.resourceType !== "video" ? hero : destinationImage(destination);
 }
 
 export function tourImage(tour: Pick<Tour, "title" | "slug" | "startLocation" | "endLocation" | "destinations" | "itinerary">): MediaAsset {

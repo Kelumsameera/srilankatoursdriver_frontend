@@ -172,7 +172,7 @@ export function AccountPanel() {
               </ButtonLink>
             </div>
           ) : visible.length === 0 ? (
-            <p className="rounded-2xl bg-sand-50 p-8 text-center text-sm text-muted">{t("noBookingsFilter")}</p>
+            <p className="rounded-2xl bg-sand-50 p-6 text-center sm:p-8 text-sm text-muted">{t("noBookingsFilter")}</p>
           ) : (
             <ul className="space-y-4">
               {visible.map((b) => (

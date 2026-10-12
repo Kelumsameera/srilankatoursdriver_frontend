@@ -66,10 +66,10 @@ export async function SiteFooter({ settings, branding, tours, destinations }: Pr
           {columns.map((col) => (
             <div key={col.title}>
               <h3 className="mb-4 font-sans text-sm font-semibold uppercase tracking-[0.18em] text-gold-400">{col.title}</h3>
-              <ul className="space-y-2.5">
+              <ul className="space-y-0.5">
                 {col.links.map((l) => (
                   <li key={`${l.label}-${l.url}`}>
-                    <CmsLink href={l.url} className="transition-colors hover:text-white">
+                    <CmsLink href={l.url} className="inline-block py-1.5 transition-colors hover:text-white">
                       {l.label}
                     </CmsLink>
                   </li>
@@ -80,10 +80,10 @@ export async function SiteFooter({ settings, branding, tours, destinations }: Pr
           {f.showTourLinks !== false && tours.length > 0 && (
             <div>
               <h3 className="mb-4 font-sans text-sm font-semibold uppercase tracking-[0.18em] text-gold-400">{t("popularTours")}</h3>
-              <ul className="space-y-2.5">
+              <ul className="space-y-0.5">
                 {tours.map((tour) => (
                   <li key={tour._id}>
-                    <CmsLink href={`/tours/${tour.slug}`} className="transition-colors hover:text-white">
+                    <CmsLink href={`/tours/${tour.slug}`} className="inline-block py-1.5 transition-colors hover:text-white">
                       {tour.title}
                     </CmsLink>
                   </li>
@@ -94,10 +94,10 @@ export async function SiteFooter({ settings, branding, tours, destinations }: Pr
           {f.showDestinationLinks !== false && destinations.length > 0 && (
             <div className="sm:col-span-3">
               <h3 className="mb-4 font-sans text-sm font-semibold uppercase tracking-[0.18em] text-gold-400">{t("destinations")}</h3>
-              <ul className="grid grid-cols-2 gap-x-6 gap-y-2.5 sm:grid-cols-4">
+              <ul className="grid grid-cols-2 gap-x-6 gap-y-0.5 sm:grid-cols-4">
                 {destinations.map((d) => (
                   <li key={d._id}>
-                    <CmsLink href={`/destinations/${d.slug}`} className="transition-colors hover:text-white">
+                    <CmsLink href={`/destinations/${d.slug}`} className="inline-block py-1.5 transition-colors hover:text-white">
                       {d.name}
                     </CmsLink>
                   </li>
