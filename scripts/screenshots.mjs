@@ -25,6 +25,7 @@ const PUBLIC_PAGES = [
   "excursions/kandy",
   "vehicles",
   "vehicles/honda-fit",
+  "vehicles/toyota-prius",
   "destinations",
   "destinations/kandy",
   "blog",

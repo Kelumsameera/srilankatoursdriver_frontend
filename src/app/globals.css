@@ -57,8 +57,7 @@
  * The smallest size is 12px (text-caption): use it instead of text-[10px], text-[11px], text-[0.7rem], text-[0.72rem].
  */
 @theme {
-  --text-caption: 0.75rem; /* text-xs */
-  --text-caption--line-height: calc(1 / 0.75);
+  --text-caption: 0.75rem; /* 12px. No line height of its own: inherits, like the text-[0.72rem] values it replaces */
   --text-small: clamp(0.8125rem, 0.78rem + 0.15vw, 0.875rem); /* desktop = text-sm */
   --text-small--line-height: calc(1.25 / 0.875);
   --text-body: clamp(0.9375rem, 0.9rem + 0.2vw, 1rem); /* desktop = text-base */

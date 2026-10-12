@@ -6,34 +6,60 @@ import { locales } from "@/i18n/routing";
 import type { Vehicle } from "@/types/cms";
 import { EmptyState, PageHero } from "@/components/ui/misc";
 import { RotatingText } from "@/components/ui/RotatingText";
-import { VehicleCard } from "@/components/cards/cards";
+import { VehicleCard } from "@/components/cards/VehicleCard";
 import { PageRenderer } from "@/components/sections/PageRenderer";
 
+// /en/vehicles -> Next.js gives us the locale from the URL
 type Props = { params: Promise<{ locale: string }> };
 
+// generateMetadata is Next.js's way to set the <title> and SEO tags. It runs on the server before the page.
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
-  const data = await getPage("vehicles", locale);
-  return buildMetadata({ locale, path: "/vehicles", routeKey: "vehicles", seo: data?.page.seo, title: data?.page.title, description: data?.page.subtitle, image: data?.page.heroImage });
+  const pageData = await getPage("vehicles", locale);
+  return buildMetadata({
+    locale,
+    path: "/vehicles",
+    routeKey: "vehicles",
+    seo: pageData?.page.seo,
+    title: pageData?.page.title,
+    description: pageData?.page.subtitle,
+    image: pageData?.page.heroImage,
+  });
 }
 
-/** Groups vehicles by their type (Car, Van, Bus …) in the order the admin sorted them. */
-function groupByType(items: Vehicle[], fallback: string) {
-  const groups = new Map<string, { label: string; items: Vehicle[] }>();
-  for (const v of items) {
-    const label = v.type?.trim() || fallback;
+// Groups vehicles by their type (Car, Van, Bus …) in the order the admin sorted them
+function groupByType(vehicles: Vehicle[], fallbackLabel: string) {
+  const groups = new Map<string, { label: string; vehicles: Vehicle[] }>();
+  for (const vehicle of vehicles) {
+    const label = vehicle.type?.trim() || fallbackLabel;
     const key = label.toLowerCase();
-    if (!groups.has(key)) groups.set(key, { label, items: [] });
-    groups.get(key)!.items.push(v);
+    if (!groups.has(key)) groups.set(key, { label, vehicles: [] });
+    groups.get(key)!.vehicles.push(vehicle);
   }
   return [...groups.values()];
 }
 
+// The site's enabled languages, named in the visitor's language ("English", "Deutsch", "日本語" …)
+function spokenLanguageNames(codes: string[], locale: string) {
+  try {
+    const names = new Intl.DisplayNames([locale], { type: "language" });
+    return codes.map((code) => names.of(code) ?? code);
+  } catch {
+    // Old browsers / unknown locale: show the codes instead
+    return codes;
+  }
+}
+
+// This is a server component (no "use client"): the data is fetched on the server,
+// so Google sees the whole fleet in the HTML.
 export default async function VehiclesPage({ params }: Props) {
   const { locale } = await params;
+  // Tells next-intl which language this page is rendered in
   setRequestLocale(locale);
-  const [data, list, settings, languages, t, tv] = await Promise.all([
+
+  const [pageData, vehicleList, settings, languages, tCommon, tVehicle] = await Promise.all([
     getPage("vehicles", locale),
+    // The whole fleet in one request (API maximum 60), grouped by type below
     getList("vehicles", { locale, limit: 60 }),
     getSiteSettings(locale),
     getLanguages(),
@@ -41,50 +67,49 @@ export default async function VehiclesPage({ params }: Props) {
     getTranslations("vehicle"),
   ]);
 
-  // "Drivers who speak English · Deutsch · 日本語 …" – the site's enabled languages, named in the visitor's language.
-  const codes = languages?.filter((l) => l.enabled).map((l) => l.code) ?? [...locales];
-  let spoken: string[] = codes;
-  try {
-    const names = new Intl.DisplayNames([locale], { type: "language" });
-    spoken = codes.map((c) => names.of(c) ?? c);
-  } catch {
-    /* keep codes */
-  }
-  const groups = groupByType(list?.items ?? [], tv("otherType"));
+  // "Drivers who speak English · Deutsch · 日本語 …"
+  const languageCodes = languages?.filter((language) => language.enabled).map((language) => language.code) ?? [...locales];
+  const spokenLanguages = spokenLanguageNames(languageCodes, locale);
+  const groups = groupByType(vehicleList?.items ?? [], tVehicle("otherType"));
 
   return (
     <>
-      <PageHero title={data?.page.title ?? ""} subtitle={data?.page.subtitle} image={data?.page.heroImage} banner="vehicles">
-        {spoken.length > 1 && (
+      {/* HERO with the rotating list of languages the drivers speak */}
+      <PageHero title={pageData?.page.title ?? ""} subtitle={pageData?.page.subtitle} image={pageData?.page.heroImage} banner="vehicles">
+        {spokenLanguages.length > 1 && (
           <p className="mt-4 text-sm tracking-wide text-white/70">
-            {tv("fleetDesc")}{" "}
-            <RotatingText items={spoken} className="font-semibold text-gold-400" />
+            {tVehicle("fleetDesc")} <RotatingText items={spokenLanguages} className="font-semibold text-gold-400" />
           </p>
         )}
       </PageHero>
-      <section className="bg-sand-50 py-16 sm:py-20">
+
+      {/* FLEET: one group per vehicle type */}
+      <section className="bg-sand-50 py-section">
         <div className="container-page space-y-20">
           {groups.length ? (
-            groups.map((g) => (
-              <div key={g.label} data-testid="vehicle-group">
-                <div className="mb-10 flex items-center gap-5 text-[0.72rem] font-bold uppercase tracking-[0.3em] text-gold-600">
-                  <h2 className="font-sans text-[0.72rem] font-bold uppercase tracking-[0.3em] text-gold-600">{g.label}</h2>
+            groups.map((group) => (
+              <div key={group.label} data-testid="vehicle-group">
+                {/* GROUP HEADER: type name, line, number of vehicles */}
+                <div className="mb-10 flex items-center gap-5 text-caption font-bold uppercase tracking-[0.3em] text-gold-600">
+                  <h2 className="font-sans text-caption font-bold uppercase tracking-[0.3em] text-gold-600">{group.label}</h2>
                   <div className="h-px flex-1 bg-forest-950/10" aria-hidden />
-                  <span className="font-medium tracking-[0.2em] text-muted">{tv("fleetCount", { count: g.items.length })}</span>
+                  <span className="font-medium tracking-[0.2em] text-muted">{tVehicle("fleetCount", { count: group.vehicles.length })}</span>
                 </div>
                 <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-                  {g.items.map((v) => (
-                    <VehicleCard key={v._id} vehicle={v} />
+                  {group.vehicles.map((vehicle) => (
+                    <VehicleCard key={vehicle._id} vehicle={vehicle} />
                   ))}
                 </div>
               </div>
             ))
           ) : (
-            <EmptyState text={t("noResults")} />
+            <EmptyState text={tCommon("noResults")} />
           )}
         </div>
       </section>
-      {data && <PageRenderer sections={data.sections.filter((s) => s.type !== "hero")} settings={settings} />}
+
+      {/* CMS SECTIONS: everything the admin added to the "vehicles" page, except its hero (shown above) */}
+      {pageData && <PageRenderer sections={pageData.sections.filter((section) => section.type !== "hero")} settings={settings} />}
     </>
   );
 }
