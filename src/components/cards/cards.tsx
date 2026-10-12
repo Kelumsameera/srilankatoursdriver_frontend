@@ -1,6 +1,6 @@
 import { useLocale, useTranslations } from "next-intl";
-import { ArrowRight, Briefcase, Clock, ExternalLink, MapPin, Snowflake, Users } from "lucide-react";
-import type { BlogPost, Destination, Excursion, Review, Vehicle } from "@/types/cms";
+import { ArrowRight, Briefcase, ExternalLink, Snowflake, Users } from "lucide-react";
+import type { BlogPost, Destination, Review, Vehicle } from "@/types/cms";
 import { cn, formatDate, formatPrice } from "@/lib/utils";
 import { CmsImage } from "@/components/ui/CmsImage";
 import { CmsLink } from "@/components/ui/CmsLink";
@@ -38,52 +38,6 @@ export function DestinationCard({ destination, tall, framed }: { destination: De
         </span>
       </div>
     </CmsLink>
-  );
-}
-
-export function ExcursionCard({ excursion }: { excursion: Excursion }) {
-  const t = useTranslations("common");
-  const locale = useLocale();
-  const price = formatPrice(excursion.price, excursion.currency, locale);
-  const cover = excursion.heroMedia?.url && excursion.heroMedia.resourceType !== "video"
-    ? excursion.heroMedia
-    : travelImageFor(`${excursion.slug} ${excursion.title} ${excursion.location ?? ""}`);
-  return (
-    <article className="group relative flex h-full flex-col overflow-hidden rounded-3xl bg-white shadow-card">
-      <CmsImage
-        media={cover}
-        alt={cover.alt || excursion.title}
-        sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-        wrapperClassName="aspect-[16/10]"
-        className="transition-transform duration-700 group-hover:scale-105"
-      />
-      <div className="flex flex-1 flex-col p-6">
-        <div className="mb-3 flex flex-wrap gap-2">
-          {excursion.category?.name && <Badge>{excursion.category.name}</Badge>}
-          {excursion.duration && (
-            <Badge className="bg-sand-100 text-earth-700">
-              <Clock className="h-3 w-3" aria-hidden /> {excursion.duration}
-            </Badge>
-          )}
-        </div>
-        <h3 className="text-xl leading-snug text-forest-900">
-          <CmsLink href={`/excursions/${excursion.slug}`} className="after:absolute after:inset-0">
-            {excursion.title}
-          </CmsLink>
-        </h3>
-        {excursion.shortDescription && <p className="mt-2 line-clamp-2 text-sm text-muted">{excursion.shortDescription}</p>}
-        <div className="mt-auto flex items-center justify-between pt-5 text-sm">
-          {excursion.location ? (
-            <span className="flex items-center gap-1 text-muted">
-              <MapPin className="h-4 w-4 text-gold-600" aria-hidden /> {excursion.location}
-            </span>
-          ) : (
-            <span />
-          )}
-          <span className="font-semibold text-forest-800">{price ? `${t("from")} ${price}` : excursion.priceNote || ""}</span>
-        </div>
-      </div>
-    </article>
   );
 }
 

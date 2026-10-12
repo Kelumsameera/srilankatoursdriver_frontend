@@ -22,6 +22,7 @@ const PUBLIC_PAGES = [
   "tours/08-days-east-coast-hotels",
   "excursions",
   "excursions/colombo",
+  "excursions/kandy",
   "vehicles",
   "vehicles/honda-fit",
   "destinations",

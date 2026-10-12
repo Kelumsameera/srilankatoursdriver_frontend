@@ -52,35 +52,37 @@
  * so pages need no per-breakpoint font sizes. Tailwind turns each token into a utility:
  *   --text-h2         -> text-h2       --tracking-label  -> tracking-label
  *   --spacing-section -> py-section, mt-section …     --spacing-grid -> gap-grid
+ * Desktop-exact: at desktop width (1440px) each token is exactly the Tailwind size it replaces (size AND line height),
+ * so desktop pages look the same; only phones and tablets get the smaller, fluid sizes.
  * The smallest size is 12px (text-caption): use it instead of text-[10px], text-[11px], text-[0.7rem], text-[0.72rem].
  */
 @theme {
-  --text-caption: 0.75rem;
-  --text-caption--line-height: 1.4;
-  --text-small: clamp(0.8125rem, 0.78rem + 0.15vw, 0.875rem);
-  --text-small--line-height: 1.5;
-  --text-body: clamp(0.9375rem, 0.9rem + 0.2vw, 1rem);
-  --text-body--line-height: 1.7;
-  --text-lead: clamp(1.0625rem, 1rem + 0.35vw, 1.25rem);
-  --text-lead--line-height: 1.6;
-  --text-h3: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
-  --text-h3--line-height: 1.3;
-  --text-h2: clamp(1.75rem, 1.4rem + 1.6vw, 2.5rem);
-  --text-h2--line-height: 1.15;
-  --text-h1: clamp(2rem, 1.5rem + 2.6vw, 3.75rem);
-  --text-h1--line-height: 1.08;
-  --text-display: clamp(2.25rem, 1.6rem + 3.4vw, 4.5rem);
-  --text-display--line-height: 1.05;
+  --text-caption: 0.75rem; /* text-xs */
+  --text-caption--line-height: calc(1 / 0.75);
+  --text-small: clamp(0.8125rem, 0.78rem + 0.15vw, 0.875rem); /* desktop = text-sm */
+  --text-small--line-height: calc(1.25 / 0.875);
+  --text-body: clamp(0.9375rem, 0.9rem + 0.2vw, 1rem); /* desktop = text-base */
+  --text-body--line-height: 1.5;
+  --text-lead: clamp(1.0625rem, 1rem + 0.35vw, 1.125rem); /* desktop = text-lg */
+  --text-lead--line-height: calc(1.75 / 1.125);
+  --text-h3: clamp(1.125rem, 1rem + 0.4vw, 1.25rem); /* desktop = text-xl */
+  --text-h3--line-height: calc(1.75 / 1.25);
+  --text-h2: clamp(1.5rem, 1.2rem + 0.9vw, 1.875rem); /* desktop = text-3xl */
+  --text-h2--line-height: calc(2.25 / 1.875);
+  --text-h1: clamp(2rem, 1.5rem + 2.6vw, 3.75rem); /* desktop = text-6xl */
+  --text-h1--line-height: 1;
+  --text-display: clamp(2.25rem, 1.6rem + 3.4vw, 4.5rem); /* desktop = text-7xl */
+  --text-display--line-height: 1;
 
   /* Letter spacing for small uppercase labels (replaces tracking-[0.18em] / tracking-[0.2em]) */
   --tracking-label: 0.18em;
   --tracking-eyebrow: 0.22em;
 
   /* Vertical space between page sections, between blocks inside a section, and between cards in a grid */
-  --spacing-section: clamp(3.5rem, 2.5rem + 4vw, 6rem);
-  --spacing-section-sm: clamp(2.5rem, 2rem + 2vw, 4rem);
-  --spacing-stack: clamp(1.5rem, 1rem + 2vw, 2.5rem);
-  --spacing-grid: clamp(1rem, 0.75rem + 1vw, 1.5rem);
+  --spacing-section: clamp(4rem, 3rem + 2.5vw, 5rem); /* desktop = py-20, phone = py-16 */
+  --spacing-section-sm: clamp(3rem, 2.25rem + 2vw, 4rem); /* desktop = py-16 */
+  --spacing-stack: clamp(1.5rem, 1rem + 2vw, 2.5rem); /* desktop = mt-10 */
+  --spacing-grid: clamp(1.25rem, 1rem + 1vw, 1.75rem); /* desktop = gap-7 */
 }
 
 /* Endless slider: the track holds the items twice and moves by half its width. */
