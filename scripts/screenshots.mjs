@@ -29,6 +29,7 @@ const PUBLIC_PAGES = [
   "destinations",
   "destinations/kandy",
   "blog",
+  "blog/no-such-post",
   "contact",
   "faqs",
   "gallery",

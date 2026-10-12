@@ -1,11 +1,11 @@
 import { useLocale, useTranslations } from "next-intl";
 import { ArrowRight, ExternalLink } from "lucide-react";
-import type { BlogPost, Destination, Review } from "@/types/cms";
+import type { Destination, Review } from "@/types/cms";
 import { cn, formatDate } from "@/lib/utils";
 import { CmsImage } from "@/components/ui/CmsImage";
 import { CmsLink } from "@/components/ui/CmsLink";
 import { Badge, Stars } from "@/components/ui/misc";
-import { destinationCover, travelImageFor } from "@/lib/editorial-images";
+import { destinationCover } from "@/lib/editorial-images";
 
 /** `framed`: landscape crop with a fine gold outline (homepage destinations band). */
 export function DestinationCard({ destination, tall, framed }: { destination: Destination; tall?: boolean; framed?: boolean }) {
@@ -38,41 +38,6 @@ export function DestinationCard({ destination, tall, framed }: { destination: De
         </span>
       </div>
     </CmsLink>
-  );
-}
-
-export function BlogCard({ post }: { post: BlogPost }) {
-  const t = useTranslations("common");
-  const locale = useLocale();
-  const cover = post.coverImage?.url && post.coverImage.resourceType !== "video"
-    ? post.coverImage
-    : travelImageFor(`${post.slug} ${post.title} ${post.category?.name ?? ""}`);
-  return (
-    <article className="group relative flex h-full flex-col">
-      <CmsImage
-        media={cover}
-        alt={cover.alt || post.title}
-        sizes="(min-width: 1024px) 33vw, 100vw"
-        wrapperClassName="aspect-[16/10] rounded-3xl"
-        className="transition-transform duration-700 group-hover:scale-105"
-      />
-      <div className="flex flex-1 flex-col pt-5">
-        <p className="flex flex-wrap items-center gap-2 text-xs text-muted">
-          {post.category?.name && <span className="font-semibold uppercase tracking-wider text-gold-600">{post.category.name}</span>}
-          {post.publishDate && <time dateTime={post.publishDate}>{formatDate(post.publishDate, locale)}</time>}
-          {post.readingMinutes ? <span>· {t("minRead", { count: post.readingMinutes })}</span> : null}
-        </p>
-        <h3 className="mt-2 font-display text-xl leading-snug text-forest-900">
-          <CmsLink href={`/blog/${post.slug}`} className="after:absolute after:inset-0">
-            {post.title}
-          </CmsLink>
-        </h3>
-        {post.excerpt && <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-muted">{post.excerpt}</p>}
-        <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-gold-600 transition-colors group-hover:text-forest-800" aria-hidden>
-          {t("readMore")} <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 rtl:rotate-180 rtl:group-hover:-translate-x-0.5" />
-        </span>
-      </div>
-    </article>
   );
 }
 

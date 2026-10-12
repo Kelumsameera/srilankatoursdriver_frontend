@@ -3,50 +3,70 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getCategories, getList, getPage, getSiteSettings } from "@/lib/api/server";
 import { buildMetadata } from "@/lib/seo";
 import { EmptyState, PageHero } from "@/components/ui/misc";
-import { BlogCard } from "@/components/cards/cards";
+import { BlogCard } from "@/components/cards/BlogCard";
 import { CategoryFilter, Pagination, pageParam, param, type SearchParams } from "@/components/site/listing";
 import { PageRenderer } from "@/components/sections/PageRenderer";
 
+// /en/blog?category=travel-tips&page=2 -> Next.js gives us the locale from the URL and the ?query values
 type Props = { params: Promise<{ locale: string }>; searchParams: SearchParams };
 
+// generateMetadata is Next.js's way to set the <title> and SEO tags. It runs on the server before the page.
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
-  const data = await getPage("blog", locale);
-  return buildMetadata({ locale, path: "/blog", routeKey: "blog", seo: data?.page.seo, title: data?.page.title, description: data?.page.subtitle, image: data?.page.heroImage });
+  const pageData = await getPage("blog", locale);
+  return buildMetadata({
+    locale,
+    path: "/blog",
+    routeKey: "blog",
+    seo: pageData?.page.seo,
+    title: pageData?.page.title,
+    description: pageData?.page.subtitle,
+    image: pageData?.page.heroImage,
+  });
 }
 
+// This is a server component (no "use client"): the data is fetched on the server,
+// so Google sees the list of posts in the HTML.
 export default async function BlogPage({ params, searchParams }: Props) {
   const { locale } = await params;
+  // Tells next-intl which language this page is rendered in
   setRequestLocale(locale);
-  const sp = await searchParams;
-  const category = param(sp, "category");
-  const page = pageParam(sp);
-  const [data, categories, list, settings, t] = await Promise.all([
+  const query = await searchParams;
+  const category = param(query, "category");
+  const page = pageParam(query);
+
+  const [pageData, categories, postList, settings, tCommon] = await Promise.all([
     getPage("blog", locale),
     getCategories("blog", locale),
     getList("blog", { locale, page, limit: 9, category }),
     getSiteSettings(locale),
     getTranslations("common"),
   ]);
+
   return (
     <>
-      <PageHero title={data?.page.title ?? ""} subtitle={data?.page.subtitle} image={data?.page.heroImage} banner="blog" />
-      <section className="py-16 sm:py-20">
+      {/* HERO */}
+      <PageHero title={pageData?.page.title ?? ""} subtitle={pageData?.page.subtitle} image={pageData?.page.heroImage} banner="blog" />
+
+      {/* POST LIST: category chips, cards, pages */}
+      <section className="py-section">
         <div className="container-page">
           <CategoryFilter basePath="/blog" categories={categories ?? []} active={category} />
-          {list?.items.length ? (
+          {postList?.items.length ? (
             <div className="grid gap-x-8 gap-y-14 md:grid-cols-2 lg:grid-cols-3">
-              {list.items.map((p) => (
-                <BlogCard key={p._id} post={p} />
+              {postList.items.map((post) => (
+                <BlogCard key={post._id} post={post} />
               ))}
             </div>
           ) : (
-            <EmptyState text={t("noResults")} />
+            <EmptyState text={tCommon("noResults")} />
           )}
-          {list && <Pagination meta={list.meta} basePath="/blog" query={{ category }} />}
+          {postList && <Pagination meta={postList.meta} basePath="/blog" query={{ category }} />}
         </div>
       </section>
-      {data && <PageRenderer sections={data.sections.filter((s) => s.type !== "hero")} settings={settings} />}
+
+      {/* CMS SECTIONS: everything the admin added to the "blog" page, except its hero (shown above) */}
+      {pageData && <PageRenderer sections={pageData.sections.filter((section) => section.type !== "hero")} settings={settings} />}
     </>
   );
 }
