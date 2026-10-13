@@ -64,11 +64,9 @@ export function NearbyCarousel({ items }: { items: Destination[] }) {
                 />
                 {/* CATEGORY, NAME, DISTANCE */}
                 <div className="p-5">
-                  {destination.category?.name && <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gold-600">{destination.category.name}</p>}
+                  {destination.category?.name && <p className="text-xs font-semibold uppercase tracking-label text-gold-600">{destination.category.name}</p>}
                   <h3 className="mt-2 font-display text-xl text-ink">{destination.name}</h3>
-                  {typeof destination.distanceKm === "number" && destination.distanceKm > 0 && (
-                    <p className="mt-1 text-sm text-muted">{t("kmAway", { km: destination.distanceKm })}</p>
-                  )}
+                  {typeof destination.distanceKm === "number" && destination.distanceKm > 0 && <p className="mt-1 text-sm text-muted">{t("kmAway", { km: destination.distanceKm })}</p>}
                 </div>
               </CmsLink>
             </li>

@@ -18,13 +18,11 @@ export function CtaSection({ section, ctx }: SectionProps) {
       {hasMedia && (
         <>
           <CmsImage media={media} alt="" wrapperClassName="absolute inset-0 -z-20" />
-          <div className="absolute inset-0 -z-10 bg-gradient-to-b from-forest-950/55 via-forest-950/65 to-forest-950/80" />
+          <div className="absolute inset-0 -z-10 bg-linear-to-b from-forest-950/55 via-forest-950/65 to-forest-950/80" />
           <PaperEdge flip className="text-sand-50" />
         </>
       )}
-      {!hasMedia && light && (
-        <div className="absolute -start-40 -top-40 -z-10 h-[30rem] w-[30rem] rounded-full bg-forest-600/30 blur-3xl" aria-hidden />
-      )}
+      {!hasMedia && light && <div className="absolute -inset-s-40 -top-40 -z-10 h-120 w-120 rounded-full bg-forest-600/30 blur-3xl" aria-hidden />}
 
       {/* TEXT: eyebrow, title, subtitle, content, checklist, buttons */}
       <div className="container-page">

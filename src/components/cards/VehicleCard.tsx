@@ -31,13 +31,9 @@ export function VehicleCard({ vehicle }: { vehicle: Vehicle }) {
           className="transition-transform duration-700 group-hover:scale-105"
         />
         {vehicle.type && (
-          <span className="absolute start-4 top-4 rounded-full bg-forest-950/80 px-3 py-1 text-caption font-bold uppercase tracking-label text-white/90 backdrop-blur">
-            {vehicle.type}
-          </span>
+          <span className="absolute inset-s-4 top-4 rounded-full bg-forest-950/80 px-3 py-1 text-caption font-bold uppercase tracking-label text-white/90 backdrop-blur">{vehicle.type}</span>
         )}
-        {vehicle.availability && vehicle.availability !== "available" && (
-          <Badge className="absolute end-4 top-4 bg-gold-100 text-earth-700">{tVehicle(vehicle.availability)}</Badge>
-        )}
+        {vehicle.availability && vehicle.availability !== "available" && <Badge className="absolute inset-e-4 top-4 bg-gold-100 text-earth-700">{tVehicle(vehicle.availability)}</Badge>}
       </div>
 
       <div className="flex flex-1 flex-col p-5">

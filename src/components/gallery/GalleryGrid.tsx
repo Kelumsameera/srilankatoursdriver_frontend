@@ -84,7 +84,7 @@ export function GalleryGrid({ items, labels, filters, variant = "masonry" }: Pro
           </span>
         )}
         {item.title && (
-          <span className="absolute inset-x-0 bottom-0 translate-y-full bg-gradient-to-t from-forest-950/80 p-3 text-start text-sm text-white transition-transform group-hover:translate-y-0">
+          <span className="absolute inset-x-0 bottom-0 translate-y-full bg-linear-to-t from-forest-950/80 p-3 text-start text-sm text-white transition-transform group-hover:translate-y-0">
             {item.title}
           </span>
         )}
@@ -124,7 +124,7 @@ export function GalleryGrid({ items, labels, filters, variant = "masonry" }: Pro
 
       {current && (
         <div role="dialog" aria-modal="true" aria-label={current.title || "Gallery"} className="fixed inset-0 z-50 flex items-center justify-center bg-forest-950/95 p-4" onClick={close}>
-          <button ref={closeBtn} type="button" onClick={close} className="absolute end-4 top-4 rounded-full p-2 text-white hover:bg-white/10" aria-label={labels.close}>
+          <button ref={closeBtn} type="button" onClick={close} className="absolute inset-e-4 top-4 rounded-full p-2 text-white hover:bg-white/10" aria-label={labels.close}>
             <X className="h-7 w-7" />
           </button>
           {shown.length > 1 && (
@@ -135,7 +135,7 @@ export function GalleryGrid({ items, labels, filters, variant = "masonry" }: Pro
                   e.stopPropagation();
                   step(-1);
                 }}
-                className="absolute start-2 rounded-full p-3 text-white hover:bg-white/10 sm:start-6"
+                className="absolute inset-s-2 rounded-full p-3 text-white hover:bg-white/10 sm:inset-s-6"
                 aria-label={labels.previous}
               >
                 <ChevronLeft className="h-8 w-8 rtl:rotate-180" />
@@ -146,7 +146,7 @@ export function GalleryGrid({ items, labels, filters, variant = "masonry" }: Pro
                   e.stopPropagation();
                   step(1);
                 }}
-                className="absolute end-2 rounded-full p-3 text-white hover:bg-white/10 sm:end-6"
+                className="absolute inset-e-2 rounded-full p-3 text-white hover:bg-white/10 sm:inset-e-6"
                 aria-label={labels.next}
               >
                 <ChevronRight className="h-8 w-8 rtl:rotate-180" />

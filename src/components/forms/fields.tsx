@@ -6,7 +6,23 @@ import { cn } from "@/lib/utils";
 const control =
   "w-full rounded-xl border border-sand-200 bg-white px-4 py-3 text-[0.95rem] text-ink placeholder:text-muted/70 transition-colors focus:border-forest-600 focus:outline-none focus:ring-2 focus:ring-forest-600/20 aria-[invalid=true]:border-red-500";
 
-export function Field({ label, error, children, hint, required, htmlFor, className }: { label: string; error?: string; children: ReactNode; hint?: string; required?: boolean; htmlFor: string; className?: string }) {
+export function Field({
+  label,
+  error,
+  children,
+  hint,
+  required,
+  htmlFor,
+  className,
+}: {
+  label: string;
+  error?: string;
+  children: ReactNode;
+  hint?: string;
+  required?: boolean;
+  htmlFor: string;
+  className?: string;
+}) {
   // Tie the control to its error / hint text so screen readers announce them with the field.
   const describedBy = error ? `${htmlFor}-error` : hint ? `${htmlFor}-hint` : undefined;
   const control = isValidElement<Record<string, unknown>>(children)
@@ -47,7 +63,15 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaHTMLAttributes<H
 
 export const Select = forwardRef<HTMLSelectElement, SelectHTMLAttributes<HTMLSelectElement>>(function Select({ className, children, ...props }, ref) {
   return (
-    <select ref={ref} className={cn(control, "appearance-none bg-[url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 20 20%22 fill=%22%235d6b63%22><path d=%22M5 7l5 5 5-5z%22/></svg>')] bg-[length:1.25rem] bg-[right_0.75rem_center] bg-no-repeat pe-10 rtl:bg-[left_0.75rem_center]", className)} {...props}>
+    <select
+      ref={ref}
+      className={cn(
+        control,
+        "appearance-none bg-[url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 20 20%22 fill=%22%235d6b63%22><path d=%22M5 7l5 5 5-5z%22/></svg>')] bg-size-[1.25rem] bg-position-[right_0.75rem_center] bg-no-repeat pe-10 rtl:bg-position-[left_0.75rem_center]",
+        className,
+      )}
+      {...props}
+    >
       {children}
     </select>
   );
@@ -57,7 +81,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectHTMLAttributes<HTMLSel
 export function Honeypot({ register }: { register: (name: "website") => object }) {
   return (
     // Clipped in place rather than pushed off-screen: a "-left-9999px" offset makes RTL (Arabic) pages scroll sideways.
-    <div aria-hidden className="pointer-events-none absolute start-0 top-0 h-px w-px overflow-hidden opacity-0 [clip-path:inset(50%)]">
+    <div aria-hidden className="pointer-events-none absolute inset-s-0 top-0 h-px w-px overflow-hidden opacity-0 [clip-path:inset(50%)]">
       <label>
         Website
         <input type="text" tabIndex={-1} autoComplete="off" {...register("website")} />
@@ -102,13 +126,17 @@ export function failureType(res: { status: number; errors: unknown[] }) {
 /** Guards a submit handler against re-entry (double click / repeated Enter before the button disables). */
 export function useSubmitLock() {
   const busy = useRef(false);
-  return useCallback(<A extends unknown[]>(fn: (...args: A) => Promise<void>) => async (...args: A) => {
-    if (busy.current) return;
-    busy.current = true;
-    try {
-      await fn(...args);
-    } finally {
-      busy.current = false;
-    }
-  }, []);
+  return useCallback(
+    <A extends unknown[]>(fn: (...args: A) => Promise<void>) =>
+      async (...args: A) => {
+        if (busy.current) return;
+        busy.current = true;
+        try {
+          await fn(...args);
+        } finally {
+          busy.current = false;
+        }
+      },
+    [],
+  );
 }

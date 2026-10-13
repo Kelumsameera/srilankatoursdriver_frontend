@@ -105,8 +105,8 @@ export function DestinationsBrowser({ destinations, initialCategory }: { destina
                   />
                   {/* CATEGORY, NAME, SHORT DESCRIPTION */}
                   <div className="flex flex-1 flex-col p-6">
-                    {destination.category?.name && <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gold-600">{destination.category.name}</p>}
-                    <h2 className="mt-2 break-words font-display text-2xl text-ink">{destination.name}</h2>
+                    {destination.category?.name && <p className="text-xs font-semibold uppercase tracking-label text-gold-600">{destination.category.name}</p>}
+                    <h2 className="mt-2 wrap-break-word font-display text-2xl text-ink">{destination.name}</h2>
                     {destination.shortDescription && <p className="mt-3 line-clamp-3 text-sm leading-7 text-muted">{destination.shortDescription}</p>}
                   </div>
                 </CmsLink>

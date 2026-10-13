@@ -18,20 +18,7 @@ interface Option {
   label: string;
 }
 
-const STEPS = [
-  "personal",
-  "dates",
-  "travelers",
-  "arrival",
-  "departure",
-  "destinations",
-  "interests",
-  "hotels",
-  "vehicle",
-  "budget",
-  "requirements",
-  "review",
-] as const;
+const STEPS = ["personal", "dates", "travelers", "arrival", "departure", "destinations", "interests", "hotels", "vehicle", "budget", "requirements", "review"] as const;
 type Step = (typeof STEPS)[number];
 
 const STEP_FIELDS: Record<Step, FieldPath<TailorMadeValues>[]> = {
@@ -114,36 +101,35 @@ export function TailorMadeForm({ destinations, vehicles, defaultCurrency = "USD"
     setValue(field, list.includes(value) ? list.filter((v) => v !== value) : [...list, value], { shouldDirty: true });
   };
 
-  const firstStepWithError = (errs: object) =>
-    STEPS.findIndex((s) => STEP_FIELDS[s].some((f) => f.split(".").reduce<unknown>((o, k) => (o as Record<string, unknown> | undefined)?.[k], errs)));
+  const firstStepWithError = (errs: object) => STEPS.findIndex((s) => STEP_FIELDS[s].some((f) => f.split(".").reduce<unknown>((o, k) => (o as Record<string, unknown> | undefined)?.[k], errs)));
 
-  const onSubmit = lock(handleSubmit(
-    async (v) => {
-      setFailure(null);
-      const payload = clean({ ...v, locale, vehicle: { ...v.vehicle, vehicleRef: v.vehicle.vehicleRef || undefined } });
-      track("submit_trip_inquiry", { form: "tailor_made" });
-      const res = await submitPublic<{ reference: string }>("/tailor-made-enquiries", payload);
-      if (res.ok && res.data) {
-        track("trip_inquiry_success", { form: "tailor_made" });
-        setReference(res.data.reference);
-        document.getElementById("tm-top")?.scrollIntoView({ behavior: "smooth" });
-      } else {
-        applyServerErrors(res.errors, setError as never);
-        setFailure(tb(failureKey(res)));
-        track("trip_inquiry_error", { form: "tailor_made", error_type: failureType(res) });
-        // Server-side field errors: jump back to the step that contains the first one.
-        const bad = STEPS.findIndex((s) =>
-          STEP_FIELDS[s].some((f) => res.errors.some((er) => er.path === f || er.path.startsWith(`${f}.`) || f.startsWith(`${er.path}.`))),
-        );
-        if (bad >= 0) setStep(bad);
-      }
-    },
-    (errs) => {
-      // Jump back to the first step that has an error (uses the fresh errors, not the render-time snapshot).
-      const firstBad = firstStepWithError(errs);
-      if (firstBad >= 0) setStep(firstBad);
-    },
-  ));
+  const onSubmit = lock(
+    handleSubmit(
+      async (v) => {
+        setFailure(null);
+        const payload = clean({ ...v, locale, vehicle: { ...v.vehicle, vehicleRef: v.vehicle.vehicleRef || undefined } });
+        track("submit_trip_inquiry", { form: "tailor_made" });
+        const res = await submitPublic<{ reference: string }>("/tailor-made-enquiries", payload);
+        if (res.ok && res.data) {
+          track("trip_inquiry_success", { form: "tailor_made" });
+          setReference(res.data.reference);
+          document.getElementById("tm-top")?.scrollIntoView({ behavior: "smooth" });
+        } else {
+          applyServerErrors(res.errors, setError as never);
+          setFailure(tb(failureKey(res)));
+          track("trip_inquiry_error", { form: "tailor_made", error_type: failureType(res) });
+          // Server-side field errors: jump back to the step that contains the first one.
+          const bad = STEPS.findIndex((s) => STEP_FIELDS[s].some((f) => res.errors.some((er) => er.path === f || er.path.startsWith(`${f}.`) || f.startsWith(`${er.path}.`))));
+          if (bad >= 0) setStep(bad);
+        }
+      },
+      (errs) => {
+        // Jump back to the first step that has an error (uses the fresh errors, not the render-time snapshot).
+        const firstBad = firstStepWithError(errs);
+        if (firstBad >= 0) setStep(firstBad);
+      },
+    ),
+  );
 
   if (reference) return <SuccessPanel title={t("successTitle")} text={t("success")} extra={tb("reference", { reference })} />;
 
@@ -159,9 +145,9 @@ export function TailorMadeForm({ destinations, vehicles, defaultCurrency = "USD"
       {/* Stepper (design): numbered circles on a line – done steps are checked and clickable, the current one is gold. */}
       <div className="mb-10">
         <ol className="relative flex items-center justify-between" aria-label={t("stepOf", { current: step + 1, total: STEPS.length })}>
-          <span className="absolute inset-x-3 top-1/2 -z-0 h-px -translate-y-1/2 bg-sand-200" aria-hidden />
+          <span className="absolute inset-x-3 top-1/2 z-0 h-px -translate-y-1/2 bg-sand-200" aria-hidden />
           <span
-            className="absolute start-3 top-1/2 h-0.5 -translate-y-1/2 bg-gold-500 transition-all duration-500"
+            className="absolute inset-s-3 top-1/2 h-0.5 -translate-y-1/2 bg-gold-500 transition-all duration-500"
             style={{ width: `calc((100% - 1.5rem) * ${step / (STEPS.length - 1)})` }}
             aria-hidden
           />
@@ -175,7 +161,11 @@ export function TailorMadeForm({ destinations, vehicles, defaultCurrency = "USD"
                 disabled={i > step}
                 className={cn(
                   "relative flex h-7 w-7 items-center justify-center rounded-full text-xs font-semibold ring-4 ring-sand-50 transition-colors after:absolute after:inset-x-0 after:-inset-y-1.5 after:content-[''] sm:h-8 sm:w-8",
-                  i === step ? "bg-gold-500 text-forest-950" : i < step ? "bg-forest-800 text-white hover:bg-forest-700" : "bg-white text-muted ring-sand-50 [box-shadow:inset_0_0_0_1px_var(--color-sand-200)]",
+                  i === step
+                    ? "bg-gold-500 text-forest-950"
+                    : i < step
+                      ? "bg-forest-800 text-white hover:bg-forest-700"
+                      : "bg-white text-muted ring-sand-50 [box-shadow:inset_0_0_0_1px_var(--color-sand-200)]",
                 )}
               >
                 {i < step ? <Check className="h-3 w-3 sm:h-3.5 sm:w-3.5" aria-hidden /> : i + 1}
@@ -198,7 +188,9 @@ export function TailorMadeForm({ destinations, vehicles, defaultCurrency = "USD"
           void next();
         }}
         noValidate
-        className="relative rounded-3xl bg-white p-6 shadow-card sm:p-10" data-testid="tailor-made-form">
+        className="relative rounded-3xl bg-white p-6 shadow-card sm:p-10"
+        data-testid="tailor-made-form"
+      >
         <Honeypot register={register as never} />
         <h2 className="mb-6 text-2xl text-forest-900">{t(`steps.${current}`)}</h2>
 

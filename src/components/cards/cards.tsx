@@ -12,10 +12,7 @@ export function DestinationCard({ destination, tall, framed }: { destination: De
   const subtitle = destination.category?.name || destination.region;
   const cover = destinationCover(destination);
   return (
-    <CmsLink
-      href={`/destinations/${destination.slug}`}
-      className={cn("group relative block overflow-hidden rounded-2xl shadow-card", framed && "ring-1 ring-gold-400/50 ring-offset-0")}
-    >
+    <CmsLink href={`/destinations/${destination.slug}`} className={cn("group relative block overflow-hidden rounded-2xl shadow-card", framed && "ring-1 ring-gold-400/50 ring-offset-0")}>
       <CmsImage
         media={cover}
         alt={cover?.alt || destination.name}
@@ -24,10 +21,10 @@ export function DestinationCard({ destination, tall, framed }: { destination: De
         wrapperClassName={framed ? "aspect-[3/2] lg:aspect-[5/4]" : tall ? "aspect-[3/4]" : "aspect-[4/5]"}
         className="transition-transform duration-700 group-hover:scale-105"
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-forest-950/85 via-forest-950/15 to-transparent" />
+      <div className="absolute inset-0 bg-linear-to-t from-forest-950/85 via-forest-950/15 to-transparent" />
       <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-5 text-white">
         <div className="min-w-0">
-          <h3 className="font-display text-xl leading-tight break-words hyphens-auto sm:text-2xl lg:text-xl xl:text-2xl">{destination.name}</h3>
+          <h3 className="font-display text-xl leading-tight wrap-break-word hyphens-auto sm:text-2xl lg:text-xl xl:text-2xl">{destination.name}</h3>
           {subtitle && <p className="mt-1 truncate text-sm text-white/75">{subtitle}</p>}
         </div>
         <span
@@ -57,16 +54,12 @@ export function ReviewCard({ review }: { review: Review }) {
         {review.photo?.url ? (
           <CmsImage media={review.photo} alt={review.guestName} sizes="44px" wrapperClassName="h-11 w-11 shrink-0 rounded-full" />
         ) : (
-          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-forest-800 font-display text-lg text-gold-400">
-            {review.guestName.charAt(0)}
-          </span>
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-forest-800 font-display text-lg text-gold-400">{review.guestName.charAt(0)}</span>
         )}
         <div className="min-w-0 text-sm">
           <p className="font-semibold text-forest-900">{review.guestName}</p>
           <p className="truncate text-xs text-muted">
-            {[review.country, review.date ? formatDate(review.date, locale, { month: "short", year: "numeric" }) : null, platform ? t("via", { platform }) : null]
-              .filter(Boolean)
-              .join(" · ")}
+            {[review.country, review.date ? formatDate(review.date, locale, { month: "short", year: "numeric" }) : null, platform ? t("via", { platform }) : null].filter(Boolean).join(" · ")}
           </p>
         </div>
         {review.sourceUrl && (

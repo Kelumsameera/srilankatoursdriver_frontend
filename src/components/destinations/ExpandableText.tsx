@@ -13,7 +13,7 @@ export function ExpandableText({ text, more, less, title }: { text: string; more
   return (
     <>
       {/* TEXT (cut to 2 lines while closed) */}
-      <p id={textId} className={`mt-3 whitespace-pre-line break-words text-sm leading-7 text-muted ${isOpen ? "" : "line-clamp-2"}`}>
+      <p id={textId} className={`mt-3 whitespace-pre-line wrap-break-word text-sm leading-7 text-muted ${isOpen ? "" : "line-clamp-2"}`}>
         {text}
       </p>
 
