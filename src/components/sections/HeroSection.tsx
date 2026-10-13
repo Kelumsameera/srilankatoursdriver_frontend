@@ -13,7 +13,7 @@ function TrustHighlights({ items }: { items: SectionItem[] }) {
         {items.map((item, i) => (
           <li key={`${item.title}-${i}`} className="flex min-w-0 items-center gap-3 px-2 lg:justify-center lg:px-5">
             <FeatureIcon name={item.icon} className="h-7 w-7 shrink-0 text-gold-600 sm:h-8 sm:w-8" />
-            <span className="min-w-0 text-sm font-semibold leading-tight text-forest-900 [overflow-wrap:anywhere] hyphens-auto">{item.title}</span>
+            <span className="min-w-0 text-small font-semibold leading-tight text-forest-900 wrap-anywhere hyphens-auto">{item.title}</span>
           </li>
         ))}
       </ul>

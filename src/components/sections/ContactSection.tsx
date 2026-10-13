@@ -30,13 +30,13 @@ export function ContactSection({ section, ctx }: SectionProps) {
             const inner = (
               <>
                 <Icon className="h-5 w-5 shrink-0 text-gold-600" />
-                <span className="min-w-0 break-words [overflow-wrap:anywhere]">{r.label}</span>
+                <span className="min-w-0 wrap-break-word wrap-anywhere">{r.label}</span>
               </>
             );
             return (
               <li key={i} className="rounded-2xl bg-white p-5 shadow-card">
                 {r.href ? (
-                  <a href={r.href} className="flex items-start gap-3 text-forest-900 hover:text-forest-600" target={r.href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer">
+                  <a href={r.href} className="flex min-h-11 items-start gap-3 text-forest-900 hover:text-forest-600" target={r.href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer">
                     {inner}
                   </a>
                 ) : (

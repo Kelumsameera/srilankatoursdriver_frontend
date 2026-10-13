@@ -25,7 +25,7 @@ export async function VehiclesSection({ section, ctx }: SectionProps) {
         <div>
           {section.eyebrow && <p className={cn("eyebrow mb-4", light && "text-gold-400")}>{section.eyebrow}</p>}
           {section.title && <h2 className={cn("text-4xl leading-tight sm:text-5xl", light ? "text-white" : "text-forest-900")}>{section.title}</h2>}
-          {section.subtitle && <p className={cn("mt-5 max-w-md text-lg leading-relaxed", light ? "text-white/75" : "text-muted")}>{section.subtitle}</p>}
+          {section.subtitle && <p className={cn("mt-5 max-w-md text-lead leading-relaxed", light ? "text-white/75" : "text-muted")}>{section.subtitle}</p>}
           <div className="mt-8">
             <Buttons section={section} ctx={ctx} light={light} />
           </div>
@@ -51,13 +51,13 @@ export async function VehiclesSection({ section, ctx }: SectionProps) {
                     wrapperClassName="aspect-[5/4] rounded-2xl border-4 border-white shadow-card"
                     className="transition-transform duration-700 group-hover:scale-105"
                   />
-                  <span className={cn("mt-3 block truncate text-center text-sm font-semibold", light ? "text-white" : "text-forest-900")}>{v.name}</span>
+                  <span className={cn("mt-3 block truncate text-center text-small font-semibold", light ? "text-white" : "text-forest-900")}>{v.name}</span>
                 </CmsLink>
               </li>
             ))}
           </ul>
         ) : (
-          <div className="grid grid-cols-1 gap-7 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-grid sm:grid-cols-2">
             {vehicles.slice(0, 2).map((v) => (
               <VehicleCard key={v._id} vehicle={v} />
             ))}
@@ -67,10 +67,10 @@ export async function VehiclesSection({ section, ctx }: SectionProps) {
 
       {/* FLEET FACTS */}
       {facts.length > 0 && (
-        <ul className={cn("container-page mt-12 flex flex-wrap justify-center gap-x-10 gap-y-3 text-sm lg:justify-end", light ? "text-white/80" : "text-forest-800")}>
+        <ul className={cn("container-page mt-12 flex flex-wrap justify-center gap-x-10 gap-y-3 text-small lg:justify-end", light ? "text-white/80" : "text-forest-800")}>
           {facts.map(({ icon: Icon, label }) => (
             <li key={label} className="flex items-center gap-2">
-              <Icon className={cn("h-5 w-5", light ? "text-gold-400" : "text-gold-600")} aria-hidden /> {label}
+              <Icon className={cn("h-5 w-5 shrink-0", light ? "text-gold-400" : "text-gold-600")} aria-hidden /> {label}
             </li>
           ))}
         </ul>

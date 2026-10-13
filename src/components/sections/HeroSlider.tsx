@@ -148,7 +148,7 @@ function HeroBackground({ slide, allowAutoPlay, stopped, labels, onUserPlay }: {
         <button
           type="button"
           aria-label={status === "playing" ? labels.pauseVideo : labels.playVideo}
-          className="absolute bottom-32 inset-s-6 z-20 inline-flex min-h-11 items-center gap-2 rounded-full border border-white/50 bg-forest-950/75 px-4 py-2 text-sm text-white hover:bg-forest-800 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white sm:inset-s-8"
+          className="absolute bottom-32 inset-s-6 z-20 inline-flex min-h-11 items-center gap-2 rounded-full border border-white/50 bg-forest-950/75 px-4 py-2 text-small text-white hover:bg-forest-800 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white sm:inset-s-8"
           onClick={() => {
             if (status === "playing") setManualPaused(true);
             else {
@@ -224,10 +224,10 @@ export function HeroSlider({ slides, rating, whatsapp, labels }: Props) {
           className={cn("max-w-2xl lg:max-w-3xl", slide.textAlign === "center" && "mx-auto text-center")}
         >
           {slide.subtitle && <p className="mb-4 text-xs font-semibold uppercase tracking-[0.28em] text-white/85">{slide.subtitle}</p>}
-          <h1 className="font-display text-4xl leading-[1.02] tracking-tight wrap-anywhere hyphens-none sm:text-6xl lg:text-[4.5rem]">
+          <h1 className="font-display text-display leading-[1.02] tracking-tight wrap-anywhere hyphens-none">
             <GoldText text={slide.title} />
           </h1>
-          {slide.description && <p className="mt-5 max-w-xl text-base leading-relaxed text-white/85 sm:text-lg">{slide.description}</p>}
+          {slide.description && <p className="mt-5 max-w-xl text-lead leading-relaxed text-white/85">{slide.description}</p>}
           <div className={cn("mt-7 flex flex-wrap gap-3", slide.textAlign === "center" && "justify-center")}>
             {[slide.button1, slide.button2].map((b, bi) =>
               b?.label && b.url ? (
@@ -250,7 +250,7 @@ export function HeroSlider({ slides, rating, whatsapp, labels }: Props) {
           </div>
 
           {rating && (
-            <p className={cn("mt-7 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-white/85", slide.textAlign === "center" && "justify-center")}>
+            <p className={cn("mt-7 flex flex-wrap items-center gap-x-3 gap-y-1 text-small text-white/85", slide.textAlign === "center" && "justify-center")}>
               <span className="flex text-gold-400" aria-hidden>
                 {[1, 2, 3, 4, 5].map((n) => (
                   <Star key={n} className={cn("h-4 w-4", n <= Math.round(rating.value) ? "fill-current" : "opacity-40")} />
@@ -292,8 +292,8 @@ export function HeroSlider({ slides, rating, whatsapp, labels }: Props) {
           <div className="container-page flex items-center justify-center gap-6">
             <div className="flex gap-1">
               {slides.map((s, i) => (
-                // 24px tall hit area (WCAG 2.5.8) around the thin visual bar.
-                <button key={s._id} type="button" onClick={() => go(i)} aria-label={`${i + 1} / ${count}`} aria-current={i === index} className="group flex h-10 items-center px-1">
+                // 44 × 44px tap area around the thin visual bar.
+                <button key={s._id} type="button" onClick={() => go(i)} aria-label={`${i + 1} / ${count}`} aria-current={i === index} className="group flex h-11 min-w-11 items-center justify-center px-1">
                   <span className={cn("block h-1.5 rounded-full transition-all", i === index ? "w-10 bg-gold-500" : "w-5 bg-white/40 group-hover:bg-white/70")} />
                 </button>
               ))}
@@ -305,15 +305,15 @@ export function HeroSlider({ slides, rating, whatsapp, labels }: Props) {
                   onClick={() => setStopped((v) => !v)}
                   aria-label={stopped ? labels.play : labels.pause}
                   aria-pressed={stopped}
-                  className="rounded-full border border-white/30 p-2.5 hover:bg-white/10"
+                  className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/30 hover:bg-white/10"
                 >
                   {stopped ? <Play className="h-5 w-5" /> : <Pause className="h-5 w-5" />}
                 </button>
               )}
-              <button type="button" onClick={() => go(index - 1)} aria-label={labels.previous} className="rounded-full border border-white/30 p-2.5 hover:bg-white/10">
+              <button type="button" onClick={() => go(index - 1)} aria-label={labels.previous} className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/30 hover:bg-white/10">
                 <ChevronLeft className="h-5 w-5 rtl:rotate-180" />
               </button>
-              <button type="button" onClick={() => go(index + 1)} aria-label={labels.next} className="rounded-full border border-white/30 p-2.5 hover:bg-white/10">
+              <button type="button" onClick={() => go(index + 1)} aria-label={labels.next} className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/30 hover:bg-white/10">
                 <ChevronRight className="h-5 w-5 rtl:rotate-180" />
               </button>
             </div>

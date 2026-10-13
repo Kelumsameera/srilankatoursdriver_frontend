@@ -24,8 +24,8 @@ export function FeaturesSection({ section, ctx }: SectionProps) {
             <span className={cn("mb-5 inline-flex h-14 w-14 items-center justify-center rounded-2xl", light ? "bg-gold-500/15" : "bg-forest-50")}>
               <FeatureIcon name={item.icon} className={cn("h-7 w-7", light ? "text-gold-400" : "text-forest-600")} />
             </span>
-            {item.title && <h3 className={cn("text-xl", light ? "text-white" : "text-forest-900")}>{item.title}</h3>}
-            {item.description && <p className={cn("mt-2 text-sm leading-relaxed", light ? "text-white/70" : "text-muted")}>{item.description}</p>}
+            {item.title && <h3 className={cn("text-h3", light ? "text-white" : "text-forest-900")}>{item.title}</h3>}
+            {item.description && <p className={cn("mt-2 text-small leading-relaxed", light ? "text-white/70" : "text-muted")}>{item.description}</p>}
           </li>
         ))}
       </ul>

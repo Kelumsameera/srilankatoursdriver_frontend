@@ -17,12 +17,12 @@ function OverlapGallery({ photos }: { photos: MediaAsset[] }) {
         <CmsImage media={a} alt="" sizes="(min-width: 1280px) 420px, (min-width: 768px) 33vw, 74vw" wrapperClassName="aspect-[5/6] rounded-xl" />
       </div>
       {b && (
-        <div className="absolute end-0 top-0 z-10 w-[48%] rotate-3 rounded-2xl bg-white p-2 shadow-card sm:p-2.5">
+        <div className="absolute inset-e-0 top-0 z-10 w-[48%] rotate-3 rounded-2xl bg-white p-2 shadow-card sm:p-2.5">
           <CmsImage media={b} alt="" sizes="(min-width: 1024px) 20vw, 46vw" wrapperClassName="aspect-[4/3] rounded-xl" />
         </div>
       )}
       {c && (
-        <div className="absolute bottom-0 end-[3%] z-20 w-[52%] -rotate-[4deg] rounded-2xl bg-white p-2 shadow-card sm:p-2.5">
+        <div className="absolute bottom-0 inset-e-[3%] z-20 w-[52%] -rotate-[4deg] rounded-2xl bg-white p-2 shadow-card sm:p-2.5">
           <CmsImage media={c} alt="" sizes="(min-width: 1024px) 22vw, 50vw" wrapperClassName="aspect-[4/3] rounded-xl" />
         </div>
       )}
@@ -40,7 +40,7 @@ export function WhyChooseUsSection({ section, ctx }: SectionProps) {
   const asChecklist = ctx.hasHero && items.some((it) => it.description);
 
   return (
-    <section className={cn("relative overflow-x-clip pb-14 pt-16 sm:pb-16 sm:pt-20 lg:pb-20 lg:pt-24", light ? "bg-forest-900 text-white" : "bg-sand-50")}>
+    <section className={cn("relative overflow-x-clip pb-section pt-16 sm:pt-20 lg:pt-24", light ? "bg-forest-900 text-white" : "bg-sand-50")}>
       <FernBranch className={cn("absolute -bottom-10 -left-10 hidden w-44 md:block lg:w-52", light ? "text-white/10" : "text-forest-700/20")} />
       <div className={cn("container-page relative grid items-center gap-10 lg:gap-12", gallery.length && "md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]")}>
         {/* TEXT: eyebrow, title, subtitle, content, benefits, buttons */}
@@ -51,7 +51,7 @@ export function WhyChooseUsSection({ section, ctx }: SectionProps) {
               <GoldText text={section.title} goldClass="font-display italic text-gold-600" />
             </h2>
           )}
-          {section.subtitle && <p className={cn("mt-5 max-w-xl text-lg leading-relaxed", light ? "text-white/75" : "text-muted")}>{section.subtitle}</p>}
+          {section.subtitle && <p className={cn("mt-5 max-w-xl text-lead leading-relaxed", light ? "text-white/75" : "text-muted")}>{section.subtitle}</p>}
           {section.content && <Markdown content={section.content} className="mt-5 max-w-xl" />}
           {asChecklist ? (
             <ul className="mt-8 max-w-xl space-y-3">
@@ -75,7 +75,7 @@ export function WhyChooseUsSection({ section, ctx }: SectionProps) {
                   </span>
                   <span>
                     <span className={cn("block font-semibold leading-tight", light ? "text-white" : "text-forest-900")}>{item.title}</span>
-                    {item.description && <span className={cn("mt-1 block text-sm leading-snug", light ? "text-white/70" : "text-muted")}>{item.description}</span>}
+                    {item.description && <span className={cn("mt-1 block text-small leading-snug", light ? "text-white/70" : "text-muted")}>{item.description}</span>}
                   </span>
                 </li>
               ))}

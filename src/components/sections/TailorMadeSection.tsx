@@ -39,17 +39,17 @@ export async function TailorMadeSection({ section, ctx }: SectionProps) {
         {/* Full-bleed photo with a wavy edge towards the content (design). */}
         <div className="relative min-h-[18rem] sm:min-h-[24rem] lg:min-h-[36rem]">
           <CmsImage media={photo} alt={photo.alt || section.title || ""} sizes="(min-width: 1024px) 50vw, 100vw" wrapperClassName="absolute inset-0" />
-          <OrganicEdge className={cn("end-0 hidden lg:block rtl:-scale-x-100", light ? "text-forest-900" : "text-sand-50")} />
+          <OrganicEdge className={cn("inset-e-0 hidden lg:block rtl:-scale-x-100", light ? "text-forest-900" : "text-sand-50")} />
           <PaperEdge className={cn("lg:hidden", light ? "text-forest-900" : "text-sand-50")} />
           {section.badge && (
-            <p className="absolute start-5 top-5 max-w-[11rem] rounded-2xl bg-gold-500 px-4 py-3 text-sm font-semibold leading-tight text-forest-950 shadow-card">
+            <p className="absolute inset-s-5 top-5 max-w-[11rem] rounded-2xl bg-gold-500 px-4 py-3 text-small font-semibold leading-tight text-forest-950 shadow-card">
               {section.badge}
             </p>
           )}
         </div>
 
         {/* TEXT: eyebrow, title, subtitle, content, chips, buttons */}
-        <div className="px-5 py-14 sm:px-10 sm:py-16 lg:px-14 lg:py-20 xl:px-20">
+        <div className="px-5 py-section sm:px-10 lg:px-14 xl:px-20">
           <div className="max-w-xl">
             {section.eyebrow && <p className={cn("eyebrow mb-4", light && "text-gold-400")}>{section.eyebrow}</p>}
             {section.title && (
@@ -57,7 +57,7 @@ export async function TailorMadeSection({ section, ctx }: SectionProps) {
                 <GoldText text={section.title} goldClass="font-display italic text-gold-500" />
               </h2>
             )}
-            {section.subtitle && <p className={cn("mb-6 text-lg leading-relaxed", light ? "text-white/80" : "text-muted")}>{section.subtitle}</p>}
+            {section.subtitle && <p className={cn("mb-6 text-lead leading-relaxed", light ? "text-white/80" : "text-muted")}>{section.subtitle}</p>}
             {section.content && <Markdown content={section.content} className={cn("mb-8", light && "[&_*]:text-white/85")} />}
             {section.items?.length ? (
               <ul className="mb-8 flex flex-wrap gap-2">

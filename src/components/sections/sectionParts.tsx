@@ -97,7 +97,8 @@ export function Heading({ section, light, withAction = true, ctx }: { section: P
   );
 }
 
-/** Section-heading actions as quiet text links ("View all destinations →"), as in the design. */
+/** Section-heading actions as quiet text links ("View all destinations →"), as in the design.
+ * The link is only 23px tall, so an invisible after: layer makes the tap area 44px+ without moving anything. */
 function HeadingLinks({ section, ctx, light }: { section: PageSection; ctx: SectionContext; light?: boolean }) {
   const links = (section.buttons ?? []).filter((b) => b.label && b.url);
   if (!links.length) return null;
@@ -110,12 +111,12 @@ function HeadingLinks({ section, ctx, light }: { section: PageSection; ctx: Sect
           newTab={b.openInNewTab}
           whatsapp={{ phone: ctx.settings?.whatsapp, message: ctx.settings?.whatsappMessage }}
           className={cn(
-            "group/link inline-flex items-center gap-2 border-b pb-0.5 text-sm font-semibold transition-colors",
+            "group/link relative inline-flex items-center gap-2 border-b pb-0.5 text-small font-semibold transition-colors after:absolute after:inset-x-0 after:-inset-y-3 after:content-['']",
             light ? "border-gold-400/60 text-white hover:text-gold-400" : "border-forest-800/30 text-forest-800 hover:border-gold-500 hover:text-gold-600",
           )}
         >
           {b.label}
-          <ArrowRight className="h-4 w-4 transition-transform group-hover/link:translate-x-1 rtl:rotate-180" aria-hidden />
+          <ArrowRight className="h-4 w-4 shrink-0 transition-transform group-hover/link:translate-x-1 rtl:rotate-180" aria-hidden />
         </CmsLink>
       ))}
     </div>

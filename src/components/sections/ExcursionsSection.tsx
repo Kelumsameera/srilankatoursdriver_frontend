@@ -12,7 +12,7 @@ export function ExcursionsSection({ section, ctx }: SectionProps) {
   return (
     <Section theme={theme}>
       <Heading section={section} light={light} ctx={ctx} />
-      <div className="grid grid-cols-1 gap-7 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-grid sm:grid-cols-2 lg:grid-cols-3">
         {excursions.map((excursion) => (
           <ExcursionCard key={excursion._id} excursion={excursion} />
         ))}

@@ -29,7 +29,7 @@ export function CtaSection({ section, ctx }: SectionProps) {
         <div className={cn("mx-auto max-w-3xl text-center", hasMedia && "text-white")}>
           {section.eyebrow && <p className={cn("eyebrow mb-4", (light || hasMedia) && "text-gold-400")}>{section.eyebrow}</p>}
           {section.title && <h2 className="text-3xl leading-tight sm:text-5xl">{section.title}</h2>}
-          {section.subtitle && <p className={cn("mx-auto mt-5 max-w-2xl text-lg", light || hasMedia ? "text-white/80" : "text-muted")}>{section.subtitle}</p>}
+          {section.subtitle && <p className={cn("mx-auto mt-5 max-w-2xl text-lead", light || hasMedia ? "text-white/80" : "text-muted")}>{section.subtitle}</p>}
           {section.content && <Markdown content={section.content} className="mt-6 text-start" />}
           {section.items?.length ? (
             <ul className="mx-auto mt-8 grid max-w-xl gap-3 text-start sm:grid-cols-2">

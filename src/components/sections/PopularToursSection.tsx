@@ -24,7 +24,7 @@ async function FeaturedTourBand({ section, tour }: { section: PageSection; tour:
         {/* PHOTO + round close-up */}
         <div className="relative">
           <CmsImage media={tour.heroMedia} alt={tour.heroMedia?.alt || tour.title} sizes="(min-width: 1024px) 50vw, 100vw" wrapperClassName="aspect-[4/3] rounded-[2rem] shadow-2xl" />
-          <div className="absolute -end-4 -top-6 h-32 w-32 overflow-hidden rounded-full border-4 border-gold-500 shadow-xl sm:h-40 sm:w-40" aria-hidden>
+          <div className="absolute -inset-e-4 -top-6 h-32 w-32 overflow-hidden rounded-full border-4 border-gold-500 shadow-xl sm:h-40 sm:w-40" aria-hidden>
             <CmsImage media={tour.heroMedia} alt="" sizes="160px" wrapperClassName="absolute inset-0" className="scale-150" />
           </div>
         </div>
@@ -32,27 +32,27 @@ async function FeaturedTourBand({ section, tour }: { section: PageSection; tour:
         {/* TEXT: title, days and stops, subtitle, itinerary button, price */}
         <div>
           {section.eyebrow && <p className="eyebrow mb-4 text-gold-400">{section.eyebrow}</p>}
-          {section.title && <p className="mb-2 font-display text-xl text-white/70">{section.title}{section.badge ? ` ${section.badge}` : ""}</p>}
+          {section.title && <p className="mb-2 font-display text-h3 text-white/70">{section.title}{section.badge ? ` ${section.badge}` : ""}</p>}
           <h2 className="text-4xl leading-tight sm:text-5xl">{tour.title}</h2>
-          <ul className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-sm text-white/80">
+          <ul className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-small text-white/80">
             {tour.durationDays ? (
               <li className="flex items-center gap-1.5">
-                <Calendar className="h-4 w-4 text-gold-400" aria-hidden /> {tCommon("days", { count: tour.durationDays })}
+                <Calendar className="h-4 w-4 shrink-0 text-gold-400" aria-hidden /> {tCommon("days", { count: tour.durationDays })}
               </li>
             ) : null}
             {stops.map((stop) => (
               <li key={stop} className="flex items-center gap-1.5">
-                <MapPin className="h-4 w-4 text-gold-400" aria-hidden /> {stop}
+                <MapPin className="h-4 w-4 shrink-0 text-gold-400" aria-hidden /> {stop}
               </li>
             ))}
           </ul>
-          {section.subtitle && <p className="mt-6 max-w-xl text-lg leading-relaxed text-white/80">{section.subtitle}</p>}
+          {section.subtitle && <p className="mt-6 max-w-xl text-lead leading-relaxed text-white/80">{section.subtitle}</p>}
           <div className="mt-9 flex flex-wrap items-center gap-6">
             <ButtonLink href={`/tours/${tour.slug}`} variant="outline-light" className="rounded-md border-gold-400 text-gold-400 hover:bg-gold-400 hover:text-forest-950">
               {tTour("itinerary")} <ArrowRight className="h-4 w-4 rtl:rotate-180" aria-hidden />
             </ButtonLink>
             {price && (
-              <p className="text-sm text-white/70">
+              <p className="text-small text-white/70">
                 {tCommon("from")} <span className="font-display text-2xl text-gold-400">{price}</span>
               </p>
             )}
@@ -81,7 +81,7 @@ export function PopularToursSection({ section, ctx }: SectionProps) {
         <FeaturedTourBand section={section} tour={lead} />
         {more.length > 0 && (
           <Section theme={theme}>
-            <div className="grid grid-cols-1 gap-7 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-grid sm:grid-cols-2 lg:grid-cols-3">
               {more.map((tour) => (
                 <TourCard key={tour._id} tour={tour} hideDescription={shared.has(tour.shortDescription?.trim() ?? "")} />
               ))}
@@ -97,7 +97,7 @@ export function PopularToursSection({ section, ctx }: SectionProps) {
     <Section theme={theme} className="relative overflow-hidden">
       {!light && <Botanical />}
       <Heading section={section} light={light} ctx={ctx} />
-      <div className="relative grid grid-cols-1 gap-7 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="relative grid grid-cols-1 gap-grid sm:grid-cols-2 lg:grid-cols-3">
         {tours.map((tour) => (
           <TourCard key={tour._id} tour={tour} hideDescription={shared.has(tour.shortDescription?.trim() ?? "")} />
         ))}

@@ -40,10 +40,10 @@ export function TeamSection({ section, ctx }: SectionProps) {
         <div className="p-8 md:p-10 md:ps-2">
           {lead.role && <p className="eyebrow mb-3">{lead.role}</p>}
           <h3 className="text-3xl text-forest-900 sm:text-4xl">{lead.title}</h3>
-          {lead.description && <p className="mt-5 whitespace-pre-line text-lg leading-relaxed text-muted">{lead.description}</p>}
+          {lead.description && <p className="mt-5 whitespace-pre-line text-lead leading-relaxed text-muted">{lead.description}</p>}
           {lead.url && (
-            <a href={lead.url} target="_blank" rel="noopener noreferrer" className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-forest-700 hover:text-gold-600">
-              <ExternalLink className="h-4 w-4" aria-hidden /> {lead.url.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")}
+            <a href={lead.url} target="_blank" rel="noopener noreferrer" className="mt-6 inline-flex min-h-11 items-center gap-2 text-small font-semibold text-forest-700 hover:text-gold-600">
+              <ExternalLink className="h-4 w-4 shrink-0" aria-hidden /> {lead.url.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")}
             </a>
           )}
         </div>
@@ -60,11 +60,11 @@ export function TeamSection({ section, ctx }: SectionProps) {
                 className="relative aspect-square w-full overflow-hidden [&_img]:transition-transform [&_img]:duration-700 group-hover:[&_img]:scale-105"
               />
               <div className="p-6">
-                <h3 className="text-xl text-forest-900">{p.title}</h3>
-                {p.role && <p className="mt-1 text-xs font-semibold uppercase tracking-[0.18em] text-gold-600">{p.role}</p>}
-                {p.description && <p className="mt-3 text-sm leading-relaxed text-muted">{p.description}</p>}
+                <h3 className="text-h3 text-forest-900">{p.title}</h3>
+                {p.role && <p className="mt-1 text-xs font-semibold uppercase tracking-label text-gold-600">{p.role}</p>}
+                {p.description && <p className="mt-3 text-small leading-relaxed text-muted">{p.description}</p>}
                 {p.url && (
-                  <a href={p.url} target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex text-forest-600 hover:text-gold-600" aria-label={`${p.title} – profile`}>
+                  <a href={p.url} target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex min-h-11 min-w-11 items-center justify-center text-forest-600 hover:text-gold-600" aria-label={`${p.title} – profile`}>
                     <ExternalLink className="h-4 w-4" aria-hidden />
                   </a>
                 )}
