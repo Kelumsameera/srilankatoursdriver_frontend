@@ -28,7 +28,7 @@ function ShortCard({ short }: { short: GuestShort }) {
 
   return (
     <figure className="overflow-hidden rounded-3xl bg-forest-900 text-white shadow-card">
-      <div className="relative aspect-[9/16]">
+      <div className="relative aspect-9/16">
         {playing ? (
           uploaded ? (
             <video src={videoUrl(uploaded, 720)} controls autoPlay playsInline className="absolute inset-0 h-full w-full object-cover" />
@@ -54,7 +54,7 @@ function ShortCard({ short }: { short: GuestShort }) {
             ) : (
               <span className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,#1f7a4d,#08261a)]" />
             )}
-            <span className="absolute inset-0 bg-gradient-to-t from-forest-950/80 via-transparent" />
+            <span className="absolute inset-0 bg-linear-to-t from-forest-950/80 via-transparent" />
             <span className="relative rounded-full bg-white/90 p-4 text-forest-900 shadow-xl transition-transform group-hover:scale-110">
               <Play className="h-6 w-6 fill-current" />
             </span>

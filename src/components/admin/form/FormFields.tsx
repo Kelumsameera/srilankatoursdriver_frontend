@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, type ReactNode } from "react";
+import { LocationPicker } from "./LocationPicker";
 import { useController, useFieldArray, useFormContext, useWatch, type FieldValues } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowDown, ArrowUp, ChevronDown, ChevronRight, Copy, Plus, Trash2 } from "lucide-react";
@@ -331,6 +332,7 @@ function VisibleField({ field, path }: { field: FieldDef; path: string }) {
       <fieldset className="rounded-lg border border-slate-200 p-4 sm:col-span-2">
         <legend className="px-1 text-xs font-semibold uppercase tracking-wide text-slate-600">{field.label}</legend>
         {field.hint && <p className="mb-3 text-xs text-slate-500">{field.hint}</p>}
+        {field.mapPicker && <LocationPicker path={path} />}
         <div className="grid gap-4 sm:grid-cols-2">
           {field.fields.map((sub) => (
             <FormField key={sub.name} field={sub} path={`${path}.${sub.name}`} />

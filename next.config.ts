@@ -80,6 +80,13 @@ const nextConfig: NextConfig = {
    * API_URL_INTERNAL when set. `afterFiles` keeps this app's own route handlers (/api/currency,
    * /api/revalidate) in front of the proxy; src/proxy.ts adds the visitor's IP for the API's rate limits.
    */
+  /** Singular /destination/<slug> links (old or shared URLs) → the canonical /destinations/<slug>. */
+  async redirects() {
+    return [
+      { source: "/destination/:slug", destination: "/destinations/:slug", permanent: true },
+      { source: "/:locale(en|si|ta|de|fr|es|it|zh|ja|ko|ru|ar|hi|pt)/destination/:slug", destination: "/:locale/destinations/:slug", permanent: true },
+    ];
+  },
   async rewrites() {
     return {
       beforeFiles: [],

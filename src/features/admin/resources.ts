@@ -1,3 +1,4 @@
+import { SRI_LANKA_BOUNDS } from "@/lib/destination-map";
 import type { FieldDef, FormSection } from "@/components/admin/form/types";
 import type { MediaFolder } from "@/lib/admin/upload";
 
@@ -260,6 +261,8 @@ export const RESOURCES: Record<string, AdminResource> = {
           { name: "name", label: "Name", type: "text", required: true },
           { name: "slug", label: "Slug", type: "slug" },
           { name: "region", label: "Region", type: "text" },
+          { name: "subtitle", label: "Editorial subtitle", type: "text", hint: "Optional introduction above the destination name." },
+          { name: "tagline", label: "Tagline", type: "text", hint: "One line shown next to the dot above the hero." },
           category("destination"),
           { name: "shortDescription", label: "Short description", type: "textarea", span: 2 },
           { name: "description", label: "Description", type: "markdown" },
@@ -268,7 +271,19 @@ export const RESOURCES: Record<string, AdminResource> = {
           { name: "highlights", label: "Highlights", type: "list" },
           { name: "thingsToDo", label: "Things to do", type: "list" },
           { name: "bestTimeToVisit", label: "Best time to visit", type: "text", span: 2 },
-          { name: "location", label: "Map location", type: "group", fields: [{ name: "lat", label: "Latitude", type: "number", nullable: true }, { name: "lng", label: "Longitude", type: "number", nullable: true }] },
+          { name: "howToGetThere", label: "How to get there", type: "textarea", span: 2 },
+          { name: "itinerary", label: "Suggested itinerary", type: "objectList", itemTitle: "title", addLabel: "Add stop", hint: "Optional, up to 14 steps. Leave empty to show a short “we'll plan it with you” note.", fields: [
+            { name: "title", label: "Title", type: "text", required: true },
+            { name: "description", label: "Description", type: "textarea" },
+          ] },
+          { name: "location", label: "Map location", type: "group", mapPicker: true, hint: "Decimal degrees (WGS84), e.g. Kandy 7.2906 / 80.6337. Both values are needed for the map pin; leave both empty when unknown.", fields: [{ name: "lat", label: "Latitude (5.5 – 10)", type: "number", min: SRI_LANKA_BOUNDS.lat[0], max: SRI_LANKA_BOUNDS.lat[1], nullable: true }, { name: "lng", label: "Longitude (79 – 82.5)", type: "number", min: SRI_LANKA_BOUNDS.lng[0], max: SRI_LANKA_BOUNDS.lng[1], nullable: true }] },
+          { name: "featuredExperiences", label: "Featured experiences", type: "objectList", itemTitle: "title", addLabel: "Add experience", defaults: { verified: true }, hint: "Up to 30 experiences in display order. Upload licensed photography through the media library. Links accept site paths or HTTPS URLs.", fields: [
+            { name: "title", label: "Title", type: "text", required: true },
+            { name: "description", label: "Description", type: "textarea" },
+            { name: "image", label: "Image", type: "media", accept: "image", folder: "destinations" },
+            { name: "detailUrl", label: "Detail link", type: "text", placeholder: "/excursions/example or https://…" },
+            { name: "verified", label: "Facts checked", type: "switch", defaultValue: true, hint: "Off = editorial suggestion that still needs a fact check." },
+          ] },
         ],
       },
       { title: "Publishing", fields: publishing() },
@@ -387,8 +402,8 @@ export const RESOURCES: Record<string, AdminResource> = {
       {
         title: "Media",
         fields: [
-          { name: "desktopImage", label: "Desktop image (1920×1080+)", type: "media", folder: "hero" },
-          { name: "mobileImage", label: "Mobile image (portrait)", type: "media", folder: "hero" },
+          { name: "desktopImage", label: "Desktop image / video poster (1920×1080+)", type: "media", accept: "image", folder: "hero", hint: "Displayed while video loads, is paused, or cannot play. Leave empty to use a Cloudinary video frame." },
+          { name: "mobileImage", label: "Mobile image / video poster (portrait)", type: "media", accept: "image", folder: "hero" },
           { name: "video", label: "Background video (optional, overrides image)", type: "media", accept: "video", folder: "hero", span: 2 },
           { name: "overlay", label: "Dark overlay", type: "switch" },
           { name: "overlayOpacity", label: "Overlay opacity (0–1)", type: "number", min: 0, max: 1, step: 0.05 },

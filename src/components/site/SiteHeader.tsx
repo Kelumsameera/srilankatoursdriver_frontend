@@ -113,7 +113,8 @@ export function SiteHeader({ nav, logoLight, logoDark, logoMobile, logoMobileLig
     };
   }, [open]);
 
-  const solid = scrolled || open;
+  // Destination detail pages use a white editorial hero beneath the fixed header.
+  const solid = scrolled || open || /^\/destinations\/[^/]+\/?$/.test(pathname);
   const links = nav.filter((n) => !n.isCta);
   const ctas = nav.filter((n) => n.isCta);
   const shown = links.slice(0, visible);

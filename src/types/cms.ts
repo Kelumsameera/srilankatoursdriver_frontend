@@ -147,13 +147,21 @@ export interface Destination {
   name: string;
   slug: string;
   region?: string;
+  subtitle?: string;
+  tagline?: string;
   shortDescription?: string;
   description?: string;
   heroMedia?: MediaAsset | null;
   gallery?: MediaAsset[];
   highlights?: string[];
   thingsToDo?: string[];
+  featuredExperiences?: { _id?: string; title: string; description?: string; image?: MediaAsset | null; detailUrl?: string; verified?: boolean }[];
   bestTimeToVisit?: string;
+  howToGetThere?: string;
+  itinerary?: { title: string; description?: string }[];
+  /** Only on /destinations/:slug/nearby results. */
+  distanceKm?: number | null;
+  order?: number;
   location?: { lat?: number | null; lng?: number | null };
   category?: Category | null;
   featured?: boolean;

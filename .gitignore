@@ -7,11 +7,11 @@
 !.yarn/plugins
 !.yarn/releases
 !.yarn/versions
-package-lock.json
 AGENTS.md
 # testing
 /coverage
 /test-results/
+/test-results-mobile/
 /playwright-report/
 /blob-report/
 

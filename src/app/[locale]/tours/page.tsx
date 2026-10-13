@@ -3,51 +3,71 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getCategories, getList, getPage, getSiteSettings } from "@/lib/api/server";
 import { buildMetadata } from "@/lib/seo";
 import { PageHero, EmptyState } from "@/components/ui/misc";
-import { TourCard, sharedDescriptions } from "@/components/cards/cards";
+import { TourCard, sharedDescriptions } from "@/components/cards/TourCard";
 import { CategoryFilter, Pagination, pageParam, param, type SearchParams } from "@/components/site/listing";
 import { PageRenderer } from "@/components/sections/PageRenderer";
 
+// /en/tours?category=cultural&page=2 -> Next.js gives us the locale from the URL and the ?query values
 type Props = { params: Promise<{ locale: string }>; searchParams: SearchParams };
 
+// generateMetadata is Next.js's way to set the <title> and SEO tags. It runs on the server before the page.
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
-  const data = await getPage("tours", locale);
-  return buildMetadata({ locale, path: "/tours", routeKey: "tours", seo: data?.page.seo, title: data?.page.title, description: data?.page.subtitle, image: data?.page.heroImage });
+  const pageData = await getPage("tours", locale);
+  return buildMetadata({
+    locale,
+    path: "/tours",
+    routeKey: "tours",
+    seo: pageData?.page.seo,
+    title: pageData?.page.title,
+    description: pageData?.page.subtitle,
+    image: pageData?.page.heroImage,
+  });
 }
 
+// This is a server component (no "use client"): the data is fetched on the server,
+// so Google sees the full list of tours in the HTML.
 export default async function ToursPage({ params, searchParams }: Props) {
   const { locale } = await params;
+  // Tells next-intl which language this page is rendered in
   setRequestLocale(locale);
-  const sp = await searchParams;
-  const category = param(sp, "category");
-  const page = pageParam(sp);
-  const [data, categories, list, settings, t] = await Promise.all([
+  const query = await searchParams;
+  const category = param(query, "category");
+  const page = pageParam(query);
+
+  const [pageData, categories, tourList, settings, tCommon] = await Promise.all([
     getPage("tours", locale),
     getCategories("tour", locale),
     getList("tours", { locale, page, limit: 12, category }),
     getSiteSettings(locale),
     getTranslations("common"),
   ]);
+  const repeatedDescriptions = sharedDescriptions(tourList?.items ?? []);
 
   return (
     <>
-      <PageHero title={data?.page.title ?? ""} subtitle={data?.page.subtitle} image={data?.page.heroImage} banner="tours" />
-      <section className="py-16 sm:py-20">
+      {/* HERO */}
+      <PageHero title={pageData?.page.title ?? ""} subtitle={pageData?.page.subtitle} image={pageData?.page.heroImage} banner="tours" />
+
+      {/* TOUR LIST: category chips, cards, pages */}
+      <section className="py-section">
         <div className="container-page">
           <CategoryFilter basePath="/tours" categories={categories ?? []} active={category} />
-          {list?.items.length ? (
-            <div className="grid grid-cols-1 gap-7 sm:grid-cols-2 lg:grid-cols-3" data-testid="tour-list">
-              {list.items.map((tour, _i, all) => (
-                <TourCard key={tour._id} tour={tour} hideDescription={sharedDescriptions(all).has(tour.shortDescription?.trim() ?? "")} />
+          {tourList?.items.length ? (
+            <div className="grid grid-cols-1 gap-grid sm:grid-cols-2 lg:grid-cols-3" data-testid="tour-list">
+              {tourList.items.map((tour) => (
+                <TourCard key={tour._id} tour={tour} hideDescription={repeatedDescriptions.has(tour.shortDescription?.trim() ?? "")} />
               ))}
             </div>
           ) : (
-            <EmptyState text={t("noResults")} />
+            <EmptyState text={tCommon("noResults")} />
           )}
-          {list && <Pagination meta={list.meta} basePath="/tours" query={{ category }} />}
+          {tourList && <Pagination meta={tourList.meta} basePath="/tours" query={{ category }} />}
         </div>
       </section>
-      {data && <PageRenderer sections={data.sections.filter((s) => s.type !== "hero")} settings={settings} />}
+
+      {/* CMS SECTIONS: everything the admin added to the "tours" page, except its hero (shown above) */}
+      {pageData && <PageRenderer sections={pageData.sections.filter((section) => section.type !== "hero")} settings={settings} />}
     </>
   );
 }

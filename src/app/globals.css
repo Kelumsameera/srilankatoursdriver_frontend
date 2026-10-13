@@ -47,6 +47,43 @@
   --animate-marquee: marquee var(--marquee-duration, 45s) linear infinite;
 }
 
+/*
+ * Fluid type and spacing tokens, shared by every public page. clamp() grows smoothly from phone to desktop,
+ * so pages need no per-breakpoint font sizes. Tailwind turns each token into a utility:
+ *   --text-h2         -> text-h2       --tracking-label  -> tracking-label
+ *   --spacing-section -> py-section, mt-section …     --spacing-grid -> gap-grid
+ * Desktop-exact: at desktop width (1440px) each token is exactly the Tailwind size it replaces (size AND line height),
+ * so desktop pages look the same; only phones and tablets get the smaller, fluid sizes.
+ * The smallest size is 12px (text-caption): use it instead of text-[10px], text-[11px], text-[0.7rem], text-[0.72rem].
+ */
+@theme {
+  --text-caption: 0.75rem; /* 12px. No line height of its own: inherits, like the text-[0.72rem] values it replaces */
+  --text-small: clamp(0.8125rem, 0.78rem + 0.15vw, 0.875rem); /* desktop = text-sm */
+  --text-small--line-height: calc(1.25 / 0.875);
+  --text-body: clamp(0.9375rem, 0.9rem + 0.2vw, 1rem); /* desktop = text-base */
+  --text-body--line-height: 1.5;
+  --text-lead: clamp(1.0625rem, 1rem + 0.35vw, 1.125rem); /* desktop = text-lg */
+  --text-lead--line-height: calc(1.75 / 1.125);
+  --text-h3: clamp(1.125rem, 1rem + 0.4vw, 1.25rem); /* desktop = text-xl */
+  --text-h3--line-height: calc(1.75 / 1.25);
+  --text-h2: clamp(1.5rem, 1.2rem + 0.9vw, 1.875rem); /* desktop = text-3xl */
+  --text-h2--line-height: calc(2.25 / 1.875);
+  --text-h1: clamp(2rem, 1.5rem + 2.6vw, 3.75rem); /* desktop = text-6xl */
+  --text-h1--line-height: 1;
+  --text-display: clamp(2.25rem, 1.6rem + 3.4vw, 4.5rem); /* desktop = text-7xl */
+  --text-display--line-height: 1;
+
+  /* Letter spacing for small uppercase labels (replaces tracking-[0.18em] / tracking-[0.2em]) */
+  --tracking-label: 0.18em;
+  --tracking-eyebrow: 0.22em;
+
+  /* Vertical space between page sections, between blocks inside a section, and between cards in a grid */
+  --spacing-section: clamp(4rem, 3rem + 2.5vw, 5rem); /* desktop = py-20, phone = py-16 */
+  --spacing-section-sm: clamp(3rem, 2.25rem + 2vw, 4rem); /* desktop = py-16 */
+  --spacing-stack: clamp(1.5rem, 1rem + 2vw, 2.5rem); /* desktop = mt-10 */
+  --spacing-grid: clamp(1.25rem, 1rem + 1vw, 1.75rem); /* desktop = gap-7 */
+}
+
 /* Endless slider: the track holds the items twice and moves by half its width. */
 @keyframes marquee {
   to {
@@ -117,16 +154,14 @@ html[data-site="public"] main section:is(.bg-sand-50, .bg-sand-100, .bg-forest-8
   content: "";
   position: absolute;
   z-index: -1;
-  inset-block-start: 0;
-  inset-inline-end: 0;
+  /* Physical top/right, not inline-end: decorations do not mirror in RTL, so Arabic shows the frond exactly like English */
+  top: 0;
+  right: 0;
   width: clamp(11rem, 26vw, 22rem);
   aspect-ratio: 1;
   pointer-events: none;
   background: var(--frond-line) no-repeat top right / contain;
   opacity: 0.2;
-}
-[dir="rtl"] main section:is(.bg-sand-50, .bg-sand-100, .bg-forest-800, .bg-forest-900, .bg-forest-950)::before {
-  scale: -1 1;
 }
 
 /* A fixed utility control must never cover a mobile form field or submit action. Form pages already
@@ -335,5 +370,39 @@ html.motion-ready [data-scroll-reveal]:not(.is-visible) {
     opacity: 1;
     transform: none;
     transition: none;
+  }
+}
+
+/* Destination pages. The reference palette (gold / magenta accent / ink / muted / soft) is mapped onto the
+   existing brand tokens, so Admin → Branding colours still apply. The accent dot uses the brand accent. */
+:root {
+  --gold: var(--brand-accent);
+  --magenta: var(--brand-accent);
+  --ink: #17201b;
+  --muted: #5d6b63;
+  --soft: #faf6ec;
+}
+
+.dest-dot {
+  display: inline-block;
+  width: 0.4375rem;
+  height: 0.4375rem;
+  flex-shrink: 0;
+  border-radius: 9999px;
+  background: var(--magenta);
+}
+
+.dest-card {
+  transition: transform 250ms ease, box-shadow 250ms ease;
+}
+.dest-card:hover,
+.dest-card:focus-within {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-soft);
+}
+@media (prefers-reduced-motion: reduce) {
+  .dest-card:hover,
+  .dest-card:focus-within {
+    transform: none;
   }
 }

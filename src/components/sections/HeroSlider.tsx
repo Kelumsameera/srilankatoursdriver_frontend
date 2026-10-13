@@ -1,11 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useState, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Image from "next/image";
 import { ArrowRight, ChevronLeft, ChevronRight, Pause, Play, Star } from "lucide-react";
 import type { HeroSlide } from "@/types/cms";
 import { cn } from "@/lib/utils";
-import { cloudinaryUrl, videoPoster, videoUrl } from "@/lib/cloudinary-loader";
+import { cloudinaryUrl, isOptimizable } from "@/lib/cloudinary-loader";
+import { heroMediaSources, requestHeroPlayback, type HeroPlaybackStatus } from "@/lib/hero-media";
 import { CmsLink } from "@/components/ui/CmsLink";
 import { buttonClass, type ButtonVariant } from "@/components/ui/Button";
 import { editorialImages } from "@/lib/editorial-images";
@@ -16,7 +17,7 @@ interface Props {
   /** Real guest rating (TripAdvisor), shown under the buttons only when the site has one. */
   rating?: { value: number; label: string; source: string };
   whatsapp?: { phone?: string; message?: string };
-  labels: { previous: string; next: string; pause: string; play: string };
+  labels: { previous: string; next: string; pause: string; play: string; playVideo: string; pauseVideo: string };
 }
 
 const INTERVAL = 7000;
@@ -27,25 +28,145 @@ const INTERVAL = 7000;
  */
 function subscribeMotion(onChange: () => void) {
   const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const connection = (navigator as Navigator & { connection?: EventTarget }).connection;
   mq.addEventListener("change", onChange);
-  return () => mq.removeEventListener("change", onChange);
+  connection?.addEventListener("change", onChange);
+  return () => {
+    mq.removeEventListener("change", onChange);
+    connection?.removeEventListener("change", onChange);
+  };
 }
 function motionAllowed() {
-  const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData;
-  return !window.matchMedia("(prefers-reduced-motion: reduce)").matches && !saveData;
-}
-
-function subscribeVideo(onChange: () => void) {
-  const mq = window.matchMedia("(min-width: 1024px)");
-  mq.addEventListener("change", onChange);
-  return () => mq.removeEventListener("change", onChange);
-}
-function videoAllowed() {
   const connection = (navigator as Navigator & { connection?: { saveData?: boolean; effectiveType?: string } }).connection;
-  return window.matchMedia("(min-width: 1024px)").matches && !connection?.saveData && !/^(slow-2g|2g|3g)$/.test(connection?.effectiveType ?? "");
+  return !window.matchMedia("(prefers-reduced-motion: reduce)").matches && !connection?.saveData && !/^(slow-2g|2g)$/.test(connection?.effectiveType ?? "");
 }
 
-const thumbOf = (s: HeroSlide) => s.desktopImage?.url ?? (s.video?.url ? videoPoster(s.video.url, 480) : undefined);
+const thumbOf = (s: HeroSlide) => heroMediaSources(s).desktop;
+const subscribeVisibility = (notify: () => void) => {
+  document.addEventListener("visibilitychange", notify);
+  return () => document.removeEventListener("visibilitychange", notify);
+};
+const pageVisible = () => !document.hidden;
+
+/** Active slide only; pausing retains the element and its downloaded media. */
+function HeroBackground({ slide, allowAutoPlay, stopped, labels, onUserPlay }: { slide: HeroSlide; allowAutoPlay: boolean; stopped: boolean; labels: Props["labels"]; onUserPlay: () => void }) {
+  const sources = heroMediaSources(slide);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const blocked = useRef(false);
+  const failed = useRef(false);
+  const [status, setStatus] = useState<HeroPlaybackStatus>("idle");
+  const [requested, setRequested] = useState(false);
+  const [manualPaused, setManualPaused] = useState(false);
+  const [attempt, setAttempt] = useState(0);
+  const [posterFailed, setPosterFailed] = useState(false);
+  const intent = !stopped && !manualPaused && (allowAutoPlay || requested);
+  const src = allowAutoPlay || requested ? sources.video : undefined;
+  const desktop = posterFailed ? "/images/video-placeholder.svg" : sources.desktop || editorialImages.hero.url;
+  const mobile = posterFailed ? desktop : sources.mobile || desktop;
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || !src) return;
+    let resumeOnVisible = false;
+    let cancelAttempt = () => {};
+    const play = () => {
+      if (!intent || blocked.current || failed.current) return;
+      cancelAttempt();
+      video.muted = true;
+      cancelAttempt = requestHeroPlayback(video, (next) => {
+        if (next === "blocked") blocked.current = true;
+        if (next === "error") failed.current = true;
+        setStatus(next);
+      });
+    };
+    const visibility = () => {
+      if (document.hidden) {
+        resumeOnVisible = !video.paused;
+        cancelAttempt();
+        video.pause();
+      } else if (resumeOnVisible) {
+        resumeOnVisible = false;
+        play();
+      }
+    };
+    if (intent && !document.hidden) play();
+    else video.pause();
+    document.addEventListener("visibilitychange", visibility);
+    return () => {
+      cancelAttempt();
+      document.removeEventListener("visibilitychange", visibility);
+      video.pause();
+    };
+  }, [src, intent, attempt]);
+
+  return (
+    <>
+      <div className="absolute inset-0 -z-10 bg-forest-950" aria-hidden data-illustrative={!sources.desktop && !posterFailed ? "top" : undefined}>
+        <picture className="absolute inset-0">
+          {mobile !== desktop && <source media="(max-width: 639px)" sizes="100vw" srcSet={[640, 1080, 1920].map((width) => `${cloudinaryUrl(mobile, { width })} ${width}w`).join(", ")} />}
+          <Image
+            src={desktop}
+            alt=""
+            fill
+            loading="eager"
+            fetchPriority="high"
+            sizes="100vw"
+            unoptimized={!isOptimizable(desktop)}
+            onError={() => setPosterFailed(true)}
+            className={cn("object-cover", !sources.video && allowAutoPlay && "animate-ken-burns")}
+          />
+        </picture>
+        {sources.video && (
+          <video
+            ref={videoRef}
+            src={src}
+            poster={desktop}
+            muted
+            loop
+            playsInline
+            preload="none"
+            data-playback-status={status}
+            // Autoplay is requested once by the effect so its play() promise is observed.
+            autoPlay={false}
+            className={cn("absolute inset-0 h-full w-full object-cover", status === "playing" ? "opacity-100" : "opacity-0")}
+            onPlaying={() => setStatus("playing")}
+            onPause={() => setStatus((current) => (current === "playing" ? "paused" : current))}
+            onWaiting={() => {
+              if (!failed.current && !blocked.current) setStatus("loading");
+            }}
+            onError={() => {
+              failed.current = true;
+              setStatus("error");
+            }}
+          />
+        )}
+        {slide.overlay !== false && <div className="absolute inset-0" style={{ backgroundColor: slide.overlayColor ?? "#06261b", opacity: Math.min(slide.overlayOpacity ?? 0.45, 0.35) }} />}
+        <div className="absolute inset-0 bg-linear-to-r from-forest-950/85 via-forest-950/45 to-transparent rtl:bg-linear-to-l" />
+        <div className="absolute inset-x-0 bottom-0 h-1/3 bg-linear-to-t from-forest-950/70 to-transparent" />
+      </div>
+      {sources.video && status !== "error" && (
+        <button
+          type="button"
+          aria-label={status === "playing" ? labels.pauseVideo : labels.playVideo}
+          className="absolute bottom-32 inset-s-6 z-20 inline-flex min-h-11 items-center gap-2 rounded-full border border-white/50 bg-forest-950/75 px-4 py-2 text-sm text-white hover:bg-forest-800 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white sm:inset-s-8"
+          onClick={() => {
+            if (status === "playing") setManualPaused(true);
+            else {
+              blocked.current = false;
+              setManualPaused(false);
+              setRequested(true);
+              setAttempt((value) => value + 1);
+              onUserPlay();
+            }
+          }}
+        >
+          {status === "playing" ? <Pause aria-hidden className="h-4 w-4" /> : <Play aria-hidden className="h-4 w-4" />}
+          {status === "playing" ? labels.pauseVideo : labels.playVideo}
+        </button>
+      )}
+    </>
+  );
+}
 
 /**
  * Full-screen cinematic hero. All slides, images, videos, text and buttons come from Admin → Hero Media;
@@ -56,75 +177,44 @@ export function HeroSlider({ slides, rating, whatsapp, labels }: Props) {
   const [paused, setPaused] = useState(false); // hover / focus
   const [stopped, setStopped] = useState(false); // pause button (WCAG 2.2.2)
   const motion = useSyncExternalStore(subscribeMotion, motionAllowed, () => false);
-  const allowVideo = useSyncExternalStore(subscribeVideo, videoAllowed, () => false);
-  const [videoReady, setVideoReady] = useState(false);
+  const visible = useSyncExternalStore(subscribeVisibility, pageVisible, () => true);
   const count = slides.length;
-  const go = useCallback((i: number) => setIndex(((i % count) + count) % count), [count]);
-  const playing = motion && !stopped;
+  const go = useCallback(
+    (i: number) => {
+      if (count) setIndex(((i % count) + count) % count);
+    },
+    [count],
+  );
+  const playing = motion && !stopped && visible;
 
   useEffect(() => {
-    if (!allowVideo) return;
-    // Give the poster, fonts and primary content a head start before decorative video competes for bandwidth.
-    const timer = window.setTimeout(() => setVideoReady(true), 5000);
-    return () => window.clearTimeout(timer);
-  }, [allowVideo]);
-
-  useEffect(() => {
-    if (count < 2 || paused || !playing || !allowVideo) return;
+    if (count < 2 || paused || !playing) return;
     const id = window.setTimeout(() => go(index + 1), INTERVAL);
     return () => window.clearTimeout(id);
-  }, [index, count, paused, playing, allowVideo, go]);
+  }, [index, count, paused, playing, go]);
 
   if (count === 0) return null;
-  const slide = slides[index];
+  const slide = slides[index] || slides[0];
 
   return (
     <section
-      className="homepage-hero relative isolate min-h-[100svh] overflow-hidden bg-forest-950 text-white"
+      className="homepage-hero relative isolate min-h-svh overflow-hidden bg-forest-950 text-white"
       aria-roledescription="carousel"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       onFocus={() => setPaused(true)}
       onBlur={() => setPaused(false)}
     >
-      {/* Backgrounds (cross-fade). */}
-      {slides.map((s, i) => {
-        const active = i === index;
-        // Hidden slides are not lazy-load candidates: opacity alone still lets browsers fetch their images.
-        if (!active) return null;
-        const mobile = s.mobileImage?.url ?? s.desktopImage?.url;
-        const desktop = s.desktopImage?.url ?? mobile;
-        const video = s.video?.url;
-        return (
-          <div
-            key={s._id}
-            className={cn("absolute inset-0 -z-10 transition-opacity duration-1000", active ? "opacity-100" : "pointer-events-none opacity-0")}
-            aria-hidden
-            // No uploaded media → AI-generated fallback, labelled near the top (the bottom holds the slide controls).
-            data-illustrative={!video && !desktop ? "top" : undefined}
-          >
-            {video && active && playing && allowVideo && videoReady ? (
-              // Only the visible slide gets a <video>: `autoPlay` would otherwise download every slide's video at once.
-              <video className="h-full w-full object-cover" src={videoUrl(video, 1280)} poster={desktop ?? videoPoster(video)} autoPlay muted loop playsInline preload="none" />
-            ) : video ? (
-              <Image src={desktop ?? videoPoster(video)} alt="" fill loading="eager" fetchPriority={i === 0 ? "high" : undefined} sizes="100vw" className="object-cover" />
-            ) : desktop ? (
-              <picture>
-                {mobile !== desktop && <source media="(max-width: 639px)" sizes="100vw" srcSet={[640, 1080, 1920].map(width => `${cloudinaryUrl(mobile!, { width })} ${width}w`).join(", ")} />}
-                <Image src={desktop} alt="" fill loading="eager" fetchPriority={i === 0 ? "high" : undefined} sizes="100vw" className={cn("object-cover", active && playing && "animate-ken-burns")} />
-              </picture>
-            ) : (
-              <Image src={editorialImages.hero.url} alt="" fill loading="eager" fetchPriority={i === 0 ? "high" : undefined} sizes="100vw" className="object-cover" />
-            )}
-            {s.overlay !== false && <div className="absolute inset-0" style={{ backgroundColor: s.overlayColor ?? "#06261b", opacity: Math.min(s.overlayOpacity ?? 0.45, 0.35) }} />}
-            {/* Readability: darker on the text side, lighter on the photo side. */}
-            <div className="absolute inset-0 bg-gradient-to-r from-forest-950/85 via-forest-950/45 to-transparent rtl:bg-gradient-to-l" />
-            <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-forest-950/70 to-transparent" />
-          </div>
-        );
-      })}
+      <HeroBackground
+        key={`${slide._id}-${slide.video?.url ?? ""}-${slide.desktopImage?.url ?? ""}-${slide.mobileImage?.url ?? ""}`}
+        slide={slide}
+        allowAutoPlay={motion}
+        stopped={stopped || !visible}
+        labels={labels}
+        onUserPlay={() => setStopped(false)}
+      />
 
-      <div className="container-page relative flex min-h-[100svh] items-center pb-36 pt-24 sm:pb-40 sm:pt-24">
+      <div className="container-page relative flex min-h-svh items-center pb-36 pt-24 sm:pb-40 sm:pt-24">
         {/* Text of the visible slide. */}
         <div
           key={slide._id}
@@ -134,7 +224,7 @@ export function HeroSlider({ slides, rating, whatsapp, labels }: Props) {
           className={cn("max-w-2xl lg:max-w-3xl", slide.textAlign === "center" && "mx-auto text-center")}
         >
           {slide.subtitle && <p className="mb-4 text-xs font-semibold uppercase tracking-[0.28em] text-white/85">{slide.subtitle}</p>}
-          <h1 className="font-display text-4xl leading-[1.02] tracking-tight [overflow-wrap:normal] hyphens-none sm:text-6xl lg:text-[4.5rem]">
+          <h1 className="font-display text-4xl leading-[1.02] tracking-tight wrap-anywhere hyphens-none sm:text-6xl lg:text-[4.5rem]">
             <GoldText text={slide.title} />
           </h1>
           {slide.description && <p className="mt-5 max-w-xl text-base leading-relaxed text-white/85 sm:text-lg">{slide.description}</p>}
@@ -147,7 +237,7 @@ export function HeroSlider({ slides, rating, whatsapp, labels }: Props) {
                   newTab={b.openInNewTab}
                   whatsapp={whatsapp}
                   className={buttonClass(
-                    (b.variant === "outline" ? "outline-light" : b.variant === "secondary" ? "ghost-light" : b.variant ?? (bi === 0 ? "primary" : "outline-light")) as ButtonVariant,
+                    (b.variant === "outline" ? "outline-light" : b.variant === "secondary" ? "ghost-light" : (b.variant ?? (bi === 0 ? "primary" : "outline-light"))) as ButtonVariant,
                     "lg",
                     "rounded-md",
                   )}
@@ -175,7 +265,7 @@ export function HeroSlider({ slides, rating, whatsapp, labels }: Props) {
 
         {/* Quiet, compact slide picker on wide screens; the dot and arrow controls remain available at all sizes. */}
         {count > 1 && slide.textAlign !== "center" && (
-          <ul className="absolute bottom-32 end-8 hidden items-center gap-2 xl:flex">
+          <ul className="absolute bottom-32 inset-e-8 hidden items-center gap-2 xl:flex">
             {slides.slice(0, 4).map((s, i) => {
               const src = thumbOf(s);
               return (
@@ -185,11 +275,9 @@ export function HeroSlider({ slides, rating, whatsapp, labels }: Props) {
                     onClick={() => go(i)}
                     aria-label={stripGold(s.title)}
                     aria-current={i === index}
-                    className="block h-12 w-[4.5rem] overflow-hidden rounded-lg border border-white/35 bg-white/10 opacity-70 shadow-lg transition hover:scale-105 hover:opacity-100 aria-[current=true]:border-gold-400 aria-[current=true]:opacity-100"
+                    className="block h-12 w-18 overflow-hidden rounded-lg border border-white/35 bg-white/10 opacity-70 shadow-lg transition hover:scale-105 hover:opacity-100 aria-current:border-gold-400 aria-current:opacity-100"
                   >
-                    <span className="relative block h-full w-full bg-forest-800">
-                      {src && <Image src={src} alt="" fill sizes="160px" className="object-cover" />}
-                    </span>
+                    <span className="relative block h-full w-full bg-forest-800">{src && <Image src={src} alt="" fill sizes="160px" className="object-cover" />}</span>
                   </button>
                 </li>
               );
@@ -205,7 +293,7 @@ export function HeroSlider({ slides, rating, whatsapp, labels }: Props) {
             <div className="flex gap-1">
               {slides.map((s, i) => (
                 // 24px tall hit area (WCAG 2.5.8) around the thin visual bar.
-                <button key={s._id} type="button" onClick={() => go(i)} aria-label={`${i + 1} / ${count}`} aria-current={i === index} className="group flex h-6 items-center px-0.5">
+                <button key={s._id} type="button" onClick={() => go(i)} aria-label={`${i + 1} / ${count}`} aria-current={i === index} className="group flex h-10 items-center px-1">
                   <span className={cn("block h-1.5 rounded-full transition-all", i === index ? "w-10 bg-gold-500" : "w-5 bg-white/40 group-hover:bg-white/70")} />
                 </button>
               ))}

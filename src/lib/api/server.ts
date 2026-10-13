@@ -195,6 +195,11 @@ export const getDetail = cache(
   },
 );
 
+/** Closest published destinations (by distance; same category when coordinates are missing). */
+export const getNearbyDestinations = cache((slug: string, locale: string, limit = 6) =>
+  orNull(apiGet<Destination[]>(`/destinations/${encodeURIComponent(slug)}/nearby${qs({ locale, limit })}`, { tags: [TAGS.destinations, TAGS.categories] })),
+);
+
 export const getCategories = cache((kind: string, locale: string) =>
   orNull(apiGet<Category[]>(`/categories${qs({ kind, locale })}`, { tags: [TAGS.categories] })),
 );
