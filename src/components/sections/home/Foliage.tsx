@@ -46,12 +46,6 @@ function leaflets(p0: Pt, c: Pt, p1: Pt, count: number, length: number, spread: 
   return paths.join("");
 }
 
-const PALM_STEM: [Pt, Pt, Pt] = [
-  [10, 390],
-  [120, 120],
-  [390, 30],
-];
-const PALM_BLADES = leaflets(...PALM_STEM, 26, 120, 52, true);
 const FERN_STEM: [Pt, Pt, Pt] = [
   [20, 300],
   [90, 140],
@@ -60,16 +54,6 @@ const FERN_STEM: [Pt, Pt, Pt] = [
 const FERN_LINES = leaflets(...FERN_STEM, 22, 46, 58, false);
 
 type LeafProps = { className?: string };
-
-/** Long arching palm frond (viewBox 400×400, grows from the bottom-left corner). */
-export function PalmLeaf({ className }: LeafProps) {
-  return (
-    <svg viewBox="0 0 400 400" preserveAspectRatio="xMidYMid meet" aria-hidden focusable="false" className={cn("pointer-events-none", className)}>
-      <path d={`M${PALM_STEM[0].join(" ")}Q${PALM_STEM[1].join(" ")} ${PALM_STEM[2].join(" ")}`} fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
-      <path d={PALM_BLADES} fill="currentColor" />
-    </svg>
-  );
-}
 
 /** Delicate fern branch in fine line art (viewBox 260×320). */
 export function FernBranch({ className }: LeafProps) {
