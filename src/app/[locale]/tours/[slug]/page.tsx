@@ -120,7 +120,7 @@ export default async function TourDetailPage({ params }: Props) {
           {/* SUMMARY CARD: title, days, route, price and the main call to action */}
           <div className="mt-4 max-w-xl rounded-2xl border border-white/15 bg-forest-950/55 p-6 shadow-2xl backdrop-blur-md sm:p-8">
             {tour.category?.name && <Badge className="mb-3 bg-gold-500/20 text-gold-200">{tour.category.name}</Badge>}
-            <h1 className="font-display text-3xl leading-tight sm:text-5xl lg:text-6xl" data-testid="tour-title">
+            <h1 className="font-display text-h1 leading-tight" data-testid="tour-title">
               {tour.title}
             </h1>
             <ul className="mt-4 flex flex-wrap gap-x-4 gap-y-2 text-sm text-white/85">
@@ -173,7 +173,7 @@ export default async function TourDetailPage({ params }: Props) {
             <Markdown content={tour.description} />
             {tour.highlights?.length ? (
               <div className="mt-8 rounded-3xl bg-forest-50 p-7">
-                <h3 className="mb-4 text-xl text-forest-900">{t("highlights")}</h3>
+                <h3 className="mb-4 text-h3 text-forest-900">{t("highlights")}</h3>
                 <CheckList items={tour.highlights} />
               </div>
             ) : null}
@@ -189,7 +189,7 @@ export default async function TourDetailPage({ params }: Props) {
                       {day.day}
                     </span>
                     <p className="eyebrow">{t("dayLabel", { day: day.day })}</p>
-                    <h3 className="mt-1 text-xl text-forest-900">{day.title}</h3>
+                    <h3 className="mt-1 text-h3 text-forest-900">{day.title}</h3>
                     {day.image?.url && <CmsImage media={day.image} alt={day.title} sizes="(min-width:1024px) 600px, 100vw" wrapperClassName="mt-4 aspect-[16/9] rounded-2xl" />}
                     <Markdown content={day.description} className="mt-3 text-[0.95rem]" />
                     {day.activities?.length ? (
@@ -352,10 +352,10 @@ export default async function TourDetailPage({ params }: Props) {
 
       {/* RELATED TOURS */}
       {data.related.length > 0 && (
-        <section className="bg-sand-100 py-16">
+        <section className="bg-sand-100 py-section-sm">
           <div className="container-page">
-            <h2 className="mb-10 text-3xl text-forest-900">{t("related")}</h2>
-            <div className="grid grid-cols-1 gap-7 sm:grid-cols-2 lg:grid-cols-3">
+            <h2 className="mb-10 text-h2 text-forest-900">{t("related")}</h2>
+            <div className="grid grid-cols-1 gap-grid sm:grid-cols-2 lg:grid-cols-3">
               {data.related.map((relatedTour) => (
                 <TourCard key={relatedTour._id} tour={relatedTour} hideDescription={repeatedDescriptions.has(relatedTour.shortDescription?.trim() ?? "")} />
               ))}

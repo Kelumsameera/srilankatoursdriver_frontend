@@ -50,11 +50,11 @@ export default async function ToursPage({ params, searchParams }: Props) {
       <PageHero title={pageData?.page.title ?? ""} subtitle={pageData?.page.subtitle} image={pageData?.page.heroImage} banner="tours" />
 
       {/* TOUR LIST: category chips, cards, pages */}
-      <section className="py-16 sm:py-20">
+      <section className="py-section">
         <div className="container-page">
           <CategoryFilter basePath="/tours" categories={categories ?? []} active={category} />
           {tourList?.items.length ? (
-            <div className="grid grid-cols-1 gap-7 sm:grid-cols-2 lg:grid-cols-3" data-testid="tour-list">
+            <div className="grid grid-cols-1 gap-grid sm:grid-cols-2 lg:grid-cols-3" data-testid="tour-list">
               {tourList.items.map((tour) => (
                 <TourCard key={tour._id} tour={tour} hideDescription={repeatedDescriptions.has(tour.shortDescription?.trim() ?? "")} />
               ))}
