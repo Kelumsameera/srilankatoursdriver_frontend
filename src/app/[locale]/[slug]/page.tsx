@@ -5,7 +5,7 @@ import { getPage, getSiteSettings } from "@/lib/api/server";
 import { buildMetadata } from "@/lib/seo";
 import { PageHero } from "@/components/ui/misc";
 import { Markdown } from "@/components/ui/Markdown";
-import { PageRenderer } from "@/components/sections/PageRenderer";
+import { PageRenderer, hasActiveHero } from "@/components/sections/PageRenderer";
 
 type Props = { params: Promise<{ locale: string; slug: string }> };
 
@@ -28,7 +28,7 @@ export default async function CmsPage({ params }: Props) {
   if (!data) notFound();
   return (
     <>
-      <PageHero title={data.page.title} subtitle={data.page.subtitle} image={data.page.heroImage} />
+      {data && hasActiveHero(data.sections) ? <PageRenderer sections={data.sections} settings={settings} part="hero" /> : <PageHero title={data.page.title} subtitle={data.page.subtitle} image={data.page.heroImage} />}
       {data.page.content && (
         <section className="py-14 sm:py-20">
           <div className="container-page max-w-3xl">
@@ -36,7 +36,7 @@ export default async function CmsPage({ params }: Props) {
           </div>
         </section>
       )}
-      <PageRenderer sections={data.sections} settings={settings} />
+      <PageRenderer sections={data.sections} settings={settings} part="body" />
     </>
   );
 }

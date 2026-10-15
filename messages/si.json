@@ -445,6 +445,8 @@
     "note": "අපගේ මිල ගණන් {currency} වලින් ලබා දේ; ඔබගේ බැංකු අනුපාතය මඳක් වෙනස් විය හැක."
   },
   "rates": {
+    "showMore": "\u0dad\u0dc0\u0dad\u0dca \u0db4\u0dd9\u0db1\u0dca\u0dc0\u0db1\u0dca\u0db1",
+    "showLess": "\u0d85\u0da9\u0dd4\u0dc0\u0dd9\u0db1\u0dca \u0db4\u0dd9\u0db1\u0dca\u0dc0\u0db1\u0dca\u0db1",
     "title": "සංචාරක පැකේජ මිල ගණන්",
     "subtitle": "ගුවන්තොටුපළේ (CMB) සිට නියමිත මිල ගණන්",
     "headers": {

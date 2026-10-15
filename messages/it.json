@@ -445,6 +445,8 @@
     "note": "I nostri prezzi sono indicati in {currency}; il tasso della tua banca può variare leggermente."
   },
   "rates": {
+    "showMore": "Mostra di pi\u00f9",
+    "showLess": "Mostra meno",
     "title": "Tariffe dei Pacchetti Tour",
     "subtitle": "Tariffe Fisse dall'Aeroporto (CMB)",
     "headers": {

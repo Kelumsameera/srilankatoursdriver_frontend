@@ -27,7 +27,7 @@ function useLoginHref() {
   return pathname.startsWith("/account") ? "/account/login" : `/account/login?next=${encodeURIComponent(pathname)}`;
 }
 
-/** Header "Sign in" link, or the signed-in customer's avatar menu. */
+/** Header "Sign in" link, or the signed-in customer's avatar menu. Both are at least 44px (tap target). */
 export function AccountMenu({ tone }: { tone: "light" | "dark" }) {
   const t = useTranslations("account");
   const router = useRouter();
@@ -51,11 +51,11 @@ export function AccountMenu({ tone }: { tone: "light" | "dark" }) {
   const color = tone === "light" ? "text-white hover:bg-white/10" : "text-forest-900 hover:bg-forest-50";
 
   // Same footprint while the session is checked, so the header doesn't jump.
-  if (loading) return <span className="inline-block h-9 w-9" aria-hidden />;
+  if (loading) return <span className="inline-block h-11 w-11" aria-hidden />;
 
   if (!customer) {
     return (
-      <Link href={loginHref} className={cn("flex items-center gap-1.5 rounded-full px-3 py-2 text-sm font-medium transition-colors", color)} data-testid="nav-sign-in">
+      <Link href={loginHref} className={cn("flex min-h-11 min-w-11 items-center justify-center gap-1.5 rounded-full px-3 text-sm font-medium transition-colors", color)} data-testid="nav-sign-in">
         <UserRound className="h-4 w-4" aria-hidden />
         <span className="hidden md:inline">{t("signIn")}</span>
         <span className="sr-only md:hidden">{t("signIn")}</span>
@@ -72,7 +72,7 @@ export function AccountMenu({ tone }: { tone: "light" | "dark" }) {
         aria-expanded={open}
         aria-label={t("myAccount")}
         data-testid="account-menu"
-        className={cn("flex items-center rounded-full p-0.5 transition-colors", color)}
+        className={cn("flex min-h-11 min-w-11 items-center justify-center rounded-full p-0.5 transition-colors", color)}
       >
         <Avatar customer={customer} />
       </button>
@@ -83,7 +83,7 @@ export function AccountMenu({ tone }: { tone: "light" | "dark" }) {
             <p className="truncate text-xs text-muted">{customer.email}</p>
           </div>
           <div className="my-1 h-px bg-sand-100" />
-          <Link href="/account" role="menuitem" onClick={() => setOpen(false)} className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm text-forest-900 hover:bg-sand-100">
+          <Link href="/account" role="menuitem" onClick={() => setOpen(false)} className="flex items-center gap-2 rounded-xl px-3 py-3 text-sm text-forest-900 hover:bg-sand-100">
             <UserRound className="h-4 w-4" aria-hidden />
             {t("myAccount")}
           </Link>
@@ -95,7 +95,7 @@ export function AccountMenu({ tone }: { tone: "light" | "dark" }) {
               await logout();
               router.refresh();
             }}
-            className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-start text-sm text-forest-900 hover:bg-sand-100"
+            className="flex w-full items-center gap-2 rounded-xl px-3 py-3 text-start text-sm text-forest-900 hover:bg-sand-100"
           >
             <LogOut className="h-4 w-4" aria-hidden />
             {t("signOut")}

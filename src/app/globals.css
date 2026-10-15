@@ -249,6 +249,16 @@ html[data-site="public"] main section:is(.bg-sand-50, .bg-sand-100, .bg-forest-8
     font-family: var(--font-sans);
     letter-spacing: 0;
   }
+  /* Tamil/Sinhala/Hindi glyphs are taller than Latin, so tight leading makes wrapped lines overlap.
+     !important in the base layer outranks the leading-* / text-* utilities. */
+  html:is([lang="ta"], [lang="si"], [lang="hi"]) :is(h1, h2, h3, h4),
+  html:is([lang="ta"], [lang="si"], [lang="hi"])
+    :is(.leading-none, .leading-tight, .leading-snug, [class*="leading-["]) {
+    line-height: 1.45 !important;
+  }
+  html:is([lang="ta"], [lang="si"], [lang="hi"]) .eyebrow {
+    letter-spacing: 0.05em;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -346,6 +356,32 @@ html[data-site="public"] main section:is(.bg-sand-50, .bg-sand-100, .bg-forest-8
 .section-shell {
   position: relative;
   scroll-margin-top: 6rem;
+}
+
+/* Jumping to an anchor (#id) leaves room for the fixed header, so it does not cover the heading.
+   Header + 16px: 64px header -> 5rem, 80px header from xl (80rem = 1280px) -> 6rem.
+   Keep in sync with the header height in components/site/SiteHeader.tsx.
+   :where() has no specificity, so sections with their own scroll-mt-* class keep their value. */
+:where(html[data-site="public"] [id]) {
+  scroll-margin-top: 5rem;
+}
+@media (width >= 80rem) {
+  :where(html[data-site="public"] [id]) {
+    scroll-margin-top: 6rem;
+  }
+
+  /* Tamil and Hindi use an 80px brand row plus a 96px navigation row. */
+  html[data-site="public"]:is([lang="ta"], [lang="hi"]) [id] {
+    scroll-margin-top: 12rem;
+  }
+
+  html[data-site="public"]:is([lang="ta"], [lang="hi"]) .container-page.min-h-svh {
+    padding-top: 13rem;
+  }
+
+  html[data-site="public"]:is([lang="ta"], [lang="hi"]) .page-banner > .container-page {
+    padding-top: 13rem;
+  }
 }
 
 html.motion-ready [data-scroll-reveal]:not(.is-visible) {

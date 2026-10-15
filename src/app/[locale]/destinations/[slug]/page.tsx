@@ -63,14 +63,10 @@ function buildSchema(destination: Destination, locale: string, cover: MediaAsset
     url: `${SITE_URL}/${locale}/destinations/${destination.slug}`,
     // AI / illustrative images are never sent to Google as a real photo
     ...(cover?.url && !isIllustrative(cover.url) ? { image: cover.url } : {}),
-    ...(validCoordinates(destination.location)
-      ? { geo: { "@type": "GeoCoordinates", latitude: destination.location?.lat, longitude: destination.location?.lng } }
-      : {}),
+    ...(validCoordinates(destination.location) ? { geo: { "@type": "GeoCoordinates", latitude: destination.location?.lat, longitude: destination.location?.lng } } : {}),
     ...(destination.featuredExperiences?.length
       ? {
-          includesAttraction: destination.featuredExperiences
-            .filter((experience) => experience.title)
-            .map((experience) => ({ "@type": "TouristAttraction", name: experience.title })),
+          includesAttraction: destination.featuredExperiences.filter((experience) => experience.title).map((experience) => ({ "@type": "TouristAttraction", name: experience.title })),
         }
       : {}),
     containedInPlace: { "@type": "Country", name: "Sri Lanka" },
@@ -118,44 +114,37 @@ export default async function DestinationDetailPage({ params }: Props) {
       <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(buildSchema(destination, locale, cover))} />
 
       {/* BREADCRUMB + BANNER IMAGE + INTRO + MAP */}
-      <div className="bg-white pt-24 sm:pt-28">
+      <div className="bg-white">
+        <div className="relative isolate">
+          <CmsImage media={cover} alt={cover?.alt || destination.name} placeholderName={destination.name} preload sizes="100vw" wrapperClassName="aspect-[4/3] min-h-[340px] max-h-[520px] w-full sm:aspect-[21/8] sm:min-h-[420px]" />
+          <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 h-64 bg-linear-to-b from-black/65 to-transparent" />
+          <div className={`absolute inset-x-0 top-24 sm:top-28 ${locale === "ta" || locale === "hi" ? "xl:top-48" : ""}`}>
         <div className="container-page">
           <Breadcrumbs
             locale={locale}
-            onLight
             dots
             label={t("breadcrumb")}
-            items={[
-              { label: tCommon("home"), href: "/" },
-              { label: listingPage?.page.title || t("destinationsLabel"), href: "/destinations" },
-              { label: destination.name },
-            ]}
+            items={[{ label: tCommon("home"), href: "/" }, { label: listingPage?.page.title || t("destinationsLabel"), href: "/destinations" }, { label: destination.name }]}
           />
+        </div>
+          </div>
+        </div>
 
-          {/* BANNER IMAGE (uploaded photo or exact-place art, otherwise a plain panel with the name) */}
-          <CmsImage
-            media={cover}
-            alt={cover?.alt || destination.name}
-            placeholderName={destination.name}
-            preload
-            sizes="(max-width: 1279px) 100vw, 1280px"
-            wrapperClassName="mt-6 aspect-[16/9] max-h-[520px] w-full rounded-lg sm:aspect-[21/9]"
-          />
-
-          <section className="grid items-center gap-10 py-8 sm:py-12 md:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] md:gap-10 lg:gap-16" aria-labelledby="destination-title">
+        <div className="container-page">
+          <section className="grid items-center gap-8 py-8 sm:py-10 md:grid-cols-[minmax(0,1.5fr)_minmax(0,0.8fr)] lg:gap-12" aria-labelledby="destination-title">
             {/* INTRO TEXT + BUTTONS */}
             <div className="min-w-0" data-scroll-reveal>
               {eyebrow && <DotEyebrow>{eyebrow}</DotEyebrow>}
               {destination.subtitle && <p className="mt-6 text-lg font-light text-muted sm:text-xl">{destination.subtitle}</p>}
               <h1
                 id="destination-title"
-                className="mt-3 break-words font-display text-[clamp(1.85rem,7vw,3.75rem)] uppercase md:text-[clamp(2.25rem,4.6vw,3.75rem)] leading-[1.05] tracking-[0.04em] text-ink sm:tracking-[0.08em]"
+                className="mt-3 wrap-break-word font-display text-[clamp(1.85rem,7vw,3.75rem)] md:text-[clamp(2.25rem,4.6vw,3.75rem)] leading-[1.12] tracking-tight text-ink"
                 data-testid="destination-title"
               >
                 {destination.name}
               </h1>
-              <p className="mt-7 max-w-prose whitespace-pre-line text-base leading-8 text-muted">{intro}</p>
-              <div className="mt-8 flex flex-wrap gap-3">
+              <p className="mt-5 max-w-prose whitespace-pre-line text-base leading-7 text-muted">{intro}</p>
+              <div className="mt-6 flex flex-wrap gap-3">
                 <ButtonLink href="#plan-trip">{t("planTrip")}</ButtonLink>
                 {hasTours && (
                   <ButtonLink variant="outline" href="#destination-tours">
@@ -167,13 +156,8 @@ export default async function DestinationDetailPage({ params }: Props) {
 
             {/* MAP */}
             <div className="min-w-0" data-scroll-reveal>
-              <div className="rounded-[2.5rem] bg-sand-50 px-4 pt-6">
-                <DestinationMap
-                  destination={destination}
-                  label={t("mapLabel", { name: destination.name })}
-                  unavailable={t("locationUnavailable")}
-                  caption={t("mapCaption")}
-                />
+              <div className="rounded-2xl border border-sand-200 bg-sand-50 px-3 pt-3 [&_svg]:max-w-55">
+                <DestinationMap destination={destination} label={t("mapLabel", { name: destination.name })} unavailable={t("locationUnavailable")} caption={t("mapCaption")} />
               </div>
             </div>
           </section>
@@ -182,7 +166,7 @@ export default async function DestinationDetailPage({ params }: Props) {
 
       <div className="container-page">
         {/* THINGS TO SEE */}
-        <div className="mt-6 sm:mt-10">
+        <div className="mt-0">
           <FeaturedExperiences
             items={destination.featuredExperiences || []}
             labels={{
@@ -197,7 +181,7 @@ export default async function DestinationDetailPage({ params }: Props) {
 
         {/* STORY, HIGHLIGHTS, THINGS TO DO, GALLERY (each one only when it has content) */}
         {(story || destination.highlights?.length || destination.thingsToDo?.length || destination.gallery?.length) && (
-          <div className="max-w-3xl border-t border-sand-200 py-14">
+          <div className="max-w-4xl border-t border-sand-200 py-8 sm:py-10">
             {story && (
               <DetailSection>
                 <Markdown content={story} />
@@ -222,15 +206,15 @@ export default async function DestinationDetailPage({ params }: Props) {
         )}
 
         {/* PRACTICAL INFORMATION */}
-        <section className="border-t border-sand-200 py-14 sm:py-20" aria-labelledby="practical-title">
+        <section className="border-t border-sand-200 py-10 sm:py-12" aria-labelledby="practical-title">
           <DotEyebrow>{t("practicalEyebrow")}</DotEyebrow>
-          <h2 id="practical-title" className="mt-4 font-display text-3xl uppercase tracking-[0.12em] text-ink sm:text-4xl">
+          <h2 id="practical-title" className="mt-3 font-display text-3xl tracking-tight text-ink sm:text-4xl">
             {t("practicalTitle")}
           </h2>
-          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {/* BEST TIME + HOW TO GET THERE */}
             {infoCards.map(({ key, icon: Icon, title, body, fallback }) => (
-              <div key={key} className="rounded-lg border border-sand-200 bg-white p-7" data-scroll-reveal>
+              <div key={key} className="rounded-lg border border-sand-200 bg-white p-5 sm:p-6" data-scroll-reveal>
                 <Icon className="h-6 w-6 text-gold-600" aria-hidden strokeWidth={1.5} />
                 <h3 className="mt-4 font-display text-xl text-ink">{title}</h3>
                 <p className="mt-3 whitespace-pre-line text-sm leading-7 text-muted">{body?.trim() || fallback}</p>
@@ -238,7 +222,7 @@ export default async function DestinationDetailPage({ params }: Props) {
             ))}
 
             {/* SUGGESTED ITINERARY */}
-            <div className="rounded-lg border border-sand-200 bg-white p-7" data-scroll-reveal>
+            <div className="rounded-lg border border-sand-200 bg-white p-5 sm:p-6" data-scroll-reveal>
               <Route className="h-6 w-6 text-gold-600" aria-hidden strokeWidth={1.5} />
               <h3 className="mt-4 font-display text-xl text-ink">{t("itinerary")}</h3>
               {destination.itinerary?.length ? (
@@ -262,7 +246,7 @@ export default async function DestinationDetailPage({ params }: Props) {
       </div>
 
       {/* PLAN YOUR TRIP (green band with enquiry + WhatsApp buttons) */}
-      <section id="plan-trip" className="scroll-mt-28 bg-forest-800 py-16 text-white sm:py-20" aria-labelledby="plan-trip-title">
+      <section id="plan-trip" className="scroll-mt-28 bg-forest-800 py-10 text-white sm:py-12" aria-labelledby="plan-trip-title">
         <div className="container-page flex flex-col items-start gap-8 lg:flex-row lg:items-center lg:justify-between">
           <div className="max-w-2xl">
             <DotEyebrow className="text-gold-400">{t("ctaEyebrow")}</DotEyebrow>
@@ -286,7 +270,7 @@ export default async function DestinationDetailPage({ params }: Props) {
 
       {/* TOURS THAT VISIT THIS DESTINATION */}
       {tours && hasTours && (
-        <section id="destination-tours" className="scroll-mt-28 py-14 sm:py-20" aria-labelledby="destination-tours-title">
+        <section id="destination-tours" className="scroll-mt-28 py-10 sm:py-12" aria-labelledby="destination-tours-title">
           <div className="container-page">
             <h2 id="destination-tours-title" className="mb-8 font-display text-3xl text-ink">
               {t("exploreTours")}
@@ -301,14 +285,14 @@ export default async function DestinationDetailPage({ params }: Props) {
       )}
 
       {/* TRANSFER RATES */}
-      <TransferRates settings={settings} />
+      <TransferRates settings={settings} compact collapsible />
 
       {/* NEARBY DESTINATIONS */}
       {relatedDestinations.length > 0 && (
-        <section className="bg-sand-50 py-16 sm:py-20" aria-labelledby="nearby-title">
+        <section className="bg-sand-50 py-10 sm:py-12" aria-labelledby="nearby-title">
           <div className="container-page">
             <DotEyebrow>{t("nearbyEyebrow")}</DotEyebrow>
-            <h2 id="nearby-title" className="mt-4 font-display text-3xl uppercase tracking-[0.12em] text-ink sm:text-4xl">
+            <h2 id="nearby-title" className="mt-3 font-display text-3xl tracking-tight text-ink sm:text-4xl">
               {t("nearby")}
             </h2>
             <div className="mt-6">

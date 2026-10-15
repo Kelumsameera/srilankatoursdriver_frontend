@@ -6,7 +6,7 @@ import { EmptyState, PageHero } from "@/components/ui/misc";
 import { ReviewCard } from "@/components/cards/cards";
 import { ReviewForm } from "@/components/forms/ReviewForm";
 import { Pagination, pageParam, type SearchParams } from "@/components/site/listing";
-import { PageRenderer } from "@/components/sections/PageRenderer";
+import { PageRenderer, hasActiveHero } from "@/components/sections/PageRenderer";
 
 type Props = { params: Promise<{ locale: string }>; searchParams: SearchParams };
 
@@ -29,7 +29,7 @@ export default async function ReviewsPage({ params, searchParams }: Props) {
   ]);
   return (
     <>
-      <PageHero title={data?.page.title ?? ""} subtitle={data?.page.subtitle} image={data?.page.heroImage} />
+      {data && hasActiveHero(data.sections) ? <PageRenderer sections={data.sections} settings={settings} part="hero" /> : <PageHero title={data?.page.title ?? ""} subtitle={data?.page.subtitle} image={data?.page.heroImage} />}
       <section className="py-14 sm:py-20">
         <div className="container-page">
           {list?.items.length ? (
@@ -44,7 +44,7 @@ export default async function ReviewsPage({ params, searchParams }: Props) {
           {list && <Pagination meta={list.meta} basePath="/reviews" />}
         </div>
       </section>
-      {data && <PageRenderer sections={data.sections.filter((s) => s.type !== "hero")} settings={settings} />}
+      {data && <PageRenderer sections={data.sections} settings={settings} part="body" />}
       <section className="bg-sand-100 py-16">
         <div className="container-page max-w-3xl">
           <ReviewForm />

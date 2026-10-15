@@ -5,7 +5,7 @@ import { buildMetadata } from "@/lib/seo";
 import { PageHero } from "@/components/ui/misc";
 import { Markdown } from "@/components/ui/Markdown";
 import { TailorMadeForm } from "@/components/forms/TailorMadeForm";
-import { PageRenderer } from "@/components/sections/PageRenderer";
+import { PageRenderer, hasActiveHero } from "@/components/sections/PageRenderer";
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -26,7 +26,7 @@ export default async function TailorMadePage({ params }: Props) {
   ]);
   return (
     <>
-      <PageHero title={data?.page.title ?? ""} subtitle={data?.page.subtitle} image={data?.page.heroImage} banner="tailor-made-tours" />
+      {data && hasActiveHero(data.sections) ? <PageRenderer sections={data.sections} settings={settings} part="hero" /> : <PageHero title={data?.page.title ?? ""} subtitle={data?.page.subtitle} image={data?.page.heroImage} banner="tailor-made-tours" />}
       <section className="py-14 sm:py-20">
         <div className="container-page max-w-5xl">
           {data?.page.content && <Markdown content={data.page.content} className="mb-10" />}
@@ -37,7 +37,7 @@ export default async function TailorMadePage({ params }: Props) {
           />
         </div>
       </section>
-      {data && <PageRenderer sections={data.sections.filter((s) => s.type !== "hero")} settings={settings} />}
+      {data && <PageRenderer sections={data.sections} settings={settings} part="body" />}
     </>
   );
 }

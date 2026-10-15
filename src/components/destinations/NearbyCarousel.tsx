@@ -30,7 +30,7 @@ export function NearbyCarousel({ items }: { items: Destination[] }) {
   return (
     <div>
       {/* PREVIOUS / NEXT BUTTONS */}
-      <div className="mb-6 flex justify-end gap-3">
+      <div className="mb-4 flex justify-end gap-3">
         <button type="button" className={arrowButtonClass} onClick={() => scrollRow(-1)} aria-label={t("previous")}>
           <ArrowLeft className="h-4 w-4 rtl:rotate-180" aria-hidden />
         </button>
@@ -49,7 +49,7 @@ export function NearbyCarousel({ items }: { items: Destination[] }) {
         {items.map((destination) => {
           const cover = destinationCover(destination);
           return (
-            <li key={destination._id} className="w-[78%] shrink-0 snap-start sm:w-[44%] lg:w-[calc((100%-2.5rem)/3)]">
+            <li key={destination._id} className="w-[78%] shrink-0 snap-start sm:w-[44%] lg:w-[calc((100%_-_2.5rem)/3)]">
               <CmsLink
                 href={`/destinations/${destination.slug}`}
                 className="dest-card group block overflow-hidden rounded-lg bg-white shadow-card focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-forest-800"
@@ -60,7 +60,7 @@ export function NearbyCarousel({ items }: { items: Destination[] }) {
                   alt={cover?.alt || destination.name}
                   placeholderName={destination.name}
                   sizes="(max-width: 639px) 78vw, (max-width: 1023px) 44vw, 400px"
-                  wrapperClassName="aspect-[4/3]"
+                  wrapperClassName="aspect-[16/10]"
                 />
                 {/* CATEGORY, NAME, DISTANCE */}
                 <div className="p-5">

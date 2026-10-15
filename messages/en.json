@@ -445,6 +445,8 @@
     "note": "Our prices are quoted in {currency}; your bank's rate may differ slightly."
   },
   "rates": {
+    "showMore": "Show more",
+    "showLess": "Show less",
     "title": "Tour Package Rates",
     "subtitle": "Fixed Rates from Airport (CMB)",
     "headers": {

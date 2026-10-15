@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getPage, getSiteSettings } from "@/lib/api/server";
 import { buildMetadata } from "@/lib/seo";
-import { PageRenderer } from "@/components/sections/PageRenderer";
+import { PageRenderer, hasActiveHero } from "@/components/sections/PageRenderer";
 import { PageHero } from "@/components/ui/misc";
 
 type Props = { params: Promise<{ locale: string }> };
@@ -24,7 +24,7 @@ export default async function HomePage({ params }: Props) {
     const t = await getTranslations("errors");
     return <PageHero title={settings?.siteName ?? ""} subtitle={t("unavailable")} />;
   }
-  const hasHero = data.sections.some((s) => s.type === "hero" && Array.isArray(s.data) && s.data.length > 0);
+  const hasHero = hasActiveHero(data.sections);
   return (
     <>
       {!hasHero && <PageHero title={data.page.title} subtitle={data.page.subtitle} image={data.page.heroImage} />}

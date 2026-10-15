@@ -5,7 +5,7 @@ import { buildMetadata } from "@/lib/seo";
 import { PageHero, EmptyState } from "@/components/ui/misc";
 import { TourCard, sharedDescriptions } from "@/components/cards/TourCard";
 import { CategoryFilter, Pagination, pageParam, param, type SearchParams } from "@/components/site/listing";
-import { PageRenderer } from "@/components/sections/PageRenderer";
+import { PageRenderer, hasActiveHero } from "@/components/sections/PageRenderer";
 
 // /en/tours?category=cultural&page=2 -> Next.js gives us the locale from the URL and the ?query values
 type Props = { params: Promise<{ locale: string }>; searchParams: SearchParams };
@@ -47,7 +47,7 @@ export default async function ToursPage({ params, searchParams }: Props) {
   return (
     <>
       {/* HERO */}
-      <PageHero title={pageData?.page.title ?? ""} subtitle={pageData?.page.subtitle} image={pageData?.page.heroImage} banner="tours" />
+      {pageData && hasActiveHero(pageData.sections) ? <PageRenderer sections={pageData.sections} settings={settings} part="hero" /> : <PageHero title={pageData?.page.title ?? ""} subtitle={pageData?.page.subtitle} image={pageData?.page.heroImage} banner="tours" />}
 
       {/* TOUR LIST: category chips, cards, pages */}
       <section className="py-section">
@@ -67,7 +67,7 @@ export default async function ToursPage({ params, searchParams }: Props) {
       </section>
 
       {/* CMS SECTIONS: everything the admin added to the "tours" page, except its hero (shown above) */}
-      {pageData && <PageRenderer sections={pageData.sections.filter((section) => section.type !== "hero")} settings={settings} />}
+      {pageData && <PageRenderer sections={pageData.sections} settings={settings} part="body" />}
     </>
   );
 }

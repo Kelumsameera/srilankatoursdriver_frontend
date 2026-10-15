@@ -5,7 +5,7 @@ import { buildMetadata } from "@/lib/seo";
 import { EmptyState, PageHero } from "@/components/ui/misc";
 import { GalleryGrid } from "@/components/gallery/GalleryGrid";
 import { CategoryFilter, Pagination, pageParam, param, type SearchParams } from "@/components/site/listing";
-import { PageRenderer } from "@/components/sections/PageRenderer";
+import { PageRenderer, hasActiveHero } from "@/components/sections/PageRenderer";
 
 type Props = { params: Promise<{ locale: string }>; searchParams: SearchParams };
 
@@ -31,7 +31,7 @@ export default async function GalleryPage({ params, searchParams }: Props) {
   ]);
   return (
     <>
-      <PageHero title={data?.page.title ?? ""} subtitle={data?.page.subtitle} image={data?.page.heroImage} banner="gallery" />
+      {data && hasActiveHero(data.sections) ? <PageRenderer sections={data.sections} settings={settings} part="hero" /> : <PageHero title={data?.page.title ?? ""} subtitle={data?.page.subtitle} image={data?.page.heroImage} banner="gallery" />}
       <section className="py-14 sm:py-20">
         <div className="container-page">
           <CategoryFilter basePath="/gallery" categories={categories ?? []} active={category} />
@@ -47,7 +47,7 @@ export default async function GalleryPage({ params, searchParams }: Props) {
           {list && <Pagination meta={list.meta} basePath="/gallery" query={{ category }} />}
         </div>
       </section>
-      {data && <PageRenderer sections={data.sections.filter((s) => s.type !== "hero")} settings={settings} />}
+      {data && <PageRenderer sections={data.sections} settings={settings} part="body" />}
     </>
   );
 }

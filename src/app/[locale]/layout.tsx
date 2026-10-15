@@ -4,7 +4,8 @@ import { notFound } from "next/navigation";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
 import { isLocale, locales, rtlLocales, type Locale } from "@/i18n/routing";
-import { getBranding, getLanguages, getList, getNavigation, getSeo, getSiteSettings } from "@/lib/api/server";
+import { getBranding, getLanguages, getList, getNavigation, getPage, getSeo, getSiteSettings } from "@/lib/api/server";
+import { hasActiveHero } from "@/components/sections/PageRenderer";
 import { SITE_URL } from "@/lib/config";
 import { cloudinaryUrl } from "@/lib/cloudinary-loader";
 import { alternates, jsonLd, organizationJsonLd } from "@/lib/seo";
@@ -68,7 +69,7 @@ export default async function LocaleLayout({ children, params }: Props) {
   if (!isLocale(locale)) notFound();
   setRequestLocale(locale);
 
-  const [settingsRes, branding, nav, languages, footerTours, footerDestinations, messages, t] = await Promise.all([
+  const [settingsRes, branding, nav, languages, footerTours, footerDestinations, messages, t, destinationsPage] = await Promise.all([
     getSiteSettings(locale),
     getBranding(),
     getNavigation(locale),
@@ -77,6 +78,7 @@ export default async function LocaleLayout({ children, params }: Props) {
     getList("destinations", { locale, featured: true, limit: 8 }),
     getMessages(),
     getTranslations({ locale, namespace: "common" }),
+    getPage("destinations", locale),
   ]);
   const settings = settingsRes ?? EMPTY_SETTINGS;
   const enabledLanguages = languages?.filter((l) => l.enabled).map((l) => l.code) ?? [...locales];
@@ -95,45 +97,40 @@ export default async function LocaleLayout({ children, params }: Props) {
     // React hydrates; suppressHydrationWarning ignores attribute differences on these two elements only.
     <html lang={locale} dir={dir} style={brandStyle} className={`${travelSans.variable} ${travelDisplay.variable}`} data-site="public" suppressHydrationWarning>
       <body className="flex min-h-dvh flex-col" suppressHydrationWarning>
-        <a href="#main" className="sr-only z-50 rounded bg-white px-4 py-2 focus:not-sr-only focus:fixed focus:start-4 focus:top-4">
+        <a href="#main" className="sr-only z-50 rounded bg-white px-4 py-2 focus:not-sr-only focus:fixed focus:inset-s-4 focus:top-4">
           {t("skipToContent")}
         </a>
         <NextIntlClientProvider locale={locale} messages={messages}>
           <CustomerAuthProvider>
-          <SiteHeader
-            nav={nav ?? []}
-            languages={enabledLanguages}
-            phone={settings.phone}
-            whatsapp={whatsapp}
-            logoLight={<Logo branding={branding} siteName={settings.siteName} tone="light" preload />}
-            logoDark={<Logo branding={branding} siteName={settings.siteName} tone="dark" />}
-            logoMobile={<Logo branding={branding} siteName={settings.siteName} tone="dark" mobile className="max-h-10" />}
-            logoMobileLight={<Logo branding={branding} siteName={settings.siteName} tone="light" mobile className="max-h-10" />}
-          />
-          {!settingsRes && (
-            <div role="status" className="fixed inset-x-0 top-20 z-30 bg-gold-100 px-4 py-2 text-center text-sm text-earth-700">
-              {(await getTranslations({ locale, namespace: "errors" }))("unavailable")}
-            </div>
-          )}
-          <main id="main" className="flex-1">
-            <ScrollReveal>{children}</ScrollReveal>
-          </main>
-          {settingsRes && <TrustBar settings={settings} />}
-          {settingsRes && (
-            <SiteFooter settings={settings} branding={branding} tours={footerTours?.items ?? []} destinations={footerDestinations?.items ?? []} />
-          )}
-          <CurrencyConverter siteCurrency={settings.currency} />
-          <WhatsAppFloat phone={settings.whatsapp} message={settings.whatsappMessage} />
-          <WhatsAppClickTracker />
-          <PageViewTracker />
+            <SiteHeader
+              destinationsHero={Boolean(destinationsPage?.page.heroImage?.url || (destinationsPage && hasActiveHero(destinationsPage.sections)))}
+              nav={nav ?? []}
+              languages={enabledLanguages}
+              phone={settings.phone}
+              whatsapp={whatsapp}
+              logoLight={<Logo branding={branding} siteName={settings.siteName} tone="light" preload />}
+              logoDark={<Logo branding={branding} siteName={settings.siteName} tone="dark" />}
+              logoMobile={<Logo branding={branding} siteName={settings.siteName} tone="dark" mobile className="max-h-10" />}
+              logoMobileLight={<Logo branding={branding} siteName={settings.siteName} tone="light" mobile className="max-h-10" />}
+            />
+            {!settingsRes && (
+              // Right under the fixed header (64px, 80px from xl). Keep in sync with the header height in components/site/SiteHeader.tsx
+              <div role="status" className={`fixed inset-x-0 top-16 z-30 ${locale === "ta" || locale === "hi" ? "xl:top-44" : "xl:top-20"} bg-gold-100 px-4 py-2 text-center text-sm text-earth-700`}>
+                {(await getTranslations({ locale, namespace: "errors" }))("unavailable")}
+              </div>
+            )}
+            <main id="main" className="flex-1">
+              <ScrollReveal>{children}</ScrollReveal>
+            </main>
+            {settingsRes && <TrustBar settings={settings} />}
+            {settingsRes && <SiteFooter settings={settings} branding={branding} tours={footerTours?.items ?? []} destinations={footerDestinations?.items ?? []} />}
+            <CurrencyConverter siteCurrency={settings.currency} />
+            <WhatsAppFloat phone={settings.whatsapp} message={settings.whatsappMessage} />
+            <WhatsAppClickTracker />
+            <PageViewTracker />
           </CustomerAuthProvider>
         </NextIntlClientProvider>
-        {settingsRes && (
-          <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={jsonLd(organizationJsonLd(settings, branding?.primaryLogo?.url))}
-          />
-        )}
+        {settingsRes && <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(organizationJsonLd(settings, branding?.primaryLogo?.url))} />}
       </body>
     </html>
   );

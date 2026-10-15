@@ -28,12 +28,12 @@ export async function SiteFooter({ settings, branding, tours, destinations }: Pr
   return (
     <footer className="relative overflow-hidden bg-forest-950 text-white/75">
       <div className="pointer-events-none absolute -end-32 -top-32 h-96 w-96 rounded-full bg-forest-600/20 blur-3xl" aria-hidden />
-      <div className="container-page relative grid gap-12 py-16 sm:py-20 lg:grid-cols-12 lg:gap-10">
+      <div className="container-page relative grid gap-8 py-10 sm:gap-12 sm:py-20 lg:grid-cols-12 lg:gap-10">
         <div className="lg:col-span-3">
           <CmsLink href="/" className="inline-block" ariaLabel={settings.siteName}>
             <Logo branding={branding} siteName={settings.siteName} tone="light" />
           </CmsLink>
-          {f.description && <p className="mt-6 max-w-sm leading-relaxed">{f.description}</p>}
+          {f.description && <p className="mt-4 max-w-sm text-sm leading-relaxed sm:mt-6 sm:text-base">{f.description}</p>}
           {/* Map + location under the logo and text, balancing the link columns on the right. */}
           {mapSrc && (
             <div className="mt-8 overflow-hidden rounded-2xl border border-white/10">
@@ -42,7 +42,7 @@ export async function SiteFooter({ settings, branding, tours, destinations }: Pr
                 title={`${tc("findUs")} – ${settings.businessName}`}
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-                className="block h-48 w-full border-0 grayscale-[35%]"
+                className="block h-32 w-full sm:h-48 border-0 grayscale-[35%]"
                 data-testid="footer-map"
               />
               {mapsLink && (
@@ -62,14 +62,14 @@ export async function SiteFooter({ settings, branding, tours, destinations }: Pr
         </div>
 
         {/* Link groups share one top line; the long destinations list runs underneath across the area. */}
-        <div className="grid content-start gap-10 sm:grid-cols-3 lg:col-span-6">
+        <div className="grid grid-cols-2 content-start gap-x-5 gap-y-7 text-sm sm:grid-cols-3 sm:gap-10 sm:text-base lg:col-span-6">
           {columns.map((col) => (
             <div key={col.title}>
-              <h3 className="mb-4 font-sans text-sm font-semibold uppercase tracking-[0.18em] text-gold-400">{col.title}</h3>
+              <h3 className="mb-3 font-sans text-xs font-semibold uppercase tracking-[0.12em] sm:mb-4 sm:text-sm sm:tracking-[0.18em] text-gold-400">{col.title}</h3>
               <ul className="space-y-0.5">
                 {col.links.map((l) => (
                   <li key={`${l.label}-${l.url}`}>
-                    <CmsLink href={l.url} className="inline-block py-1.5 transition-colors hover:text-white">
+                    <CmsLink href={l.url} className="inline-block py-1 transition-colors sm:py-1.5 hover:text-white">
                       {l.label}
                     </CmsLink>
                   </li>
@@ -78,12 +78,12 @@ export async function SiteFooter({ settings, branding, tours, destinations }: Pr
             </div>
           ))}
           {f.showTourLinks !== false && tours.length > 0 && (
-            <div>
-              <h3 className="mb-4 font-sans text-sm font-semibold uppercase tracking-[0.18em] text-gold-400">{t("popularTours")}</h3>
-              <ul className="space-y-0.5">
+            <div className="col-span-2 sm:col-span-1">
+              <h3 className="mb-3 font-sans text-xs font-semibold uppercase tracking-[0.12em] sm:mb-4 sm:text-sm sm:tracking-[0.18em] text-gold-400">{t("popularTours")}</h3>
+              <ul className="grid grid-cols-2 gap-x-5 gap-y-0.5 sm:block sm:space-y-0.5">
                 {tours.map((tour) => (
                   <li key={tour._id}>
-                    <CmsLink href={`/tours/${tour.slug}`} className="inline-block py-1.5 transition-colors hover:text-white">
+                    <CmsLink href={`/tours/${tour.slug}`} className="inline-block py-1 transition-colors sm:py-1.5 hover:text-white">
                       {tour.title}
                     </CmsLink>
                   </li>
@@ -92,12 +92,12 @@ export async function SiteFooter({ settings, branding, tours, destinations }: Pr
             </div>
           )}
           {f.showDestinationLinks !== false && destinations.length > 0 && (
-            <div className="sm:col-span-3">
-              <h3 className="mb-4 font-sans text-sm font-semibold uppercase tracking-[0.18em] text-gold-400">{t("destinations")}</h3>
+            <div className="col-span-2 sm:col-span-3">
+              <h3 className="mb-3 font-sans text-xs font-semibold uppercase tracking-[0.12em] sm:mb-4 sm:text-sm sm:tracking-[0.18em] text-gold-400">{t("destinations")}</h3>
               <ul className="grid grid-cols-2 gap-x-6 gap-y-0.5 sm:grid-cols-4">
                 {destinations.map((d) => (
                   <li key={d._id}>
-                    <CmsLink href={`/destinations/${d.slug}`} className="inline-block py-1.5 transition-colors hover:text-white">
+                    <CmsLink href={`/destinations/${d.slug}`} className="inline-block py-1 transition-colors sm:py-1.5 hover:text-white">
                       {d.name}
                     </CmsLink>
                   </li>
@@ -108,7 +108,7 @@ export async function SiteFooter({ settings, branding, tours, destinations }: Pr
         </div>
 
         <div className="lg:col-span-3">
-          <h3 className="mb-4 font-sans text-sm font-semibold uppercase tracking-[0.18em] text-gold-400">{t("contact")}</h3>
+          <h3 className="mb-3 font-sans text-xs font-semibold uppercase tracking-[0.12em] sm:mb-4 sm:text-sm sm:tracking-[0.18em] text-gold-400">{t("contact")}</h3>
           <ul className="space-y-4 text-sm">
             {settings.address && (
               <li className="flex gap-3">

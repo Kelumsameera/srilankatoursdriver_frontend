@@ -2,13 +2,15 @@ import { getLocale, getTranslations } from "next-intl/server";
 import type { SiteSettings } from "@/types/cms";
 import { formatPrice } from "@/lib/utils";
 
+import { RatesDisclosure } from "./RatesDisclosure";
+
 const VEHICLES = ["car", "van", "bus"] as const;
 
 /**
  * "Tour Package Rates – Fixed rates from Airport (CMB)": the transfer price table managed in
  * Admin → Transfer Rates. Hidden when disabled or empty; vehicle columns without any price are dropped.
  */
-export async function TransferRates({ settings, id = "rates" }: { settings: SiteSettings | null; id?: string }) {
+export async function TransferRates({ settings, id = "rates", compact = false, collapsible = false }: { settings: SiteSettings | null; id?: string; compact?: boolean; collapsible?: boolean }) {
   const cfg = settings?.transferRates;
   const rows = (cfg?.rows ?? []).filter((r) => r.destination);
   if (!cfg || cfg.enabled === false || !rows.length) return null;
@@ -20,16 +22,17 @@ export async function TransferRates({ settings, id = "rates" }: { settings: Site
   const pill = { car: "bg-forest-50 text-forest-700", van: "bg-gold-100 text-earth-700", bus: "bg-sand-100 text-forest-800" } as const;
 
   return (
-    <section id={id} className="scroll-mt-24 bg-white px-4 py-16 sm:py-20" aria-labelledby={`${id}-title`} data-testid="transfer-rates">
+    <section id={id} className={`scroll-mt-24 bg-white max-sm:[&_th]:px-3 max-sm:[&_td]:px-3 max-sm:[&_th]:py-3 max-sm:[&_td]:py-3 max-sm:[&_th]:text-xs max-sm:[&_td_span]:px-2 max-sm:[&_td_span]:text-xs ${compact ? "py-10 sm:py-12 [&_td]:py-3 [&_th]:py-3" : "py-10 sm:px-4 sm:py-20"}`} aria-labelledby={`${id}-title`} data-testid="transfer-rates">
       <div className="container-page">
-        <div className="mb-12 text-center">
+        <div className={compact ? "mb-6 text-center" : "mb-6 text-center sm:mb-12"}>
           <p className="eyebrow mb-4">{cfg.subtitle || t("subtitle")}</p>
-          <h2 id={`${id}-title`} className="text-4xl text-forest-900 md:text-5xl">
+          <h2 id={`${id}-title`} className="text-2xl text-forest-900 sm:text-4xl md:text-5xl">
             {cfg.title || t("title")}
           </h2>
           <div className="mx-auto mt-6 h-1 w-20 rounded-full bg-gold-500" aria-hidden />
         </div>
-        <div role="region" aria-labelledby={`${id}-title`} tabIndex={0} className="overflow-x-auto rounded-3xl border border-sand-200 shadow-card focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-forest-800">
+        <RatesDisclosure enabled={collapsible && rows.length > 5} more={t("showMore")} less={t("showLess")}>
+        <div role="region" aria-labelledby={`${id}-title`} tabIndex={0} className="overflow-x-auto rounded-xl sm:rounded-3xl border border-sand-200 shadow-card focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-forest-800">
           <table className="min-w-full border-collapse bg-white text-start">
             <thead>
               <tr className="bg-forest-900 text-[0.7rem] uppercase tracking-widest text-white">
@@ -79,6 +82,7 @@ export async function TransferRates({ settings, id = "rates" }: { settings: Site
             </tbody>
           </table>
         </div>
+        </RatesDisclosure>
         {cfg.note && <p className="mt-8 text-center text-[0.7rem] uppercase tracking-widest text-muted">{cfg.note}</p>}
       </div>
     </section>

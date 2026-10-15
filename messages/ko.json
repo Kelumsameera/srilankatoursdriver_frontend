@@ -445,6 +445,8 @@
     "note": "요금은 {currency} 기준이며, 은행 환율과 약간 다를 수 있습니다."
   },
   "rates": {
+    "showMore": "\ub354 \ubcf4\uae30",
+    "showLess": "\uc811\uae30",
     "title": "투어 패키지 요금표",
     "subtitle": "공항(CMB) 출발 고정 요금",
     "headers": {

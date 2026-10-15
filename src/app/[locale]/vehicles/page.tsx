@@ -1,13 +1,21 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { getLanguages, getList, getPage, getSiteSettings } from "@/lib/api/server";
+import {
+  getLanguages,
+  getList,
+  getPage,
+  getSiteSettings,
+} from "@/lib/api/server";
 import { buildMetadata } from "@/lib/seo";
 import { locales } from "@/i18n/routing";
 import type { Vehicle } from "@/types/cms";
 import { EmptyState, PageHero } from "@/components/ui/misc";
 import { RotatingText } from "@/components/ui/RotatingText";
 import { VehicleCard } from "@/components/cards/VehicleCard";
-import { PageRenderer } from "@/components/sections/PageRenderer";
+import {
+  PageRenderer,
+  hasActiveHero,
+} from "@/components/sections/PageRenderer";
 
 // /en/vehicles -> Next.js gives us the locale from the URL
 type Props = { params: Promise<{ locale: string }> };
@@ -57,31 +65,51 @@ export default async function VehiclesPage({ params }: Props) {
   // Tells next-intl which language this page is rendered in
   setRequestLocale(locale);
 
-  const [pageData, vehicleList, settings, languages, tCommon, tVehicle] = await Promise.all([
-    getPage("vehicles", locale),
-    // The whole fleet in one request (API maximum 60), grouped by type below
-    getList("vehicles", { locale, limit: 60 }),
-    getSiteSettings(locale),
-    getLanguages(),
-    getTranslations("common"),
-    getTranslations("vehicle"),
-  ]);
+  const [pageData, vehicleList, settings, languages, tCommon, tVehicle] =
+    await Promise.all([
+      getPage("vehicles", locale),
+      // The whole fleet in one request (API maximum 60), grouped by type below
+      getList("vehicles", { locale, limit: 60 }),
+      getSiteSettings(locale),
+      getLanguages(),
+      getTranslations("common"),
+      getTranslations("vehicle"),
+    ]);
 
   // "Drivers who speak English · Deutsch · 日本語 …"
-  const languageCodes = languages?.filter((language) => language.enabled).map((language) => language.code) ?? [...locales];
+  const languageCodes = languages
+    ?.filter((language) => language.enabled)
+    .map((language) => language.code) ?? [...locales];
   const spokenLanguages = spokenLanguageNames(languageCodes, locale);
   const groups = groupByType(vehicleList?.items ?? [], tVehicle("otherType"));
 
   return (
     <>
-      {/* HERO with the rotating list of languages the drivers speak */}
-      <PageHero title={pageData?.page.title ?? ""} subtitle={pageData?.page.subtitle} image={pageData?.page.heroImage} banner="vehicles">
-        {spokenLanguages.length > 1 && (
-          <p className="mt-4 text-sm tracking-wide text-white/70">
-            {tVehicle("fleetDesc")} <RotatingText items={spokenLanguages} className="font-semibold text-gold-400" />
-          </p>
-        )}
-      </PageHero>
+      {/* HERO: the admin's hero section if it has one, else the page header with the rotating list of languages the drivers speak */}
+      {pageData && hasActiveHero(pageData.sections) ? (
+        <PageRenderer
+          sections={pageData.sections}
+          settings={settings}
+          part="hero"
+        />
+      ) : (
+        <PageHero
+          title={pageData?.page.title ?? ""}
+          subtitle={pageData?.page.subtitle}
+          image={pageData?.page.heroImage}
+          banner="vehicles"
+        >
+          {spokenLanguages.length > 1 && (
+            <p className="mt-4 text-sm tracking-wide text-white/70">
+              {tVehicle("fleetDesc")}{" "}
+              <RotatingText
+                items={spokenLanguages}
+                className="font-semibold text-gold-400"
+              />
+            </p>
+          )}
+        </PageHero>
+      )}
 
       {/* FLEET: one group per vehicle type */}
       <section className="bg-sand-50 py-section">
@@ -91,9 +119,13 @@ export default async function VehiclesPage({ params }: Props) {
               <div key={group.label} data-testid="vehicle-group">
                 {/* GROUP HEADER: type name, line, number of vehicles */}
                 <div className="mb-10 flex items-center gap-5 text-caption font-bold uppercase tracking-[0.3em] text-gold-600">
-                  <h2 className="font-sans text-caption font-bold uppercase tracking-[0.3em] text-gold-600">{group.label}</h2>
+                  <h2 className="font-sans text-caption font-bold uppercase tracking-[0.3em] text-gold-600">
+                    {group.label}
+                  </h2>
                   <div className="h-px flex-1 bg-forest-950/10" aria-hidden />
-                  <span className="font-medium tracking-[0.2em] text-muted">{tVehicle("fleetCount", { count: group.vehicles.length })}</span>
+                  <span className="font-medium tracking-[0.2em] text-muted">
+                    {tVehicle("fleetCount", { count: group.vehicles.length })}
+                  </span>
                 </div>
                 <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
                   {group.vehicles.map((vehicle) => (
@@ -108,8 +140,14 @@ export default async function VehiclesPage({ params }: Props) {
         </div>
       </section>
 
-      {/* CMS SECTIONS: everything the admin added to the "vehicles" page, except its hero (shown above) */}
-      {pageData && <PageRenderer sections={pageData.sections.filter((section) => section.type !== "hero")} settings={settings} />}
+      {/* CMS SECTIONS: everything the admin added to the "vehicles" page, except its hero (shown at the top) */}
+      {pageData && (
+        <PageRenderer
+          sections={pageData.sections}
+          settings={settings}
+          part="body"
+        />
+      )}
     </>
   );
 }

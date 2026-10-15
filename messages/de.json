@@ -445,6 +445,8 @@
     "note": "Unsere Preise sind in {currency} angegeben; der Kurs Ihrer Bank kann leicht abweichen."
   },
   "rates": {
+    "showMore": "Mehr anzeigen",
+    "showLess": "Weniger anzeigen",
     "title": "Preise für Tour-Pakete",
     "subtitle": "Festpreise ab Flughafen (CMB)",
     "headers": {

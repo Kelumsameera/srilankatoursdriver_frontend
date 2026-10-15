@@ -445,6 +445,8 @@
     "note": "料金は {currency} 建てです。銀行のレートとは多少異なる場合があります。"
   },
   "rates": {
+    "showMore": "\u3082\u3063\u3068\u898b\u308b",
+    "showLess": "\u6298\u308a\u305f\u305f\u3080",
     "title": "ツアーパッケージ料金表",
     "subtitle": "空港（CMB）発 固定料金",
     "headers": {

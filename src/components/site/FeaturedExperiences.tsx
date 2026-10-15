@@ -25,18 +25,18 @@ export function FeaturedExperiences({ items, labels }: { items: NonNullable<Dest
   if (!experiences.length) return null;
 
   return (
-    <section className="border-t border-sand-200 py-14 sm:py-20" aria-labelledby="featured-experiences-title">
+    <section className="border-t border-sand-200 py-10 sm:py-12" aria-labelledby="featured-experiences-title">
       {/* HEADING */}
-      <div className="mb-10 sm:mb-12" data-scroll-reveal>
+      <div className="mb-6 sm:mb-8" data-scroll-reveal>
         <DotEyebrow>{labels.eyebrow}</DotEyebrow>
-        <h2 id="featured-experiences-title" className="mt-4 font-display text-3xl uppercase tracking-[0.12em] text-ink sm:text-4xl">
+        <h2 id="featured-experiences-title" className="mt-4 font-display text-3xl tracking-tight text-ink sm:text-4xl">
           {labels.heading}
           <span className="mt-2 block font-display text-2xl normal-case tracking-normal text-forest-700 sm:text-3xl">{labels.subheading}</span>
         </h2>
       </div>
 
       {/* ATTRACTION CARDS */}
-      <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+      <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
         {experiences.map((experience, index) => {
           const hasLink = Boolean(experience.detailUrl?.trim());
           const hasDescription = Boolean(experience.description?.trim());
@@ -49,10 +49,10 @@ export function FeaturedExperiences({ items, labels }: { items: NonNullable<Dest
                 alt={experience.image?.alt || experience.title}
                 placeholderName={experience.title}
                 sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 400px"
-                wrapperClassName="aspect-[4/3]"
+                wrapperClassName="aspect-[16/10]"
               />
 
-              <div className="flex flex-1 flex-col p-6">
+              <div className="flex flex-1 flex-col p-5">
                 <h3 className="break-words font-display text-xl text-ink">{experience.title}</h3>
 
                 {/* WITH A LINK: short text + "Read more" link to the attraction page */}

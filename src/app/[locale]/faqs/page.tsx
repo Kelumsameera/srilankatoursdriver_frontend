@@ -5,7 +5,7 @@ import { buildMetadata, jsonLd } from "@/lib/seo";
 import { stripMarkdown } from "@/lib/utils";
 import { EmptyState, PageHero } from "@/components/ui/misc";
 import { FaqList } from "@/components/sections/FaqList";
-import { PageRenderer } from "@/components/sections/PageRenderer";
+import { PageRenderer, hasActiveHero } from "@/components/sections/PageRenderer";
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -34,7 +34,7 @@ export default async function FaqsPage({ params }: Props) {
   return (
     <>
       {faqs.length > 0 && <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(schema)} />}
-      <PageHero title={data?.page.title ?? ""} subtitle={data?.page.subtitle} image={data?.page.heroImage} />
+      {data && hasActiveHero(data.sections) ? <PageRenderer sections={data.sections} settings={settings} part="hero" /> : <PageHero title={data?.page.title ?? ""} subtitle={data?.page.subtitle} image={data?.page.heroImage} />}
       <section className="py-14 sm:py-20">
         <div className="container-page max-w-3xl space-y-12">
           {faqs.length === 0 && <EmptyState text={t("noResults")} />}
@@ -46,7 +46,7 @@ export default async function FaqsPage({ params }: Props) {
           ))}
         </div>
       </section>
-      {data && <PageRenderer sections={data.sections.filter((s) => s.type !== "hero")} settings={settings} />}
+      {data && <PageRenderer sections={data.sections} settings={settings} part="body" />}
     </>
   );
 }

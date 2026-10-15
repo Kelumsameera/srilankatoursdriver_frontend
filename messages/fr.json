@@ -445,6 +445,8 @@
     "note": "Nos prix sont indiqués en {currency} ; le taux de votre banque peut légèrement différer."
   },
   "rates": {
+    "showMore": "Afficher plus",
+    "showLess": "Afficher moins",
     "title": "Tarifs des Forfaits",
     "subtitle": "Tarifs Fixes depuis l'Aéroport (CMB)",
     "headers": {

@@ -88,10 +88,31 @@ function surfaceForTheme(theme: string) {
   return ({ light: "var(--color-sand-50)", sand: "var(--color-sand-100)", forest: "var(--color-forest-800)", dark: "var(--color-forest-950)" } as Record<string, string>)[theme] ?? "var(--color-sand-50)";
 }
 
-/** Renders CMS page sections in the order configured in Admin → Pages. */
-export async function PageRenderer({ sections, settings, preview }: { sections: PageSection[]; settings: SiteSettings | null; preview?: boolean }) {
+/** True when the page has an enabled hero section with slides. It then replaces the page's own header. */
+export function hasActiveHero(sections?: PageSection[]) {
+  return Boolean(sections?.some((s) => s.type === "hero" && s.enabled !== false && Array.isArray(s.data) && s.data.length > 0));
+}
+
+/**
+ * Renders CMS page sections in the order configured in Admin → Pages.
+ * Pages with their own header and listing render it in two parts: part="hero" at the top (only the hero),
+ * part="body" below the listing (everything else). The page context is still built from all sections.
+ */
+export async function PageRenderer({
+  sections,
+  settings,
+  preview,
+  part,
+}: {
+  sections: PageSection[];
+  settings: SiteSettings | null;
+  preview?: boolean;
+  part?: "hero" | "body";
+}) {
   // The preview (Admin → Pages) also shows switched-off sections, faded
-  const visibleSections = sections.filter((section) => preview || section.enabled !== false);
+  const visibleSections = sections
+    .filter((section) => preview || section.enabled !== false)
+    .filter((section) => !part || (part === "hero") === (section.type === "hero"));
 
   // PAGE CONTEXT: facts some sections need about the whole page
   const categorisedTours = new Set(
@@ -104,7 +125,7 @@ export async function PageRenderer({ sections, settings, preview }: { sections: 
     .filter((s) => (s.type === "destinations" || s.type === "popularTours") && Array.isArray(s.data))
     .flatMap((s) => (s.data as (Destination | Tour)[]).map((d) => d.heroMedia))
     .filter((m): m is MediaAsset => Boolean(m?.url && m.resourceType !== "video"));
-  const hasHero = sections.some((s) => s.type === "hero" && s.enabled !== false && Array.isArray(s.data) && s.data.length > 0);
+  const hasHero = hasActiveHero(sections);
   const ta = sections.find((s) => s.type === "tripadvisor" && s.enabled !== false)?.data as TripAdvisorSummary | null | undefined;
   const rating = ta?.configured && ta.rating && ta.numReviews ? { value: ta.rating, count: ta.numReviews } : undefined;
   // Closing CTA (design: a sunset beach): prefer a coastal destination's photo, else the first tour/destination photo.

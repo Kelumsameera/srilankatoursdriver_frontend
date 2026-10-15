@@ -8,7 +8,7 @@ import { telLink, whatsappLink } from "@/lib/utils";
 import { PageHero } from "@/components/ui/misc";
 import { SocialIcons } from "@/components/ui/icons";
 import { ContactForm } from "@/components/forms/ContactForm";
-import { PageRenderer } from "@/components/sections/PageRenderer";
+import { PageRenderer, hasActiveHero } from "@/components/sections/PageRenderer";
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -35,7 +35,7 @@ export default async function ContactPage({ params }: Props) {
 
   return (
     <>
-      <PageHero title={data?.page.title ?? ""} subtitle={data?.page.subtitle} image={data?.page.heroImage} />
+      {data && hasActiveHero(data.sections) ? <PageRenderer sections={data.sections} settings={settings} part="hero" /> : <PageHero title={data?.page.title ?? ""} subtitle={data?.page.subtitle} image={data?.page.heroImage} />}
       <section className="py-14 sm:py-20">
         <div className="container-page grid grid-cols-1 gap-10 lg:grid-cols-[380px_1fr]">
           <div className="space-y-4">
@@ -83,7 +83,7 @@ export default async function ContactPage({ params }: Props) {
           </div>
         </div>
       </section>
-      {data && <PageRenderer sections={data.sections.filter((s) => s.type !== "hero")} settings={settings} />}
+      {data && <PageRenderer sections={data.sections} settings={settings} part="body" />}
     </>
   );
 }

@@ -445,6 +445,8 @@
     "note": "எங்கள் விலைகள் {currency} இல் குறிப்பிடப்படுகின்றன; உங்கள் வங்கியின் விகிதம் சற்று மாறுபடலாம்."
   },
   "rates": {
+    "showMore": "\u0bae\u0bc7\u0bb2\u0bc1\u0bae\u0bcd \u0b95\u0bbe\u0b9f\u0bcd\u0b9f\u0bc1",
+    "showLess": "\u0b95\u0bc1\u0bb1\u0bc8\u0bb5\u0bbe\u0b95\u0b95\u0bcd \u0b95\u0bbe\u0b9f\u0bcd\u0b9f\u0bc1",
     "title": "சுற்றுலா தொகுப்பு கட்டணங்கள்",
     "subtitle": "விமான நிலையத்திலிருந்து (CMB) நிலையான கட்டணங்கள்",
     "headers": {

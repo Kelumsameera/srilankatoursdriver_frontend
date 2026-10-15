@@ -7,8 +7,9 @@ import { usePathname, useRouter } from "@/i18n/navigation";
 import { isLocale, localeNames, type Locale } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
 
+// Header language button (44px tap target) with the list of the site's enabled languages
 export function LanguageSwitcher({ enabled, tone = "dark", align = "end" }: { enabled: string[]; tone?: "light" | "dark"; align?: "start" | "end" }) {
-  const t = useTranslations("common");
+  const tCommon = useTranslations("common");
   const locale = useLocale();
   const pathname = usePathname();
   const router = useRouter();
@@ -42,10 +43,10 @@ export function LanguageSwitcher({ enabled, tone = "dark", align = "end" }: { en
         onClick={() => setOpen((o) => !o)}
         aria-haspopup="listbox"
         aria-expanded={open}
-        aria-label={t("language")}
+        aria-label={tCommon("language")}
         data-testid="language-switcher"
         className={cn(
-          "flex items-center gap-1 rounded-full px-2 py-2 text-sm font-medium transition-colors sm:gap-1.5 sm:px-3",
+          "flex min-h-11 min-w-11 items-center justify-center gap-1 rounded-full px-2 text-sm font-medium transition-colors sm:gap-1.5 sm:px-3",
           tone === "light" ? "text-white hover:bg-white/10" : "text-forest-900 hover:bg-forest-50",
           pending && "opacity-60",
         )}
@@ -57,10 +58,10 @@ export function LanguageSwitcher({ enabled, tone = "dark", align = "end" }: { en
       {open && (
         <ul
           role="listbox"
-          aria-label={t("language")}
+          aria-label={tCommon("language")}
           className={cn(
             "absolute top-full z-50 mt-2 max-h-80 w-48 overflow-auto rounded-2xl border border-sand-200 bg-white p-1.5 text-forest-900 shadow-soft",
-            align === "end" ? "end-0" : "start-0",
+            align === "end" ? "inset-e-0" : "inset-s-0",
           )}
         >
           {options.map((code) => (
@@ -71,7 +72,7 @@ export function LanguageSwitcher({ enabled, tone = "dark", align = "end" }: { en
                 aria-selected={code === locale}
                 onClick={() => choose(code)}
                 lang={code}
-                className="flex w-full items-center justify-between rounded-xl px-3 py-2 text-start text-sm hover:bg-sand-100"
+                className="flex w-full items-center justify-between rounded-xl px-3 py-3 text-start text-sm hover:bg-sand-100"
               >
                 <span>{localeNames[code]}</span>
                 {code === locale && <Check className="h-4 w-4 text-forest-600" aria-hidden />}

@@ -8,7 +8,7 @@ import { PageHero } from "@/components/ui/misc";
 import { SocialIcons } from "@/components/ui/icons";
 import { BookingForm } from "@/components/forms/BookingForm";
 import { param, type SearchParams } from "@/components/site/listing";
-import { PageRenderer } from "@/components/sections/PageRenderer";
+import { PageRenderer, hasActiveHero } from "@/components/sections/PageRenderer";
 
 type Props = { params: Promise<{ locale: string }>; searchParams: SearchParams };
 
@@ -33,7 +33,7 @@ export default async function BookingPage({ params, searchParams }: Props) {
 
   return (
     <>
-      <PageHero title={data?.page.title ?? ""} subtitle={data?.page.subtitle} image={data?.page.heroImage} />
+      {data && hasActiveHero(data.sections) ? <PageRenderer sections={data.sections} settings={settings} part="hero" /> : <PageHero title={data?.page.title ?? ""} subtitle={data?.page.subtitle} image={data?.page.heroImage} />}
       <section className="py-14 sm:py-20">
         <div className="container-page grid grid-cols-1 gap-10 lg:grid-cols-[1fr_340px]">
           <BookingForm
@@ -79,7 +79,7 @@ export default async function BookingPage({ params, searchParams }: Props) {
           )}
         </div>
       </section>
-      {data && <PageRenderer sections={data.sections.filter((s) => s.type !== "hero")} settings={settings} />}
+      {data && <PageRenderer sections={data.sections} settings={settings} part="body" />}
     </>
   );
 }
