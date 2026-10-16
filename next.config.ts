@@ -52,6 +52,9 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  // The production build type-checks only app code: scripts/ and tests/ import from ../backend,
+  // which is not present when the frontend is deployed on its own (Vercel).
+  typescript: { tsconfigPath: "tsconfig.build.json" },
   images: {
     // All CMS images live on Cloudinary; the loader requests correctly sized, auto-format variants.
     loader: "custom",
