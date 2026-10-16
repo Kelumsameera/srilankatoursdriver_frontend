@@ -121,7 +121,8 @@ function HeroBackground({ slide, allowAutoPlay, stopped, labels, onUserPlay }: {
           <video
             ref={videoRef}
             src={src}
-            poster={desktop}
+            // No poster: the <img> above already shows this frame, and a poster would download a second,
+            // full-size copy at high priority while the video is still invisible (opacity-0 until it plays).
             muted
             loop
             playsInline

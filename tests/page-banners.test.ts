@@ -25,6 +25,13 @@ describe("localImageUrl", () => {
     expect(localImageUrl("/images/banners/tours-banner.webp", 1920)).toBe("/images/banners/tours-banner.webp");
   });
 
+  it("serves the 320px variant of small decorations on phones", () => {
+    const foliage = "/images/decor/homepage-tropical-foliage-corner-v2.webp";
+    expect(localImageUrl(foliage, 256)).toBe("/images/decor/homepage-tropical-foliage-corner-v2-320.webp");
+    expect(localImageUrl(foliage, 384)).toBe("/images/decor/homepage-tropical-foliage-corner-v2-640.webp");
+    for (const w of [256, 384, 1080, 4000]) expect(existsSync(publicFile(localImageUrl(foliage, w)))).toBe(true);
+  });
+
   it("leaves other local files alone apart from the width hint", () => {
     expect(localImageUrl("/favicon-fallback.svg", 64)).toBe("/favicon-fallback.svg?w=64");
   });

@@ -34,11 +34,13 @@ export interface CloudinaryOptions {
 
 /** Widths pre-rendered next to each bundled photo in /public/images (name-640.webp, name-1080.webp, name.webp = full size). */
 const LOCAL_WIDTHS = [640, 1080];
+/** Small decorations shown at phone size also have a name-320.webp variant. */
+const LOCAL_SMALL = new Set(["/images/decor/homepage-tropical-foliage-corner-v2.webp"]);
 
 /** Picks the smallest pre-rendered variant of a bundled /images/*.webp that covers the requested width. */
 export function localImageUrl(src: string, width: number): string {
   if (!/^\/images\/[^?#]+\.webp$/.test(src)) return `${src}${src.includes("?") ? "&" : "?"}w=${width}`;
-  const w = LOCAL_WIDTHS.find((x) => x >= width);
+  const w = (LOCAL_SMALL.has(src) ? [320, ...LOCAL_WIDTHS] : LOCAL_WIDTHS).find((x) => x >= width);
   return w ? src.replace(/\.webp$/, `-${w}.webp`) : src;
 }
 
