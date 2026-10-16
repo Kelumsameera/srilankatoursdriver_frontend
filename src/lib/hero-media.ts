@@ -11,12 +11,20 @@ export function safeMediaSource(value?: string): string | undefined {
   } catch { return undefined; }
 }
 
+/** Phones (narrower than Tailwind's sm breakpoint) get a lighter hero video; desktop keeps 1280px. */
+export const PHONE_MEDIA_QUERY = "(max-width: 639px)";
+export const HERO_VIDEO_WIDTH = { desktop: 1280, phone: 720 } as const;
+
 export function heroMediaSources(slide: HeroSlide) {
   const source = slide.video?.resourceType !== "image" ? safeMediaSource(slide.video?.url) : undefined;
   const desktop = slide.desktopImage?.resourceType !== "video" ? safeMediaSource(slide.desktopImage?.url) : undefined;
   const mobile = slide.mobileImage?.resourceType !== "video" ? safeMediaSource(slide.mobileImage?.url) : undefined;
   const poster = source && isCloudinaryVideo(source) ? videoPoster(source) : source ? "/images/video-placeholder.svg" : undefined;
-  return { video: source ? videoUrl(source, 1280) : undefined, desktop: desktop || mobile || poster, mobile: mobile || desktop || poster };
+  return {
+    video: source ? videoUrl(source, HERO_VIDEO_WIDTH.desktop) : undefined,
+    phoneVideo: source ? videoUrl(source, HERO_VIDEO_WIDTH.phone) : undefined,
+    desktop: desktop || mobile || poster, mobile: mobile || desktop || poster,
+  };
 }
 
 export type HeroPlaybackStatus = "idle" | "loading" | "playing" | "paused" | "blocked" | "error";

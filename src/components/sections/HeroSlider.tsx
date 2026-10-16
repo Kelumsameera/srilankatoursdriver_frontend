@@ -6,7 +6,7 @@ import { ArrowRight, ChevronLeft, ChevronRight, Pause, Play, Star } from "lucide
 import type { HeroSlide } from "@/types/cms";
 import { cn } from "@/lib/utils";
 import { cloudinaryUrl, isOptimizable } from "@/lib/cloudinary-loader";
-import { heroMediaSources, requestHeroPlayback, type HeroPlaybackStatus } from "@/lib/hero-media";
+import { heroMediaSources, PHONE_MEDIA_QUERY, requestHeroPlayback, type HeroPlaybackStatus } from "@/lib/hero-media";
 import { CmsLink } from "@/components/ui/CmsLink";
 import { buttonClass, type ButtonVariant } from "@/components/ui/Button";
 import { editorialImages } from "@/lib/editorial-images";
@@ -42,6 +42,14 @@ function motionAllowed() {
   return !window.matchMedia("(prefers-reduced-motion: reduce)").matches && !connection?.saveData && !/^(slow-2g|2g)$/.test(connection?.effectiveType ?? "");
 }
 
+/** Phone-width viewport; false during server rendering (the video src is only set client-side anyway). */
+function subscribePhone(onChange: () => void) {
+  const mq = window.matchMedia(PHONE_MEDIA_QUERY);
+  mq.addEventListener("change", onChange);
+  return () => mq.removeEventListener("change", onChange);
+}
+const isPhone = () => window.matchMedia(PHONE_MEDIA_QUERY).matches;
+
 const thumbOf = (s: HeroSlide) => heroMediaSources(s).desktop;
 const subscribeVisibility = (notify: () => void) => {
   document.addEventListener("visibilitychange", notify);
@@ -52,6 +60,7 @@ const pageVisible = () => !document.hidden;
 /** Active slide only; pausing retains the element and its downloaded media. */
 function HeroBackground({ slide, allowAutoPlay, stopped, labels, onUserPlay }: { slide: HeroSlide; allowAutoPlay: boolean; stopped: boolean; labels: Props["labels"]; onUserPlay: () => void }) {
   const sources = heroMediaSources(slide);
+  const phone = useSyncExternalStore(subscribePhone, isPhone, () => false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const blocked = useRef(false);
   const failed = useRef(false);
@@ -61,7 +70,7 @@ function HeroBackground({ slide, allowAutoPlay, stopped, labels, onUserPlay }: {
   const [attempt, setAttempt] = useState(0);
   const [posterFailed, setPosterFailed] = useState(false);
   const intent = !stopped && !manualPaused && (allowAutoPlay || requested);
-  const src = allowAutoPlay || requested ? sources.video : undefined;
+  const src = allowAutoPlay || requested ? (phone ? sources.phoneVideo : sources.video) : undefined;
   const desktop = posterFailed ? "/images/video-placeholder.svg" : sources.desktop || editorialImages.hero.url;
   const mobile = posterFailed ? desktop : sources.mobile || desktop;
 

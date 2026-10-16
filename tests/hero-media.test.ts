@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { cloudinaryUrl, isCloudinaryVideo, isOptimizable, videoPoster, videoUrl } from "@/lib/cloudinary-loader";
-import { heroMediaSources, requestHeroPlayback, safeMediaSource } from "@/lib/hero-media";
+import { heroMediaSources, PHONE_MEDIA_QUERY, requestHeroPlayback, safeMediaSource } from "@/lib/hero-media";
 
 const mov = "https://res.cloudinary.com/demo/video/upload/v123/folder/hero.mov";
 describe("hero video delivery and fallback", () => {
@@ -20,6 +20,14 @@ describe("hero video delivery and fallback", () => {
     const url = cloudinaryUrl(videoPoster(mov, 1280), { width: 640 });
     expect(url).toContain("w_640");
     expect(url).not.toContain("w_1280");
+  });
+  it("gives phones a narrower H.264 MP4 while desktop keeps 1280px", () => {
+    const { video, phoneVideo } = heroMediaSources({ _id: "p", title: "P", video: { url: mov, resourceType: "video" } });
+    expect(video).toBe("https://res.cloudinary.com/demo/video/upload/q_auto,vc_h264,f_mp4,w_1280,c_limit/v123/folder/hero.mp4");
+    expect(phoneVideo).toBe("https://res.cloudinary.com/demo/video/upload/q_auto,vc_h264,f_mp4,w_720,c_limit/v123/folder/hero.mp4");
+    expect(PHONE_MEDIA_QUERY).toBe("(max-width: 639px)");
+    expect(heroMediaSources({ _id: "q", title: "Q", video: { url: "https://example.com/video.webm" } }).phoneVideo).toBe("https://example.com/video.webm");
+    expect(heroMediaSources({ _id: "r", title: "R", desktopImage: { url: "/photo.jpg" } }).phoneVideo).toBeUndefined();
   });
   it("handles image-only, video-only, external video and missing/invalid sources", () => {
     expect(heroMediaSources({ _id: "a", title: "A", desktopImage: { url: "/photo.jpg" } })).toMatchObject({ video: undefined, desktop: "/photo.jpg", mobile: "/photo.jpg" });
