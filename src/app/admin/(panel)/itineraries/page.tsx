@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
-import { api, errorMessage } from "@/lib/admin/api";
+import { api, errorMessage, getAllOptions } from "@/lib/admin/api";
 import { Empty, ErrorBlock, LoadingBlock, PageHeader, StatusBadge } from "@/components/admin/ui";
 
 interface TourRow {
@@ -18,8 +18,8 @@ export default function ItinerariesPage() {
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["itineraries"],
     queryFn: async () => {
-      const list = await api.get<TourRow[]>("/admin/tours?limit=100");
-      return Promise.all(list.data.map((t) => api.get<TourRow>(`/admin/tours/${t._id}`).then((r) => r.data)));
+      const list = await getAllOptions<TourRow>("/admin/tours");
+      return Promise.all(list.map((t) => api.get<TourRow>(`/admin/tours/${t._id}`).then((r) => r.data)));
     },
   });
   if (isLoading) return <LoadingBlock />;

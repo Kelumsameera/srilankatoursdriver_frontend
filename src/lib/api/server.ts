@@ -1,4 +1,5 @@
 import { cache } from "react";
+import { unstable_rethrow } from "next/navigation";
 import { REVALIDATE_SECONDS, SERVER_API_URL } from "@/lib/config";
 import type {
   ApiEnvelope,
@@ -73,6 +74,7 @@ async function apiGet<T>(path: string, opts: FetchOptions = {}): Promise<{ data:
         : { next: { revalidate: opts.revalidate ?? REVALIDATE_SECONDS, tags: [...(opts.tags ?? []), TAGS.translations] } }),
     });
   } catch (err) {
+    unstable_rethrow(err);
     throw new ApiRequestError(503, `API unreachable at ${SERVER_API_URL}: ${(err as Error).message}`);
   }
   const body = (await res.json().catch(() => null)) as ApiEnvelope<T> | null;
@@ -85,6 +87,7 @@ async function orNull<T>(p: Promise<{ data: T }>): Promise<T | null> {
   try {
     return (await p).data;
   } catch (err) {
+    unstable_rethrow(err);
     if (process.env.NODE_ENV !== "production" || !(err instanceof ApiRequestError) || err.status >= 500) {
       console.warn("[api]", (err as Error).message);
     }
@@ -111,9 +114,12 @@ export const getSeo = cache((key: string) =>
 );
 export const getTripAdvisor = cache(() => orNull(apiGet<TripAdvisorSummary>("/reviews/tripadvisor", { tags: [TAGS.reviews], revalidate: 21600 })));
 
-/** A CMS page with its sections (and the data each dynamic section needs). Returns null if not found. */
+/**
+ * Read page edits and embedded section data on every request. React cache still deduplicates
+ * metadata/page calls within one render; visibility must not depend on the optional backend webhook.
+ */
 export const getPage = cache((slug: string, locale: string) =>
-  orNull(apiGet<PageResponse>(`/pages/${encodeURIComponent(slug)}${qs({ locale })}`, { tags: ALL_CONTENT_TAGS })),
+  orNull(apiGet<PageResponse>(`/pages/${encodeURIComponent(slug)}${qs({ locale })}`, { noStore: true })),
 );
 
 export async function getPreviewPage(slug: string, locale: string, token: string) {

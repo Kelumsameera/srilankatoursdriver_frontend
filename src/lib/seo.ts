@@ -72,7 +72,7 @@ export async function buildMetadata(input: BuildInput): Promise<Metadata> {
   const canonical = s.canonicalUrl || route?.canonicalUrl || alt.canonical;
 
   return {
-    title,
+    title: s.seoTitle || route?.seoTitle ? { absolute: title } : title,
     description,
     keywords: s.keywords?.length ? s.keywords : route?.keywords?.length ? route.keywords : global?.keywords,
     alternates: { ...alt, canonical },

@@ -1,3 +1,4 @@
+import { PageBody } from "@/components/ui/PageBody";
 import type { CSSProperties } from "react";
 import type { Destination, MediaAsset, PageSection, SiteSettings, Tour, TripAdvisorSummary } from "@/types/cms";
 import { cn } from "@/lib/utils";
@@ -103,11 +104,16 @@ export async function PageRenderer({
   settings,
   preview,
   part,
+  content,
+  pageTitle,
 }: {
   sections: PageSection[];
   settings: SiteSettings | null;
   preview?: boolean;
   part?: "hero" | "body";
+  /** Page-level body text configured alongside the header in Admin > Pages. */
+  content?: string;
+  pageTitle?: string;
 }) {
   // The preview (Admin → Pages) also shows switched-off sections, faded
   const visibleSections = sections
@@ -133,7 +139,7 @@ export async function PageRenderer({
     .filter((s) => s.type === "destinations" && Array.isArray(s.data))
     .flatMap((s) => s.data as Destination[])
     .find((d) => d.heroMedia?.url && d.heroMedia.resourceType !== "video" && /beach|coast|bay|mirissa|bentota|unawatuna|trincomalee|arugam|hikkaduwa|galle|pasikudah/i.test(`${d.name} ${d.slug} ${d.category?.name ?? ""}`));
-  const ctx: SectionContext = { settings, preview, categorisedTours, highlights, photos: distinctPhotos(photos, 12), hasHero, rating, ctaPhoto: coastal?.heroMedia ?? photos[0] };
+  const ctx: SectionContext = { settings, pageTitle, preview, categorisedTours, highlights, photos: distinctPhotos(photos, 12), hasHero, rating, ctaPhoto: coastal?.heroMedia ?? photos[0] };
 
   // Empty CMS sections do not form a visual boundary. Resolve them before choosing neighbouring colours.
   const renderedSections = (await Promise.all(visibleSections.map(async (section) => ({
@@ -143,6 +149,7 @@ export async function PageRenderer({
 
   return (
     <>
+      {part !== "hero" && <PageBody content={content} />}
       {renderedSections.map(({ section, content }, index) => (
         <div
           key={section._id}

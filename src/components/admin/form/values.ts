@@ -3,7 +3,11 @@ import type { FieldDef, FormSection } from "./types";
 
 type Rec = Record<string, unknown>;
 
-const toDateInput = (v: unknown) => (v ? new Date(String(v)).toISOString().slice(0, 10) : "");
+const toDateInput = (v: unknown) => {
+  if (!v) return "";
+  const date = new Date(String(v));
+  return Number.isNaN(date.getTime()) ? "" : date.toISOString().slice(0, 10);
+};
 const toDateTimeInput = (v: unknown) => {
   if (!v) return "";
   const d = new Date(String(v));
@@ -56,7 +60,7 @@ export function toFormValues(fields: FieldDef[], data: Rec = {}): Rec {
         out[f.name] = v === null || v === undefined ? "" : v;
         break;
       default:
-        out[f.name] = v ?? "";
+        out[f.name] = v ?? ("defaultValue" in f ? f.defaultValue : undefined) ?? "";
     }
   }
   return out;

@@ -46,7 +46,7 @@ export default async function FaqsPage({ params }: Props) {
           ))}
         </div>
       </section>
-      {data && <PageRenderer sections={data.sections} settings={settings} part="body" />}
+      {data && <PageRenderer sections={data.sections} settings={settings} part="body" content={data?.page.content} />}
     </>
   );
 }

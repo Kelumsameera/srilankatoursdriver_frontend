@@ -47,7 +47,7 @@ export default async function GalleryPage({ params, searchParams }: Props) {
           {list && <Pagination meta={list.meta} basePath="/gallery" query={{ category }} />}
         </div>
       </section>
-      {data && <PageRenderer sections={data.sections} settings={settings} part="body" />}
+      {data && <PageRenderer sections={data.sections} settings={settings} part="body" content={data?.page.content} />}
     </>
   );
 }

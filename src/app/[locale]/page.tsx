@@ -12,7 +12,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const data = await getPage("home", locale);
   const meta = await buildMetadata({ locale, path: "/", routeKey: "home", seo: data?.page.seo, title: data?.page.title, description: data?.page.subtitle });
   // The homepage uses the plain title (no template suffix).
-  return { ...meta, title: { absolute: String(meta.title ?? "") } };
+  return { ...meta, title: typeof meta.title === "string" ? { absolute: meta.title } : meta.title };
 }
 
 /** Homepage – every section, its order and visibility is controlled in Admin → Homepage. */
@@ -28,7 +28,7 @@ export default async function HomePage({ params }: Props) {
   return (
     <>
       {!hasHero && <PageHero title={data.page.title} subtitle={data.page.subtitle} image={data.page.heroImage} />}
-      <PageRenderer sections={data.sections} settings={settings} />
+      <PageRenderer sections={data.sections} settings={settings} content={data.page.content} pageTitle={data.page.title} />
     </>
   );
 }

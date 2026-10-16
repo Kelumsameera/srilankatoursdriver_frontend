@@ -10,6 +10,7 @@ import { SectionHeading } from "@/components/ui/misc";
 // Facts about the whole page that some sections need (worked out once in PageRenderer)
 export interface SectionContext {
   settings: SiteSettings | null;
+  pageTitle?: string;
   preview?: boolean;
   /** Ids of tours shown by category-filtered tour sections on this page. */
   categorisedTours?: Set<string>;

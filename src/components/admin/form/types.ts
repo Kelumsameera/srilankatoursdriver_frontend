@@ -16,7 +16,7 @@ interface Base {
 }
 
 export type FieldDef =
-  | (Base & { type: "text" | "textarea" | "markdown" | "url" | "email" | "color" | "slug" })
+  | (Base & { type: "text" | "textarea" | "markdown" | "url" | "email" | "color" | "slug"; defaultValue?: string })
   | (Base & { type: "number"; min?: number; max?: number; step?: number; /** empty → null (clears the value) instead of being omitted */ nullable?: boolean })
   | (Base & { type: "date" | "datetime" })
   | (Base & { type: "switch"; /** Value used when the record has no value yet (legacy data / new items). */ defaultValue?: boolean })

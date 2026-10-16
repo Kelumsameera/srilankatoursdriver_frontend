@@ -67,7 +67,7 @@ export default async function ToursPage({ params, searchParams }: Props) {
       </section>
 
       {/* CMS SECTIONS: everything the admin added to the "tours" page, except its hero (shown above) */}
-      {pageData && <PageRenderer sections={pageData.sections} settings={settings} part="body" />}
+      {pageData && <PageRenderer sections={pageData.sections} settings={settings} part="body" content={pageData?.page.content} />}
     </>
   );
 }

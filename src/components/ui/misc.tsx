@@ -93,7 +93,7 @@ export async function PageHero({
     <section className="page-banner relative isolate flex min-h-[20rem] items-end overflow-hidden bg-forest-900 text-white sm:min-h-[23rem] lg:min-h-[25rem]" data-scroll-reveal>
       <CmsImage
         media={fallback ? bannerMedia(fallback) : image}
-        alt={fallback?.alt ?? ""}
+        alt={fallback?.alt ?? image?.alt ?? ""}
         preload
         wrapperClassName="absolute inset-0 -z-10"
         className="animate-ken-burns object-center"

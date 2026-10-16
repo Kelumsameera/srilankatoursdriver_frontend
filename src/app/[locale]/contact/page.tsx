@@ -83,7 +83,7 @@ export default async function ContactPage({ params }: Props) {
           </div>
         </div>
       </section>
-      {data && <PageRenderer sections={data.sections} settings={settings} part="body" />}
+      {data && <PageRenderer sections={data.sections} settings={settings} part="body" content={data?.page.content} />}
     </>
   );
 }

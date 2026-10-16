@@ -145,7 +145,7 @@ export default async function VehiclesPage({ params }: Props) {
         <PageRenderer
           sections={pageData.sections}
           settings={settings}
-          part="body"
+          part="body" content={pageData?.page.content}
         />
       )}
     </>

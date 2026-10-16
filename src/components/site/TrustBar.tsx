@@ -42,7 +42,7 @@ export async function TrustBar({ settings }: { settings: SiteSettings }) {
     <>
       {(partners.length > 0 || social.length > 0) && (
         <section className="bg-white" aria-labelledby="trust-heading" data-testid="trust-bar">
-          <div className="h-1 w-full bg-gradient-to-r from-forest-600 via-gold-500 to-forest-600" aria-hidden />
+          <div className="h-1 w-full bg-linear-to-rrom-forest-600 via-gold-500 to-forest-600" aria-hidden />
           <div className="container-page py-7 sm:py-20">
             <div className="mb-4 text-center sm:mb-12">
               <p className="eyebrow mb-2 max-sm:text-[0.6rem] sm:mb-3">{t("accredited")}</p>
@@ -61,7 +61,7 @@ export async function TrustBar({ settings }: { settings: SiteSettings }) {
                       alt={p.logo.alt || p.name}
                       sizes="160px"
                       wrapperClassName="h-9 w-full bg-transparent sm:h-14"
-                      className="!object-contain opacity-60 grayscale transition duration-500 group-hover:opacity-100 group-hover:grayscale-0"
+                      className="object-contain! opacity-60 grayscale transition duration-500 group-hover:opacity-100 group-hover:grayscale-0"
                     />
                   ) : (
                     <span className="font-display text-xs text-forest-800 sm:text-lg">{p.name}</span>
@@ -117,9 +117,9 @@ export async function TrustBar({ settings }: { settings: SiteSettings }) {
       )}
 
       {contacts.length > 0 && (
-        <section className="relative overflow-hidden bg-gradient-to-br from-forest-800 via-forest-900 to-forest-950 py-10 text-white sm:px-4 sm:py-14" aria-labelledby="plan-heading">
-          <div className="pointer-events-none absolute -start-24 -top-24 h-96 w-96 rounded-full bg-gold-500/15 blur-[100px]" aria-hidden />
-          <div className="pointer-events-none absolute -bottom-24 -end-24 h-96 w-96 rounded-full bg-forest-500/25 blur-[100px]" aria-hidden />
+        <section className="relative overflow-hidden bg-linear-to-br from-forest-800 via-forest-900 to-forest-950 py-10 text-white sm:px-4 sm:py-14" aria-labelledby="plan-heading">
+          <div className="pointer-events-none absolute -inset-s-24 -top-24 h-96 w-96 rounded-full bg-gold-500/15 blur-[100px]" aria-hidden />
+          <div className="pointer-events-none absolute -bottom-24 -inset-e-24 h-96 w-96 rounded-full bg-forest-500/25 blur-[100px]" aria-hidden />
           <div className="container-page relative text-center">
             <p className="eyebrow mb-5 text-gold-400 sm:mb-3">{t("available247")}</p>
             <h2 id="plan-heading" className="mx-auto max-w-3xl text-3xl leading-tight sm:text-4xl lg:text-5xl">
@@ -138,7 +138,7 @@ export async function TrustBar({ settings }: { settings: SiteSettings }) {
                     <span className="row-span-2 flex h-10 w-10 items-center justify-center sm:h-11 sm:w-11 rounded-full bg-white/10 text-gold-400 transition-colors duration-500 group-hover:bg-forest-800">
                       {c.icon}
                     </span>
-                    <span className="min-w-0 text-sm font-semibold leading-tight [overflow-wrap:anywhere] sm:text-base">
+                    <span className="min-w-0 text-sm font-semibold leading-tight wrap-anywhere sm:text-base">
                       {/* Long e-mail addresses wrap after the "@" instead of mid-word. */}
                       {c.label.includes("@") ? (
                         <>
@@ -149,7 +149,7 @@ export async function TrustBar({ settings }: { settings: SiteSettings }) {
                         c.label
                       )}
                     </span>
-                    <span className="col-start-2 text-[0.65rem] font-semibold uppercase tracking-[0.1em] text-white/60 sm:text-xs sm:tracking-[0.2em] group-hover:text-muted">{c.sub}</span>
+                    <span className="col-start-2 text-[0.65rem] font-semibold uppercase tracking-widest text-white/60 sm:text-xs sm:tracking-[0.2em] group-hover:text-muted">{c.sub}</span>
                   </a>
                 </li>
               ))}

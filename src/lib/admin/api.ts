@@ -99,6 +99,17 @@ export function qs(params: Record<string, string | number | boolean | undefined 
   return out ? `?${out}` : "";
 }
 
+/** Relation pickers need every option, rather than silently stopping at the API's 100-row limit. */
+export async function getAllOptions<T>(path: string, query: Record<string, string> = {}): Promise<T[]> {
+  const first = await api.get<T[]>(`${path}${qs({ ...query, page: 1, limit: 100 })}`);
+  const items = [...first.data];
+  for (let page = 2; page <= (first.meta?.totalPages ?? 1); page++) {
+    const result = await api.get<T[]>(`${path}${qs({ ...query, page, limit: 100 })}`);
+    items.push(...result.data);
+  }
+  return items;
+}
+
 /** Downloads a CSV export (keeps cookies, works cross-origin). */
 export async function downloadFile(path: string, filename: string, retry = true) {
   let res: Response;

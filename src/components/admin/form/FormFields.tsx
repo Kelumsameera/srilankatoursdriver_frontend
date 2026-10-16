@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useId, useState, type ReactNode } from "react";
 import { LocationPicker } from "./LocationPicker";
 import { useController, useFieldArray, useFormContext, useWatch, type FieldValues } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowDown, ArrowUp, ChevronDown, ChevronRight, Copy, Plus, Trash2 } from "lucide-react";
-import { api, qs } from "@/lib/admin/api";
+import { errorMessage, getAllOptions } from "@/lib/admin/api";
 import { FEATURE_ICONS } from "@/components/ui/icons";
 import { Button, FieldError, Input, Label, Select, Switch, Textarea } from "../ui";
 import { MediaField, MediaListField } from "../MediaLibrary";
@@ -90,12 +90,18 @@ function ListInput({ value, onChange, id, placeholder }: { value: string[]; onCh
 }
 
 function RelationInput({ field, value, onChange, id }: { field: Extract<FieldDef, { type: "relation" }>; value: string | string[]; onChange: (v: string | string[]) => void; id: string }) {
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["relation", field.endpoint, field.query],
-    queryFn: () => api.get<Record<string, unknown>[]>(`${field.endpoint}${qs({ limit: 100, ...field.query })}`),
+    queryFn: () => getAllOptions<Record<string, unknown>>(field.endpoint, field.query),
     staleTime: 60_000,
   });
-  const options = (data?.data ?? []).map((o) => ({ value: String(o._id), label: String(o[field.labelKey] ?? o._id) }));
+  const options = (data ?? []).map((o) => ({ value: String(o._id), label: String(o[field.labelKey] ?? o._id) }));
+  if (error) return (
+    <div role="alert" className="rounded-lg border border-red-200 p-3 text-sm text-red-700">
+      <p>{errorMessage(error)}</p>
+      <button type="button" onClick={() => void refetch()} className="mt-2 min-h-10 underline">Retry loading options</button>
+    </div>
+  );
   if (field.multiple) {
     const selected = Array.isArray(value) ? value : [];
     return (
@@ -119,8 +125,9 @@ function RelationInput({ field, value, onChange, id }: { field: Extract<FieldDef
     );
   }
   return (
-    <Select id={id} value={(value as string) ?? ""} onChange={(e) => onChange(e.target.value)}>
+    <Select id={id} disabled={isLoading} value={(value as string) ?? ""} onChange={(e) => onChange(e.target.value)}>
       <option value="">— None —</option>
+      {value && !options.some((option) => option.value === value) && <option value={value as string}>Current selection</option>}
       {options.map((o) => (
         <option key={o.value} value={o.value}>
           {o.label}
@@ -324,7 +331,8 @@ export function FormField({ field, path }: { field: FieldDef; path: string }) {
 
 function VisibleField({ field, path }: { field: FieldDef; path: string }) {
   const { formState } = useFormContext<FieldValues>();
-  const id = `f-${path.replace(/\./g, "-")}`;
+  const instanceId = useId();
+  const id = `f-${instanceId}-${path.replace(/\./g, "-")}`;
   const error = getError(formState.errors, path);
 
   if (field.type === "group") {

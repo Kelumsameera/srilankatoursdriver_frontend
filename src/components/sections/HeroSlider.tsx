@@ -14,6 +14,7 @@ import { GoldText, PaperEdge, stripGold } from "./home/Decor";
 
 interface Props {
   slides: HeroSlide[];
+  pageTitle?: string;
   /** Real guest rating (TripAdvisor), shown under the buttons only when the site has one. */
   rating?: { value: number; label: string; source: string };
   whatsapp?: { phone?: string; message?: string };
@@ -172,7 +173,7 @@ function HeroBackground({ slide, allowAutoPlay, stopped, labels, onUserPlay }: {
  * Full-screen cinematic hero. All slides, images, videos, text and buttons come from Admin → Hero Media;
  * words wrapped in *asterisks* in a slide title are shown in gold.
  */
-export function HeroSlider({ slides, rating, whatsapp, labels }: Props) {
+export function HeroSlider({ slides, pageTitle, rating, whatsapp, labels }: Props) {
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false); // hover / focus
   const [stopped, setStopped] = useState(false); // pause button (WCAG 2.2.2)
@@ -225,6 +226,7 @@ export function HeroSlider({ slides, rating, whatsapp, labels }: Props) {
         >
           {slide.subtitle && <p className="mb-4 text-xs font-semibold uppercase tracking-[0.28em] text-white/85">{slide.subtitle}</p>}
           <h1 className="font-display text-display leading-[1.02] tracking-tight wrap-anywhere hyphens-none">
+            {pageTitle && <><span className="mb-4 block font-sans text-sm font-semibold leading-6 tracking-wide text-gold-400">{pageTitle}</span>{" "}</>}
             <GoldText text={slide.title} />
           </h1>
           {slide.description && <p className="mt-5 max-w-xl text-lead leading-relaxed text-white/85">{slide.description}</p>}

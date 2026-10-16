@@ -44,7 +44,7 @@ export default async function ReviewsPage({ params, searchParams }: Props) {
           {list && <Pagination meta={list.meta} basePath="/reviews" />}
         </div>
       </section>
-      {data && <PageRenderer sections={data.sections} settings={settings} part="body" />}
+      {data && <PageRenderer sections={data.sections} settings={settings} part="body" content={data?.page.content} />}
       <section className="bg-sand-100 py-16">
         <div className="container-page max-w-3xl">
           <ReviewForm />

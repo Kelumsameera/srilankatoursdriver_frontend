@@ -20,7 +20,7 @@ export default function PermissionsPage() {
   const list = roles.data!.data;
   const letter = (role: Role, m: string) =>
     actions
-      .filter((a) => role.permissions.includes("*") || role.permissions.includes(`${m}:${a}`))
+      .filter((a) => role.permissions.includes("*") || role.permissions.includes(`${m}:*`) || role.permissions.includes(`${m}:${a}`))
       .map((a) => a[0].toUpperCase())
       .join("");
   return (

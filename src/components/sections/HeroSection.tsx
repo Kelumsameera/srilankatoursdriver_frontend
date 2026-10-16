@@ -36,6 +36,7 @@ export async function HeroSection({ section, ctx }: SectionProps) {
       <div className="relative">
         <HeroSlider
           slides={slides}
+          pageTitle={ctx.pageTitle}
           rating={ctx.rating ? { value: ctx.rating.value, label: tReviews("basedOn", { count: ctx.rating.count }), source: "TripAdvisor" } : undefined}
           whatsapp={{ phone: ctx.settings?.whatsapp, message: ctx.settings?.whatsappMessage }}
           labels={{

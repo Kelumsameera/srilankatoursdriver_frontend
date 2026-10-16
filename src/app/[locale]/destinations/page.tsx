@@ -12,6 +12,7 @@ import { TransferRates } from "@/components/site/TransferRates";
 import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 import { DotEyebrow } from "@/components/destinations/Eyebrow";
 import { DestinationsBrowser } from "@/components/destinations/DestinationsBrowser";
+import { PageBody } from "@/components/ui/PageBody";
 
 // /en/destinations -> Next.js gives us the locale from the URL and the ?query values
 type Props = {
@@ -61,11 +62,13 @@ export default async function DestinationsPage({
       {pageData?.page.heroImage?.url ? (
         <PageHero
           title={title}
-          subtitle={pageData.page.subtitle || t("listIntro")}
+          subtitle={pageData.page.subtitle}
           image={pageData.page.heroImage}
           banner="destinations"
           eyebrow={t("listEyebrow")}
-        />
+        >
+          <PageBody content={pageData.page.content} disclosure={{ more: tCommon("readMore"), less: t("readLess") }} overlay />
+        </PageHero>
       ) : pageData && hasActiveHero(pageData.sections) ? (
         <PageRenderer
           sections={pageData.sections}
@@ -93,13 +96,17 @@ export default async function DestinationsPage({
               >
                 {title}
               </h1>
-              <p className="mt-6 text-base leading-8 text-muted sm:text-lg">
-                {pageData?.page.subtitle || t("listIntro")}
-              </p>
+              {(pageData ? pageData.page.subtitle : t("listIntro")) && (
+                <p className="mt-6 text-base leading-8 text-muted sm:text-lg">
+                  {pageData ? pageData.page.subtitle : t("listIntro")}
+                </p>
+              )}
             </div>
           </div>
         </section>
       )}
+
+      {!pageData?.page.heroImage?.url && <PageBody content={pageData?.page.content} disclosure={{ more: tCommon("readMore"), less: t("readLess") }} />}
 
       {/* CATEGORY FILTER + DESTINATION CARDS */}
       <section className="border-t border-sand-200 bg-white pb-10 pt-5 sm:pb-24 sm:pt-10">

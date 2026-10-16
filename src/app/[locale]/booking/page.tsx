@@ -79,7 +79,7 @@ export default async function BookingPage({ params, searchParams }: Props) {
           )}
         </div>
       </section>
-      {data && <PageRenderer sections={data.sections} settings={settings} part="body" />}
+      {data && <PageRenderer sections={data.sections} settings={settings} part="body" content={data?.page.content} />}
     </>
   );
 }
