@@ -8,6 +8,7 @@ import type { Destination } from "@/types/cms";
 import { cn } from "@/lib/utils";
 import { CmsImage } from "@/components/ui/CmsImage";
 import { CmsLink } from "@/components/ui/CmsLink";
+import { reveal3d } from "@/lib/reveal";
 import { destinationCover } from "@/lib/editorial-images";
 
 // Category buttons + the grid of destination cards.
@@ -103,11 +104,11 @@ export function DestinationsBrowser({ destinations, initialCategory, eagerFirstI
       {/* DESTINATION CARDS */}
       {visibleDestinations.length ? (
         <ul key={activeCategory || "all"} id={listId} ref={listRef}
-          className="grid scroll-mt-24 grid-cols-1 gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8" data-testid="destination-list">
+          className="grid-center-last grid scroll-mt-24 grid-cols-1 gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8" data-testid="destination-list">
           {visibleDestinations.map((destination, index) => {
             const cover = destinationCover(destination);
             return (
-              <li key={destination._id} className={cn("min-w-0", Math.floor(index / pageSize) !== currentPage && "hidden sm:block")}>
+              <li key={destination._id} className={cn("min-w-0", Math.floor(index / pageSize) !== currentPage && "hidden sm:block")} {...reveal3d(index)}>
                 <CmsLink
                   href={`/destinations/${destination.slug}`}
                   className="dest-card group flex h-full flex-col overflow-hidden rounded-lg bg-white shadow-card focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-forest-800"
@@ -120,6 +121,7 @@ export function DestinationsBrowser({ destinations, initialCategory, eagerFirstI
                     placeholderName={destination.name}
                     sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 400px"
                     wrapperClassName="aspect-[16/10] sm:aspect-[4/3]"
+                    depth
                     className="transition-transform duration-300 group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
                   />
                   {/* CATEGORY, NAME, SHORT DESCRIPTION */}

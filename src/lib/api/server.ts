@@ -9,6 +9,7 @@ import type {
   Destination,
   Excursion,
   Faq,
+  FeedItem,
   GalleryItem,
   GuestShort,
   Language,
@@ -18,6 +19,7 @@ import type {
   Review,
   SeoMetadata,
   SiteSettings,
+  Story,
   Tour,
   TripAdvisorSummary,
   Vehicle,
@@ -37,6 +39,7 @@ export const TAGS = {
   categories: "categories",
   gallery: "gallery",
   blog: "blog",
+  stories: "stories",
   guestShorts: "guest-shorts",
   reviews: "reviews",
   faqs: "faqs",
@@ -202,6 +205,44 @@ export const getDetail = cache(
     }
   },
 );
+
+/** First page of the community feed (later pages are loaded in the browser) */
+export async function getFeed(params: { page?: number; limit?: number; q?: string; type?: string; category?: string } = {}): Promise<{ items: FeedItem[]; meta: PaginationMeta } | null> {
+  try {
+    const { data, meta } = await apiGet<FeedItem[]>(`/feed${qs(params)}`, { tags: [TAGS.stories, TAGS.blog] });
+    return { items: data, meta: meta ?? { page: 1, limit: data.length, total: data.length, totalPages: 1 } };
+  } catch (err) {
+    unstable_rethrow(err);
+    console.warn("[api]", (err as Error).message);
+    return null;
+  }
+}
+
+/* GUEST STORIES (published only) */
+
+/** One page of the stories feed, newest first. `video: true` = only stories with a video (the reels page). */
+export async function getStories(params: { page?: number; limit?: number; video?: boolean } = {}): Promise<{ items: Story[]; meta: PaginationMeta } | null> {
+  try {
+    const { data, meta } = await apiGet<Story[]>(`/stories${qs({ page: params.page, limit: params.limit, video: params.video ? "true" : undefined })}`, { tags: [TAGS.stories] });
+    return { items: data, meta: meta ?? { page: 1, limit: data.length, total: data.length, totalPages: 1 } };
+  } catch (err) {
+    unstable_rethrow(err);
+    console.warn("[api]", (err as Error).message);
+    return null;
+  }
+}
+
+/** One published story; null when it does not exist (or is not published) */
+export const getStory = cache(async (id: string): Promise<Story | null> => {
+  try {
+    return (await apiGet<Story>(`/stories/${encodeURIComponent(id)}`, { tags: [TAGS.stories] })).data;
+  } catch (err) {
+    unstable_rethrow(err);
+    if (err instanceof ApiRequestError && (err.status === 404 || err.status === 400)) return null;
+    console.error("[api]", (err as Error).message);
+    throw new Error("Content is temporarily unavailable");
+  }
+});
 
 /** Closest published destinations (by distance; same category when coordinates are missing). */
 export const getNearbyDestinations = cache((slug: string, locale: string, limit = 6) =>

@@ -7,6 +7,7 @@ import { SITE_URL } from "@/lib/config";
 import { formatDate } from "@/lib/utils";
 import { CmsImage } from "@/components/ui/CmsImage";
 import { Markdown } from "@/components/ui/Markdown";
+import { Engagement } from "@/components/community/Engagement";
 import { Badge } from "@/components/ui/misc";
 import { BlogCard } from "@/components/cards/BlogCard";
 import { Breadcrumbs } from "@/components/site/Breadcrumbs";
@@ -116,6 +117,9 @@ export default async function BlogPostPage({ params }: Props) {
             ))}
           </ul>
         ) : null}
+
+        {/* LIKES, SHARE BUTTONS, COMMENTS */}
+        <Engagement type="blog" id={post.slug} title={post.title} url={`${SITE_URL}/${locale}/blog/${post.slug}`} path={`/blog/${post.slug}`} />
       </div>
 
       {/* RELATED POSTS */}

@@ -19,12 +19,22 @@ export function DestinationCard({ destination, tall, framed }: { destination: De
         placeholderName={destination.name}
         sizes={framed ? "(min-width: 1024px) 25vw, (min-width: 768px) 33vw, (min-width: 640px) 50vw, 100vw" : "(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"}
         wrapperClassName={framed ? "aspect-[3/2] lg:aspect-[5/4]" : tall ? "aspect-[3/4]" : "aspect-[4/5]"}
+        depth
         className="transition-transform duration-700 group-hover:scale-105"
       />
-      <div className="absolute inset-0 bg-linear-to-t from-forest-950/85 via-forest-950/15 to-transparent" />
-      <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-5 text-white">
+      {/* Darker at the bottom so the name stays readable on busy photos */}
+      <div className={cn("absolute inset-0 bg-linear-to-t to-transparent", framed ? "from-forest-950/95 via-forest-950/35" : "from-forest-950/85 via-forest-950/15")} />
+      <div className={cn("absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 text-white", framed ? "p-4" : "p-5")}>
         <div className="min-w-0">
-          <h3 className="font-display text-xl leading-tight wrap-break-word hyphens-auto sm:text-2xl lg:text-xl xl:text-2xl">{destination.name}</h3>
+          <h3
+            className={cn(
+              "font-display leading-tight wrap-break-word hyphens-auto [text-shadow:0_1px_8px_rgb(4_23_15/0.6)]",
+              // Framed tiles are small (4 per row), so the name is one size smaller and at most 2 lines
+              framed ? "line-clamp-2 text-lg xl:text-xl" : "text-xl sm:text-2xl lg:text-xl xl:text-2xl",
+            )}
+          >
+            {destination.name}
+          </h3>
           {subtitle && <p className="mt-1 truncate text-sm text-white/75">{subtitle}</p>}
         </div>
         <span
@@ -43,7 +53,7 @@ export function ReviewCard({ review }: { review: Review }) {
   const locale = useLocale();
   const platform = review.platform && review.platform !== "website" ? review.platform : null;
   return (
-    <figure className="flex h-full flex-col rounded-3xl bg-white p-7 shadow-card">
+    <figure className="dest-card flex h-full flex-col rounded-3xl bg-white p-7 shadow-card">
       <div className="flex items-center justify-between gap-2">
         <Stars rating={review.rating} />
         {review.verified && <Badge>{t("verified")}</Badge>}

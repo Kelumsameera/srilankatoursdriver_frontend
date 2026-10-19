@@ -69,7 +69,7 @@ export async function VehiclesSection({ section, ctx }: SectionProps) {
       {facts.length > 0 && (
         <ul className={cn("container-page mt-12 flex flex-wrap justify-center gap-x-10 gap-y-3 text-small lg:justify-end", light ? "text-white/80" : "text-forest-800")}>
           {facts.map(({ icon: Icon, label }) => (
-            <li key={label} className="flex items-center gap-2">
+            <li key={label} className={cn("flex items-center gap-2 rounded-full px-4 py-2 shadow-sm", light ? "bg-white/10" : "bg-white/70")}>
               <Icon className={cn("h-5 w-5 shrink-0", light ? "text-gold-400" : "text-gold-600")} aria-hidden /> {label}
             </li>
           ))}

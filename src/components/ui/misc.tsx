@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Camera, Star } from "lucide-react";
+import { Camera, Compass, Star } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
 import { cn } from "@/lib/utils";
 import type { MediaAsset } from "@/types/cms";
@@ -64,8 +64,16 @@ export function Badge({ children, className }: { children: ReactNode; className?
   );
 }
 
+// "Nothing here yet" box: a compass in a gold circle above the message
 export function EmptyState({ text }: { text: string }) {
-  return <p className="rounded-2xl border border-dashed border-sand-200 bg-white/60 p-6 text-center sm:p-10 text-muted">{text}</p>;
+  return (
+    <div className="flex flex-col items-center gap-4 rounded-3xl border border-dashed border-gold-200 bg-white/70 p-8 text-center shadow-soft sm:p-12">
+      <span className="flex h-14 w-14 items-center justify-center rounded-full bg-gold-100 text-gold-600" aria-hidden>
+        <Compass className="h-7 w-7" strokeWidth={1.5} />
+      </span>
+      <p className="max-w-md text-muted">{text}</p>
+    </div>
+  );
 }
 
 /**
@@ -96,6 +104,7 @@ export async function PageHero({
         alt={fallback?.alt ?? image?.alt ?? ""}
         preload
         wrapperClassName="absolute inset-0 -z-10"
+        depth
         className="animate-ken-burns object-center"
         objectPosition={fallback?.focus}
         markIllustrative={false}

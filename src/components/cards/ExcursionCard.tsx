@@ -25,6 +25,7 @@ export function ExcursionCard({ excursion }: { excursion: Excursion }) {
         alt={cover.alt || excursion.title}
         sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
         wrapperClassName="aspect-[16/10]"
+        depth
         className="transition-transform duration-700 group-hover:scale-105"
       />
 

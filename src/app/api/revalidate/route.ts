@@ -15,6 +15,7 @@ const ALLOWED = new Set([
   "categories",
   "gallery",
   "blog",
+  "stories",
   "guest-shorts",
   "reviews",
   "faqs",

@@ -543,6 +543,69 @@ export const RESOURCES: Record<string, AdminResource> = {
     ],
   },
 
+  // Guest comments on blog posts and stories: approve (publish) or reject them. New comments arrive as "pending".
+  comments: {
+    key: "comments",
+    title: "Comments",
+    singular: "Comment",
+    description: "Comments written by signed-in guests on blog posts and stories. Only published comments are shown on the website.",
+    endpoint: "/admin/comments",
+    permission: "blog",
+    titleKey: "authorName",
+    statusField: "status",
+    statusOptions: ["pending", "published", "rejected"],
+    columns: [{ key: "authorName", label: "Guest" }, { key: "text", label: "Comment" }, { key: "target.title", label: "On" }, { key: "targetModel", label: "Type" }, { key: "createdAt", label: "Date", kind: "date" }, { key: "status", label: "Status", kind: "status" }],
+    defaults: { status: "published", targetModel: "BlogPost" },
+    sections: [
+      {
+        title: "Comment",
+        fields: [
+          { name: "targetModel", label: "Comment on", type: "select", options: [{ value: "BlogPost", label: "Blog post" }, { value: "Story", label: "Guest story" }] },
+          { name: "target", label: "Blog post", type: "relation", endpoint: "/admin/blog", labelKey: "title", required: true, hint: "Comments on guest stories are added by guests themselves." },
+          { name: "authorName", label: "Shown name", type: "text", required: true },
+          { name: "status", label: "Status", type: "select", options: opt("pending", "published", "rejected") },
+          { name: "text", label: "Comment", type: "textarea", required: true, span: 2 },
+        ],
+      },
+    ],
+  },
+
+  // Travel stories shared by signed-in guests. They arrive as "pending"; publish them to show them on /stories.
+  stories: {
+    key: "stories",
+    title: "Guest Stories",
+    singular: "Story",
+    description: "Travel stories with photos (and short videos) shared by guests. Check the text and photos, then publish.",
+    endpoint: "/admin/stories",
+    permission: "blog",
+    titleKey: "title",
+    statusField: "status",
+    statusOptions: ["pending", "published", "rejected"],
+    featurable: true,
+    publicPath: (i) => (i.status === "published" ? `/en/stories/${i._id}` : null),
+    columns: [thumb("media.0.url"), { key: "title", label: "Title" }, { key: "authorName", label: "Guest" }, { key: "place", label: "Place" }, { key: "createdAt", label: "Sent", kind: "date" }, { key: "status", label: "Status", kind: "status" }, { key: "featured", label: "Featured", kind: "bool" }],
+    defaults: { status: "published" },
+    sections: [
+      {
+        title: "Story",
+        fields: [
+          { name: "title", label: "Title", type: "text", required: true, span: 2 },
+          { name: "authorName", label: "Guest name", type: "text", required: true },
+          { name: "place", label: "Place", type: "text" },
+          { name: "text", label: "Story", type: "textarea", required: true, span: 2 },
+          { name: "media", label: "Photos / video", type: "mediaList", folder: "stories", span: 2 },
+        ],
+      },
+      {
+        title: "Moderation",
+        fields: [
+          { name: "status", label: "Status", type: "select", options: opt("pending", "published", "rejected") },
+          { name: "featured", label: "Featured", type: "switch" },
+        ],
+      },
+    ],
+  },
+
   reviews: {
     key: "reviews",
     title: "Reviews",

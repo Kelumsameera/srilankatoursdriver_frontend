@@ -5,6 +5,7 @@ import { buildMetadata } from "@/lib/seo";
 import { EmptyState, PageHero } from "@/components/ui/misc";
 import { ExcursionCard } from "@/components/cards/ExcursionCard";
 import { CategoryFilter, Pagination, pageParam, param, type SearchParams } from "@/components/site/listing";
+import { reveal3d } from "@/lib/reveal";
 import { PageRenderer, hasActiveHero } from "@/components/sections/PageRenderer";
 
 // /en/excursions?category=day-trips&page=2 -> Next.js gives us the locale from the URL and the ?query values
@@ -53,9 +54,11 @@ export default async function ExcursionsPage({ params, searchParams }: Props) {
         <div className="container-page">
           <CategoryFilter basePath="/excursions" categories={categories ?? []} active={category} />
           {excursionList?.items.length ? (
-            <div className="grid grid-cols-1 gap-grid sm:grid-cols-2 lg:grid-cols-3">
-              {excursionList.items.map((excursion) => (
-                <ExcursionCard key={excursion._id} excursion={excursion} />
+            <div className="grid-center-last grid grid-cols-1 gap-grid sm:grid-cols-2 lg:grid-cols-3">
+              {excursionList.items.map((excursion, index) => (
+                <div key={excursion._id} {...reveal3d(index)}>
+                  <ExcursionCard excursion={excursion} />
+                </div>
               ))}
             </div>
           ) : (

@@ -43,6 +43,7 @@ export function MediaStrip({ items, label }: { items?: MediaAsset[]; label: stri
           alt={m.alt || label}
           sizes="(min-width: 640px) 33vw, 50vw"
           wrapperClassName={cn("rounded-2xl", i === 0 ? "col-span-2 row-span-2 aspect-square sm:aspect-auto" : "aspect-square")}
+          depth
         />
       ))}
     </div>

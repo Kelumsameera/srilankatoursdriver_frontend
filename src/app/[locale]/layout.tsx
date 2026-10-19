@@ -19,6 +19,7 @@ import { Logo } from "@/components/site/Logo";
 import { CustomerAuthProvider } from "@/lib/customer/auth";
 import { PageViewTracker } from "@/components/site/PageViewTracker";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
+import { DepthScroll } from "@/components/ui/DepthScroll";
 import type { SiteSettings } from "@/types/cms";
 import { travelSans, travelDisplay } from "@/lib/fonts";
 
@@ -127,6 +128,7 @@ export default async function LocaleLayout({ children, params }: Props) {
             <CurrencyConverter siteCurrency={settings.currency} />
             <WhatsAppFloat phone={settings.whatsapp} message={settings.whatsappMessage} />
             <WhatsAppClickTracker />
+            <DepthScroll />
             <PageViewTracker />
           </CustomerAuthProvider>
         </NextIntlClientProvider>

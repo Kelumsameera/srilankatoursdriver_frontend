@@ -2,6 +2,7 @@ import type { Review } from "@/types/cms";
 import { Section } from "@/components/ui/misc";
 import { ReviewCard } from "@/components/cards/cards";
 import { Marquee } from "@/components/ui/Marquee";
+import { reveal3d } from "@/lib/reveal";
 import { Heading, sectionData, sectionTheme, type SectionProps } from "./sectionParts";
 
 // "reviews" section: a grid of review cards, or a moving marquee with the Carousel layout
@@ -23,8 +24,10 @@ export function ReviewsSection({ section, ctx }: SectionProps) {
         />
       ) : (
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {reviews.map((review) => (
-            <ReviewCard key={review._id} review={review} />
+          {reviews.map((review, index) => (
+            <div key={review._id} {...reveal3d(index)}>
+              <ReviewCard review={review} />
+            </div>
           ))}
         </div>
       )}

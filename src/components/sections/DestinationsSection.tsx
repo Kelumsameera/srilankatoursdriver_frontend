@@ -3,6 +3,7 @@ import { Section } from "@/components/ui/misc";
 import { DestinationCard } from "@/components/cards/cards";
 import { PaperEdge } from "./home/Decor";
 import { FoliageCluster } from "./home/Foliage";
+import { reveal3d } from "@/lib/reveal";
 import { Heading, sectionData, sectionTheme, type SectionProps } from "./sectionParts";
 
 // "destinations" section: framed destination cards on a green band
@@ -22,8 +23,10 @@ export function DestinationsSection({ section, ctx }: SectionProps) {
 
       {/* DESTINATION CARDS */}
       <div className="relative z-10 grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {destinations.map((destination) => (
-          <DestinationCard key={destination._id} destination={destination} framed />
+        {destinations.map((destination, index) => (
+          <div key={destination._id} {...reveal3d(index, 4)}>
+            <DestinationCard destination={destination} framed />
+          </div>
         ))}
       </div>
       <PaperEdge className="text-sand-50" />

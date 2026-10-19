@@ -20,6 +20,7 @@ import { CheckList, DetailSection, MediaStrip } from "@/components/site/DetailBi
 import { SectionTabs } from "@/components/site/SectionTabs";
 import { tourImage } from "@/lib/editorial-images";
 import type { Tour } from "@/types/cms";
+import { reveal3d } from "@/lib/reveal";
 
 // /en/tours/galle-one-day-tour -> Next.js gives us the locale and the slug from the URL
 type Props = { params: Promise<{ locale: string; slug: string }> };
@@ -184,13 +185,13 @@ export default async function TourDetailPage({ params }: Props) {
             <DetailSection title={t("itinerary")} id="itinerary">
               <ol className="relative space-y-8 border-s-2 border-dashed border-gold-200 ps-8">
                 {tour.itinerary.map((day) => (
-                  <li key={day._id ?? day.day} className="relative">
+                  <li key={day._id ?? day.day} className="relative" {...reveal3d(0)}>
                     <span className="absolute -start-[2.85rem] top-0 flex h-10 w-10 items-center justify-center rounded-full bg-forest-800 text-xs font-semibold text-gold-400 ring-4 ring-sand-50">
                       {day.day}
                     </span>
                     <p className="eyebrow">{t("dayLabel", { day: day.day })}</p>
                     <h3 className="mt-1 text-h3 text-forest-900">{day.title}</h3>
-                    {day.image?.url && <CmsImage media={day.image} alt={day.title} sizes="(min-width:1024px) 600px, 100vw" wrapperClassName="mt-4 aspect-[16/9] rounded-2xl" />}
+                    {day.image?.url && <CmsImage media={day.image} alt={day.title} sizes="(min-width:1024px) 600px, 100vw" wrapperClassName="mt-4 aspect-[16/9] rounded-2xl shadow-card lg:aspect-[16/7]" depth />}
                     <Markdown content={day.description} className="mt-3 text-[0.95rem]" />
                     {day.activities?.length ? (
                       <ul className="mt-4 flex flex-wrap gap-2">
@@ -260,7 +261,7 @@ export default async function TourDetailPage({ params }: Props) {
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                 {tour.vehicle && (
                   <div className="overflow-hidden rounded-3xl border border-sand-200 bg-white">
-                    <CmsImage media={tour.vehicle.images?.[0]} alt={tour.vehicle.name} sizes="400px" wrapperClassName="aspect-[16/9] bg-sand-100" />
+                    <CmsImage media={tour.vehicle.images?.[0]} alt={tour.vehicle.name} sizes="400px" wrapperClassName="aspect-[16/9] bg-sand-100" depth />
                     <div className="p-5">
                       <p className="eyebrow mb-1 flex items-center gap-1">
                         <Car className="h-3.5 w-3.5" /> {t("vehicle")}
@@ -356,8 +357,10 @@ export default async function TourDetailPage({ params }: Props) {
           <div className="container-page">
             <h2 className="mb-10 text-h2 text-forest-900">{t("related")}</h2>
             <div className="grid grid-cols-1 gap-grid sm:grid-cols-2 lg:grid-cols-3">
-              {data.related.map((relatedTour) => (
-                <TourCard key={relatedTour._id} tour={relatedTour} hideDescription={repeatedDescriptions.has(relatedTour.shortDescription?.trim() ?? "")} />
+              {data.related.map((relatedTour, index) => (
+                <div key={relatedTour._id} {...reveal3d(index)}>
+                  <TourCard tour={relatedTour} hideDescription={repeatedDescriptions.has(relatedTour.shortDescription?.trim() ?? "")} />
+                </div>
               ))}
             </div>
           </div>

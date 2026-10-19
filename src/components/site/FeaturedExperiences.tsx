@@ -3,6 +3,7 @@ import { CmsImage } from "@/components/ui/CmsImage";
 import { CmsLink } from "@/components/ui/CmsLink";
 import { DotEyebrow } from "@/components/destinations/Eyebrow";
 import { ExpandableText } from "@/components/destinations/ExpandableText";
+import { reveal3d } from "@/lib/reveal";
 import type { Destination } from "@/types/cms";
 
 // Translated texts passed in by the page
@@ -36,13 +37,13 @@ export function FeaturedExperiences({ items, labels }: { items: NonNullable<Dest
       </div>
 
       {/* ATTRACTION CARDS */}
-      <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
+      <ul className="grid-center-last grid gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
         {experiences.map((experience, index) => {
           const hasLink = Boolean(experience.detailUrl?.trim());
           const hasDescription = Boolean(experience.description?.trim());
 
           return (
-            <li key={experience._id || index} className="dest-card flex min-w-0 flex-col overflow-hidden rounded-lg bg-white shadow-card" data-scroll-reveal>
+            <li key={experience._id || index} className="dest-card flex min-w-0 flex-col overflow-hidden rounded-lg bg-white shadow-card" {...reveal3d(index)}>
               {/* IMAGE */}
               <CmsImage
                 media={experience.image}
@@ -50,6 +51,7 @@ export function FeaturedExperiences({ items, labels }: { items: NonNullable<Dest
                 placeholderName={experience.title}
                 sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 400px"
                 wrapperClassName="aspect-[16/10]"
+                depth
               />
 
               <div className="flex flex-1 flex-col p-5">

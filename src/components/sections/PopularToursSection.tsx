@@ -1,5 +1,4 @@
 import { getLocale, getTranslations } from "next-intl/server";
-import type { CSSProperties } from "react";
 import { ArrowRight, Calendar, MapPin } from "lucide-react";
 import type { PageSection, Tour } from "@/types/cms";
 import { formatPrice } from "@/lib/utils";
@@ -7,8 +6,13 @@ import { ButtonLink } from "@/components/ui/Button";
 import { CmsImage } from "@/components/ui/CmsImage";
 import { Section } from "@/components/ui/misc";
 import { TourCard, sharedDescriptions } from "@/components/cards/TourCard";
+import { TallTourCard } from "@/components/cards/TallTourCard";
 import { Botanical, PaperEdge } from "./home/Decor";
+import { reveal3d } from "@/lib/reveal";
 import { Heading, sectionData, sectionTheme, type SectionProps } from "./sectionParts";
+
+// Card widths for a centred row of up to 3 cards: a last row with only 1 or 2 cards sits in the middle, not on the left.
+const centredCard = "w-full sm:w-[calc((100%-var(--spacing-grid))/2)] lg:w-[calc((100%-2*var(--spacing-grid))/3)]";
 
 /** Dark-green "featured tour" band: one tour presented large (popular-tours sections with the Split layout). */
 async function FeaturedTourBand({ section, tour }: { section: PageSection; tour: Tour }) {
@@ -49,7 +53,7 @@ async function FeaturedTourBand({ section, tour }: { section: PageSection; tour:
           </ul>
           {section.subtitle && <p className="mt-6 max-w-xl text-lead leading-relaxed text-white/80">{section.subtitle}</p>}
           <div className="mt-9 flex flex-wrap items-center gap-6">
-            <ButtonLink href={`/tours/${tour.slug}`} variant="outline-light" className="rounded-md border-gold-400 text-gold-400 hover:bg-gold-400 hover:text-forest-950">
+            <ButtonLink href={`/tours/${tour.slug}`} className="rounded-md">
               {tTour("itinerary")} <ArrowRight className="h-4 w-4 rtl:rotate-180" aria-hidden />
             </ButtonLink>
             {price && (
@@ -82,14 +86,42 @@ export function PopularToursSection({ section, ctx }: SectionProps) {
         <FeaturedTourBand section={section} tour={lead} />
         {more.length > 0 && (
           <Section theme={theme}>
-            <div className="grid grid-cols-1 gap-grid sm:grid-cols-2 lg:grid-cols-3">
-              {more.map((tour) => (
-                <TourCard key={tour._id} tour={tour} hideDescription={shared.has(tour.shortDescription?.trim() ?? "")} />
+            <div className="flex flex-wrap justify-center gap-grid">
+              {more.map((tour, index) => (
+                <div key={tour._id} className={centredCard} {...reveal3d(index)}>
+                  <TourCard tour={tour} hideDescription={shared.has(tour.shortDescription?.trim() ?? "")} />
+                </div>
               ))}
             </div>
           </Section>
         )}
       </>
+    );
+  }
+
+  // STAGGERED LAYOUT: tall photo cards at different heights (left low, middle high, right a little bigger).
+  // The pattern repeats every 3 cards; phones show a simple column.
+  if (section.settings?.layout === "staggered") {
+    const offsets = ["lg:mt-24", "lg:mt-0", "lg:mt-12"];
+    const heights = ["aspect-[4/5] lg:aspect-[3/4.4]", "aspect-[4/5] lg:aspect-[3/4]", "aspect-[4/5] lg:aspect-[3/4.6]"];
+    // Each card drifts at its own speed while scrolling (HomeMotion), for the layered 3D look
+    const drift = ["30", "-20", "12"];
+    return (
+      <Section theme={theme} className="relative overflow-hidden">
+        {!light && <Botanical />}
+        <div data-scroll-reveal>
+          <Heading section={section} light={light} ctx={ctx} />
+        </div>
+        <div className="relative grid grid-cols-1 items-start gap-grid sm:grid-cols-2 lg:grid-cols-[1fr_1fr_1.12fr] lg:gap-10 lg:pb-12">
+          {tours.map((tour, index) => (
+            <div key={tour._id} className={offsets[index % 3]} {...reveal3d(index)}>
+              <div data-parallax={drift[index % 3]}>
+                <TallTourCard tour={tour} className={heights[index % 3]} />
+              </div>
+            </div>
+          ))}
+        </div>
+      </Section>
     );
   }
 
@@ -100,9 +132,10 @@ export function PopularToursSection({ section, ctx }: SectionProps) {
       <div data-scroll-reveal>
         <Heading section={section} light={light} ctx={ctx} />
       </div>
-      <div className={`relative grid grid-cols-1 gap-grid sm:grid-cols-2 ${tours.length === 2 ? "lg:grid-cols-2" : "lg:grid-cols-3"}`}>
+      {/* Centred rows of up to three cards (two tours stay card-sized too) */}
+      <div className="relative flex flex-wrap justify-center gap-grid">
         {tours.map((tour, index) => (
-          <div key={tour._id} data-scroll-reveal style={{ "--reveal-delay": `${(index % 3) * 90}ms` } as CSSProperties}>
+          <div key={tour._id} className={centredCard} {...reveal3d(index)}>
             <TourCard tour={tour} hideDescription={shared.has(tour.shortDescription?.trim() ?? "")} />
           </div>
         ))}

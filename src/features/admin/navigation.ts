@@ -119,6 +119,8 @@ export const ADMIN_NAV: NavGroup[] = [
     icon: BookOpen,
     children: [
       { label: "Blog", href: "/admin/content/blog", perm: "blog:read" },
+      { label: "Comments", href: "/admin/content/comments", perm: "blog:read" },
+      { label: "Guest Stories", href: "/admin/content/stories", perm: "blog:read" },
       { label: "Categories", href: "/admin/content/blog-categories", perm: "categories:read" },
       { label: "Guest Shorts", href: "/admin/content/guest-shorts", perm: "guestShorts:read" },
       { label: "Reviews", href: "/admin/content/reviews", perm: "reviews:read" },

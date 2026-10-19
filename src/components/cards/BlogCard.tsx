@@ -23,6 +23,7 @@ export function BlogCard({ post }: { post: BlogPost }) {
         alt={cover.alt || post.title}
         sizes="(min-width: 1024px) 33vw, 100vw"
         wrapperClassName="aspect-[16/10] rounded-3xl"
+        depth
         className="transition-transform duration-700 group-hover:scale-105"
       />
 

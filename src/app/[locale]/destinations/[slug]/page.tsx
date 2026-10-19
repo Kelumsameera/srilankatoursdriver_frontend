@@ -20,6 +20,7 @@ import { DotEyebrow } from "@/components/destinations/Eyebrow";
 import { NearbyCarousel } from "@/components/destinations/NearbyCarousel";
 import { validCoordinates } from "@/lib/destination-map";
 import { stripMarkdown } from "@/lib/utils";
+import { reveal3d } from "@/lib/reveal";
 import type { Destination, MediaAsset } from "@/types/cms";
 
 // /en/destinations/kandy -> Next.js gives us { locale: "en", slug: "kandy" }
@@ -109,7 +110,8 @@ export default async function DestinationDetailPage({ params }: Props) {
         <div className="relative isolate">
           <CmsImage media={cover} alt={cover?.alt || destination.name} placeholderName={destination.name} preload sizes="100vw" wrapperClassName="aspect-[4/3] min-h-[340px] max-h-[520px] w-full sm:aspect-[21/8] sm:min-h-[420px]" />
           <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 h-64 bg-linear-to-b from-black/65 to-transparent" />
-          <div className={`absolute inset-x-0 top-24 sm:top-28 ${locale === "ta" || locale === "hi" ? "xl:top-48" : ""}`}>
+          {/* Text shadow keeps the white breadcrumb readable over bright photos (white stupas, sky) */}
+          <div className={`absolute inset-x-0 top-24 [text-shadow:0_1px_6px_rgb(0_0_0/0.75)] sm:top-28 ${locale === "ta" || locale === "hi" ? "xl:top-48" : ""}`}>
         <div className="container-page">
           <Breadcrumbs
             locale={locale}
@@ -205,16 +207,20 @@ export default async function DestinationDetailPage({ params }: Props) {
           <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {/* BEST TIME + HOW TO GET THERE */}
             {infoCards.map(({ key, icon: Icon, title, body, fallback }) => (
-              <div key={key} className="rounded-lg border border-sand-200 bg-white p-5 sm:p-6" data-scroll-reveal>
-                <Icon className="h-6 w-6 text-gold-600" aria-hidden strokeWidth={1.5} />
+              <div key={key} className="dest-card rounded-lg border border-sand-200 bg-white p-5 sm:p-6" data-scroll-reveal>
+                <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-gold-100">
+                  <Icon className="h-6 w-6 text-gold-600" aria-hidden strokeWidth={1.5} />
+                </span>
                 <h3 className="mt-4 font-display text-xl text-ink">{title}</h3>
                 <p className="mt-3 whitespace-pre-line text-sm leading-7 text-muted">{body?.trim() || fallback}</p>
               </div>
             ))}
 
             {/* SUGGESTED ITINERARY */}
-            <div className="rounded-lg border border-sand-200 bg-white p-5 sm:p-6" data-scroll-reveal>
-              <Route className="h-6 w-6 text-gold-600" aria-hidden strokeWidth={1.5} />
+            <div className="dest-card rounded-lg border border-sand-200 bg-white p-5 sm:p-6" data-scroll-reveal>
+              <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-gold-100">
+                <Route className="h-6 w-6 text-gold-600" aria-hidden strokeWidth={1.5} />
+              </span>
               <h3 className="mt-4 font-display text-xl text-ink">{t("itinerary")}</h3>
               {destination.itinerary?.length ? (
                 <ol className="mt-3 space-y-3 text-sm leading-7 text-muted">
@@ -247,7 +253,7 @@ export default async function DestinationDetailPage({ params }: Props) {
             <p className="mt-4 text-white/80">{t("ctaText")}</p>
           </div>
           <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
-            <ButtonLink href="/tailor-made-tours" variant="secondary" size="lg">
+            <ButtonLink href="/tailor-made-tours" variant="outline-light" size="lg">
               {t("enquire")}
             </ButtonLink>
             {whatsapp && (
@@ -266,9 +272,11 @@ export default async function DestinationDetailPage({ params }: Props) {
             <h2 id="destination-tours-title" className="mb-8 font-display text-3xl text-ink">
               {t("exploreTours")}
             </h2>
-            <div className="grid grid-cols-1 gap-7 sm:grid-cols-2 lg:grid-cols-3">
-              {tours.items.map((tour, _index, allTours) => (
-                <TourCard key={tour._id} tour={tour} hideDescription={sharedDescriptions(allTours).has(tour.shortDescription?.trim() ?? "")} />
+            <div className="grid-center-last grid grid-cols-1 gap-7 sm:grid-cols-2 lg:grid-cols-3">
+              {tours.items.map((tour, index, allTours) => (
+                <div key={tour._id} {...reveal3d(index)}>
+                  <TourCard tour={tour} hideDescription={sharedDescriptions(allTours).has(tour.shortDescription?.trim() ?? "")} />
+                </div>
               ))}
             </div>
           </div>

@@ -12,6 +12,7 @@ import { SocialIcons } from "@/components/ui/icons";
 import { VehicleCard } from "@/components/cards/VehicleCard";
 import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 import { VehicleGallery } from "@/components/site/VehicleGallery";
+import { reveal3d } from "@/lib/reveal";
 import { TrackView } from "@/components/site/Analytics";
 
 // /en/vehicles/toyota-prius -> Next.js gives us the locale and the slug from the URL
@@ -125,7 +126,7 @@ export default async function VehicleDetailPage({ params }: Props) {
           {specs.length > 0 && (
             <dl className="grid grid-cols-2 gap-4 md:grid-cols-4">
               {specs.map((spec) => (
-                <div key={spec.label} className="rounded-2xl border border-forest-950/5 bg-white p-6 text-center shadow-sm">
+                <div key={spec.label} className="dest-card rounded-2xl border border-forest-950/5 bg-white p-6 text-center shadow-sm">
                   <spec.icon className="mx-auto mb-3 h-5 w-5 text-gold-600" aria-hidden />
                   <dt className="mb-1 text-caption font-bold uppercase tracking-widest text-muted">{spec.label}</dt>
                   <dd className="font-display text-lg text-forest-900">{spec.value}</dd>
@@ -183,9 +184,11 @@ export default async function VehicleDetailPage({ params }: Props) {
         <section className="border-t border-forest-950/5 bg-white py-section-sm">
           <div className="container-page">
             <h2 className="mb-10 text-h2 text-forest-900">{t("related")}</h2>
-            <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-              {data.related.map((relatedVehicle) => (
-                <VehicleCard key={relatedVehicle._id} vehicle={relatedVehicle} />
+            <div className="grid-center-last grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+              {data.related.map((relatedVehicle, index) => (
+                <div key={relatedVehicle._id} {...reveal3d(index)}>
+                  <VehicleCard vehicle={relatedVehicle} />
+                </div>
               ))}
             </div>
           </div>

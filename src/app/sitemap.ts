@@ -5,7 +5,7 @@ import { defaultLocale, locales, localeTags } from "@/i18n/routing";
 
 export const revalidate = 3600;
 
-const STATIC_PATHS = ["", "/about", "/tours", "/destinations", "/excursions", "/vehicles", "/tailor-made-tours", "/gallery", "/blog", "/reviews", "/faqs", "/contact", "/booking"];
+const STATIC_PATHS = ["", "/about", "/tours", "/destinations", "/excursions", "/vehicles", "/tailor-made-tours", "/gallery", "/blog", "/reels", "/reviews", "/faqs", "/contact", "/booking"];
 
 function entry(path: string, lastModified?: string, priority = 0.6): MetadataRoute.Sitemap[number] {
   return {

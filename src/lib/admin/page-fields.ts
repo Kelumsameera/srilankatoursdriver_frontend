@@ -183,6 +183,7 @@ export function sectionForm(type: string): FormSection[] {
                     options: [
                       { value: "grid", label: "Grid of cards" },
                       { value: "split", label: "Featured tour band (first tour large, dark green)" },
+                      { value: "staggered", label: "Staggered tall photo cards (3 at different heights)" },
                     ],
                   },
                 ] as FieldDef[])

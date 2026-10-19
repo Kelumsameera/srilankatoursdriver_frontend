@@ -8,6 +8,7 @@ const schemaNames: Record<string, SchemaName> = {
   tours: "tourCreate", destinations: "destinationCreate", excursions: "excursionCreate", vehicles: "vehicleCreate",
   gallery: "galleryCreate", blog: "blogCreate", reviews: "reviewCreate", testimonials: "reviewCreate", faqs: "faqCreate",
   hero: "heroCreate", navigation: "navigationCreate", seo: "seoMetadataCreate", "guest-shorts": "guestShortCreate",
+  comments: "commentCreate", stories: "storyCreate",
 };
 
 describe("admin CMS form/API contracts (no database writes)", () => {
@@ -22,7 +23,8 @@ describe("admin CMS form/API contracts (no database writes)", () => {
         if (!field.required || values[field.name]) continue;
         values[field.name] = field.type === "number" ? 1 : field.type === "media"
           ? { publicId: "qa/image", url: "https://example.com/image.jpg", resourceType: "image" }
-          : field.type === "url" ? "https://www.youtube.com/watch?v=dQw4w9WgXc" : "audit-content";
+          : field.type === "url" ? "https://www.youtube.com/watch?v=dQw4w9WgXc"
+          : field.type === "relation" ? "0123456789abcdef01234567" : "audit-content";
       }
       if (key === "gallery") values.media = { publicId: "qa/image", url: "https://example.com/image.jpg", resourceType: "image" };
       const payload = { ...fromFormValues(fields, values), ...resource.fixedValues };

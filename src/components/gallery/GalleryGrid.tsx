@@ -7,6 +7,7 @@ import type { GalleryItem } from "@/types/cms";
 import { cn } from "@/lib/utils";
 import { videoPoster, videoUrl } from "@/lib/cloudinary-loader";
 import { Marquee } from "@/components/ui/Marquee";
+import { reveal3d } from "@/lib/reveal";
 
 interface Props {
   items: GalleryItem[];
@@ -115,7 +116,7 @@ export function GalleryGrid({ items, labels, filters, variant = "masonry" }: Pro
       ) : (
         <ul className={cn(variant === "masonry" ? "columns-2 gap-3 sm:gap-4 md:columns-3 lg:columns-4" : "grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4")} data-testid="gallery-grid">
           {shown.map((item, i) => (
-            <li key={item._id} className={cn("break-inside-avoid", variant === "masonry" && "mb-3 sm:mb-4")}>
+            <li key={item._id} className={cn("break-inside-avoid", variant === "masonry" && "mb-3 sm:mb-4")} {...reveal3d(i, 4)}>
               {tile(item, i)}
             </li>
           ))}

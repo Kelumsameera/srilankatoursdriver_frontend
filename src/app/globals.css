@@ -168,7 +168,10 @@ html[data-site="public"] main section:is(.bg-sand-50, .bg-sand-100, .bg-forest-8
    provide their own contact actions, so the two floating controls stay out of the small-screen flow. */
 @media (max-width: 639px) {
   html[data-site="public"] body:has(form) [data-testid="currency-toggle"],
-  html[data-site="public"] body:has(form) [data-testid="whatsapp-float"] {
+  html[data-site="public"] body:has(form) [data-testid="whatsapp-float"],
+  /* The reels player has its own buttons on the right edge of each video */
+  html[data-site="public"] body:has([data-reels]) [data-testid="currency-toggle"],
+  html[data-site="public"] body:has([data-reels]) [data-testid="whatsapp-float"] {
     display: none;
   }
 }
@@ -188,6 +191,12 @@ html[data-site="public"] main section:is(.bg-sand-50, .bg-sand-100, .bg-forest-8
   font-weight: 500;
   line-height: 1.2;
   color: rgb(255 255 255 / 0.9);
+}
+/* Tall tour cards have their text at the bottom, so the label sits in the top corner */
+.tall-tour-card [data-illustrative]::after {
+  inset-block-start: 1rem;
+  inset-block-end: auto;
+  inset-inline-end: 1rem;
 }
 [data-illustrative="top"]::after {
   inset-block-start: 6rem;
@@ -384,13 +393,52 @@ html[data-site="public"] main section:is(.bg-sand-50, .bg-sand-100, .bg-forest-8
   }
 }
 
+/* Sections rise in with a slight 3D tilt (the bottom edge leans back, then stands up). */
 html.motion-ready [data-scroll-reveal]:not(.is-visible) {
   opacity: 0;
-  transform: translateY(18px);
+  transform: perspective(1600px) translateY(28px) rotateX(5deg);
 }
 
 [data-scroll-reveal] {
-  transition: opacity 700ms cubic-bezier(0.22, 1, 0.36, 1), transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+  transform-origin: 50% 100%;
+  transition: opacity 700ms cubic-bezier(0.22, 1, 0.36, 1), transform 900ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+/* 3-column card grids: a last card alone in its row sits in the middle column instead of on the left. */
+@media (width >= 64rem) {
+  .grid-center-last > :last-child:nth-child(3n + 1) {
+    grid-column-start: 2;
+  }
+  /* Two cards in the last row: move both half a column (plus half the ~28px gap) towards the middle */
+  .grid-center-last > :nth-last-child(2):nth-child(3n + 1),
+  .grid-center-last > :last-child:nth-child(3n + 2) {
+    position: relative;
+    inset-inline-start: calc(50% + 0.875rem);
+  }
+}
+
+/* Depth photos (CmsImage `depth`): the photo is a little bigger than its frame and drifts by --depth-y while
+   scrolling (set by components/ui/DepthScroll.tsx), so it looks further away than the card. Hover still zooms. */
+html.depth-ready [data-depth-img] > img {
+  scale: 1.14;
+  translate: 0 var(--depth-y, 0px);
+  transition: scale 700ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: translate;
+}
+html.depth-ready .group:hover [data-depth-img] > img {
+  scale: 1.2;
+}
+
+/* Cards (data-scroll-reveal="3d", set by reveal3d() in lib/reveal.ts) tip up from lying back, one after another
+   in each row. */
+html.motion-ready [data-scroll-reveal="3d"]:not(.is-visible) {
+  opacity: 0;
+  transform: perspective(1100px) translateY(56px) rotateX(22deg) scale(0.94);
+}
+
+[data-scroll-reveal="3d"] {
+  transition: opacity 800ms cubic-bezier(0.22, 1, 0.36, 1), transform 1000ms cubic-bezier(0.16, 1, 0.3, 1);
   transition-delay: var(--reveal-delay, 0ms);
 }
 

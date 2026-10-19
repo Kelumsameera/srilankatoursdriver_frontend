@@ -24,13 +24,15 @@ interface Props {
   markIllustrative?: boolean;
   /** Shown (in the display font) on the neutral placeholder when there is no image, e.g. the destination name. */
   placeholderName?: string;
+  /** The photo drifts inside the frame while scrolling, for a 3D look (see DepthScroll). */
+  depth?: boolean;
 }
 
 /**
  * Responsive Cloudinary image (via the custom next/image loader) inside a positioned wrapper.
  * When the admin hasn't uploaded an image yet, an on-brand placeholder is shown instead of a broken image.
  */
-export function CmsImage({ media, alt, sizes = "100vw", preload, loading, className, wrapperClassName, fallbackLabel, objectPosition, markIllustrative = true, placeholderName }: Props) {
+export function CmsImage({ media, alt, sizes = "100vw", preload, loading, className, wrapperClassName, fallbackLabel, objectPosition, markIllustrative = true, placeholderName, depth }: Props) {
   const url = media?.resourceType === "video" ? undefined : media?.url;
   // `cn` doesn't de-duplicate Tailwind classes: adding "relative" next to a caller's "absolute inset-0"
   // lets "relative" win and the background image collapses to 0×0, so only default the position.
@@ -40,6 +42,7 @@ export function CmsImage({ media, alt, sizes = "100vw", preload, loading, classN
       className={cn(!positioned && "relative", "overflow-hidden bg-forest-800", wrapperClassName)}
       // Visible "Illustrative image" badge (text from --illustrative-label, see globals.css).
       data-illustrative={markIllustrative && isIllustrative(url, media?.alt) ? "" : undefined}
+      data-depth-img={depth && url ? "" : undefined}
     >
       {url ? (
         <Image

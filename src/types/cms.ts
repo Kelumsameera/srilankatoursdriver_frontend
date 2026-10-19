@@ -253,6 +253,28 @@ export interface GalleryItem {
   featured?: boolean;
 }
 
+/** A travel story shared by a website guest (published ones only on the public site) */
+export interface Story {
+  _id: string;
+  authorName: string;
+  title: string;
+  text: string;
+  place?: string;
+  media: MediaAsset[];
+  featured?: boolean;
+  publishedAt?: string;
+  createdAt?: string;
+  /** Only in the guest's own list ("my stories") */
+  status?: "pending" | "published" | "rejected";
+  likeCount?: number;
+  commentCount?: number;
+}
+
+/** One post in the community feed: a guest story or a blog article (with like / comment counts) */
+export type FeedItem =
+  | ({ kind: "story" } & Story)
+  | ({ kind: "article"; likeCount?: number; commentCount?: number } & BlogPost);
+
 export interface BlogPost {
   _id: string;
   title: string;

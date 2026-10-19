@@ -55,8 +55,8 @@ export async function OfferSection({ section, ctx }: SectionProps) {
               {section.price && (
                 <div className="mt-10 text-center max-sm:mt-5 lg:text-start">
                   <p className="text-muted">{tOffer("priceLabel")}</p>
-                  <p className="font-display text-5xl text-forest-800 max-sm:text-4xl lg:text-6xl">{section.price}</p>
-                  {section.priceNote && <p className="mb-6 text-muted max-sm:mb-4 max-sm:text-sm">{section.priceNote}</p>}
+                  <p className="mt-1 font-display text-5xl text-forest-800 max-sm:text-4xl lg:text-6xl">{section.price}</p>
+                  {section.priceNote && <p className="mb-6 mt-2 text-muted max-sm:mb-4 max-sm:text-sm">{section.priceNote}</p>}
                 </div>
               )}
               <div className={cn("flex justify-center lg:justify-start", !section.price && "mt-10 max-sm:mt-5")}>

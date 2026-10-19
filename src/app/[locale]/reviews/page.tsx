@@ -4,6 +4,7 @@ import { getList, getPage, getSiteSettings } from "@/lib/api/server";
 import { buildMetadata } from "@/lib/seo";
 import { EmptyState, PageHero } from "@/components/ui/misc";
 import { ReviewCard } from "@/components/cards/cards";
+import { reveal3d } from "@/lib/reveal";
 import { ReviewForm } from "@/components/forms/ReviewForm";
 import { Pagination, pageParam, type SearchParams } from "@/components/site/listing";
 import { PageRenderer, hasActiveHero } from "@/components/sections/PageRenderer";
@@ -33,9 +34,11 @@ export default async function ReviewsPage({ params, searchParams }: Props) {
       <section className="py-14 sm:py-20">
         <div className="container-page">
           {list?.items.length ? (
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {list.items.map((r) => (
-                <ReviewCard key={r._id} review={r} />
+            <div className="grid-center-last grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {list.items.map((r, index) => (
+                <div key={r._id} {...reveal3d(index)}>
+                  <ReviewCard review={r} />
+                </div>
               ))}
             </div>
           ) : (

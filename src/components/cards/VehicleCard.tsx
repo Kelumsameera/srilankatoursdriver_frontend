@@ -28,6 +28,7 @@ export function VehicleCard({ vehicle }: { vehicle: Vehicle }) {
           alt={vehicle.images?.[0]?.alt || vehicle.name}
           sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
           wrapperClassName="aspect-[4/3] bg-sand-100"
+          depth
           className="transition-transform duration-700 group-hover:scale-105"
         />
         {vehicle.type && (

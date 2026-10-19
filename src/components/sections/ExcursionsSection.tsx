@@ -1,6 +1,7 @@
 import type { Excursion } from "@/types/cms";
 import { Section } from "@/components/ui/misc";
 import { ExcursionCard } from "@/components/cards/ExcursionCard";
+import { reveal3d } from "@/lib/reveal";
 import { Heading, sectionData, sectionTheme, type SectionProps } from "./sectionParts";
 
 // "excursions" section: a grid of excursion cards
@@ -13,8 +14,10 @@ export function ExcursionsSection({ section, ctx }: SectionProps) {
     <Section theme={theme}>
       <Heading section={section} light={light} ctx={ctx} />
       <div className="grid grid-cols-1 gap-grid sm:grid-cols-2 lg:grid-cols-3">
-        {excursions.map((excursion) => (
-          <ExcursionCard key={excursion._id} excursion={excursion} />
+        {excursions.map((excursion, index) => (
+          <div key={excursion._id} {...reveal3d(index)}>
+            <ExcursionCard excursion={excursion} />
+          </div>
         ))}
       </div>
     </Section>

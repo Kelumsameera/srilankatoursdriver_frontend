@@ -2,6 +2,7 @@ import { cn } from "@/lib/utils";
 import { Markdown } from "@/components/ui/Markdown";
 import { Section } from "@/components/ui/misc";
 import { FeatureIcon } from "@/components/ui/icons";
+import { reveal3d } from "@/lib/reveal";
 import { Heading, sectionTheme, type SectionProps } from "./sectionParts";
 
 // "features" section: a grid of icon cards (3 per row, or 4 when there are 4 or more)
@@ -19,6 +20,7 @@ export function FeaturesSection({ section, ctx }: SectionProps) {
         {items.map((item, i) => (
           <li
             key={`${item.title}-${i}`}
+            {...reveal3d(i, items.length >= 4 ? 4 : 3)}
             className={cn("rounded-3xl p-7 transition-colors", light ? "bg-white/5 hover:bg-white/10" : "bg-white shadow-card")}
           >
             <span className={cn("mb-5 inline-flex h-14 w-14 items-center justify-center rounded-2xl", light ? "bg-gold-500/15" : "bg-forest-50")}>

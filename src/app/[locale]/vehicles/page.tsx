@@ -12,6 +12,7 @@ import type { Vehicle } from "@/types/cms";
 import { EmptyState, PageHero } from "@/components/ui/misc";
 import { RotatingText } from "@/components/ui/RotatingText";
 import { VehicleCard } from "@/components/cards/VehicleCard";
+import { reveal3d } from "@/lib/reveal";
 import {
   PageRenderer,
   hasActiveHero,
@@ -127,9 +128,11 @@ export default async function VehiclesPage({ params }: Props) {
                     {tVehicle("fleetCount", { count: group.vehicles.length })}
                   </span>
                 </div>
-                <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-                  {group.vehicles.map((vehicle) => (
-                    <VehicleCard key={vehicle._id} vehicle={vehicle} />
+                <div className="grid-center-last grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+                  {group.vehicles.map((vehicle, index) => (
+                    <div key={vehicle._id} {...reveal3d(index)}>
+                      <VehicleCard vehicle={vehicle} />
+                    </div>
                   ))}
                 </div>
               </div>
