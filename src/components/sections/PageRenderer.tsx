@@ -161,7 +161,7 @@ export async function PageRenderer({
           data-section={section.type}
           // The hero contains the LCP text and image. It must paint at full opacity immediately instead of
           // waiting for the below-the-fold reveal observer to mark it visible.
-          data-scroll-reveal={section.type === "hero" ? undefined : true}
+          data-scroll-reveal={section.type === "hero" || (section.type === "popularTours" && section.settings?.layout !== "split") ? undefined : true}
           className={cn(preview && section.enabled === false && "relative opacity-60 outline-2 outline-dashed outline-gold-500")}
         >
           {content}

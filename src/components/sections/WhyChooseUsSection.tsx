@@ -13,16 +13,16 @@ function OverlapGallery({ photos }: { photos: MediaAsset[] }) {
   const [a, b, c] = photos;
   return (
     <div className="relative mx-auto w-full max-w-[28rem] pb-12 pt-4 sm:pb-16 sm:pt-6 xl:max-w-xl" aria-hidden>
-      <div className="relative z-0 w-[74%] -rotate-2 rounded-2xl bg-white p-2 shadow-card sm:p-2.5">
+      <div data-parallax="-44" className="relative z-0 w-[74%] -rotate-2 rounded-2xl bg-white p-2 shadow-card sm:p-2.5">
         <CmsImage media={a} alt="" sizes="(min-width: 1280px) 420px, (min-width: 768px) 33vw, 74vw" wrapperClassName="aspect-[5/6] rounded-xl" />
       </div>
       {b && (
-        <div className="absolute inset-e-0 top-0 z-10 w-[48%] rotate-3 rounded-2xl bg-white p-2 shadow-card sm:p-2.5">
+        <div data-parallax="36" className="absolute inset-e-0 top-0 z-10 w-[48%] rotate-3 rounded-2xl bg-white p-2 shadow-card sm:p-2.5">
           <CmsImage media={b} alt="" sizes="(min-width: 1024px) 20vw, 46vw" wrapperClassName="aspect-[4/3] rounded-xl" />
         </div>
       )}
       {c && (
-        <div className="absolute bottom-0 inset-e-[3%] z-20 w-[52%] -rotate-[4deg] rounded-2xl bg-white p-2 shadow-card sm:p-2.5">
+        <div data-parallax="-24" className="absolute bottom-0 inset-e-[3%] z-20 w-[52%] -rotate-[4deg] rounded-2xl bg-white p-2 shadow-card sm:p-2.5">
           <CmsImage media={c} alt="" sizes="(min-width: 1024px) 22vw, 50vw" wrapperClassName="aspect-[4/3] rounded-xl" />
         </div>
       )}

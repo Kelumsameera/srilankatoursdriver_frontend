@@ -52,7 +52,7 @@ function buildSchema(destination: Destination, locale: string, cover: MediaAsset
     description: stripMarkdown(destination.shortDescription || destination.description || "", 300),
     url: `${SITE_URL}/${locale}/destinations/${destination.slug}`,
     // AI / illustrative images are never sent to Google as a real photo
-    ...(cover?.url && !isIllustrative(cover.url) ? { image: cover.url } : {}),
+    ...(cover?.url && !isIllustrative(cover.url, cover.alt) ? { image: cover.url } : {}),
     ...(validCoordinates(destination.location) ? { geo: { "@type": "GeoCoordinates", latitude: destination.location?.lat, longitude: destination.location?.lng } } : {}),
     ...(destination.featuredExperiences?.length
       ? {

@@ -37,8 +37,10 @@ export async function TailorMadeSection({ section, ctx }: SectionProps) {
     <section className={cn("relative overflow-x-clip", light ? "bg-forest-900 text-white" : "bg-sand-50")}>
       <div className="grid lg:grid-cols-2">
         {/* Full-bleed photo with a wavy edge towards the content (design). */}
-        <div className="relative min-h-[18rem] sm:min-h-[24rem] lg:min-h-[36rem]">
-          <CmsImage media={photo} alt={photo.alt || section.title || ""} sizes="(min-width: 1024px) 50vw, 100vw" wrapperClassName="absolute inset-0" />
+        <div className="relative min-h-[18rem] overflow-hidden sm:min-h-[24rem] lg:min-h-[36rem]">
+          <div data-parallax="-60" className="absolute -inset-y-16 inset-x-0">
+            <CmsImage media={photo} alt={photo.alt || section.title || ""} sizes="(min-width: 1024px) 50vw, 100vw" wrapperClassName="absolute inset-0" />
+          </div>
           <OrganicEdge className={cn("inset-e-0 hidden lg:block rtl:-scale-x-100", light ? "text-forest-900" : "text-sand-50")} />
           <PaperEdge className={cn("lg:hidden", light ? "text-forest-900" : "text-sand-50")} />
           {section.badge && (

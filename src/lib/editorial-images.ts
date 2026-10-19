@@ -1,5 +1,10 @@
 import type { Destination, MediaAsset, Tour } from "@/types/cms";
 
+/** Generated CMS covers retain their disclosure in alt text even when hosted on Cloudinary. */
+export function isIllustrative(url?: string, alt?: string): boolean {
+  return Boolean(url?.startsWith("/images/editorial/") || /^AI-generated illustrative\b/i.test(alt ?? ""));
+}
+
 /** AI-generated illustrative media. CMS uploads always take precedence over these local fallbacks. */
 export const editorialImages = {
   hero: {

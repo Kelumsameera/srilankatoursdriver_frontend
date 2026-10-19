@@ -1,3 +1,4 @@
+import { isIllustrative } from "@/lib/editorial-images";
 import type { Metadata } from "next";
 import { SITE_URL } from "@/lib/config";
 import { cloudinaryUrl } from "@/lib/cloudinary-loader";
@@ -17,9 +18,6 @@ export function alternates(path: string, locale: string) {
     },
   };
 }
-
-/** AI-generated fallback art (public/images/editorial) must never be used as a link-preview "photo". */
-const isEditorial = (url: string) => url.startsWith("/images/editorial/");
 
 function ogImage(media?: MediaAsset | null) {
   if (!media?.url) return undefined;
@@ -63,7 +61,7 @@ export async function buildMetadata(input: BuildInput): Promise<Metadata> {
     ? s.ogImage
     : route?.ogImage?.url
       ? route.ogImage
-      : input.image?.url && !isEditorial(input.image.url)
+      : input.image?.url && !isIllustrative(input.image.url, input.image.alt)
         ? input.image
         : global?.ogImage?.url
           ? global.ogImage

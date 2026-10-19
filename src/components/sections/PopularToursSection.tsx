@@ -1,4 +1,5 @@
 import { getLocale, getTranslations } from "next-intl/server";
+import type { CSSProperties } from "react";
 import { ArrowRight, Calendar, MapPin } from "lucide-react";
 import type { PageSection, Tour } from "@/types/cms";
 import { formatPrice } from "@/lib/utils";
@@ -22,9 +23,9 @@ async function FeaturedTourBand({ section, tour }: { section: PageSection; tour:
       <Botanical className="text-white opacity-[0.05]" />
       <div className="container-page relative grid items-center gap-14 lg:grid-cols-2">
         {/* PHOTO + round close-up */}
-        <div className="relative">
+        <div data-parallax="-32" className="relative">
           <CmsImage media={tour.heroMedia} alt={tour.heroMedia?.alt || tour.title} sizes="(min-width: 1024px) 50vw, 100vw" wrapperClassName="aspect-[4/3] rounded-[2rem] shadow-2xl" />
-          <div className="absolute -inset-e-4 -top-6 h-32 w-32 overflow-hidden rounded-full border-4 border-gold-500 shadow-xl sm:h-40 sm:w-40" aria-hidden>
+          <div data-parallax="48" className="absolute -inset-e-4 -top-6 h-32 w-32 overflow-hidden rounded-full border-4 border-gold-500 shadow-xl sm:h-40 sm:w-40" aria-hidden>
             <CmsImage media={tour.heroMedia} alt="" sizes="160px" wrapperClassName="absolute inset-0" className="scale-150" />
           </div>
         </div>
@@ -96,10 +97,14 @@ export function PopularToursSection({ section, ctx }: SectionProps) {
   return (
     <Section theme={theme} className="relative overflow-hidden">
       {!light && <Botanical />}
-      <Heading section={section} light={light} ctx={ctx} />
-      <div className="relative grid grid-cols-1 gap-grid sm:grid-cols-2 lg:grid-cols-3">
-        {tours.map((tour) => (
-          <TourCard key={tour._id} tour={tour} hideDescription={shared.has(tour.shortDescription?.trim() ?? "")} />
+      <div data-scroll-reveal>
+        <Heading section={section} light={light} ctx={ctx} />
+      </div>
+      <div className={`relative grid grid-cols-1 gap-grid sm:grid-cols-2 ${tours.length === 2 ? "lg:grid-cols-2" : "lg:grid-cols-3"}`}>
+        {tours.map((tour, index) => (
+          <div key={tour._id} data-scroll-reveal style={{ "--reveal-delay": `${(index % 3) * 90}ms` } as CSSProperties}>
+            <TourCard tour={tour} hideDescription={shared.has(tour.shortDescription?.trim() ?? "")} />
+          </div>
         ))}
       </div>
     </Section>

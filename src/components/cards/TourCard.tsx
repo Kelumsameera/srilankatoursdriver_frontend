@@ -39,7 +39,7 @@ export function TourCard({ tour, hideDescription }: { tour: Tour; hideDescriptio
   const cover = tour.heroMedia?.url && tour.heroMedia.resourceType !== "video" ? tour.heroMedia : tourImage(tour);
 
   return (
-    <article className="group relative flex h-full flex-col overflow-hidden rounded-2xl bg-white shadow-card transition-transform duration-500 hover:-translate-y-1">
+    <article data-depth-card className="group relative flex h-full flex-col overflow-hidden rounded-2xl bg-white shadow-card transition-transform duration-500 hover:-translate-y-1">
       {/* IMAGE */}
       <CmsImage
         media={cover}

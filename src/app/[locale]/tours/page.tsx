@@ -42,6 +42,7 @@ export default async function ToursPage({ params, searchParams }: Props) {
     getSiteSettings(locale),
     getTranslations("common"),
   ]);
+  const selectedCategory = categories?.find((item) => item.slug === category || item._id === category);
   const repeatedDescriptions = sharedDescriptions(tourList?.items ?? []);
 
   return (
@@ -53,6 +54,12 @@ export default async function ToursPage({ params, searchParams }: Props) {
       <section className="py-section">
         <div className="container-page">
           <CategoryFilter basePath="/tours" categories={categories ?? []} active={category} />
+          {selectedCategory?.description && (
+            <div className="mb-8 max-w-4xl">
+              <h2 className="font-display text-3xl text-forest-900">{selectedCategory.name}</h2>
+              <p className="mt-3 text-base leading-7 text-muted">{selectedCategory.description}</p>
+            </div>
+          )}
           {tourList?.items.length ? (
             <div className="grid grid-cols-1 gap-grid sm:grid-cols-2 lg:grid-cols-3" data-testid="tour-list">
               {tourList.items.map((tour) => (

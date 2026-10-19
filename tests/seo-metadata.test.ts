@@ -19,3 +19,9 @@ describe("page SEO fields", () => {
     expect(metadata.title).toBe("Visible heading");
   });
 });
+
+
+it("excludes generated Cloudinary tour covers from documentary link preview images", async () => {
+  const metadata = await buildMetadata({ locale: "en", path: "/tours/golf", image: { url: "https://res.cloudinary.com/example/image/upload/file.webp", alt: "AI-generated illustrative golf course", resourceType: "image" } });
+  expect(metadata.openGraph?.images).toBeUndefined();
+});

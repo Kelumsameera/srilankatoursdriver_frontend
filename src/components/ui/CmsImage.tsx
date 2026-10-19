@@ -1,4 +1,6 @@
 import Image from "next/image";
+import { isIllustrative } from "@/lib/editorial-images";
+export { isIllustrative } from "@/lib/editorial-images";
 import { Mountain } from "lucide-react";
 import type { MediaAsset } from "@/types/cms";
 import { cn } from "@/lib/utils";
@@ -24,9 +26,6 @@ interface Props {
   placeholderName?: string;
 }
 
-/** AI-generated fallback art (see lib/editorial-images) – never presented as a real photo. */
-export const isIllustrative = (url?: string) => Boolean(url?.startsWith("/images/editorial/"));
-
 /**
  * Responsive Cloudinary image (via the custom next/image loader) inside a positioned wrapper.
  * When the admin hasn't uploaded an image yet, an on-brand placeholder is shown instead of a broken image.
@@ -40,7 +39,7 @@ export function CmsImage({ media, alt, sizes = "100vw", preload, loading, classN
     <div
       className={cn(!positioned && "relative", "overflow-hidden bg-forest-800", wrapperClassName)}
       // Visible "Illustrative image" badge (text from --illustrative-label, see globals.css).
-      data-illustrative={markIllustrative && isIllustrative(url) ? "" : undefined}
+      data-illustrative={markIllustrative && isIllustrative(url, media?.alt) ? "" : undefined}
     >
       {url ? (
         <Image
