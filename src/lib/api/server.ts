@@ -168,6 +168,7 @@ export async function getList<K extends ListKey>(key: K, params: ListParams): Pr
     );
     return { items: data, meta: meta ?? { page: 1, limit: data.length, total: data.length, totalPages: 1 } };
   } catch (err) {
+    unstable_rethrow(err);
     console.warn("[api]", (err as Error).message);
     return null;
   }
@@ -194,6 +195,7 @@ export const getDetail = cache(
       });
       return data?.item ? { item: data.item, related: data.related ?? [] } : null;
     } catch (err) {
+      unstable_rethrow(err);
       if (err instanceof ApiRequestError && (err.status === 404 || err.status === 400)) return null;
       console.error("[api]", (err as Error).message);
       throw new Error("Content is temporarily unavailable");

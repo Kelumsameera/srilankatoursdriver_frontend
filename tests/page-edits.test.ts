@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { getPage } from "@/lib/api/server";
+import { getDetail, getList, getPage } from "@/lib/api/server";
 import { SECTION_TYPES, pageForm, sectionForm } from "@/lib/admin/page-fields";
 import { allFields, fromFormValues, toFormValues } from "@/components/admin/form/values";
 import { pageUpdate, sectionUpdate } from "../../backend/src/validations/content";
@@ -23,6 +23,13 @@ describe("published CMS edits", () => {
     const signal = Object.assign(new Error("Dynamic server usage"), { digest: "DYNAMIC_SERVER_USAGE" });
     vi.stubGlobal("fetch", vi.fn().mockRejectedValue(signal));
     await expect(getPage("home", "en")).rejects.toBe(signal);
+  });
+
+  it("preserves render signals through destination detail and list helpers", async () => {
+    const signal = Object.assign(new Error("Dynamic server usage"), { digest: "DYNAMIC_SERVER_USAGE" });
+    vi.stubGlobal("fetch", vi.fn().mockRejectedValue(signal));
+    await expect(getDetail("destinations", "anuradhapura", "en")).rejects.toBe(signal);
+    await expect(getList("destinations", { locale: "en" })).rejects.toBe(signal);
   });
 
   it("serializes page text, media and SEO for the save endpoint", () => {

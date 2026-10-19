@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { connection } from "next/server";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { CalendarDays, Car, Route } from "lucide-react";
-import { getDetail, getList, getNearbyDestinations, getPage, getSiteSettings, getSitemapData } from "@/lib/api/server";
+import { getDetail, getList, getNearbyDestinations, getPage, getSiteSettings } from "@/lib/api/server";
 import { buildMetadata, jsonLd } from "@/lib/seo";
 import { SITE_URL } from "@/lib/config";
-import { defaultLocale } from "@/i18n/routing";
 import { CmsImage, isIllustrative } from "@/components/ui/CmsImage";
 import { ButtonLink } from "@/components/ui/Button";
 import { Markdown } from "@/components/ui/Markdown";
@@ -25,20 +25,10 @@ import type { Destination, MediaAsset } from "@/types/cms";
 // /en/destinations/kandy -> Next.js gives us { locale: "en", slug: "kandy" }
 type Props = { params: Promise<{ locale: string; slug: string }> };
 
-// Next.js keeps the built page for 300 seconds (5 minutes), then builds a fresh copy in the background.
-// Saving a destination in the admin also refreshes it straight away.
-export const revalidate = 300;
-
-// generateStaticParams tells Next.js which pages to build ahead of time ("npm run build").
-// We build the English page of every published destination; other languages are built on the first visit.
-export async function generateStaticParams({ params }: { params: { locale: string } }) {
-  if (params.locale !== defaultLocale) return [];
-  const sitemap = await getSitemapData();
-  return (sitemap?.destinations ?? []).map((destination) => ({ slug: destination.slug }));
-}
-
+// CMS page content is read per request; destination API responses keep their tagged cache.
 // generateMetadata sets the <title>, description and share image for this destination
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  await connection();
   const { locale, slug } = await params;
   const data = await getDetail("destinations", slug, locale);
   if (!data) return {};
@@ -75,6 +65,7 @@ function buildSchema(destination: Destination, locale: string, cover: MediaAsset
 
 // Server component: everything below runs on the server and the visitor gets ready-made HTML
 export default async function DestinationDetailPage({ params }: Props) {
+  await connection();
   const { locale, slug } = await params;
   // Tells next-intl which language this page is rendered in
   setRequestLocale(locale);

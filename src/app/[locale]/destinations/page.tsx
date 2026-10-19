@@ -114,6 +114,7 @@ export default async function DestinationsPage({
           {destinationList?.items.length ? (
             <DestinationsBrowser
               destinations={destinationList.items}
+              eagerFirstImage={!pageData?.page.heroImage?.url && !(pageData && hasActiveHero(pageData.sections))}
               initialCategory={param(query, "category")}
             />
           ) : (

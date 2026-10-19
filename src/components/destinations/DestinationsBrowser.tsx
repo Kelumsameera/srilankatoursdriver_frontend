@@ -12,7 +12,7 @@ import { destinationCover } from "@/lib/editorial-images";
 
 // Category buttons + the grid of destination cards.
 // The chosen category is kept in the URL (?category=beach) so a filtered list can be shared or reloaded.
-export function DestinationsBrowser({ destinations, initialCategory }: { destinations: Destination[]; initialCategory?: string }) {
+export function DestinationsBrowser({ destinations, initialCategory, eagerFirstImage = false }: { destinations: Destination[]; initialCategory?: string; eagerFirstImage?: boolean }) {
   const t = useTranslations("destination");
   const listRef = useRef<HTMLUListElement>(null);
   const listId = useId();
@@ -115,6 +115,7 @@ export function DestinationsBrowser({ destinations, initialCategory }: { destina
                   {/* IMAGE */}
                   <CmsImage
                     media={cover}
+                    loading={eagerFirstImage && index === 0 ? "eager" : undefined}
                     alt={cover?.alt || destination.name}
                     placeholderName={destination.name}
                     sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 400px"
