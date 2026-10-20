@@ -106,7 +106,7 @@ export default async function BlogPostPage({ params }: Props) {
 
       {/* ARTICLE: excerpt, content, tags */}
       <div className="container-page max-w-3xl py-14">
-        {post.excerpt && <p className="mb-8 font-display text-xl leading-relaxed text-forest-800">{post.excerpt}</p>}
+        {post.excerpt && <p className="mb-8 font-display text-xl leading-relaxed text-brand">{post.excerpt}</p>}
         <Markdown content={post.content} />
         {post.tags?.length ? (
           <ul className="mt-10 flex flex-wrap gap-2">
@@ -126,7 +126,7 @@ export default async function BlogPostPage({ params }: Props) {
       {data.related.length > 0 && (
         <section className="bg-sand-100 py-section-sm">
           <div className="container-page">
-            <h2 className="mb-10 text-h2 text-forest-900">{t("related")}</h2>
+            <h2 className="mb-10 text-h2 text-heading">{t("related")}</h2>
             <div className="grid grid-cols-1 gap-10 md:grid-cols-3">
               {data.related.map((relatedPost) => (
                 <BlogCard key={relatedPost._id} post={relatedPost} />

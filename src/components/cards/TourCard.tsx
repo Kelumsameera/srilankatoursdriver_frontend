@@ -39,7 +39,7 @@ export function TourCard({ tour, hideDescription }: { tour: Tour; hideDescriptio
   const cover = tour.heroMedia?.url && tour.heroMedia.resourceType !== "video" ? tour.heroMedia : tourImage(tour);
 
   return (
-    <article data-depth-card className="group relative flex h-full flex-col overflow-hidden rounded-2xl bg-white shadow-card transition-transform duration-500 hover:-translate-y-1">
+    <article data-depth-card className="group relative flex h-full flex-col overflow-hidden rounded-2xl bg-surface shadow-card transition-transform duration-500 hover:-translate-y-1">
       {/* IMAGE */}
       <CmsImage
         media={cover}
@@ -52,7 +52,7 @@ export function TourCard({ tour, hideDescription }: { tour: Tour; hideDescriptio
 
       <div className="flex flex-1 flex-col p-5">
         {/* TITLE */}
-        <h3 className="font-display text-xl leading-snug text-forest-900">
+        <h3 className="font-display text-xl leading-snug text-heading">
           {/* Stretched link: the whole card opens the tour. */}
           <CmsLink href={`/tours/${tour.slug}`} className="after:absolute after:inset-0 focus:outline-none">
             {tour.title}
@@ -79,7 +79,7 @@ export function TourCard({ tour, hideDescription }: { tour: Tour; hideDescriptio
                 {tour.priceNote && <span className="block text-xs">{tour.priceNote}</span>}
               </p>
             ) : (
-              <p className="text-sm font-medium text-forest-700">{tour.priceNote || tCommon("priceOnRequest")}</p>
+              <p className="text-sm font-medium text-brand-soft">{tour.priceNote || tCommon("priceOnRequest")}</p>
             )}
           </div>
           <span

@@ -19,21 +19,21 @@ export async function TransferRates({ settings, id = "rates", compact = false, c
   const columns = VEHICLES.filter((v) => rows.some((r) => typeof r[v] === "number"));
   const showDuration = rows.some((r) => r.duration);
   const showDistance = rows.some((r) => typeof r.distanceKm === "number");
-  const pill = { car: "bg-forest-50 text-forest-700", van: "bg-gold-100 text-earth-700", bus: "bg-sand-100 text-forest-800" } as const;
+  const pill = { car: "bg-forest-50 text-brand-soft", van: "bg-gold-100 text-earth-700", bus: "bg-sand-100 text-brand" } as const;
 
   return (
-    <section id={id} className={`scroll-mt-24 bg-white max-sm:[&_th]:px-3 max-sm:[&_td]:px-3 max-sm:[&_th]:py-3 max-sm:[&_td]:py-3 max-sm:[&_th]:text-xs max-sm:[&_td_span]:px-2 max-sm:[&_td_span]:text-xs ${compact ? "py-10 sm:py-12 [&_td]:py-3 [&_th]:py-3" : "py-10 sm:px-4 sm:py-20"}`} aria-labelledby={`${id}-title`} data-testid="transfer-rates">
+    <section id={id} className={`scroll-mt-24 bg-surface max-sm:[&_th]:px-3 max-sm:[&_td]:px-3 max-sm:[&_th]:py-3 max-sm:[&_td]:py-3 max-sm:[&_th]:text-xs max-sm:[&_td_span]:px-2 max-sm:[&_td_span]:text-xs ${compact ? "py-10 sm:py-12 [&_td]:py-3 [&_th]:py-3" : "py-10 sm:px-4 sm:py-20"}`} aria-labelledby={`${id}-title`} data-testid="transfer-rates">
       <div className="container-page">
         <div className={compact ? "mb-6 text-center" : "mb-6 text-center sm:mb-12"}>
           <p className="eyebrow mb-4">{cfg.subtitle || t("subtitle")}</p>
-          <h2 id={`${id}-title`} className="text-2xl text-forest-900 sm:text-4xl md:text-5xl">
+          <h2 id={`${id}-title`} className="text-2xl text-heading sm:text-4xl md:text-5xl">
             {cfg.title || t("title")}
           </h2>
           <div className="mx-auto mt-6 h-1 w-20 rounded-full bg-gold-500" aria-hidden />
         </div>
         <RatesDisclosure enabled={collapsible && rows.length > 5} more={t("showMore")} less={t("showLess")}>
-        <div role="region" aria-labelledby={`${id}-title`} tabIndex={0} className="overflow-x-auto rounded-xl sm:rounded-3xl border border-sand-200 shadow-card focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-forest-800">
-          <table className="min-w-full border-collapse bg-white text-start">
+        <div role="region" aria-labelledby={`${id}-title`} tabIndex={0} className="overflow-x-auto rounded-xl sm:rounded-3xl border border-sand-200 shadow-card focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand">
+          <table className="min-w-full border-collapse bg-surface text-start">
             <thead>
               <tr className="bg-forest-900 text-[0.7rem] uppercase tracking-widest text-white">
                 <th scope="col" className="px-6 py-5 text-start font-semibold">
@@ -59,7 +59,7 @@ export async function TransferRates({ settings, id = "rates", compact = false, c
             <tbody className="divide-y divide-sand-100">
               {rows.map((r, i) => (
                 <tr key={`${r.destination}-${i}`} className="transition-colors hover:bg-sand-50">
-                  <th scope="row" className="px-6 py-5 text-start font-display text-base font-semibold text-forest-900">
+                  <th scope="row" className="px-6 py-5 text-start font-display text-base font-semibold text-heading">
                     {r.destination}
                   </th>
                   {columns.map((v) => (

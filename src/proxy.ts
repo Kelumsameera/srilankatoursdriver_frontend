@@ -1,8 +1,11 @@
 import createMiddleware from "next-intl/middleware";
+import { defineRouting } from "next-intl/routing";
 import { NextResponse, type NextRequest } from "next/server";
-import { routing } from "./i18n/routing";
+import { isLocale, routing } from "./i18n/routing";
+import { siteLanguages } from "./i18n/site-languages";
 
-const intl = createMiddleware(routing);
+// One next-intl middleware per language setup (enabled languages + default), reused between requests.
+const intlByConfig = new Map<string, ReturnType<typeof createMiddleware>>();
 
 /** Must match the backend (middleware/security.ts → trustedProxyClientIp). */
 const PROXY_SECRET_HEADER = "x-sltd-proxy-secret";
@@ -32,10 +35,31 @@ function forwardClientIp(request: NextRequest) {
   return NextResponse.next({ request: { headers } });
 }
 
+/**
+ * Public pages: a disabled language's URL redirects to the default language; everything else goes through
+ * next-intl (remembered NEXT_LOCALE cookie → browser language → default language, limited to enabled ones).
+ */
+async function localize(request: NextRequest) {
+  const { enabled, defaultLocale } = await siteLanguages();
+  const [, first, ...rest] = request.nextUrl.pathname.split("/");
+  if (isLocale(first) && !enabled.includes(first)) {
+    const url = request.nextUrl.clone();
+    url.pathname = `/${[defaultLocale, ...rest].join("/")}`.replace(/\/$/, "") || "/";
+    return NextResponse.redirect(url);
+  }
+  const key = `${defaultLocale}|${enabled.join(",")}`;
+  let intl = intlByConfig.get(key);
+  if (!intl) {
+    intl = createMiddleware(defineRouting({ ...routing, locales: enabled, defaultLocale }));
+    intlByConfig.set(key, intl);
+  }
+  return intl(request);
+}
+
 /** Locale detection & prefixing for the public site; client-IP forwarding for proxied API calls. */
 export default function proxy(request: NextRequest) {
   if (request.nextUrl.pathname.startsWith("/api/")) return forwardClientIp(request);
-  return intl(request);
+  return localize(request);
 }
 
 export const config = {

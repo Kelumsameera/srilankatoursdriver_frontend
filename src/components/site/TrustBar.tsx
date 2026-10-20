@@ -40,13 +40,14 @@ export async function TrustBar({ settings }: { settings: SiteSettings }) {
 
   return (
     <>
+      {/* Partner logos are dark artwork, so their tiles stay light in dark mode too */}
       {(partners.length > 0 || social.length > 0) && (
-        <section className="bg-white" aria-labelledby="trust-heading" data-testid="trust-bar">
+        <section className="bg-surface" aria-labelledby="trust-heading" data-testid="trust-bar">
           <div className="h-1 w-full bg-linear-to-rrom-forest-600 via-gold-500 to-forest-600" aria-hidden />
           <div className="container-page py-7 sm:py-20">
             <div className="mb-4 text-center sm:mb-12">
               <p className="eyebrow mb-2 max-sm:text-[0.6rem] sm:mb-3">{t("accredited")}</p>
-              <h2 id="trust-heading" className="text-2xl text-forest-900 sm:text-4xl">
+              <h2 id="trust-heading" className="text-2xl text-heading sm:text-4xl">
                 {t("trustedBy")}
               </h2>
               <div className="mx-auto mt-3 h-0.5 w-12 sm:mt-5 sm:h-1 sm:w-16 rounded-full bg-gold-500" aria-hidden />
@@ -64,10 +65,10 @@ export async function TrustBar({ settings }: { settings: SiteSettings }) {
                       className="object-contain! opacity-60 grayscale transition duration-500 group-hover:opacity-100 group-hover:grayscale-0"
                     />
                   ) : (
-                    <span className="font-display text-xs text-forest-800 sm:text-lg">{p.name}</span>
+                    <span className="font-display text-xs text-brand dark:text-forest-800 sm:text-lg">{p.name}</span>
                   );
                   const cls =
-                    "group flex h-16 items-center justify-center rounded-xl border border-sand-200 bg-sand-50 p-2 sm:h-28 sm:rounded-3xl sm:p-6 transition-all duration-500 hover:-translate-y-1 hover:border-gold-400 hover:bg-white hover:shadow-card";
+                    "group flex h-16 items-center justify-center rounded-xl border border-sand-200 bg-sand-50 dark:bg-white/90 dark:hover:bg-white p-2 sm:h-28 sm:rounded-3xl sm:p-6 transition-all duration-500 hover:-translate-y-1 hover:border-gold-400 hover:bg-surface hover:shadow-card";
                   return (
                     <li key={p.name}>
                       {p.url ? (
@@ -101,7 +102,7 @@ export async function TrustBar({ settings }: { settings: SiteSettings }) {
                           href={url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="group flex items-center gap-3 rounded-2xl border border-sand-200 bg-white px-5 py-3 text-sm font-semibold text-forest-900 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-forest-800 hover:bg-forest-800 hover:text-white"
+                          className="group flex items-center gap-3 rounded-2xl border border-sand-200 bg-surface px-5 py-3 text-sm font-semibold text-heading shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-brand hover:bg-forest-800 hover:text-white"
                         >
                           <Icon className="h-5 w-5 text-forest-600 transition-colors group-hover:text-gold-400" />
                           {NETWORK_LABEL[network] ?? network}
@@ -133,7 +134,7 @@ export async function TrustBar({ settings }: { settings: SiteSettings }) {
                     href={c.href}
                     target={c.external ? "_blank" : undefined}
                     rel={c.external ? "noopener noreferrer" : undefined}
-                    className="group grid h-full grid-cols-[2.5rem_minmax(0,1fr)] items-center gap-x-3 gap-y-1 rounded-2xl border border-white/15 bg-white/5 p-4 text-start backdrop-blur sm:flex sm:flex-col sm:gap-3 sm:rounded-2xl sm:p-5 sm:text-center transition-all duration-500 hover:-translate-y-2 hover:bg-white hover:text-forest-900"
+                    className="group grid h-full grid-cols-[2.5rem_minmax(0,1fr)] items-center gap-x-3 gap-y-1 rounded-2xl border border-white/15 bg-white/5 p-4 text-start backdrop-blur sm:flex sm:flex-col sm:gap-3 sm:rounded-2xl sm:p-5 sm:text-center transition-all duration-500 hover:-translate-y-2 hover:bg-surface hover:text-heading"
                   >
                     <span className="row-span-2 flex h-10 w-10 items-center justify-center sm:h-11 sm:w-11 rounded-full bg-white/10 text-gold-400 transition-colors duration-500 group-hover:bg-forest-800">
                       {c.icon}

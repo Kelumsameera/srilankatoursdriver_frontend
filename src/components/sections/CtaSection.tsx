@@ -19,7 +19,7 @@ export function CtaSection({ section, ctx }: SectionProps) {
         <>
           <CmsImage media={media} alt="" wrapperClassName="absolute inset-0 -z-20" />
           <div className="absolute inset-0 -z-10 bg-linear-to-b from-forest-950/55 via-forest-950/65 to-forest-950/80" />
-          <PaperEdge flip className="text-sand-50" />
+          <PaperEdge flip className="text-cream" />
         </>
       )}
       {!hasMedia && light && <div className="absolute -inset-s-40 -top-40 -z-10 h-120 w-120 rounded-full bg-forest-600/30 blur-3xl" aria-hidden />}

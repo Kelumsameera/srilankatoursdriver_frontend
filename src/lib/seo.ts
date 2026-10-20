@@ -2,19 +2,25 @@ import { isIllustrative } from "@/lib/editorial-images";
 import type { Metadata } from "next";
 import { SITE_URL } from "@/lib/config";
 import { cloudinaryUrl } from "@/lib/cloudinary-loader";
-import { locales, localeTags, defaultLocale } from "@/i18n/routing";
+import { localeTags } from "@/i18n/routing";
+import { pickSiteLanguages, type SiteLanguages } from "@/i18n/site-languages";
 import type { MediaAsset, Seo, SiteSettings } from "@/types/cms";
-import { getBranding, getSeo, getSiteSettings } from "@/lib/api/server";
+import { getBranding, getLanguages, getSeo, getSiteSettings } from "@/lib/api/server";
 import { stripMarkdown } from "@/lib/utils";
 
-/** hreflang alternates for a locale-less path like "/tours/ella". */
-export function alternates(path: string, locale: string) {
+/** Enabled languages and the default one, from Admin → Languages (all languages if the API is down). */
+export async function getSiteLanguages(): Promise<SiteLanguages> {
+  return pickSiteLanguages(await getLanguages());
+}
+
+/** hreflang alternates for a locale-less path like "/tours/ella": enabled languages only, x-default = default language. */
+export function alternates(path: string, locale: string, site: SiteLanguages = pickSiteLanguages(null)) {
   const clean = path === "/" ? "" : path;
   return {
     canonical: `${SITE_URL}/${locale}${clean}`,
     languages: {
-      ...Object.fromEntries(locales.map((l) => [localeTags[l], `${SITE_URL}/${l}${clean}`])),
-      "x-default": `${SITE_URL}/${defaultLocale}${clean}`,
+      ...Object.fromEntries(site.enabled.map((l) => [localeTags[l], `${SITE_URL}/${l}${clean}`])),
+      "x-default": `${SITE_URL}/${site.defaultLocale}${clean}`,
     },
   };
 }
@@ -66,7 +72,7 @@ export async function buildMetadata(input: BuildInput): Promise<Metadata> {
         : global?.ogImage?.url
           ? global.ogImage
           : branding?.primaryLogo;
-  const alt = alternates(input.path, input.locale);
+  const alt = alternates(input.path, input.locale, await getSiteLanguages());
   const canonical = s.canonicalUrl || route?.canonicalUrl || alt.canonical;
 
   return {

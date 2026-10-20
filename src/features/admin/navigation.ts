@@ -46,6 +46,7 @@ export const ADMIN_NAV: NavGroup[] = [
     children: [
       { label: "Site Settings", href: "/admin/settings", perm: "settings:read" },
       { label: "Branding", href: "/admin/branding", perm: "branding:read" },
+      { label: "Theme", href: "/admin/theme", perm: "branding:read" },
       { label: "Homepage", href: "/admin/pages/home", perm: "pages:read" },
       { label: "Navbar", href: "/admin/content/navigation", perm: "navigation:read" },
       { label: "Footer", href: "/admin/footer", perm: "settings:read" },
@@ -138,6 +139,7 @@ export const ADMIN_NAV: NavGroup[] = [
       { label: "Languages", href: "/admin/translations/languages", perm: "translations:read" },
       { label: "Translation Status", href: "/admin/translations", perm: "translations:read" },
       { label: "Content Translation", href: "/admin/translations/editor", perm: "translations:read" },
+      { label: "UI Texts", href: "/admin/translations/ui-texts", perm: "translations:read" },
     ],
   },
   {

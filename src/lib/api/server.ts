@@ -112,6 +112,8 @@ export const getSiteSettings = cache((locale: string) =>
 export const getBranding = cache(() => orNull(apiGet<Branding>("/branding", { tags: [TAGS.branding] })));
 export const getNavigation = cache((locale: string) => orNull(apiGet<NavItem[]>(`/navigation${qs({ locale })}`, { tags: [TAGS.navigation] })));
 export const getLanguages = cache(() => orNull(apiGet<Language[]>("/languages", { tags: [TAGS.languages] })));
+/** Admin overrides of website UI texts for one language ({ "nav.tours": "…" }). */
+export const getUiMessages = cache((locale: string) => orNull(apiGet<Record<string, string>>(`/ui-messages/${locale}`, { tags: [TAGS.translations] })));
 export const getSeo = cache((key: string) =>
   orNull(apiGet<{ global: SeoMetadata | null; route: SeoMetadata | null }>(`/seo/${key}`, { tags: [TAGS.seo] })),
 );

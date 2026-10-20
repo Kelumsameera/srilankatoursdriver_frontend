@@ -150,11 +150,11 @@ export function StoryForm() {
   }
 
   // NOT SIGNED IN: explain why an account is needed
-  if (loading) return <Loader2 className="mx-auto h-8 w-8 animate-spin text-forest-700" aria-hidden />;
+  if (loading) return <Loader2 className="mx-auto h-8 w-8 animate-spin text-brand-soft" aria-hidden />;
   if (!customer) {
     const next = encodeURIComponent("/stories/new");
     return (
-      <div className="rounded-3xl border border-dashed border-gold-200 bg-white/70 p-8 text-center shadow-soft">
+      <div className="rounded-3xl border border-dashed border-gold-200 bg-surface/70 p-8 text-center shadow-soft">
         <p className="text-muted">{t("signInIntro")}</p>
         <Link href={`/account/login?next=${next}`} className="mt-5 inline-flex rounded-full bg-gold-500 px-6 py-3 text-sm font-medium text-forest-950 hover:bg-gold-400">
           {t("signInToShare")}
@@ -172,29 +172,29 @@ export function StoryForm() {
         // THANK YOU
         <div role="status" className="rounded-3xl bg-forest-800 p-8 text-center text-white shadow-card">
           <p className="text-lead">{t("submitted")}</p>
-          <button type="button" onClick={() => setSent(false)} className="mt-5 rounded-full border border-white/50 px-6 py-2.5 text-sm hover:bg-white hover:text-forest-900">
+          <button type="button" onClick={() => setSent(false)} className="mt-5 rounded-full border border-white/50 px-6 py-2.5 text-sm hover:bg-surface hover:text-heading">
             {t("writeAnother")}
           </button>
         </div>
       ) : (
         // THE FORM
-        <form onSubmit={submit} className="space-y-6 rounded-3xl bg-white p-6 shadow-card sm:p-8">
+        <form onSubmit={submit} className="space-y-6 rounded-3xl bg-surface p-6 shadow-card sm:p-8">
           <div>
-            <label htmlFor="story-title" className="text-sm font-medium text-forest-900">{t("titleLabel")}</label>
+            <label htmlFor="story-title" className="text-sm font-medium text-heading">{t("titleLabel")}</label>
             <input id="story-title" value={title} onChange={(e) => setTitle(e.target.value)} required minLength={3} maxLength={140} placeholder={t("titlePlaceholder")} className={field} />
           </div>
           <div>
-            <label htmlFor="story-place" className="text-sm font-medium text-forest-900">{t("placeLabel")}</label>
+            <label htmlFor="story-place" className="text-sm font-medium text-heading">{t("placeLabel")}</label>
             <input id="story-place" value={place} onChange={(e) => setPlace(e.target.value)} maxLength={120} placeholder={t("placePlaceholder")} className={field} />
           </div>
           <div>
-            <label htmlFor="story-text" className="text-sm font-medium text-forest-900">{t("textLabel")}</label>
+            <label htmlFor="story-text" className="text-sm font-medium text-heading">{t("textLabel")}</label>
             <textarea id="story-text" value={text} onChange={(e) => setText(e.target.value)} required minLength={20} maxLength={5000} rows={7} placeholder={t("textPlaceholder")} className={field} />
           </div>
 
           {/* PHOTOS AND VIDEO: previews with upload state and a remove button */}
           <div>
-            <p className="text-sm font-medium text-forest-900">{t("mediaLabel")}</p>
+            <p className="text-sm font-medium text-heading">{t("mediaLabel")}</p>
             <p className="mt-1 text-xs text-muted">{t("mediaHint")}</p>
             <ul className="mt-3 grid grid-cols-3 gap-3 sm:grid-cols-4">
               {items.map((item) => (
@@ -224,7 +224,7 @@ export function StoryForm() {
                   <button
                     type="button"
                     onClick={() => fileInput.current?.click()}
-                    className="flex aspect-square w-full flex-col items-center justify-center gap-1 rounded-xl border-2 border-dashed border-gold-200 text-xs text-forest-800 transition-colors hover:border-gold-500 hover:bg-gold-100"
+                    className="flex aspect-square w-full flex-col items-center justify-center gap-1 rounded-xl border-2 border-dashed border-gold-200 text-xs text-brand transition-colors hover:border-gold-500 hover:bg-gold-100"
                   >
                     <ImagePlus className="h-6 w-6 text-gold-600" aria-hidden />
                     {t("addMedia")}
@@ -247,19 +247,19 @@ export function StoryForm() {
       {/* YOUR STORIES and whether they are published yet */}
       {mine.length > 0 && (
         <section>
-          <h2 className="text-2xl text-forest-900">{t("myStories")}</h2>
-          <ul className="mt-4 divide-y divide-sand-200 rounded-2xl bg-white shadow-card">
+          <h2 className="text-2xl text-heading">{t("myStories")}</h2>
+          <ul className="mt-4 divide-y divide-sand-200 rounded-2xl bg-surface shadow-card">
             {mine.map((story) => (
               <li key={story._id} className="flex items-center justify-between gap-4 p-4 text-sm">
                 {story.status === "published" ? (
-                  <Link href={`/stories/${story._id}`} className="font-medium text-forest-900 hover:underline">{story.title}</Link>
+                  <Link href={`/stories/${story._id}`} className="font-medium text-heading hover:underline">{story.title}</Link>
                 ) : (
-                  <span className="font-medium text-forest-900">{story.title}</span>
+                  <span className="font-medium text-heading">{story.title}</span>
                 )}
                 <span
                   className={cn(
                     "shrink-0 rounded-full px-3 py-1 text-xs font-medium",
-                    story.status === "published" ? "bg-forest-50 text-forest-700" : story.status === "rejected" ? "bg-red-50 text-red-700" : "bg-gold-100 text-earth-700",
+                    story.status === "published" ? "bg-forest-50 text-brand-soft" : story.status === "rejected" ? "bg-red-50 text-red-700" : "bg-gold-100 text-earth-700",
                   )}
                 >
                   {t(`status_${story.status ?? "pending"}`)}

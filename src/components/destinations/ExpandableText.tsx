@@ -24,7 +24,7 @@ export function ExpandableText({ text, more, less, title }: { text: string; more
         aria-controls={textId}
         aria-label={`${isOpen ? less : more}: ${title}`}
         onClick={() => setIsOpen(!isOpen)}
-        className="mt-4 inline-flex min-h-11 items-center text-sm font-semibold text-forest-800 underline decoration-gold-400 underline-offset-4 transition-colors duration-200 hover:text-forest-600 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-forest-800"
+        className="mt-4 inline-flex min-h-11 items-center text-sm font-semibold text-brand underline decoration-gold-400 underline-offset-4 transition-colors duration-200 hover:text-forest-600 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
       >
         {isOpen ? less : more}
       </button>

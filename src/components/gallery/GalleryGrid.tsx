@@ -104,7 +104,7 @@ export function GalleryGrid({ items, labels, filters, variant = "masonry" }: Pro
               aria-selected={type === k}
               type="button"
               onClick={() => setType(k)}
-              className={cn("rounded-full px-5 py-2 text-sm font-medium", type === k ? "bg-forest-800 text-white" : "bg-white text-forest-800 hover:bg-sand-100")}
+              className={cn("rounded-full px-5 py-2 text-sm font-medium", type === k ? "bg-forest-800 text-white" : "bg-surface text-brand hover:bg-sand-100")}
             >
               {k === "all" ? labels.all : k === "image" ? labels.photos : labels.videos}
             </button>

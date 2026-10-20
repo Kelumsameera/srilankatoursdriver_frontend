@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 /**
  * Organic edge between sections (purely decorative): a soft, flowing contour with a lighter feathered layer, as in
  * the design. The colour comes from `currentColor`, so pass the colour of the section it blends into, e.g.
- * "text-sand-50". `flip` puts it at the top of a section instead of the bottom.
+ * "text-cream". `flip` puts it at the top of a section instead of the bottom.
  */
 export function PaperEdge({ className, flip }: { className?: string; flip?: boolean }) {
   return (
@@ -34,7 +34,7 @@ export function Botanical({ className, side = "right" }: { className?: string; s
     <svg
       viewBox="0 0 300 300"
       aria-hidden
-      className={cn("pointer-events-none absolute top-0 h-64 w-64 text-forest-700 opacity-[0.07] sm:h-80 sm:w-80", side === "right" ? "right-0" : "left-0 -scale-x-100", className)}
+      className={cn("pointer-events-none absolute top-0 h-64 w-64 text-brand-soft opacity-[0.07] sm:h-80 sm:w-80", side === "right" ? "right-0" : "left-0 -scale-x-100", className)}
     >
       <g fill="currentColor">
         <path d="M290 10C210 40 140 100 90 190c-12 22-22 46-30 70l8 3c8-24 18-47 30-69C147 106 216 48 293 18z" />

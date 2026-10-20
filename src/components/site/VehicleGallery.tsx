@@ -18,7 +18,7 @@ export function VehicleGallery({ images, name, labels }: { images: MediaAsset[];
 
   return (
     <div
-      className="overflow-hidden rounded-2xl border border-white/60 bg-white shadow-card"
+      className="overflow-hidden rounded-2xl border border-white/60 bg-surface shadow-card"
       onKeyDown={(e) => {
         if (e.key === "ArrowRight") go(document.dir === "rtl" ? -1 : 1);
         if (e.key === "ArrowLeft") go(document.dir === "rtl" ? 1 : -1);

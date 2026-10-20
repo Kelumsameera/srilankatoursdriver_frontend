@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { SettingsForm } from "@/components/admin/SettingsForm";
 import { Card } from "@/components/admin/ui";
 
@@ -7,7 +8,7 @@ export default function BrandingPage() {
   return (
     <SettingsForm
       title="Branding"
-      description="Logos, favicon and brand colours. Files are uploaded to Cloudinary (folder: branding)."
+      description="Logos and favicon. Files are uploaded to Cloudinary (folder: branding). Colours, fonts and background are on the Theme page."
       endpoint="/admin/branding"
       permission="branding:update"
       aside={
@@ -26,6 +27,13 @@ export default function BrandingPage() {
               <strong>Favicon</strong> – browser tab (square PNG/SVG)
             </li>
           </ul>
+          <p className="mt-3 text-sm text-slate-600">
+            Brand colours moved to{" "}
+            <Link href="/admin/theme" className="text-forest-700 underline">
+              Theme
+            </Link>
+            , with presets and a live preview.
+          </p>
         </Card>
       }
       sections={[
@@ -40,21 +48,6 @@ export default function BrandingPage() {
             { name: "logoAlt", label: "Logo alt text", type: "text" },
             { name: "logoWidth", label: "Logo width (px)", type: "number", min: 40, max: 600 },
             { name: "logoHeight", label: "Logo height (px)", type: "number", min: 16, max: 300 },
-          ],
-        },
-        {
-          title: "Colours",
-          fields: [
-            {
-              name: "colors",
-              label: "Brand colours",
-              type: "group",
-              fields: [
-                { name: "primary", label: "Primary (deep forest green)", type: "color" },
-                { name: "secondary", label: "Secondary (tropical green)", type: "color" },
-                { name: "accent", label: "Accent (warm gold)", type: "color" },
-              ],
-            },
           ],
         },
       ]}

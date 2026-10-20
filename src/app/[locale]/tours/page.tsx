@@ -57,7 +57,7 @@ export default async function ToursPage({ params, searchParams }: Props) {
           <CategoryFilter basePath="/tours" categories={categories ?? []} active={category} />
           {selectedCategory?.description && (
             <div className="mb-8 max-w-4xl">
-              <h2 className="font-display text-3xl text-forest-900">{selectedCategory.name}</h2>
+              <h2 className="font-display text-3xl text-heading">{selectedCategory.name}</h2>
               <p className="mt-3 text-base leading-7 text-muted">{selectedCategory.description}</p>
             </div>
           )}

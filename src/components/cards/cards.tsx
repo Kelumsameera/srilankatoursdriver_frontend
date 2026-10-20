@@ -53,12 +53,12 @@ export function ReviewCard({ review }: { review: Review }) {
   const locale = useLocale();
   const platform = review.platform && review.platform !== "website" ? review.platform : null;
   return (
-    <figure className="dest-card flex h-full flex-col rounded-3xl bg-white p-7 shadow-card">
+    <figure className="dest-card flex h-full flex-col rounded-3xl bg-surface p-7 shadow-card">
       <div className="flex items-center justify-between gap-2">
         <Stars rating={review.rating} />
         {review.verified && <Badge>{t("verified")}</Badge>}
       </div>
-      {review.title && <p className="mt-4 font-display text-lg text-forest-900">“{review.title}”</p>}
+      {review.title && <p className="mt-4 font-display text-lg text-heading">“{review.title}”</p>}
       <blockquote className="mt-3 line-clamp-6 flex-1 text-sm leading-relaxed text-ink/85">{review.review}</blockquote>
       <figcaption className="mt-6 flex items-center gap-3 border-t border-sand-100 pt-5">
         {review.photo?.url ? (
@@ -67,7 +67,7 @@ export function ReviewCard({ review }: { review: Review }) {
           <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-forest-800 font-display text-lg text-gold-400">{review.guestName.charAt(0)}</span>
         )}
         <div className="min-w-0 text-sm">
-          <p className="font-semibold text-forest-900">{review.guestName}</p>
+          <p className="font-semibold text-heading">{review.guestName}</p>
           <p className="truncate text-xs text-muted">
             {[review.country, review.date ? formatDate(review.date, locale, { month: "short", year: "numeric" }) : null, platform ? t("via", { platform }) : null].filter(Boolean).join(" · ")}
           </p>

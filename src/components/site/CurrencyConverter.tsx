@@ -83,7 +83,7 @@ export function CurrencyConverter({ siteCurrency = "USD" }: { siteCurrency?: str
     }
   };
   const updated = rates?.updatedAt ? new Intl.DateTimeFormat(locale, { dateStyle: "medium" }).format(new Date(rates.updatedAt)) : null;
-  const select = "w-full rounded-xl border border-sand-200 bg-white px-3 py-2.5 text-sm text-ink focus:border-forest-600 focus:outline-none focus:ring-2 focus:ring-forest-600/20";
+  const select = "w-full rounded-xl border border-sand-200 bg-surface px-3 py-2.5 text-sm text-ink focus:border-forest-600 focus:outline-none focus:ring-2 focus:ring-forest-600/20";
 
   return (
     <div className="fixed bottom-5 start-5 z-40 sm:bottom-7 sm:start-7">
@@ -93,11 +93,11 @@ export function CurrencyConverter({ siteCurrency = "USD" }: { siteCurrency?: str
           id={`${id}-panel`}
           role="dialog"
           aria-labelledby={`${id}-title`}
-          className="absolute bottom-16 start-0 w-[min(20rem,calc(100vw-2.5rem))] rounded-3xl border border-sand-200 bg-white p-5 shadow-card"
+          className="absolute bottom-16 start-0 w-[min(20rem,calc(100vw-2.5rem))] rounded-3xl border border-sand-200 bg-surface p-5 shadow-card"
           data-testid="currency-converter"
         >
           <div className="mb-4 flex items-center justify-between">
-            <h2 id={`${id}-title`} className="font-sans text-base font-semibold text-forest-900">
+            <h2 id={`${id}-title`} className="font-sans text-base font-semibold text-heading">
               {t("title")}
             </h2>
             <button type="button" onClick={() => setOpen(false)} className="rounded-full p-1 text-muted hover:bg-sand-100" aria-label={tc("close")}>
@@ -130,7 +130,7 @@ export function CurrencyConverter({ siteCurrency = "USD" }: { siteCurrency?: str
             <button
               type="button"
               onClick={() => (setFrom(to), setTo(from))}
-              className="mb-1 rounded-full border border-sand-200 p-2 text-forest-700 hover:border-forest-600"
+              className="mb-1 rounded-full border border-sand-200 p-2 text-brand-soft hover:border-forest-600"
               aria-label={t("swap")}
               title={t("swap")}
             >
@@ -159,7 +159,7 @@ export function CurrencyConverter({ siteCurrency = "USD" }: { siteCurrency?: str
                 <p className="text-xs text-muted">
                   {fmt(value, from)} =
                 </p>
-                <p className="font-display text-2xl text-forest-900">{fmt(result, to)}</p>
+                <p className="font-display text-2xl text-heading">{fmt(result, to)}</p>
                 <p className="mt-1 text-xs text-muted">{names(to)}</p>
               </>
             ) : (

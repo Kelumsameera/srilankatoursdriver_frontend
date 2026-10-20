@@ -34,13 +34,13 @@ export function ContactSection({ section, ctx }: SectionProps) {
               </>
             );
             return (
-              <li key={i} className="rounded-2xl bg-white p-5 shadow-card">
+              <li key={i} className="rounded-2xl bg-surface p-5 shadow-card">
                 {r.href ? (
-                  <a href={r.href} className="flex min-h-11 items-start gap-3 text-forest-900 hover:text-forest-600" target={r.href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer">
+                  <a href={r.href} className="flex min-h-11 items-start gap-3 text-heading hover:text-forest-600" target={r.href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer">
                     {inner}
                   </a>
                 ) : (
-                  <p className="flex items-start gap-3 text-forest-900">{inner}</p>
+                  <p className="flex items-start gap-3 text-heading">{inner}</p>
                 )}
               </li>
             );

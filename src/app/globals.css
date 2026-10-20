@@ -2,13 +2,120 @@
 
 /*
  * Design tokens – "luxury Sri Lankan tourism": deep forest greens, tropical green,
- * warm gold and earthy sand. Brand colours from Admin → Branding override
- * --brand-primary / --brand-secondary / --brand-accent at runtime.
+ * warm gold and earthy sand. Admin → Theme overrides the --brand-* and --theme-* variables at runtime
+ * (a <style> block from the [locale] layout).
  */
 :root {
   --brand-primary: #0f3d2e;
   --brand-secondary: #1f7a4d;
   --brand-accent: #c99a3b;
+  /* Site Appearance colours (Admin → Theme, src/lib/theme.ts). Defaults = the original design. */
+  --theme-background: #faf6ec;
+  --theme-surface: #ffffff;
+  --theme-text: #17201b;
+  --theme-muted: #5d6b63;
+  --theme-border: #ece2cf;
+  --theme-success: #15803d;
+  --theme-warning: #b45309;
+  --theme-error: #b91c1c;
+
+  /* Colours that change in dark mode. Light values = the original design. */
+  --tone-heading: #08261a;
+  --tone-brand: var(--brand-primary);
+  --tone-brand-soft: #155239;
+  --tone-gold-ink: #89621c;
+  --tone-earth-700: #6b4f3a;
+  --tone-earth-500: #9a7a5f;
+  --tone-sand-100: #f3ead7;
+  --tone-forest-50: #f1f7f3;
+  --tone-forest-100: #e3efe8;
+  --tone-gold-100: #f8efdc;
+}
+
+/*
+ * Dark mode (Admin → Theme → Mode, visitor toggle in the header). The --theme-* colours come from the theme's dark
+ * palette (the <style> block from the layout); these tones follow them. Dark bands (forest-800/900/950), gold
+ * buttons and photos keep their colours.
+ */
+[data-theme="dark"] {
+  color-scheme: dark;
+  --tone-heading: var(--theme-text);
+  --tone-brand: var(--brand-secondary);
+  --tone-brand-soft: var(--brand-secondary);
+  --tone-gold-ink: var(--brand-accent);
+  --tone-earth-700: var(--theme-muted);
+  --tone-earth-500: var(--theme-muted);
+  --tone-sand-100: color-mix(in oklab, var(--theme-surface) 55%, var(--theme-background));
+  --tone-forest-50: color-mix(in oklab, var(--brand-secondary) 14%, var(--theme-surface));
+  --tone-forest-100: color-mix(in oklab, var(--brand-secondary) 22%, var(--theme-surface));
+  --tone-gold-100: color-mix(in oklab, var(--brand-accent) 16%, var(--theme-surface));
+}
+
+/* dark: utilities for the few places that need their own dark colour (e.g. dark:bg-red-950/40) */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/*
+ * Admin dark mode (sun/moon button in the admin top bar). The admin is built from slate greys, white cards and
+ * light status tints, so dark mode re-points those palette colours instead of changing every component:
+ * the grey scale is inverted, white surfaces become dark panels and tints become dark tints with light text.
+ * The sidebar uses white-based text, so it looks the same in both modes.
+ */
+html[data-site="admin"][data-theme="dark"] {
+  color-scheme: dark;
+  --admin-surface: #121c18;
+  --color-slate-50: #0b1310;
+  --color-slate-100: #18241f;
+  --color-slate-200: #24332c;
+  --color-slate-300: #34463d;
+  --color-slate-400: #6b7f75;
+  --color-slate-500: #8a9b92;
+  --color-slate-600: #a9b8b0;
+  --color-slate-700: #c7d3cc;
+  --color-slate-800: #dfe7e2;
+  --color-slate-900: #eef3f0;
+  --color-slate-950: #f7faf8;
+  --color-emerald-50: #0f2a1f;
+  --color-emerald-700: #6ee7b7;
+  --color-amber-50: #2d2210;
+  --color-amber-200: #5b4318;
+  --color-amber-700: #fcd34d;
+  --color-amber-800: #fde68a;
+  --color-red-50: #2e1414;
+  --color-red-200: #5c2424;
+  --color-red-700: #fca5a5;
+  --color-sky-50: #0c2433;
+  --color-sky-700: #7dd3fc;
+  --color-violet-50: #211a38;
+  --color-violet-700: #c4b5fd;
+}
+html[data-site="admin"][data-theme="dark"] :is(.bg-white, .hover\:bg-white:hover) {
+  background-color: var(--admin-surface);
+}
+html[data-site="admin"][data-theme="dark"] :is(.bg-white\/90, .bg-white\/95, .bg-white\/80) {
+  background-color: rgb(18 28 24 / 0.9);
+}
+html[data-site="admin"][data-theme="dark"] :is(.bg-forest-50, .bg-forest-100) {
+  background-color: #17301f;
+}
+/* Green text links and active tabs: lighter green on dark panels */
+html[data-site="admin"][data-theme="dark"] :is(.text-forest-600, .text-forest-700, .text-forest-800, .hover\:text-forest-700:hover) {
+  color: #6fcf97;
+}
+/* Chart grid lines, empty rings and empty heat-map cells (SVG attributes) */
+html[data-site="admin"][data-theme="dark"] [stroke="#e8e7e1"] {
+  stroke: #24332c;
+}
+html[data-site="admin"][data-theme="dark"] [stroke="#c3c2b7"] {
+  stroke: #34463d;
+}
+html[data-site="admin"][data-theme="dark"] [stroke="#eef0f2"] {
+  stroke: #24332c;
+}
+html[data-site="admin"][data-theme="dark"] [fill="#f1f4f8"] {
+  fill: #18241f;
+}
+html[data-site="admin"][data-theme="dark"] [stroke="#fff"] {
+  stroke: var(--admin-surface);
 }
 
 @theme inline {
@@ -21,22 +128,32 @@
   --color-forest-700: #155239;
   --color-forest-600: var(--brand-secondary);
   --color-forest-500: #2b9563;
-  --color-forest-100: #e3efe8;
-  --color-forest-50: #f1f7f3;
+  --color-forest-100: var(--tone-forest-100);
+  --color-forest-50: var(--tone-forest-50);
 
-  --color-gold-600: #89621c;
+  --color-gold-600: var(--tone-gold-ink);
   --color-gold-500: var(--brand-accent);
   --color-gold-400: #dcb76a;
   --color-gold-200: #efdcb1;
-  --color-gold-100: #f8efdc;
+  --color-gold-100: var(--tone-gold-100);
 
-  --color-sand-50: #faf6ec;
-  --color-sand-100: #f3ead7;
-  --color-sand-200: #ece2cf;
-  --color-earth-700: #6b4f3a;
-  --color-earth-500: #9a7a5f;
-  --color-ink: #17201b;
-  --color-muted: #5d6b63;
+  --color-sand-50: var(--theme-background);
+  --color-sand-100: var(--tone-sand-100);
+  --color-sand-200: var(--theme-border);
+  --color-earth-700: var(--tone-earth-700);
+  --color-earth-500: var(--tone-earth-500);
+  --color-ink: var(--theme-text);
+  --color-muted: var(--theme-muted);
+  --color-surface: var(--theme-surface);
+  --color-line: var(--theme-border);
+  --color-success: var(--theme-success);
+  --color-warning: var(--theme-warning);
+  --color-danger: var(--theme-error);
+  /* Semantic text colours (dark-mode aware) and fixed cream text for dark bands */
+  --color-heading: var(--tone-heading);
+  --color-brand: var(--tone-brand);
+  --color-brand-soft: var(--tone-brand-soft);
+  --color-cream: #faf6ec;
   --color-whatsapp: #25d366;
 
   --shadow-soft: 0 10px 40px -12px rgb(8 38 26 / 0.18);
@@ -162,6 +279,15 @@ html[data-site="public"] main section:is(.bg-sand-50, .bg-sand-100, .bg-forest-8
   pointer-events: none;
   background: var(--frond-line) no-repeat top right / contain;
   opacity: 0.2;
+}
+/* Dark mode: no paper grain, and the line-drawn fronds are drawn light instead of dark green. */
+html[data-site="public"][data-theme="dark"] body,
+html[data-site="public"][data-theme="dark"] main section:is(.bg-sand-50, .bg-sand-100) {
+  background-image: none;
+}
+html[data-site="public"][data-theme="dark"] main section:is(.bg-sand-50, .bg-sand-100)::before {
+  filter: invert(1);
+  opacity: 0.08;
 }
 
 /* A fixed utility control must never cover a mobile form field or submit action. Form pages already
@@ -312,12 +438,12 @@ html[data-site="public"] main section:is(.bg-sand-50, .bg-sand-100, .bg-forest-8
     font-size: 1.6rem;
     line-height: 1.25;
     margin-top: 2em;
-    color: var(--color-forest-900);
+    color: var(--color-heading);
   }
   & h3 {
     font-size: 1.25rem;
     margin-top: 1.6em;
-    color: var(--color-forest-900);
+    color: var(--color-heading);
   }
   & a {
     color: var(--color-forest-600);

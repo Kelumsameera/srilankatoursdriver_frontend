@@ -25,11 +25,12 @@ const isDev = process.env.NODE_ENV === "development";
 const contentSecurityPolicy = [
   "default-src 'self'",
   `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""} https://accounts.google.com/gsi/client`,
-  "style-src 'self' 'unsafe-inline' https://accounts.google.com/gsi/style",
+  // fonts.googleapis.com: Google Fonts chosen in Admin → Theme (allow-list in src/lib/theme.ts).
+  "style-src 'self' 'unsafe-inline' https://accounts.google.com/gsi/style https://fonts.googleapis.com",
   // CMS content may reference images on any HTTPS host (Markdown, older media records).
   "img-src 'self' data: blob: https:",
   "media-src 'self' blob: https://res.cloudinary.com",
-  "font-src 'self' data:",
+  "font-src 'self' data: https://fonts.gstatic.com",
   `connect-src 'self' ${apiOrigin} https://accounts.google.com/gsi/`,
   "frame-src https://www.youtube-nocookie.com https://www.youtube.com https://www.instagram.com https://www.tiktok.com https://www.google.com https://maps.google.com https://www.openstreetmap.org https://accounts.google.com/gsi/",
   "object-src 'none'",

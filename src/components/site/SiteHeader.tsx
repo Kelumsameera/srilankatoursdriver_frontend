@@ -9,9 +9,12 @@ import { cn, telLink } from "@/lib/utils";
 import { CmsLink } from "@/components/ui/CmsLink";
 import { buttonClass } from "@/components/ui/Button";
 import { AccountMenu, MobileAccountLink } from "@/components/account/AccountMenu";
+import { ThemeToggle } from "./ThemeToggle";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 
 interface Props {
+  /** Show the light/dark switch (Admin → Theme → Mode: "Visitor chooses"). */
+  themeToggle?: boolean;
   destinationsHero?: boolean;
   nav: NavItem[];
   logoLight: ReactNode;
@@ -36,7 +39,7 @@ function isActive(pathname: string, url?: string) {
 }
 
 // The colour of a desktop nav link: dark on the white (scrolled) bar, white over the hero photo
-const navTextColor = (solid: boolean) => (solid ? "text-forest-900 hover:text-forest-600" : "text-white/90 hover:text-white");
+const navTextColor = (solid: boolean) => (solid ? "text-heading hover:text-forest-600" : "text-white/90 hover:text-white");
 
 // Desktop nav link and dropdown button. min-h-11 gives a 44px tap target; the text stays the same size.
 // Longer translations get a full-width desktop row; links wrap as whole items.
@@ -49,7 +52,7 @@ const desktopNavItem = "relative flex min-h-11 items-center rounded-full px-1.5 
  * Transparent over the hero, white once the page is scrolled or the mobile menu is open.
  * Below 1280px the nav moves into the mobile menu (fixed breakpoint, no measuring, so it never changes between page loads).
  */
-export function SiteHeader({ nav, logoLight, logoDark, logoMobile, logoMobileLight, languages, phone, whatsapp, destinationsHero = false }: Props) {
+export function SiteHeader({ nav, logoLight, logoDark, logoMobile, logoMobileLight, languages, phone, whatsapp, themeToggle = false, destinationsHero = false }: Props) {
   const tNav = useTranslations("nav");
   const tCommon = useTranslations("common");
   const pathname = usePathname();
@@ -108,7 +111,7 @@ export function SiteHeader({ nav, logoLight, logoDark, logoMobile, logoMobileLig
     <header
       className={cn(
         "fixed inset-x-0 top-0 z-40 transition-all duration-500",
-        solid ? "bg-white/95 shadow-[0_1px_0_rgb(0_0_0/0.06)] backdrop-blur-md" : "bg-linear-to-b from-black/40 to-transparent",
+        solid ? "bg-surface/95 shadow-[0_1px_0_rgb(0_0_0/0.06)] backdrop-blur-md" : "bg-linear-to-b from-black/40 to-transparent",
       )}
     >
       {/* HEADER BAR */}
@@ -119,8 +122,11 @@ export function SiteHeader({ nav, logoLight, logoDark, logoMobile, logoMobileLig
         {/* LOGO */}
         <div className="flex shrink-0 items-center">
           <CmsLink href="/" className="flex items-center" ariaLabel={tCommon("home")}>
-            <span className="hidden sm:block">{solid ? logoDark : logoLight}</span>
-            <span className="sm:hidden">{solid ? logoMobile : logoMobileLight}</span>
+            {/* On the solid bar: the dark logo, or the light one in dark mode */}
+            <span className="hidden sm:block dark:sm:hidden">{solid ? logoDark : logoLight}</span>
+            <span className="sm:hidden dark:hidden">{solid ? logoMobile : logoMobileLight}</span>
+            <span className="hidden dark:sm:block">{logoLight}</span>
+            <span className="hidden dark:block dark:sm:hidden">{logoMobileLight}</span>
           </CmsLink>
         </div>
 
@@ -140,10 +146,10 @@ export function SiteHeader({ nav, logoLight, logoDark, logoMobile, logoMobileLig
                         <span className="min-w-0">{item.label}</span>
                         <ChevronDown className="h-3 w-3 shrink-0 2xl:h-3.5 2xl:w-3.5" aria-hidden />
                       </button>
-                      <ul className="invisible absolute inset-s-0 top-full min-w-56 translate-y-2 rounded-2xl border border-sand-200 bg-white p-2 opacity-0 shadow-soft transition-all group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
+                      <ul className="invisible absolute inset-s-0 top-full min-w-56 translate-y-2 rounded-2xl border border-sand-200 bg-surface p-2 opacity-0 shadow-soft transition-all group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
                         {item.children.map((child) => (
                           <li key={child._id}>
-                            <CmsLink href={child.url} newTab={child.openInNewTab} className="block rounded-xl px-3 py-3 text-sm text-forest-900 hover:bg-sand-100">
+                            <CmsLink href={child.url} newTab={child.openInNewTab} className="block rounded-xl px-3 py-3 text-sm text-heading hover:bg-sand-100">
                               {child.label}
                             </CmsLink>
                           </li>
@@ -176,11 +182,13 @@ export function SiteHeader({ nav, logoLight, logoDark, logoMobile, logoMobileLig
         <div className={cn("ms-auto flex shrink-0 items-center gap-0.5 sm:gap-1 2xl:gap-2", wrappedNav && "xl:col-start-2 xl:row-start-1")}>
           <LanguageSwitcher enabled={languages} tone={solid ? "dark" : "light"} />
 
+          {themeToggle && <ThemeToggle tone={solid ? "dark" : "light"} />}
+
           {phone && (
             <a
               href={telLink(phone)}
               aria-label={phone}
-              className={cn("hidden h-11 w-11 items-center justify-center rounded-full lg:inline-flex", solid ? "text-forest-900" : "text-white")}
+              className={cn("hidden h-11 w-11 items-center justify-center rounded-full lg:inline-flex", solid ? "text-heading" : "text-white")}
             >
               <Phone className="h-4 w-4" aria-hidden />
             </a>
@@ -204,7 +212,7 @@ export function SiteHeader({ nav, logoLight, logoDark, logoMobile, logoMobileLig
             aria-expanded={menuOpen}
             aria-controls="mobile-menu"
             aria-label={menuOpen ? tNav("closeMenu") : tNav("openMenu")}
-            className={cn("inline-flex h-11 w-11 items-center justify-center rounded-full xl:hidden", solid ? "text-forest-900" : "text-white")}
+            className={cn("inline-flex h-11 w-11 items-center justify-center rounded-full xl:hidden", solid ? "text-heading" : "text-white")}
           >
             {menuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
@@ -216,7 +224,7 @@ export function SiteHeader({ nav, logoLight, logoDark, logoMobile, logoMobileLig
         <div
           id="mobile-menu"
           className={cn(
-            "h-[calc(100dvh-4rem)] overflow-y-auto overflow-x-hidden border-t border-sand-200 bg-white xl:h-[calc(100dvh-5rem)]",
+            "h-[calc(100dvh-4rem)] overflow-y-auto overflow-x-hidden border-t border-sand-200 bg-surface xl:h-[calc(100dvh-5rem)]",
             "xl:hidden",
           )}
         >
@@ -230,7 +238,7 @@ export function SiteHeader({ nav, logoLight, logoDark, logoMobile, logoMobileLig
                         type="button"
                         onClick={() => setOpenSubmenu((current) => (current === item._id ? null : item._id))}
                         aria-expanded={openSubmenu === item._id}
-                        className="flex w-full items-center justify-between py-4 text-lg text-forest-900"
+                        className="flex w-full items-center justify-between py-4 text-lg text-heading"
                       >
                         {item.label}
                         <ChevronDown className={cn("h-5 w-5 shrink-0 transition-transform", openSubmenu === item._id && "rotate-180")} aria-hidden />
@@ -239,7 +247,7 @@ export function SiteHeader({ nav, logoLight, logoDark, logoMobile, logoMobileLig
                         <ul className="pb-3 ps-4">
                           {item.children.map((child) => (
                             <li key={child._id}>
-                              <CmsLink href={child.url} newTab={child.openInNewTab} className="block py-2.5 text-forest-700">
+                              <CmsLink href={child.url} newTab={child.openInNewTab} className="block py-2.5 text-brand-soft">
                                 {child.label}
                               </CmsLink>
                             </li>
@@ -248,7 +256,7 @@ export function SiteHeader({ nav, logoLight, logoDark, logoMobile, logoMobileLig
                       )}
                     </>
                   ) : (
-                    <CmsLink href={item.url} newTab={item.openInNewTab} current={isActive(pathname, item.url)} className="block py-4 text-lg text-forest-900">
+                    <CmsLink href={item.url} newTab={item.openInNewTab} current={isActive(pathname, item.url)} className="block py-4 text-lg text-heading">
                       {item.label}
                     </CmsLink>
                   )}

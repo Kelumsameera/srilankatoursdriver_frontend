@@ -41,8 +41,8 @@ export async function TailorMadeSection({ section, ctx }: SectionProps) {
           <div data-parallax="-60" className="absolute -inset-y-16 inset-x-0">
             <CmsImage media={photo} alt={photo.alt || section.title || ""} sizes="(min-width: 1024px) 50vw, 100vw" wrapperClassName="absolute inset-0" />
           </div>
-          <OrganicEdge className={cn("inset-e-0 hidden lg:block rtl:-scale-x-100", light ? "text-forest-900" : "text-sand-50")} />
-          <PaperEdge className={cn("lg:hidden", light ? "text-forest-900" : "text-sand-50")} />
+          <OrganicEdge className={cn("inset-e-0 hidden lg:block rtl:-scale-x-100", light ? "text-heading" : "text-cream")} />
+          <PaperEdge className={cn("lg:hidden", light ? "text-heading" : "text-cream")} />
           {section.badge && (
             <p className="absolute inset-s-5 top-5 max-w-[11rem] rounded-2xl bg-gold-500 px-4 py-3 text-small font-semibold leading-tight text-forest-950 shadow-card">
               {section.badge}
@@ -55,7 +55,7 @@ export async function TailorMadeSection({ section, ctx }: SectionProps) {
           <div className="max-w-xl">
             {section.eyebrow && <p className={cn("eyebrow mb-4", light && "text-gold-400")}>{section.eyebrow}</p>}
             {section.title && (
-              <h2 className={cn("mb-5 text-3xl leading-tight sm:text-5xl", light ? "text-white" : "text-forest-900")}>
+              <h2 className={cn("mb-5 text-3xl leading-tight sm:text-5xl", light ? "text-white" : "text-heading")}>
                 <GoldText text={section.title} goldClass="font-display italic text-gold-500" />
               </h2>
             )}
@@ -64,7 +64,7 @@ export async function TailorMadeSection({ section, ctx }: SectionProps) {
             {section.items?.length ? (
               <ul className="mb-8 flex flex-wrap gap-2">
                 {section.items.slice(0, 6).map((it, i) => (
-                  <li key={`${it.title}-${i}`} className={cn("rounded-full border px-3 py-1.5 text-xs font-medium", light ? "border-white/20 text-white/85" : "border-forest-950/10 text-forest-800")}>
+                  <li key={`${it.title}-${i}`} className={cn("rounded-full border px-3 py-1.5 text-xs font-medium", light ? "border-white/20 text-white/85" : "border-forest-950/10 text-brand")}>
                     {it.title}
                   </li>
                 ))}
@@ -80,7 +80,7 @@ export async function TailorMadeSection({ section, ctx }: SectionProps) {
                     href="/tailor-made-tours"
                     className={cn(
                       "flex h-full flex-col items-center gap-2 px-2 py-3 text-center text-xs font-medium transition-colors",
-                      light ? "text-white/85 hover:text-gold-400" : "text-forest-800 hover:text-gold-600",
+                      light ? "text-white/85 hover:text-gold-400" : "text-brand hover:text-gold-600",
                     )}
                   >
                     <Icon className={cn("h-8 w-8", light ? "text-gold-400" : "text-gold-600")} strokeWidth={1.4} aria-hidden />

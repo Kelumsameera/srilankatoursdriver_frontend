@@ -18,7 +18,7 @@ export function ExcursionCard({ excursion }: { excursion: Excursion }) {
     : travelImageFor(`${excursion.slug} ${excursion.title} ${excursion.location ?? ""}`);
 
   return (
-    <article className="group relative flex h-full flex-col overflow-hidden rounded-3xl bg-white shadow-card">
+    <article className="group relative flex h-full flex-col overflow-hidden rounded-3xl bg-surface shadow-card">
       {/* IMAGE */}
       <CmsImage
         media={cover}
@@ -41,7 +41,7 @@ export function ExcursionCard({ excursion }: { excursion: Excursion }) {
         </div>
 
         {/* TITLE: stretched link, the whole card opens the excursion */}
-        <h3 className="text-xl leading-snug text-forest-900">
+        <h3 className="text-xl leading-snug text-heading">
           <CmsLink href={`/excursions/${excursion.slug}`} className="after:absolute after:inset-0">
             {excursion.title}
           </CmsLink>
@@ -57,7 +57,7 @@ export function ExcursionCard({ excursion }: { excursion: Excursion }) {
           ) : (
             <span />
           )}
-          <span className="font-semibold text-forest-800">{price ? `${tCommon("from")} ${price}` : excursion.priceNote || ""}</span>
+          <span className="font-semibold text-brand">{price ? `${tCommon("from")} ${price}` : excursion.priceNote || ""}</span>
         </div>
       </div>
     </article>

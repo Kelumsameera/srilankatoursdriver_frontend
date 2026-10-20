@@ -43,28 +43,28 @@ export default async function ContactPage({ params }: Props) {
               const r = row as { icon: ReactNode; label: string; value: string; href?: string; testId: string };
               const body = (
                 <>
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-forest-50 text-forest-700">{r.icon}</span>
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-forest-50 text-brand-soft">{r.icon}</span>
                   {/* min-w-0 lets long values (e-mail addresses) wrap instead of widening the card on small phones. */}
                   <span className="min-w-0">
                     <span className="block text-xs uppercase tracking-wider text-muted">{r.label}</span>
-                    <span className="block break-words font-medium text-forest-900 [overflow-wrap:anywhere]" data-testid={r.testId}>
+                    <span className="block break-words font-medium text-heading [overflow-wrap:anywhere]" data-testid={r.testId}>
                       {r.value}
                     </span>
                   </span>
                 </>
               );
               return r.href ? (
-                <a key={r.testId} href={r.href} target={r.href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer" className="flex items-center gap-4 rounded-2xl bg-white p-5 shadow-card transition-transform hover:-translate-y-0.5">
+                <a key={r.testId} href={r.href} target={r.href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer" className="flex items-center gap-4 rounded-2xl bg-surface p-5 shadow-card transition-transform hover:-translate-y-0.5">
                   {body}
                 </a>
               ) : (
-                <div key={r.testId} className="flex items-center gap-4 rounded-2xl bg-white p-5 shadow-card">
+                <div key={r.testId} className="flex items-center gap-4 rounded-2xl bg-surface p-5 shadow-card">
                   {body}
                 </div>
               );
             })}
             {settings?.googleMapsUrl && (
-              <a href={settings.googleMapsUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm font-medium text-forest-700 hover:underline">
+              <a href={settings.googleMapsUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm font-medium text-brand-soft hover:underline">
                 {t("openMaps")} <ExternalLink className="h-4 w-4" />
               </a>
             )}

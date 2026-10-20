@@ -40,7 +40,7 @@ export default async function FaqsPage({ params }: Props) {
           {faqs.length === 0 && <EmptyState text={t("noResults")} />}
           {Object.entries(groups).map(([category, items]) => (
             <div key={category || "general"}>
-              {category && Object.keys(groups).length > 1 && <h2 className="mb-5 text-2xl text-forest-900">{category}</h2>}
+              {category && Object.keys(groups).length > 1 && <h2 className="mb-5 text-2xl text-heading">{category}</h2>}
               <FaqList items={items} />
             </div>
           ))}

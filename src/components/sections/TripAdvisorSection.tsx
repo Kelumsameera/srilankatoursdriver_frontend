@@ -17,7 +17,7 @@ export async function TripAdvisorSection({ section, ctx }: SectionProps) {
 
   return (
     <Section theme={theme}>
-      <div className="mx-auto flex max-w-4xl flex-col items-center gap-8 rounded-[2rem] border border-sand-200 bg-white p-8 text-center shadow-card sm:p-12">
+      <div className="mx-auto flex max-w-4xl flex-col items-center gap-8 rounded-[2rem] border border-sand-200 bg-surface p-8 text-center shadow-card sm:p-12">
         {/* LOGO + HEADING */}
         <span className="flex h-16 w-16 items-center justify-center rounded-full bg-[#34e0a1]/15 text-[#00aa6c]">
           <SocialIcons.tripadvisor className="h-9 w-9" />
@@ -42,7 +42,7 @@ export async function TripAdvisorSection({ section, ctx }: SectionProps) {
             {tripAdvisor.reviews.slice(0, 3).map((review) => (
               <li key={review.id} className="rounded-2xl bg-sand-50 p-5">
                 <Stars rating={review.rating} />
-                <p className="mt-2 font-medium text-forest-900">{review.title}</p>
+                <p className="mt-2 font-medium text-heading">{review.title}</p>
                 <p className="mt-1 line-clamp-4 text-small text-muted">{review.text}</p>
                 {review.user?.username && <p className="mt-3 text-xs text-muted">— {review.user.username}</p>}
               </li>
@@ -52,7 +52,7 @@ export async function TripAdvisorSection({ section, ctx }: SectionProps) {
 
         {/* PROFILE LINK */}
         {profile && (
-          <a href={profile} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center gap-2 font-medium text-forest-700 underline-offset-4 hover:underline">
+          <a href={profile} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center gap-2 font-medium text-brand-soft underline-offset-4 hover:underline">
             {tReviews("readOnTripadvisor")} <ExternalLink className="h-4 w-4 shrink-0" aria-hidden />
           </a>
         )}

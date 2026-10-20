@@ -19,7 +19,7 @@ export function RatesDisclosure({ children, enabled, more, less }: { children: R
               }
               setExpanded(!expanded);
             }}
-            className="inline-flex min-h-11 items-center gap-2 rounded-full border border-gold-400 px-5 text-sm font-medium text-forest-800 hover:bg-sand-50 focus-visible:outline-2 focus-visible:outline-offset-4">
+            className="inline-flex min-h-11 items-center gap-2 rounded-full border border-gold-400 px-5 text-sm font-medium text-brand hover:bg-sand-50 focus-visible:outline-2 focus-visible:outline-offset-4">
             {expanded ? less : more}
             <ChevronDown aria-hidden className={`h-4 w-4 ${expanded ? "rotate-180" : ""}`} />
           </button>

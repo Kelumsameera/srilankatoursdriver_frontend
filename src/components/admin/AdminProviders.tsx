@@ -3,10 +3,13 @@
 import { useState, type ReactNode } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "sonner";
+import { NextIntlClientProvider } from "next-intl";
+import { ADMIN_MESSAGES, type AdminLocale } from "@/features/admin/i18n";
 import { AuthProvider } from "@/lib/admin/auth";
 import { AdminApiError } from "@/lib/admin/api";
 
-export function AdminProviders({ children }: { children: ReactNode }) {
+/** Data, auth, toasts and the admin panel texts (English or Sinhala, chosen in the top bar). */
+export function AdminProviders({ children, locale = "en" }: { children: ReactNode; locale?: AdminLocale }) {
   const [client] = useState(
     () =>
       new QueryClient({
@@ -21,9 +24,11 @@ export function AdminProviders({ children }: { children: ReactNode }) {
       }),
   );
   return (
-    <QueryClientProvider client={client}>
-      <AuthProvider>{children}</AuthProvider>
-      <Toaster richColors position="top-right" closeButton />
-    </QueryClientProvider>
+    <NextIntlClientProvider locale={locale} messages={ADMIN_MESSAGES[locale]} timeZone="Asia/Colombo">
+      <QueryClientProvider client={client}>
+        <AuthProvider>{children}</AuthProvider>
+        <Toaster richColors position="top-right" closeButton />
+      </QueryClientProvider>
+    </NextIntlClientProvider>
   );
 }

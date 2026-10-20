@@ -38,7 +38,9 @@
     "enquire": "Enquire",
     "home": "Home",
     "playVideo": "Play background video",
-    "pauseVideo": "Pause background video"
+    "pauseVideo": "Pause background video",
+    "darkMode": "Dark mode",
+    "lightMode": "Light mode"
   },
   "nav": {
     "more": "More",

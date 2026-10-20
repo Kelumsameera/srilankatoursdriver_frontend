@@ -11,6 +11,7 @@ import {
   type SelectHTMLAttributes,
   type TextareaHTMLAttributes,
 } from "react";
+import { useTranslations } from "next-intl";
 import { Loader2, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -147,6 +148,22 @@ export function Spinner({ className }: { className?: string }) {
   return <Loader2 className={cn("h-5 w-5 animate-spin text-forest-600", className)} />;
 }
 
+/** Placeholder table while a list loads: keeps the page from jumping when the rows arrive. */
+export function TableSkeleton({ columns = 4, rows = 6 }: { columns?: number; rows?: number }) {
+  return (
+    <div className="overflow-hidden rounded-xl border border-slate-200 bg-white" aria-busy="true">
+      <div className="h-10 border-b border-slate-100 bg-slate-50" />
+      {Array.from({ length: rows }, (_, r) => (
+        <div key={r} className="flex items-center gap-4 border-b border-slate-100 px-4 py-3.5 last:border-0">
+          {Array.from({ length: columns }, (_, c) => (
+            <span key={c} className={cn("h-3 animate-pulse rounded bg-slate-100", c === 0 ? "w-1/3" : "flex-1")} />
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export function LoadingBlock() {
   return (
     <div className="flex items-center justify-center p-16">
@@ -156,12 +173,13 @@ export function LoadingBlock() {
 }
 
 export function ErrorBlock({ message, onRetry }: { message: string; onRetry?: () => void }) {
+  const t = useTranslations("common");
   return (
     <div className="rounded-xl border border-red-200 bg-red-50 p-6 text-sm text-red-700">
       <p>{message}</p>
       {onRetry && (
         <Button variant="outline" size="sm" className="mt-3" onClick={onRetry}>
-          Retry
+          {t("retry")}
         </Button>
       )}
     </div>
@@ -177,6 +195,7 @@ const modalStack: symbol[] = [];
 const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]):not([type="hidden"]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
 export function Modal({ open, onClose, title, children, wide, footer }: { open: boolean; onClose: () => void; title: string; children: ReactNode; wide?: boolean; footer?: ReactNode }) {
+  const t = useTranslations("common");
   const dialog = useRef<HTMLDivElement>(null);
   const titleId = useId();
   const close = useRef(onClose);
@@ -235,7 +254,7 @@ export function Modal({ open, onClose, title, children, wide, footer }: { open: 
           <h2 id={titleId} className="font-sans text-base font-semibold text-slate-900">
             {title}
           </h2>
-          <button type="button" onClick={onClose} className="rounded-lg p-1 text-slate-500 hover:bg-slate-100" aria-label="Close">
+          <button type="button" onClick={onClose} className="rounded-lg p-1 text-slate-500 hover:bg-slate-100" aria-label={t("close")}>
             <X className="h-5 w-5" />
           </button>
         </header>
@@ -252,7 +271,7 @@ export function ConfirmDialog({
   open,
   title,
   message,
-  confirmLabel = "Delete",
+  confirmLabel,
   onConfirm,
   onCancel,
   loading,
@@ -265,6 +284,7 @@ export function ConfirmDialog({
   onCancel: () => void;
   loading?: boolean;
 }) {
+  const t = useTranslations("common");
   return (
     <Modal
       open={open}
@@ -273,10 +293,10 @@ export function ConfirmDialog({
       footer={
         <>
           <Button variant="outline" onClick={onCancel}>
-            Cancel
+            {t("cancel")}
           </Button>
           <Button variant="danger" onClick={onConfirm} loading={loading}>
-            {confirmLabel}
+            {confirmLabel ?? t("delete")}
           </Button>
         </>
       }
@@ -287,18 +307,19 @@ export function ConfirmDialog({
 }
 
 export function PaginationBar({ page, totalPages, total, onPage }: { page: number; totalPages: number; total: number; onPage: (p: number) => void }) {
+  const t = useTranslations("common");
   return (
     <div className="flex items-center justify-between border-t border-slate-100 px-4 py-3 text-sm text-slate-500">
-      <span>{total} total</span>
+      <span>{t("total", { count: total })}</span>
       <div className="flex items-center gap-2">
         <Button variant="outline" size="sm" disabled={page <= 1} onClick={() => onPage(page - 1)}>
-          Previous
+          {t("previous")}
         </Button>
         <span>
           {page} / {Math.max(1, totalPages)}
         </span>
         <Button variant="outline" size="sm" disabled={page >= totalPages} onClick={() => onPage(page + 1)}>
-          Next
+          {t("next")}
         </Button>
       </div>
     </div>

@@ -36,7 +36,7 @@ export function SectionTabs({ tabs, label }: { tabs: { id: string; label: string
               aria-current={active === t.id ? "location" : undefined}
               className={cn(
                 "block whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium transition-colors",
-                active === t.id ? "bg-forest-800 text-white" : "text-forest-800 hover:bg-forest-50",
+                active === t.id ? "bg-forest-800 text-white" : "text-brand hover:bg-forest-50",
               )}
             >
               {t.label}

@@ -45,7 +45,7 @@ export default async function StoryPage({ params }: Props) {
             {story.authorName.charAt(0).toUpperCase()}
           </span>
           <div className="text-sm">
-            <p className="font-semibold text-forest-900">{story.authorName}</p>
+            <p className="font-semibold text-heading">{story.authorName}</p>
             <p className="flex flex-wrap items-center gap-x-2 text-muted">
               {story.publishedAt && <time dateTime={story.publishedAt}>{formatDate(story.publishedAt, locale, { dateStyle: "long" })}</time>}
               {story.place && (
@@ -56,7 +56,7 @@ export default async function StoryPage({ params }: Props) {
             </p>
           </div>
         </header>
-        <h1 className="mt-6 text-4xl leading-tight text-forest-900 sm:text-5xl">{story.title}</h1>
+        <h1 className="mt-6 text-4xl leading-tight text-heading sm:text-5xl">{story.title}</h1>
 
         {/* STORY TEXT (plain text from the guest, line breaks kept) */}
         <p className="mt-6 whitespace-pre-line text-lead leading-relaxed text-ink/90">{story.text}</p>

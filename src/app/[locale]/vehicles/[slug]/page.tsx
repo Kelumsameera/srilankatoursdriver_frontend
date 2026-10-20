@@ -116,7 +116,7 @@ export default async function VehicleDetailPage({ params }: Props) {
           {vehicle.description && (
             <section>
               <SectionLabel label={t("overview")} />
-              <div className="rounded-e-2xl border-s-4 border-gold-500 bg-white p-5 shadow-sm sm:p-8">
+              <div className="rounded-e-2xl border-s-4 border-gold-500 bg-surface p-5 shadow-sm sm:p-8">
                 <Markdown content={vehicle.description} className="text-base leading-relaxed sm:text-lg" />
               </div>
             </section>
@@ -126,10 +126,10 @@ export default async function VehicleDetailPage({ params }: Props) {
           {specs.length > 0 && (
             <dl className="grid grid-cols-2 gap-4 md:grid-cols-4">
               {specs.map((spec) => (
-                <div key={spec.label} className="dest-card rounded-2xl border border-forest-950/5 bg-white p-6 text-center shadow-sm">
+                <div key={spec.label} className="dest-card rounded-2xl border border-forest-950/5 bg-surface p-6 text-center shadow-sm">
                   <spec.icon className="mx-auto mb-3 h-5 w-5 text-gold-600" aria-hidden />
                   <dt className="mb-1 text-caption font-bold uppercase tracking-widest text-muted">{spec.label}</dt>
-                  <dd className="font-display text-lg text-forest-900">{spec.value}</dd>
+                  <dd className="font-display text-lg text-heading">{spec.value}</dd>
                 </div>
               ))}
             </dl>
@@ -137,7 +137,7 @@ export default async function VehicleDetailPage({ params }: Props) {
 
           {/* FEATURES */}
           {vehicle.features?.length ? (
-            <section className="rounded-2xl border border-forest-950/5 bg-white p-5 shadow-sm sm:p-8">
+            <section className="rounded-2xl border border-forest-950/5 bg-surface p-5 shadow-sm sm:p-8">
               <SectionLabel label={t("features")} />
               <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 {vehicle.features.map((feature, index) => (
@@ -152,16 +152,16 @@ export default async function VehicleDetailPage({ params }: Props) {
 
         {/* RATE BOX: sticky next to the content on desktop, below it on phones */}
         <aside className="lg:sticky lg:top-28">
-          <div className="relative overflow-hidden rounded-3xl border border-forest-950/5 bg-white p-6 text-center shadow-card sm:p-10" data-testid="vehicle-booking-card">
+          <div className="relative overflow-hidden rounded-3xl border border-forest-950/5 bg-surface p-6 text-center shadow-card sm:p-10" data-testid="vehicle-booking-card">
             <div className="absolute inset-x-0 top-0 h-1 bg-gold-500" aria-hidden />
             {rate ? (
               <>
                 <span className="mb-3 block text-caption font-bold uppercase tracking-widest text-muted">{t("startsFrom")}</span>
-                <p className="font-display text-5xl italic leading-none tracking-tight text-forest-900">{rate}</p>
+                <p className="font-display text-5xl italic leading-none tracking-tight text-heading">{rate}</p>
                 <p className="mt-2 text-sm text-muted">{t("perDay")}</p>
               </>
             ) : (
-              <p className="font-display text-2xl text-forest-800">{tCommon("priceOnRequest")}</p>
+              <p className="font-display text-2xl text-brand">{tCommon("priceOnRequest")}</p>
             )}
             {vehicle.availability && vehicle.availability !== "available" && <p className="mt-3 text-sm font-medium text-earth-700">{t(vehicle.availability)}</p>}
             <div className="mt-8 flex flex-col gap-3">
@@ -181,9 +181,9 @@ export default async function VehicleDetailPage({ params }: Props) {
 
       {/* RELATED VEHICLES */}
       {data.related.length > 0 && (
-        <section className="border-t border-forest-950/5 bg-white py-section-sm">
+        <section className="border-t border-forest-950/5 bg-surface py-section-sm">
           <div className="container-page">
-            <h2 className="mb-10 text-h2 text-forest-900">{t("related")}</h2>
+            <h2 className="mb-10 text-h2 text-heading">{t("related")}</h2>
             <div className="grid-center-last grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
               {data.related.map((relatedVehicle, index) => (
                 <div key={relatedVehicle._id} {...reveal3d(index)}>

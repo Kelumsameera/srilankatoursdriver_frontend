@@ -23,7 +23,7 @@ export default async function NewStoryPage({ params }: Props) {
     <section className="pb-section pt-32 sm:pt-36">
       <div className="container-page max-w-2xl">
         <Breadcrumbs locale={locale} onLight items={[{ label: tCommon("home"), href: "/" }, { label: t("feedTitle"), href: "/blog" }, { label: t("shareYourStory") }]} />
-        <h1 className="mt-6 text-4xl leading-tight text-forest-900 sm:text-5xl">{t("formTitle")}</h1>
+        <h1 className="mt-6 text-4xl leading-tight text-heading sm:text-5xl">{t("formTitle")}</h1>
         <p className="mb-8 mt-4 text-lead text-muted">{t("formIntro")}</p>
         <StoryForm />
       </div>

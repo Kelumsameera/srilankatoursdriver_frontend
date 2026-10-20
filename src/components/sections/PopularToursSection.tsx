@@ -23,7 +23,7 @@ async function FeaturedTourBand({ section, tour }: { section: PageSection; tour:
 
   return (
     <section className="relative overflow-hidden bg-forest-900 py-24 text-white sm:py-28" data-testid="featured-tour">
-      <PaperEdge flip className="text-sand-50" />
+      <PaperEdge flip className="text-cream" />
       <Botanical className="text-white opacity-[0.05]" />
       <div className="container-page relative grid items-center gap-14 lg:grid-cols-2">
         {/* PHOTO + round close-up */}
@@ -64,7 +64,7 @@ async function FeaturedTourBand({ section, tour }: { section: PageSection; tour:
           </div>
         </div>
       </div>
-      <PaperEdge className="text-sand-50" />
+      <PaperEdge className="text-cream" />
     </section>
   );
 }

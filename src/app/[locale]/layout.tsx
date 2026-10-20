@@ -8,7 +8,7 @@ import { getBranding, getLanguages, getList, getNavigation, getPage, getSeo, get
 import { hasActiveHero } from "@/components/sections/PageRenderer";
 import { SITE_URL } from "@/lib/config";
 import { cloudinaryUrl } from "@/lib/cloudinary-loader";
-import { alternates, jsonLd, organizationJsonLd } from "@/lib/seo";
+import { alternates, getSiteLanguages, jsonLd, organizationJsonLd } from "@/lib/seo";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
@@ -22,6 +22,7 @@ import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { DepthScroll } from "@/components/ui/DepthScroll";
 import type { SiteSettings } from "@/types/cms";
 import { travelSans, travelDisplay } from "@/lib/fonts";
+import { THEME_INIT_SCRIPT, googleFonts, googleFontsUrl, resolveTheme, themeToCss } from "@/lib/theme";
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -38,7 +39,7 @@ export const viewport: Viewport = {
 /** Site-wide metadata: everything (name, favicon, verification, defaults) comes from the CMS. */
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
-  const [settings, branding, seo] = await Promise.all([getSiteSettings(locale), getBranding(), getSeo("global")]);
+  const [settings, branding, seo, site] = await Promise.all([getSiteSettings(locale), getBranding(), getSeo("global"), getSiteLanguages()]);
   const siteName = settings?.siteName ?? "";
   // "{siteName}" in the SEO title template is replaced with the Site Settings value, so renaming the site updates every title.
   const template = (seo?.global?.titleTemplate?.includes("%s") ? seo.global.titleTemplate : "%s | {siteName}").replace(/\{siteName\}/g, siteName);
@@ -48,7 +49,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: { default: (seo?.global?.seoTitle || siteName).replace(/\{siteName\}/g, siteName), template },
     description: seo?.global?.metaDescription || settings?.tagline,
     applicationName: siteName,
-    alternates: alternates("/", locale),
+    alternates: alternates("/", locale, site),
     icons: faviconUrl
       ? {
           icon: [
@@ -84,10 +85,13 @@ export default async function LocaleLayout({ children, params }: Props) {
   const settings = settingsRes ?? EMPTY_SETTINGS;
   const enabledLanguages = languages?.filter((l) => l.enabled).map((l) => l.code) ?? [...locales];
   const dir = rtlLocales.includes(locale as Locale) ? "rtl" : "ltr";
+  // Admin → Theme: colours, fonts, background, shape and custom CSS as one <style> block (validated in resolveTheme).
+  const theme = resolveTheme(branding);
+  const themeCss = [themeToCss(theme), theme.customCss].filter(Boolean).join("\n").replace(/</g, "\\3C ");
+  const fontsUrl = googleFontsUrl(googleFonts(theme, locale));
+  // Light / dark: fixed by the admin, or chosen by each visitor (header toggle + cookie, applied by a head script).
+  const fixedMode = theme.mode === "visitor" ? undefined : theme.mode;
   const brandStyle = {
-    ...(branding?.colors?.primary ? { "--brand-primary": branding.colors.primary } : {}),
-    ...(branding?.colors?.secondary ? { "--brand-secondary": branding.colors.secondary } : {}),
-    ...(branding?.colors?.accent ? { "--brand-accent": branding.colors.accent } : {}),
     // Text of the badge on AI-generated fallback images (see [data-illustrative] in globals.css).
     "--illustrative-label": JSON.stringify(t("illustrativeLabel")),
   } as CSSProperties;
@@ -96,9 +100,20 @@ export default async function LocaleLayout({ children, params }: Props) {
   return (
     // Browser extensions (password managers, launchers, translators…) add attributes to <html>/<body> before
     // React hydrates; suppressHydrationWarning ignores attribute differences on these two elements only.
-    <html data-scroll-behavior="smooth" lang={locale} dir={dir} style={brandStyle} className={`${travelSans.variable} ${travelDisplay.variable}`} data-site="public" suppressHydrationWarning>
+    <html data-scroll-behavior="smooth" data-theme={fixedMode} lang={locale} dir={dir} style={brandStyle} className={`${travelSans.variable} ${travelDisplay.variable}`} data-site="public" suppressHydrationWarning>
+      <head>
+        {fontsUrl && (
+          <>
+            <link rel="preconnect" href="https://fonts.googleapis.com" />
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+            <link rel="stylesheet" href={fontsUrl} />
+          </>
+        )}
+        <style id="site-theme" dangerouslySetInnerHTML={{ __html: themeCss }} />
+        {theme.mode === "visitor" && <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />}
+      </head>
       <body className="flex min-h-dvh flex-col" suppressHydrationWarning>
-        <a href="#main" className="sr-only z-50 rounded bg-white px-4 py-2 focus:not-sr-only focus:fixed focus:inset-s-4 focus:top-4">
+        <a href="#main" className="sr-only z-50 rounded bg-surface px-4 py-2 focus:not-sr-only focus:fixed focus:inset-s-4 focus:top-4">
           {t("skipToContent")}
         </a>
         <NextIntlClientProvider locale={locale} messages={messages}>
@@ -109,6 +124,7 @@ export default async function LocaleLayout({ children, params }: Props) {
               languages={enabledLanguages}
               phone={settings.phone}
               whatsapp={whatsapp}
+              themeToggle={theme.mode === "visitor"}
               logoLight={<Logo branding={branding} siteName={settings.siteName} tone="light" preload />}
               logoDark={<Logo branding={branding} siteName={settings.siteName} tone="dark" />}
               logoMobile={<Logo branding={branding} siteName={settings.siteName} tone="dark" mobile className="max-h-10" />}

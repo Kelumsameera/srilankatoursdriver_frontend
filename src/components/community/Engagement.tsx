@@ -153,14 +153,14 @@ export function Engagement({ type, id, title, url, path }: { type: "blog" | "sto
             aria-pressed={data.liked}
             className={cn(
               "inline-flex min-h-11 items-center gap-2 rounded-full border px-5 py-2 text-sm font-medium transition-colors",
-              data.liked ? "border-rose-200 bg-rose-50 text-rose-700" : "border-sand-200 bg-white text-forest-800 hover:border-forest-800",
+              data.liked ? "border-rose-200 bg-rose-50 text-rose-700" : "border-sand-200 bg-surface text-brand hover:border-brand",
             )}
           >
             <Heart className={cn("h-5 w-5 transition-transform", data.liked && "scale-110 fill-current")} aria-hidden />
             {t("likes", { count: data.likes })}
           </button>
         ) : (
-          <Link href={signInHref} className="inline-flex min-h-11 items-center gap-2 rounded-full border border-sand-200 bg-white px-5 py-2 text-sm font-medium text-forest-800 hover:border-forest-800">
+          <Link href={signInHref} className="inline-flex min-h-11 items-center gap-2 rounded-full border border-sand-200 bg-surface px-5 py-2 text-sm font-medium text-brand hover:border-brand">
             <Heart className="h-5 w-5" aria-hidden />
             {t("likes", { count: data.likes })}
           </Link>
@@ -175,7 +175,7 @@ export function Engagement({ type, id, title, url, path }: { type: "blog" | "sto
               target="_blank"
               rel="noopener noreferrer"
               aria-label={t("shareOn", { network: label })}
-              className="flex h-11 w-11 items-center justify-center rounded-full border border-sand-200 bg-white text-forest-800 transition-colors hover:border-gold-500 hover:bg-gold-500 hover:text-forest-950"
+              className="flex h-11 w-11 items-center justify-center rounded-full border border-sand-200 bg-surface text-brand transition-colors hover:border-gold-500 hover:bg-gold-500 hover:text-forest-950"
             >
               <Icon className="h-4 w-4" />
             </a>
@@ -184,7 +184,7 @@ export function Engagement({ type, id, title, url, path }: { type: "blog" | "sto
             type="button"
             onClick={copyLink}
             aria-label={t("copyLink")}
-            className="flex h-11 w-11 items-center justify-center rounded-full border border-sand-200 bg-white text-forest-800 transition-colors hover:border-gold-500 hover:bg-gold-500 hover:text-forest-950"
+            className="flex h-11 w-11 items-center justify-center rounded-full border border-sand-200 bg-surface text-brand transition-colors hover:border-gold-500 hover:bg-gold-500 hover:text-forest-950"
           >
             {copied ? <Check className="h-4 w-4" aria-hidden /> : <Link2 className="h-4 w-4" aria-hidden />}
           </button>
@@ -203,7 +203,7 @@ export function Engagement({ type, id, title, url, path }: { type: "blog" | "sto
 
       {/* COMMENTS */}
       <div id="comments" className="mt-12 scroll-mt-28">
-        <h2 className="flex items-center gap-2 text-2xl text-forest-900">
+        <h2 className="flex items-center gap-2 text-2xl text-heading">
           <MessageCircle className="h-6 w-6 text-gold-600" aria-hidden />
           {t("comments", { count: data.comments.length })}
         </h2>
@@ -211,13 +211,13 @@ export function Engagement({ type, id, title, url, path }: { type: "blog" | "sto
         {data.comments.length > 0 ? (
           <ul className="mt-6 space-y-4">
             {data.comments.map((comment) => (
-              <li key={comment._id} className="flex gap-4 rounded-2xl bg-white p-5 shadow-card">
+              <li key={comment._id} className="flex gap-4 rounded-2xl bg-surface p-5 shadow-card">
                 <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-forest-800 font-display text-lg text-gold-400" aria-hidden>
                   {comment.authorName.charAt(0).toUpperCase()}
                 </span>
                 <div className="min-w-0">
                   <p className="text-sm">
-                    <span className="font-semibold text-forest-900">{comment.authorName}</span>{" "}
+                    <span className="font-semibold text-heading">{comment.authorName}</span>{" "}
                     <time dateTime={comment.createdAt} className="text-muted">· {formatDate(comment.createdAt, locale, { dateStyle: "medium" })}</time>
                   </p>
                   <p className="mt-1 whitespace-pre-line break-words text-ink/90">{comment.text}</p>
@@ -231,8 +231,8 @@ export function Engagement({ type, id, title, url, path }: { type: "blog" | "sto
 
         {/* WRITE A COMMENT (signed-in guests), or a sign-in link */}
         {customer ? (
-          <form onSubmit={submitComment} className="mt-8 rounded-2xl border border-sand-200 bg-white p-5">
-            <label htmlFor="comment-text" className="text-sm font-medium text-forest-900">
+          <form onSubmit={submitComment} className="mt-8 rounded-2xl border border-sand-200 bg-surface p-5">
+            <label htmlFor="comment-text" className="text-sm font-medium text-heading">
               {t("commentAs", { name: customer.name })}
             </label>
             <textarea
@@ -253,14 +253,14 @@ export function Engagement({ type, id, title, url, path }: { type: "blog" | "sto
               </button>
             </div>
             {notice && (
-              <p role="status" className={cn("mt-3 text-sm", notice.ok ? "text-forest-700" : "text-red-700")}>
+              <p role="status" className={cn("mt-3 text-sm", notice.ok ? "text-brand-soft" : "text-red-700")}>
                 {notice.text}
               </p>
             )}
           </form>
         ) : (
-          <p className="mt-8 rounded-2xl border border-dashed border-gold-200 bg-white/70 p-5 text-center text-sm text-muted">
-            <Link href={signInHref} className="font-semibold text-forest-800 underline underline-offset-4">
+          <p className="mt-8 rounded-2xl border border-dashed border-gold-200 bg-surface/70 p-5 text-center text-sm text-muted">
+            <Link href={signInHref} className="font-semibold text-brand underline underline-offset-4">
               {t("signInToComment")}
             </Link>
           </p>

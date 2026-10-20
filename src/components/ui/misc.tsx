@@ -36,7 +36,7 @@ export function SectionHeading({
       <div className={cn("max-w-2xl", align === "center" && "mx-auto")}>
         {eyebrow && <p className={cn("eyebrow mb-3", light && "text-gold-400")}>{eyebrow}</p>}
         {title && (
-          <h2 className={cn("text-3xl leading-tight sm:text-4xl lg:text-[2.75rem]", light ? "text-white" : "text-forest-900")}>{title}</h2>
+          <h2 className={cn("text-3xl leading-tight sm:text-4xl lg:text-[2.75rem]", light ? "text-white" : "text-heading")}>{title}</h2>
         )}
         {badge && <p className={cn("mt-3 font-display text-xl italic sm:text-2xl", light ? "text-gold-400" : "text-gold-600")}>{badge}</p>}
         {subtitle && <p className={cn("mt-4 text-base leading-relaxed sm:text-lg", light ? "text-white/75" : "text-muted")}>{subtitle}</p>}
@@ -58,7 +58,7 @@ export function Stars({ rating, className }: { rating: number; className?: strin
 
 export function Badge({ children, className }: { children: ReactNode; className?: string }) {
   return (
-    <span className={cn("inline-flex items-center gap-1 rounded-full bg-forest-50 px-3 py-1 text-xs font-medium text-forest-700", className)}>
+    <span className={cn("inline-flex items-center gap-1 rounded-full bg-forest-50 px-3 py-1 text-xs font-medium text-brand-soft", className)}>
       {children}
     </span>
   );
@@ -67,7 +67,7 @@ export function Badge({ children, className }: { children: ReactNode; className?
 // "Nothing here yet" box: a compass in a gold circle above the message
 export function EmptyState({ text }: { text: string }) {
   return (
-    <div className="flex flex-col items-center gap-4 rounded-3xl border border-dashed border-gold-200 bg-white/70 p-8 text-center shadow-soft sm:p-12">
+    <div className="flex flex-col items-center gap-4 rounded-3xl border border-dashed border-gold-200 bg-surface/70 p-8 text-center shadow-soft sm:p-12">
       <span className="flex h-14 w-14 items-center justify-center rounded-full bg-gold-100 text-gold-600" aria-hidden>
         <Compass className="h-7 w-7" strokeWidth={1.5} />
       </span>

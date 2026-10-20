@@ -113,7 +113,7 @@ function HeadingLinks({ section, ctx, light }: { section: PageSection; ctx: Sect
           whatsapp={{ phone: ctx.settings?.whatsapp, message: ctx.settings?.whatsappMessage }}
           className={cn(
             "group/link relative inline-flex items-center gap-2 border-b pb-0.5 text-small font-semibold transition-colors after:absolute after:inset-x-0 after:-inset-y-3 after:content-['']",
-            light ? "border-gold-400/60 text-white hover:text-gold-400" : "border-forest-800/30 text-forest-800 hover:border-gold-500 hover:text-gold-600",
+            light ? "border-gold-400/60 text-white hover:text-gold-400" : "border-brand/30 text-brand hover:border-gold-500 hover:text-gold-600",
           )}
         >
           {b.label}

@@ -99,6 +99,8 @@ export interface Branding {
   logoWidth?: number;
   logoHeight?: number;
   colors?: { primary?: string; secondary?: string; accent?: string };
+  /** Site Appearance settings; read through resolveTheme() in lib/theme.ts, never directly. */
+  theme?: unknown;
 }
 
 export interface NavItem {
@@ -116,6 +118,8 @@ export interface Language {
   nativeName: string;
   enabled: boolean;
   rtl?: boolean;
+  /** The website's default language (Admin → Languages). */
+  isDefault?: boolean;
 }
 
 export interface Category {

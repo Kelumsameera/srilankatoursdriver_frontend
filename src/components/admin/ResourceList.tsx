@@ -5,12 +5,12 @@ import Link from "next/link";
 import Image from "next/image";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { ArrowDown, ArrowUp, Copy, ExternalLink, Eye, EyeOff, FileSearch, Languages, Pencil, Plus, Search, Star, Trash2 } from "lucide-react";
+import { ArrowDown, ArrowUp, ArrowUpDown, ChevronDown, ChevronUp, Copy, ExternalLink, Eye, EyeOff, FileSearch, Languages, Pencil, Plus, Search, Star, Trash2 } from "lucide-react";
 import { api, errorMessage, qs } from "@/lib/admin/api";
 import { useAuth } from "@/lib/admin/auth";
 import { cn, formatDate } from "@/lib/utils";
 import type { AdminResource, Column } from "@/features/admin/resources";
-import { Button, ConfirmDialog, Empty, ErrorBlock, Input, LoadingBlock, PageHeader, PaginationBar, Select, StatusBadge } from "./ui";
+import { Button, ConfirmDialog, Empty, ErrorBlock, Input, PageHeader, PaginationBar, Select, StatusBadge, TableSkeleton } from "./ui";
 
 type Row = Record<string, unknown> & { _id: string };
 
@@ -46,6 +46,9 @@ function Cell({ col, row }: { col: Column; row: Row }) {
   }
 }
 
+/** Columns the API can sort by: plain top-level fields (not images, linked categories or counts). */
+const isSortable = (c: Column) => !c.key.includes(".") && !["image", "category", "count"].includes(c.kind ?? "text");
+
 /** Search / filter / sort / paginate / publish / feature / duplicate / reorder / delete – for any CMS resource. */
 export function ResourceList({ resource }: { resource: AdminResource }) {
   const qc = useQueryClient();
@@ -54,15 +57,17 @@ export function ResourceList({ resource }: { resource: AdminResource }) {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("");
   const [filters, setFilters] = useState<Record<string, string>>({});
+  // "" = the resource's default order, "title" = A→Z, "-title" = Z→A
+  const [sort, setSort] = useState("");
   const [deleting, setDeleting] = useState<Row | null>(null);
   const p = resource.permission;
   const base = `/admin/content/${resource.key}`;
 
-  const queryKey = ["list", resource.key, page, search, status, filters];
+  const queryKey = ["list", resource.key, page, search, status, filters, sort];
   const { data, isLoading, error, refetch } = useQuery({
     queryKey,
     queryFn: () =>
-      api.get<Row[]>(`${resource.endpoint}${qs({ page, limit: 25, search, ...(resource.statusField === "status" ? { status } : {}), ...filters, ...resource.fixedQuery })}`),
+      api.get<Row[]>(`${resource.endpoint}${qs({ page, limit: 25, search, sort, ...(resource.statusField === "status" ? { status } : {}), ...filters, ...resource.fixedQuery })}`),
   });
   const rows = data?.data ?? [];
   const invalidate = () => qc.invalidateQueries({ queryKey: ["list", resource.key] });
@@ -160,7 +165,7 @@ export function ResourceList({ resource }: { resource: AdminResource }) {
       </div>
 
       {isLoading ? (
-        <LoadingBlock />
+        <TableSkeleton columns={resource.columns.length + 1} />
       ) : error ? (
         <ErrorBlock message={errorMessage(error)} onRetry={() => refetch()} />
       ) : rows.length === 0 ? (
@@ -171,11 +176,29 @@ export function ResourceList({ resource }: { resource: AdminResource }) {
             <table className="w-full text-sm" data-testid="resource-table">
               <thead className="bg-slate-50 text-start text-xs uppercase tracking-wide text-slate-500">
                 <tr>
-                  {resource.columns.map((c) => (
-                    <th key={c.key} className="px-4 py-3 text-start font-semibold">
-                      {c.label}
-                    </th>
-                  ))}
+                  {resource.columns.map((c) => {
+                    // Click: A→Z, again: Z→A, a third time: back to the default order
+                    const dir = sort === c.key ? "asc" : sort === `-${c.key}` ? "desc" : null;
+                    return (
+                      <th key={c.key} className="px-4 py-3 text-start font-semibold" aria-sort={dir === "asc" ? "ascending" : dir === "desc" ? "descending" : undefined}>
+                        {isSortable(c) ? (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setSort(dir === null ? c.key : dir === "asc" ? `-${c.key}` : "");
+                              setPage(1);
+                            }}
+                            className={cn("inline-flex items-center gap-1 uppercase tracking-wide hover:text-slate-800", dir && "text-slate-800")}
+                          >
+                            {c.label}
+                            {dir === "asc" ? <ChevronUp className="h-3.5 w-3.5" /> : dir === "desc" ? <ChevronDown className="h-3.5 w-3.5" /> : <ArrowUpDown className="h-3 w-3 opacity-40" />}
+                          </button>
+                        ) : (
+                          c.label
+                        )}
+                      </th>
+                    );
+                  })}
                   <th className="px-4 py-3 text-end font-semibold">Actions</th>
                 </tr>
               </thead>
@@ -195,7 +218,7 @@ export function ResourceList({ resource }: { resource: AdminResource }) {
                     ))}
                     <td className="px-4 py-2">
                       <div className="flex items-center justify-end gap-0.5">
-                        {resource.reorderable && can(`${p}:update`) && !search && (
+                        {resource.reorderable && can(`${p}:update`) && !search && !sort && (
                           <>
                             <Button variant="ghost" size="sm" onClick={() => move(i, -1)} disabled={i === 0} aria-label="Move up">
                               <ArrowUp className="h-3.5 w-3.5" />

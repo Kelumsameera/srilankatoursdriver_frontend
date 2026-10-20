@@ -34,14 +34,14 @@ export function StoryCard({ story }: { story: Story }) {
   const href = `/stories/${story._id}`;
 
   return (
-    <article className="dest-card overflow-hidden rounded-3xl bg-white shadow-card">
+    <article className="dest-card overflow-hidden rounded-3xl bg-surface shadow-card">
       {/* WHO, WHEN, WHERE */}
       <header className="flex items-center gap-3 p-5 pb-3">
         <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-forest-800 font-display text-lg text-gold-400" aria-hidden>
           {story.authorName.charAt(0).toUpperCase()}
         </span>
         <div className="min-w-0 text-sm">
-          <p className="font-semibold text-forest-900">{story.authorName}</p>
+          <p className="font-semibold text-heading">{story.authorName}</p>
           <p className="flex flex-wrap items-center gap-x-2 text-muted">
             {story.publishedAt && <time dateTime={story.publishedAt}>{formatDate(story.publishedAt, locale, { dateStyle: "medium" })}</time>}
             {story.place && (
@@ -55,7 +55,7 @@ export function StoryCard({ story }: { story: Story }) {
 
       {/* TITLE + TEXT */}
       <div className="px-5 pb-4">
-        <h2 className="font-display text-2xl leading-snug text-forest-900">
+        <h2 className="font-display text-2xl leading-snug text-heading">
           <CmsLink href={href} className="hover:underline">
             {story.title}
           </CmsLink>
@@ -91,7 +91,7 @@ export function StoryCard({ story }: { story: Story }) {
             <MessageCircle className="h-4 w-4 text-gold-600" aria-hidden /> {t("commentCount", { count: story.commentCount ?? 0 })}
           </span>
         </span>
-        <CmsLink href={href} className="font-semibold text-forest-800 underline-offset-4 hover:underline">
+        <CmsLink href={href} className="font-semibold text-brand underline-offset-4 hover:underline">
           {t("readStory")}
         </CmsLink>
       </footer>

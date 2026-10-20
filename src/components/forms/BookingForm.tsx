@@ -108,8 +108,8 @@ export function BookingForm({ tours, excursions, vehicles, initial }: Props) {
   const e = errors;
 
   return (
-    <form onSubmit={onSubmit} noValidate className="relative grid grid-cols-1 gap-5 rounded-3xl bg-white p-6 shadow-card sm:grid-cols-2 sm:p-10" data-testid="booking-form">
-      <h2 className="text-2xl text-forest-900 sm:col-span-2">{t("formTitle")}</h2>
+    <form onSubmit={onSubmit} noValidate className="relative grid grid-cols-1 gap-5 rounded-3xl bg-surface p-6 shadow-card sm:grid-cols-2 sm:p-10" data-testid="booking-form">
+      <h2 className="text-2xl text-heading sm:col-span-2">{t("formTitle")}</h2>
       <Honeypot register={register as never} />
       <Field label={t("type")} htmlFor="type" className="sm:col-span-2">
         <Select id="type" {...register("type")}>

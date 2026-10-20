@@ -5,6 +5,7 @@ vi.mock("@/lib/api/server", () => ({
   getSiteSettings: vi.fn(async () => null),
   getSeo: vi.fn(async () => null),
   getBranding: vi.fn(async () => null),
+  getLanguages: vi.fn(async () => null),
 }));
 
 describe("page SEO fields", () => {

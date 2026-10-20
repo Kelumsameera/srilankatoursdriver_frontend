@@ -306,7 +306,7 @@ export function HeroSlider({ slides, pageTitle, rating, whatsapp, labels }: Prop
               {slides.map((s, i) => (
                 // 44 × 44px tap area around the thin visual bar.
                 <button key={s._id} type="button" onClick={() => go(i)} aria-label={`${i + 1} / ${count}`} aria-current={i === index} className="group flex h-11 min-w-11 items-center justify-center px-1">
-                  <span className={cn("block h-1.5 rounded-full transition-all", i === index ? "w-10 bg-gold-500" : "w-5 bg-white/40 group-hover:bg-white/70")} />
+                  <span className={cn("block h-1.5 rounded-full transition-all", i === index ? "w-10 bg-gold-500" : "w-5 bg-white/40 group-hover:bg-surface/70")} />
                 </button>
               ))}
             </div>
@@ -333,7 +333,7 @@ export function HeroSlider({ slides, pageTitle, rating, whatsapp, labels }: Prop
         </div>
       )}
 
-      <PaperEdge className="text-sand-50" />
+      <PaperEdge className="text-cream" />
     </section>
   );
 }

@@ -24,7 +24,7 @@ export function Breadcrumbs({ locale, items, onLight = false, label = "Breadcrum
             <li key={`${item.label}-${i}`} className="flex items-center gap-2">
               {i > 0 && (dots ? <span className="dest-dot" aria-hidden /> : <span aria-hidden>/</span>)}
               {item.href && i < list.length - 1 ? (
-                <CmsLink href={item.href} className={onLight ? "hover:text-forest-800 focus-visible:outline-2 focus-visible:outline-offset-4" : "hover:text-white"}>
+                <CmsLink href={item.href} className={onLight ? "hover:text-brand focus-visible:outline-2 focus-visible:outline-offset-4" : "hover:text-white"}>
                   {item.label}
                 </CmsLink>
               ) : (

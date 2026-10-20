@@ -26,8 +26,8 @@ import {
 } from "lucide-react";
 import { api, errorMessage } from "@/lib/admin/api";
 import { useAuth } from "@/lib/admin/auth";
-import { formatDate, formatPrice } from "@/lib/utils";
-import { Card, Empty, ErrorBlock, LoadingBlock, PageHeader, StatusBadge } from "@/components/admin/ui";
+import { cn, formatDate, formatPrice } from "@/lib/utils";
+import { Card, Empty, ErrorBlock, PageHeader, StatusBadge } from "@/components/admin/ui";
 import { BarList, RateRing, SERIES, StackedColumns, monthLabel } from "@/components/admin/charts";
 
 interface Stats {
@@ -61,27 +61,52 @@ const OUTCOME = {
 const OUTCOME_OF: Record<string, keyof typeof OUTCOME> = { confirmed: "won", completed: "won", cancelled: "lost" };
 const TYPE_LABEL: Record<string, string> = { tour: "Tours", excursion: "Excursions", vehicle: "Vehicle + driver", general: "General trips" };
 
-const CARDS = [
-  { key: "totalTours", label: "Total Tours", icon: Map, href: "/admin/content/tours" },
-  { key: "totalDestinations", label: "Total Destinations", icon: MapPin, href: "/admin/content/destinations" },
-  { key: "totalVehicles", label: "Total Vehicles", icon: Car, href: "/admin/content/vehicles" },
-  { key: "totalBookings", label: "Total Bookings", icon: CalendarCheck, href: "/admin/bookings" },
-  { key: "newBookings", label: "New Bookings", icon: Inbox, href: "/admin/bookings?status=new", accent: true },
-  { key: "confirmedBookings", label: "Confirmed Bookings", icon: CheckCircle2, href: "/admin/bookings?status=confirmed" },
+/** Things waiting for someone: highlighted while their count is above zero. */
+const ATTENTION = [
+  { key: "newBookings", label: "New Bookings", icon: Inbox, href: "/admin/bookings?status=new" },
+  { key: "newMessages", label: "New Messages", icon: MessageSquare, href: "/admin/messages" },
   { key: "tailorMadeEnquiries", label: "Tailor-Made Enquiries", icon: Wand2, href: "/admin/tailor-made" },
+  { key: "pendingReviews", label: "Pending Reviews", icon: Sparkles, href: "/admin/content/reviews" },
+];
+
+/** Totals of the website's content and bookings. */
+const TOTALS = [
+  { key: "totalBookings", label: "Total Bookings", icon: CalendarCheck, href: "/admin/bookings" },
+  { key: "confirmedBookings", label: "Confirmed Bookings", icon: CheckCircle2, href: "/admin/bookings?status=confirmed" },
+  { key: "totalTours", label: "Tours", icon: Map, href: "/admin/content/tours" },
+  { key: "totalDestinations", label: "Destinations", icon: MapPin, href: "/admin/content/destinations" },
+  { key: "totalVehicles", label: "Vehicles", icon: Car, href: "/admin/content/vehicles" },
   { key: "galleryItems", label: "Gallery Items", icon: ImageIcon, href: "/admin/content/gallery" },
   { key: "blogPosts", label: "Blog Posts", icon: FileText, href: "/admin/content/blog" },
   { key: "reviews", label: "Reviews", icon: Star, href: "/admin/content/reviews" },
-  { key: "pendingReviews", label: "Pending Reviews", icon: Sparkles, href: "/admin/content/reviews", accent: true },
-  { key: "newMessages", label: "New Messages", icon: MessageSquare, href: "/admin/messages", accent: true },
 ];
+
+/** Grey placeholder blocks shaped like the dashboard while it loads. */
+function DashboardSkeleton() {
+  return (
+    <div className="space-y-8" aria-busy="true">
+      <div className="h-12 w-72 animate-pulse rounded-lg bg-slate-200/70" />
+      <div className="grid grid-cols-2 gap-3 xl:grid-cols-4">
+        {Array.from({ length: 4 }, (_, i) => (
+          <div key={i} className="h-28 animate-pulse rounded-xl bg-slate-200/70" />
+        ))}
+      </div>
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-4 xl:grid-cols-8">
+        {Array.from({ length: 8 }, (_, i) => (
+          <div key={i} className="h-20 animate-pulse rounded-xl bg-slate-200/60" />
+        ))}
+      </div>
+      <div className="h-72 animate-pulse rounded-xl bg-slate-200/60" />
+    </div>
+  );
+}
 
 export default function DashboardPage() {
   const { user, can } = useAuth();
   const { data, isLoading, error, refetch } = useQuery({ queryKey: ["dashboard"], queryFn: () => api.get<Stats>("/admin/dashboard"), enabled: can("dashboard:read") });
 
   if (!can("dashboard:read")) return <PageHeader title={`Welcome, ${user?.name}`} description="Use the menu to manage the content you have access to." />;
-  if (isLoading) return <LoadingBlock />;
+  if (isLoading) return <DashboardSkeleton />;
   if (error || !data) return <ErrorBlock message={errorMessage(error)} onRetry={() => refetch()} />;
   const s = data.data;
 
@@ -98,16 +123,46 @@ export default function DashboardPage() {
           )
         }
       />
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4" data-testid="dashboard-cards">
-        {CARDS.map((c) => (
-          <Link key={c.key} href={c.href} className="group rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition-colors hover:border-forest-600">
-            <div className="flex items-center justify-between">
-              <p className="text-xs font-medium uppercase tracking-wide text-slate-500">{c.label}</p>
-              <c.icon className={c.accent && s.cards[c.key] ? "h-4 w-4 text-amber-500" : "h-4 w-4 text-slate-400"} />
-            </div>
-            <p className="mt-2 text-3xl font-semibold text-slate-900">{s.cards[c.key] ?? 0}</p>
-          </Link>
-        ))}
+      <div data-testid="dashboard-cards" className="space-y-3">
+        {/* Needs attention: amber while something is waiting */}
+        <div className="grid grid-cols-2 gap-3 xl:grid-cols-4">
+          {ATTENTION.map((c) => {
+            const count = s.cards[c.key] ?? 0;
+            return (
+              <Link
+                key={c.key}
+                href={c.href}
+                className={cn(
+                  "group rounded-xl border p-4 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md motion-reduce:transform-none",
+                  count > 0 ? "border-amber-200 bg-amber-50" : "border-slate-200 bg-white hover:border-forest-600",
+                )}
+              >
+                <div className="flex items-center justify-between gap-2">
+                  <span className={cn("flex h-9 w-9 items-center justify-center rounded-lg", count > 0 ? "bg-amber-500 text-white" : "bg-slate-100 text-slate-500")}>
+                    <c.icon className="h-4 w-4" aria-hidden />
+                  </span>
+                  {count > 0 && <span className="text-[11px] font-semibold uppercase tracking-wide text-amber-700">Needs attention</span>}
+                </div>
+                <p className="mt-3 text-3xl font-semibold tabular-nums text-slate-900">{count}</p>
+                <p className="text-xs font-medium text-slate-500">{c.label}</p>
+              </Link>
+            );
+          })}
+        </div>
+        {/* Totals */}
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-4 xl:grid-cols-8">
+          {TOTALS.map((c) => (
+            <Link key={c.key} href={c.href} className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-3 shadow-sm transition-colors hover:border-forest-600 xl:flex-col xl:items-start xl:gap-2">
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-forest-50 text-forest-700">
+                <c.icon className="h-4 w-4" aria-hidden />
+              </span>
+              <span className="min-w-0">
+                <span className="block text-xl font-semibold tabular-nums text-slate-900">{s.cards[c.key] ?? 0}</span>
+                <span className="block truncate text-xs text-slate-500">{c.label}</span>
+              </span>
+            </Link>
+          ))}
+        </div>
       </div>
 
       {s.analytics && <BookingAnalytics a={s.analytics} />}

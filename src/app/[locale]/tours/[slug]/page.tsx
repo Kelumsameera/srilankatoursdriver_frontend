@@ -174,7 +174,7 @@ export default async function TourDetailPage({ params }: Props) {
             <Markdown content={tour.description} />
             {tour.highlights?.length ? (
               <div className="mt-8 rounded-3xl bg-forest-50 p-7">
-                <h3 className="mb-4 text-h3 text-forest-900">{t("highlights")}</h3>
+                <h3 className="mb-4 text-h3 text-heading">{t("highlights")}</h3>
                 <CheckList items={tour.highlights} />
               </div>
             ) : null}
@@ -190,7 +190,7 @@ export default async function TourDetailPage({ params }: Props) {
                       {day.day}
                     </span>
                     <p className="eyebrow">{t("dayLabel", { day: day.day })}</p>
-                    <h3 className="mt-1 text-h3 text-forest-900">{day.title}</h3>
+                    <h3 className="mt-1 text-h3 text-heading">{day.title}</h3>
                     {day.image?.url && <CmsImage media={day.image} alt={day.title} sizes="(min-width:1024px) 600px, 100vw" wrapperClassName="mt-4 aspect-[16/9] rounded-2xl shadow-card lg:aspect-[16/7]" depth />}
                     <Markdown content={day.description} className="mt-3 text-[0.95rem]" />
                     {day.activities?.length ? (
@@ -219,13 +219,13 @@ export default async function TourDetailPage({ params }: Props) {
               <div className="grid grid-cols-1 gap-10 sm:grid-cols-2">
                 {tour.included?.length ? (
                   <div>
-                    <h2 className="mb-5 text-2xl text-forest-900">{t("included")}</h2>
+                    <h2 className="mb-5 text-2xl text-heading">{t("included")}</h2>
                     <CheckList items={tour.included} />
                   </div>
                 ) : null}
                 {tour.excluded?.length ? (
                   <div>
-                    <h2 className="mb-5 text-2xl text-forest-900">{t("excluded")}</h2>
+                    <h2 className="mb-5 text-2xl text-heading">{t("excluded")}</h2>
                     <CheckList items={tour.excluded} negative />
                   </div>
                 ) : null}
@@ -238,8 +238,8 @@ export default async function TourDetailPage({ params }: Props) {
             <DetailSection title={t("hotels")} id="hotels">
               <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 {tour.hotels.map((hotel, index) => (
-                  <li key={`${hotel.name}-${index}`} className="rounded-2xl border border-sand-200 bg-white p-5">
-                    <p className="font-medium text-forest-900">
+                  <li key={`${hotel.name}-${index}`} className="rounded-2xl border border-sand-200 bg-surface p-5">
+                    <p className="font-medium text-heading">
                       {hotel.url ? (
                         <a href={hotel.url} target="_blank" rel="noopener noreferrer" className="hover:underline">
                           {hotel.name}
@@ -260,13 +260,13 @@ export default async function TourDetailPage({ params }: Props) {
             <DetailSection>
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                 {tour.vehicle && (
-                  <div className="overflow-hidden rounded-3xl border border-sand-200 bg-white">
+                  <div className="overflow-hidden rounded-3xl border border-sand-200 bg-surface">
                     <CmsImage media={tour.vehicle.images?.[0]} alt={tour.vehicle.name} sizes="400px" wrapperClassName="aspect-[16/9] bg-sand-100" depth />
                     <div className="p-5">
                       <p className="eyebrow mb-1 flex items-center gap-1">
                         <Car className="h-3.5 w-3.5" /> {t("vehicle")}
                       </p>
-                      <p className="text-lg text-forest-900">{tour.vehicle.name}</p>
+                      <p className="text-lg text-heading">{tour.vehicle.name}</p>
                       <p className="text-sm text-muted">
                         {[tour.vehicle.seats ? tCommon("seats", { count: tour.vehicle.seats }) : null, tour.vehicle.airConditioning ? tCommon("airConditioned") : null].filter(Boolean).join(" · ")}
                       </p>
@@ -299,7 +299,7 @@ export default async function TourDetailPage({ params }: Props) {
                   <li key={destination._id}>
                     <CmsLink
                       href={`/destinations/${destination.slug}`}
-                      className="inline-flex min-h-11 items-center gap-1.5 rounded-full border border-sand-200 bg-white px-4 py-2 text-sm hover:border-forest-800"
+                      className="inline-flex min-h-11 items-center gap-1.5 rounded-full border border-sand-200 bg-surface px-4 py-2 text-sm hover:border-brand"
                     >
                       <MapPin className="h-3.5 w-3.5 text-gold-600" aria-hidden /> {destination.name}
                     </CmsLink>
@@ -326,15 +326,15 @@ export default async function TourDetailPage({ params }: Props) {
 
         {/* PRICE BOX: sticky next to the content on desktop, below it on phones */}
         <aside className="lg:sticky lg:top-28 lg:self-start">
-          <div className="rounded-3xl bg-white p-7 shadow-card">
+          <div className="rounded-3xl bg-surface p-7 shadow-card">
             {price ? (
               <>
                 <p className="text-sm text-muted">{tCommon("from")}</p>
-                <p className="font-display text-4xl text-forest-800">{price}</p>
+                <p className="font-display text-4xl text-brand">{price}</p>
                 {tour.priceNote && <p className="mt-1 text-sm text-muted">{tour.priceNote}</p>}
               </>
             ) : (
-              <p className="font-display text-2xl text-forest-800">{tour.priceNote || tCommon("priceOnRequest")}</p>
+              <p className="font-display text-2xl text-brand">{tour.priceNote || tCommon("priceOnRequest")}</p>
             )}
             <p className="mt-4 text-sm leading-relaxed text-muted">{t("customise")}</p>
             <div className="mt-6 flex flex-col gap-3">
@@ -355,7 +355,7 @@ export default async function TourDetailPage({ params }: Props) {
       {data.related.length > 0 && (
         <section className="bg-sand-100 py-section-sm">
           <div className="container-page">
-            <h2 className="mb-10 text-h2 text-forest-900">{t("related")}</h2>
+            <h2 className="mb-10 text-h2 text-heading">{t("related")}</h2>
             <div className="grid grid-cols-1 gap-grid sm:grid-cols-2 lg:grid-cols-3">
               {data.related.map((relatedTour, index) => (
                 <div key={relatedTour._id} {...reveal3d(index)}>

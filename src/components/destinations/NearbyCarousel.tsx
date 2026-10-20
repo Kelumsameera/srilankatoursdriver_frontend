@@ -10,7 +10,7 @@ import { CmsLink } from "@/components/ui/CmsLink";
 import { destinationCover } from "@/lib/editorial-images";
 
 const arrowButtonClass =
-  "flex h-11 w-11 items-center justify-center rounded-full border border-gold-500 text-forest-800 transition-colors duration-200 hover:bg-forest-800 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest-800";
+  "flex h-11 w-11 items-center justify-center rounded-full border border-gold-500 text-brand transition-colors duration-200 hover:bg-forest-800 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand";
 
 // A row of nearby destination cards that scrolls sideways, with previous / next buttons
 export function NearbyCarousel({ items }: { items: Destination[] }) {
@@ -44,7 +44,7 @@ export function NearbyCarousel({ items }: { items: Destination[] }) {
         ref={rowRef}
         tabIndex={0}
         aria-label={t("nearby")}
-        className="-mx-1 flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-smooth px-1 pb-4 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-forest-800 motion-reduce:scroll-auto"
+        className="-mx-1 flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-smooth px-1 pb-4 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand motion-reduce:scroll-auto"
       >
         {items.map((destination) => {
           const cover = destinationCover(destination);
@@ -52,7 +52,7 @@ export function NearbyCarousel({ items }: { items: Destination[] }) {
             <li key={destination._id} className="w-[78%] shrink-0 snap-start sm:w-[44%] lg:w-[calc((100%_-_2.5rem)/3)]">
               <CmsLink
                 href={`/destinations/${destination.slug}`}
-                className="dest-card group block overflow-hidden rounded-lg bg-white shadow-card focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-forest-800"
+                className="dest-card group block overflow-hidden rounded-lg bg-surface shadow-card focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
               >
                 {/* IMAGE */}
                 <CmsImage

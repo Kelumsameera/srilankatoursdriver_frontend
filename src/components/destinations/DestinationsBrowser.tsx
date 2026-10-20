@@ -57,7 +57,7 @@ export function DestinationsBrowser({ destinations, initialCategory, eagerFirstI
   const currentPage = position.category === activeCategory ? Math.min(position.index, Math.max(pageCount - 1, 0)) : 0;
   const firstPage = Math.max(0, Math.min(currentPage - 2, pageCount - 5));
   const pageNumbers = Array.from({ length: Math.min(5, pageCount) }, (_, index) => firstPage + index);
-  const paginationClass = "flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-gold-400 text-sm text-forest-800 disabled:opacity-35 focus-visible:outline-2 focus-visible:outline-offset-2";
+  const paginationClass = "flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-gold-400 text-sm text-brand disabled:opacity-35 focus-visible:outline-2 focus-visible:outline-offset-2";
 
   function goToPage(page: number) {
     setPosition({ category: activeCategory, index: page });
@@ -67,8 +67,8 @@ export function DestinationsBrowser({ destinations, initialCategory, eagerFirstI
   // Tailwind classes for a category button (dark green when selected)
   function buttonClass(selected: boolean) {
     return cn(
-      "inline-flex min-h-9 items-center rounded-full border px-3 text-xs sm:min-h-11 sm:px-5 sm:text-sm font-medium transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest-800",
-      selected ? "border-forest-800 bg-forest-800 text-white" : "border-gold-400 bg-white text-forest-800 hover:border-forest-800",
+      "inline-flex min-h-9 items-center rounded-full border px-3 text-xs sm:min-h-11 sm:px-5 sm:text-sm font-medium transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand",
+      selected ? "border-brand bg-forest-800 text-white" : "border-gold-400 bg-surface text-brand hover:border-brand",
     );
   }
 
@@ -111,7 +111,7 @@ export function DestinationsBrowser({ destinations, initialCategory, eagerFirstI
               <li key={destination._id} className={cn("min-w-0", Math.floor(index / pageSize) !== currentPage && "hidden sm:block")} {...reveal3d(index)}>
                 <CmsLink
                   href={`/destinations/${destination.slug}`}
-                  className="dest-card group flex h-full flex-col overflow-hidden rounded-lg bg-white shadow-card focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-forest-800"
+                  className="dest-card group flex h-full flex-col overflow-hidden rounded-lg bg-surface shadow-card focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
                 >
                   {/* IMAGE */}
                   <CmsImage
@@ -144,7 +144,7 @@ export function DestinationsBrowser({ destinations, initialCategory, eagerFirstI
             <ArrowLeft className="h-4 w-4 rtl:rotate-180" aria-hidden />
           </button>
           {pageNumbers.map((page) => (
-            <button key={page} type="button" aria-controls={listId} aria-current={currentPage === page ? "page" : undefined} onClick={() => goToPage(page)} className={cn(paginationClass, currentPage === page && "border-forest-800 bg-forest-800 text-white")}>
+            <button key={page} type="button" aria-controls={listId} aria-current={currentPage === page ? "page" : undefined} onClick={() => goToPage(page)} className={cn(paginationClass, currentPage === page && "border-brand bg-forest-800 text-white")}>
               {page + 1}
             </button>
           ))}

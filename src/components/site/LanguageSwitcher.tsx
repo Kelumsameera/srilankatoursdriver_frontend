@@ -47,7 +47,7 @@ export function LanguageSwitcher({ enabled, tone = "dark", align = "end" }: { en
         data-testid="language-switcher"
         className={cn(
           "flex min-h-11 min-w-11 items-center justify-center gap-1 rounded-full px-2 text-sm font-medium transition-colors sm:gap-1.5 sm:px-3",
-          tone === "light" ? "text-white hover:bg-white/10" : "text-forest-900 hover:bg-forest-50",
+          tone === "light" ? "text-white hover:bg-white/10" : "text-heading hover:bg-forest-50",
           pending && "opacity-60",
         )}
       >
@@ -60,7 +60,7 @@ export function LanguageSwitcher({ enabled, tone = "dark", align = "end" }: { en
           role="listbox"
           aria-label={tCommon("language")}
           className={cn(
-            "absolute top-full z-50 mt-2 max-h-80 w-48 overflow-auto rounded-2xl border border-sand-200 bg-white p-1.5 text-forest-900 shadow-soft",
+            "absolute top-full z-50 mt-2 max-h-80 w-48 overflow-auto rounded-2xl border border-sand-200 bg-surface p-1.5 text-heading shadow-soft",
             align === "end" ? "inset-e-0" : "inset-s-0",
           )}
         >

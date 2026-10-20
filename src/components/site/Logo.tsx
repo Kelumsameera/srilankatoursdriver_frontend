@@ -36,7 +36,7 @@ export function Logo({ branding, siteName, tone = "dark", mobile, className, pre
     );
   }
   return (
-    <span className={cn("whitespace-nowrap font-display text-lg font-semibold tracking-tight sm:text-2xl", tone === "light" ? "text-white" : "text-forest-900", className)}>
+    <span className={cn("whitespace-nowrap font-display text-lg font-semibold tracking-tight sm:text-2xl", tone === "light" ? "text-white" : "text-heading", className)}>
       {siteName}
     </span>
   );

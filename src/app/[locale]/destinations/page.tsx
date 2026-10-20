@@ -77,7 +77,7 @@ export default async function DestinationsPage({
         />
       ) : (
         <section
-          className="bg-white pb-10 pt-24 sm:pb-14 sm:pt-28"
+          className="bg-surface pb-10 pt-24 sm:pb-14 sm:pt-28"
           aria-labelledby="destinations-title"
         >
           <div className="container-page">
@@ -109,7 +109,7 @@ export default async function DestinationsPage({
       {!pageData?.page.heroImage?.url && <PageBody content={pageData?.page.content} disclosure={{ more: tCommon("readMore"), less: t("readLess") }} />}
 
       {/* CATEGORY FILTER + DESTINATION CARDS */}
-      <section className="border-t border-sand-200 bg-white pb-10 pt-5 sm:pb-24 sm:pt-10">
+      <section className="border-t border-sand-200 bg-surface pb-10 pt-5 sm:pb-24 sm:pt-10">
         <div className="container-page">
           {destinationList?.items.length ? (
             <DestinationsBrowser

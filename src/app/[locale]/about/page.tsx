@@ -102,7 +102,7 @@ export default async function AboutPage({ params }: Props) {
         </section>
       )}
 
-      <section className="bg-white py-20 sm:py-28">
+      <section className="bg-surface py-20 sm:py-28">
         <div className="container-page grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
           <div className="relative">
             <CmsImage
@@ -111,8 +111,8 @@ export default async function AboutPage({ params }: Props) {
               sizes="(min-width: 1024px) 50vw, 100vw"
               wrapperClassName="aspect-[4/5] rounded-[2.5rem] shadow-card"
             />
-            <div className="absolute inset-x-6 bottom-6 rounded-2xl bg-white/90 p-6 shadow-card backdrop-blur sm:inset-x-8 sm:bottom-8">
-              <p className="font-display text-xl italic text-forest-700">
+            <div className="absolute inset-x-6 bottom-6 rounded-2xl bg-surface/90 p-6 shadow-card backdrop-blur sm:inset-x-8 sm:bottom-8">
+              <p className="font-display text-xl italic text-brand-soft">
                 {t("heading")}
               </p>
               <p className="font-display text-2xl font-semibold uppercase tracking-tight text-gold-600 wrap-anywhere [hyphens:auto] sm:text-3xl">
@@ -126,7 +126,7 @@ export default async function AboutPage({ params }: Props) {
               <span className="h-0.5 w-10 bg-gold-500" aria-hidden />
               <span className="eyebrow">{t("label")}</span>
             </div>
-            <h2 className="mb-8 text-4xl leading-[1.1] text-forest-900 lg:text-5xl">
+            <h2 className="mb-8 text-4xl leading-[1.1] text-heading lg:text-5xl">
               {t("heading")}{" "}
               <span className="text-forest-600 underline decoration-gold-400 decoration-2 underline-offset-8">
                 {t("headingHighlight")}
@@ -167,7 +167,7 @@ export default async function AboutPage({ params }: Props) {
         </div>
       </section>
 
-      <section className="bg-white pb-20 sm:pb-28">
+      <section className="bg-surface pb-20 sm:pb-28">
         <dl className="container-page grid grid-cols-2 gap-5 lg:grid-cols-4">
           {STATS.map((s) => (
             <div
@@ -177,7 +177,7 @@ export default async function AboutPage({ params }: Props) {
               <dt className="mt-2 text-[0.72rem] font-bold uppercase tracking-[0.08em] text-gold-600 sm:tracking-[0.2em]">
                 {t(`stats.${s.key}`)}
               </dt>
-              <dd className="font-display text-3xl text-forest-900 sm:text-5xl">
+              <dd className="font-display text-3xl text-heading sm:text-5xl">
                 {s.value}
               </dd>
             </div>
@@ -190,7 +190,7 @@ export default async function AboutPage({ params }: Props) {
           {REASONS.map(({ key, icon: Icon }) => (
             <li
               key={key}
-              className="group rounded-[2.5rem] bg-white p-9 shadow-sm transition-shadow hover:shadow-card"
+              className="group rounded-[2.5rem] bg-surface p-9 shadow-sm transition-shadow hover:shadow-card"
             >
               <span className="mb-7 flex h-14 w-14 items-center justify-center rounded-2xl bg-forest-50 transition-colors group-hover:bg-forest-800">
                 <Icon
@@ -198,7 +198,7 @@ export default async function AboutPage({ params }: Props) {
                   aria-hidden
                 />
               </span>
-              <h3 className="mb-3 text-xl text-forest-900">
+              <h3 className="mb-3 text-xl text-heading">
                 {t(`reasons.${key}.title`)}
               </h3>
               <p className="text-sm leading-relaxed text-muted">

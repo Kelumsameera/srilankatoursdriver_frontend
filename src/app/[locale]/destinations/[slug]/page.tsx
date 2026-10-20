@@ -106,7 +106,7 @@ export default async function DestinationDetailPage({ params }: Props) {
       <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(buildSchema(destination, locale, cover))} />
 
       {/* BREADCRUMB + BANNER IMAGE + INTRO + MAP */}
-      <div className="bg-white">
+      <div className="bg-surface">
         <div className="relative isolate">
           <CmsImage media={cover} alt={cover?.alt || destination.name} placeholderName={destination.name} preload sizes="100vw" wrapperClassName="aspect-[4/3] min-h-[340px] max-h-[520px] w-full sm:aspect-[21/8] sm:min-h-[420px]" />
           <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 h-64 bg-linear-to-b from-black/65 to-transparent" />
@@ -207,7 +207,7 @@ export default async function DestinationDetailPage({ params }: Props) {
           <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {/* BEST TIME + HOW TO GET THERE */}
             {infoCards.map(({ key, icon: Icon, title, body, fallback }) => (
-              <div key={key} className="dest-card rounded-lg border border-sand-200 bg-white p-5 sm:p-6" data-scroll-reveal>
+              <div key={key} className="dest-card rounded-lg border border-sand-200 bg-surface p-5 sm:p-6" data-scroll-reveal>
                 <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-gold-100">
                   <Icon className="h-6 w-6 text-gold-600" aria-hidden strokeWidth={1.5} />
                 </span>
@@ -217,7 +217,7 @@ export default async function DestinationDetailPage({ params }: Props) {
             ))}
 
             {/* SUGGESTED ITINERARY */}
-            <div className="dest-card rounded-lg border border-sand-200 bg-white p-5 sm:p-6" data-scroll-reveal>
+            <div className="dest-card rounded-lg border border-sand-200 bg-surface p-5 sm:p-6" data-scroll-reveal>
               <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-gold-100">
                 <Route className="h-6 w-6 text-gold-600" aria-hidden strokeWidth={1.5} />
               </span>
@@ -226,7 +226,7 @@ export default async function DestinationDetailPage({ params }: Props) {
                 <ol className="mt-3 space-y-3 text-sm leading-7 text-muted">
                   {destination.itinerary.map((step, index) => (
                     <li key={`${step.title}-${index}`} className="flex gap-3">
-                      <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sand-100 text-xs font-semibold text-forest-800">{index + 1}</span>
+                      <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sand-100 text-xs font-semibold text-brand">{index + 1}</span>
                       <span>
                         <span className="font-medium text-ink">{step.title}</span>
                         {step.description && <span className="block">{step.description}</span>}

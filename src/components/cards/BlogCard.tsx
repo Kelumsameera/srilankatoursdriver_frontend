@@ -36,7 +36,7 @@ export function BlogCard({ post }: { post: BlogPost }) {
         </p>
 
         {/* TITLE: stretched link, the whole card opens the post */}
-        <h3 className="mt-2 font-display text-xl leading-snug text-forest-900">
+        <h3 className="mt-2 font-display text-xl leading-snug text-heading">
           <CmsLink href={`/blog/${post.slug}`} className="after:absolute after:inset-0">
             {post.title}
           </CmsLink>
@@ -44,7 +44,7 @@ export function BlogCard({ post }: { post: BlogPost }) {
         {post.excerpt && <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-muted">{post.excerpt}</p>}
 
         {/* READ MORE */}
-        <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-gold-600 transition-colors group-hover:text-forest-800" aria-hidden>
+        <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-gold-600 transition-colors group-hover:text-brand" aria-hidden>
           {tCommon("readMore")} <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 rtl:rotate-180 rtl:group-hover:-translate-x-0.5" />
         </span>
       </div>

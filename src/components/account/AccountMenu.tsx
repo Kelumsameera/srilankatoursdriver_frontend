@@ -48,7 +48,7 @@ export function AccountMenu({ tone }: { tone: "light" | "dark" }) {
     };
   }, [open]);
 
-  const color = tone === "light" ? "text-white hover:bg-white/10" : "text-forest-900 hover:bg-forest-50";
+  const color = tone === "light" ? "text-white hover:bg-white/10" : "text-heading hover:bg-forest-50";
 
   // Same footprint while the session is checked, so the header doesn't jump.
   if (loading) return <span className="inline-block h-11 w-11" aria-hidden />;
@@ -77,13 +77,13 @@ export function AccountMenu({ tone }: { tone: "light" | "dark" }) {
         <Avatar customer={customer} />
       </button>
       {open && (
-        <div role="menu" className="absolute inset-e-0 top-full mt-2 w-60 rounded-2xl border border-sand-200 bg-white p-2 shadow-soft">
+        <div role="menu" className="absolute inset-e-0 top-full mt-2 w-60 rounded-2xl border border-sand-200 bg-surface p-2 shadow-soft">
           <div className="px-3 py-2">
-            <p className="truncate text-sm font-medium text-forest-900">{customer.name}</p>
+            <p className="truncate text-sm font-medium text-heading">{customer.name}</p>
             <p className="truncate text-xs text-muted">{customer.email}</p>
           </div>
           <div className="my-1 h-px bg-sand-100" />
-          <Link href="/account" role="menuitem" onClick={() => setOpen(false)} className="flex items-center gap-2 rounded-xl px-3 py-3 text-sm text-forest-900 hover:bg-sand-100">
+          <Link href="/account" role="menuitem" onClick={() => setOpen(false)} className="flex items-center gap-2 rounded-xl px-3 py-3 text-sm text-heading hover:bg-sand-100">
             <UserRound className="h-4 w-4" aria-hidden />
             {t("myAccount")}
           </Link>
@@ -95,7 +95,7 @@ export function AccountMenu({ tone }: { tone: "light" | "dark" }) {
               await logout();
               router.refresh();
             }}
-            className="flex w-full items-center gap-2 rounded-xl px-3 py-3 text-start text-sm text-forest-900 hover:bg-sand-100"
+            className="flex w-full items-center gap-2 rounded-xl px-3 py-3 text-start text-sm text-heading hover:bg-sand-100"
           >
             <LogOut className="h-4 w-4" aria-hidden />
             {t("signOut")}
@@ -113,7 +113,7 @@ export function MobileAccountLink() {
   const { customer, loading } = useCustomerAuth();
   if (loading) return null;
   return (
-    <Link href={customer ? "/account" : loginHref} className="flex items-center gap-3 py-4 text-lg text-forest-900">
+    <Link href={customer ? "/account" : loginHref} className="flex items-center gap-3 py-4 text-lg text-heading">
       {customer ? <Avatar customer={customer} /> : <UserRound className="h-5 w-5" aria-hidden />}
       {customer ? t("myAccount") : t("signIn")}
     </Link>

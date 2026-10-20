@@ -137,7 +137,7 @@ export function TailorMadeForm({ destinations, vehicles, defaultCurrency = "USD"
   const chip = (selected: boolean) =>
     cn(
       "flex items-center gap-2 rounded-2xl border px-4 py-3 text-start text-sm transition-colors",
-      selected ? "border-forest-700 bg-forest-50 text-forest-900" : "border-sand-200 bg-white hover:border-forest-600",
+      selected ? "border-forest-700 bg-forest-50 text-heading" : "border-sand-200 bg-surface hover:border-forest-600",
     );
 
   return (
@@ -165,7 +165,7 @@ export function TailorMadeForm({ destinations, vehicles, defaultCurrency = "USD"
                     ? "bg-gold-500 text-forest-950"
                     : i < step
                       ? "bg-forest-800 text-white hover:bg-forest-700"
-                      : "bg-white text-muted ring-sand-50 [box-shadow:inset_0_0_0_1px_var(--color-sand-200)]",
+                      : "bg-surface text-muted ring-sand-50 [box-shadow:inset_0_0_0_1px_var(--color-sand-200)]",
                 )}
               >
                 {i < step ? <Check className="h-3 w-3 sm:h-3.5 sm:w-3.5" aria-hidden /> : i + 1}
@@ -174,7 +174,7 @@ export function TailorMadeForm({ destinations, vehicles, defaultCurrency = "USD"
           ))}
         </ol>
         <p className="mt-5 flex items-baseline justify-between gap-4">
-          <span className="font-display text-2xl text-forest-900">
+          <span className="font-display text-2xl text-heading">
             {step + 1}. {t(`steps.${current}`)}
           </span>
           <span className="shrink-0 text-sm text-muted">{t("stepOf", { current: step + 1, total: STEPS.length })}</span>
@@ -188,11 +188,11 @@ export function TailorMadeForm({ destinations, vehicles, defaultCurrency = "USD"
           void next();
         }}
         noValidate
-        className="relative rounded-3xl bg-white p-6 shadow-card sm:p-10"
+        className="relative rounded-3xl bg-surface p-6 shadow-card sm:p-10"
         data-testid="tailor-made-form"
       >
         <Honeypot register={register as never} />
-        <h2 className="mb-6 text-2xl text-forest-900">{t(`steps.${current}`)}</h2>
+        <h2 className="mb-6 text-2xl text-heading">{t(`steps.${current}`)}</h2>
 
         {current === "personal" && (
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
@@ -312,7 +312,7 @@ export function TailorMadeForm({ destinations, vehicles, defaultCurrency = "USD"
         {current === "hotels" && (
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
             <fieldset className="sm:col-span-2">
-              <legend className="mb-3 text-sm font-medium text-forest-900">{t("hotelCategory")}</legend>
+              <legend className="mb-3 text-sm font-medium text-heading">{t("hotelCategory")}</legend>
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
                 {(["budget", "standard", "boutique", "luxury", "mixed"] as const).map((c) => (
                   <label key={c} className={cn(chip(values.hotels?.category === c), "cursor-pointer justify-center")}>
@@ -400,7 +400,7 @@ export function TailorMadeForm({ destinations, vehicles, defaultCurrency = "USD"
                       {t("edit")}
                     </button>
                   </dt>
-                  <dd className="mt-1 text-forest-900">{value}</dd>
+                  <dd className="mt-1 text-heading">{value}</dd>
                 </div>
               ))}
             </dl>

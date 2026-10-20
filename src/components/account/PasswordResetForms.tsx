@@ -28,13 +28,13 @@ async function post(path: string, body: unknown) {
   }
 }
 
-const card = "mx-auto w-full max-w-md rounded-3xl bg-white p-6 shadow-card sm:p-10";
+const card = "mx-auto w-full max-w-md rounded-3xl bg-surface p-6 shadow-card sm:p-10";
 
 function Done({ message, link, linkLabel }: { message: string; link: string; linkLabel: string }) {
   return (
     <div className="mt-8 text-center">
-      <CheckCircle2 className="mx-auto h-10 w-10 text-forest-700" />
-      <p role="status" className="mt-4 text-sm text-forest-900">
+      <CheckCircle2 className="mx-auto h-10 w-10 text-brand-soft" />
+      <p role="status" className="mt-4 text-sm text-heading">
         {message}
       </p>
       <Link href={link} className={buttonClass("primary", "lg", "mt-6 w-full")}>
@@ -68,7 +68,7 @@ export function ForgotPasswordForm() {
 
   return (
     <div className={card} data-testid="forgot-password-form">
-      <h1 className="text-center text-3xl text-forest-900">{t("forgotTitle")}</h1>
+      <h1 className="text-center text-3xl text-heading">{t("forgotTitle")}</h1>
       {sentTo ? (
         <Done message={t("resetSent", { email: sentTo })} link="/account/login" linkLabel={t("backToSignIn")} />
       ) : (
@@ -89,7 +89,7 @@ export function ForgotPasswordForm() {
             </button>
           </form>
           <p className="mt-6 text-center text-sm">
-            <Link href="/account/login" className="font-medium text-forest-700 hover:underline">
+            <Link href="/account/login" className="font-medium text-brand-soft hover:underline">
               {t("backToSignIn")}
             </Link>
           </p>
@@ -140,7 +140,7 @@ export function ResetPasswordForm({ token }: { token: string }) {
 
   return (
     <div className={card} data-testid="reset-password-form">
-      <h1 className="text-center text-3xl text-forest-900">{t("resetTitle")}</h1>
+      <h1 className="text-center text-3xl text-heading">{t("resetTitle")}</h1>
       {done ? (
         <Done message={t("resetDone")} link="/account/login" linkLabel={t("signIn")} />
       ) : invalid ? (

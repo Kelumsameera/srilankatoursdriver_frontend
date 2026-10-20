@@ -24,7 +24,7 @@ export async function VehiclesSection({ section, ctx }: SectionProps) {
         {/* TEXT: eyebrow, title, subtitle, buttons */}
         <div>
           {section.eyebrow && <p className={cn("eyebrow mb-4", light && "text-gold-400")}>{section.eyebrow}</p>}
-          {section.title && <h2 className={cn("text-4xl leading-tight sm:text-5xl", light ? "text-white" : "text-forest-900")}>{section.title}</h2>}
+          {section.title && <h2 className={cn("text-4xl leading-tight sm:text-5xl", light ? "text-white" : "text-heading")}>{section.title}</h2>}
           {section.subtitle && <p className={cn("mt-5 max-w-md text-lead leading-relaxed", light ? "text-white/75" : "text-muted")}>{section.subtitle}</p>}
           <div className="mt-8">
             <Buttons section={section} ctx={ctx} light={light} />
@@ -51,7 +51,7 @@ export async function VehiclesSection({ section, ctx }: SectionProps) {
                     wrapperClassName="aspect-[5/4] rounded-2xl border-4 border-white shadow-card"
                     className="transition-transform duration-700 group-hover:scale-105"
                   />
-                  <span className={cn("mt-3 block truncate text-center text-small font-semibold", light ? "text-white" : "text-forest-900")}>{v.name}</span>
+                  <span className={cn("mt-3 block truncate text-center text-small font-semibold", light ? "text-white" : "text-heading")}>{v.name}</span>
                 </CmsLink>
               </li>
             ))}
@@ -67,9 +67,9 @@ export async function VehiclesSection({ section, ctx }: SectionProps) {
 
       {/* FLEET FACTS */}
       {facts.length > 0 && (
-        <ul className={cn("container-page mt-12 flex flex-wrap justify-center gap-x-10 gap-y-3 text-small lg:justify-end", light ? "text-white/80" : "text-forest-800")}>
+        <ul className={cn("container-page mt-12 flex flex-wrap justify-center gap-x-10 gap-y-3 text-small lg:justify-end", light ? "text-white/80" : "text-brand")}>
           {facts.map(({ icon: Icon, label }) => (
-            <li key={label} className={cn("flex items-center gap-2 rounded-full px-4 py-2 shadow-sm", light ? "bg-white/10" : "bg-white/70")}>
+            <li key={label} className={cn("flex items-center gap-2 rounded-full px-4 py-2 shadow-sm", light ? "bg-white/10" : "bg-surface/70")}>
               <Icon className={cn("h-5 w-5 shrink-0", light ? "text-gold-400" : "text-gold-600")} aria-hidden /> {label}
             </li>
           ))}

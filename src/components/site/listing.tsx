@@ -28,7 +28,7 @@ export function CategoryFilter({ basePath, categories, active }: { basePath: str
         current={selected}
         className={cn(
           "block whitespace-nowrap rounded-full border px-5 py-2 text-xs font-semibold tracking-wide transition-colors sm:text-sm",
-          selected ? "border-forest-800 bg-forest-800 text-white shadow-card" : "border-sand-200 bg-white text-forest-800 hover:border-forest-800",
+          selected ? "border-brand bg-forest-800 text-white shadow-card" : "border-sand-200 bg-surface text-brand hover:border-brand",
         )}
       >
         {label}
@@ -57,13 +57,13 @@ export function Pagination({ meta, basePath, query = {} }: { meta: PaginationMet
   return (
     <nav aria-label="Pagination" className="mt-14 flex items-center justify-center gap-4 text-sm">
       {meta.page > 1 ? (
-        <CmsLink href={href(meta.page - 1)} className="inline-flex items-center gap-1 rounded-full border border-sand-200 bg-white px-4 py-2 hover:border-forest-800">
+        <CmsLink href={href(meta.page - 1)} className="inline-flex items-center gap-1 rounded-full border border-sand-200 bg-surface px-4 py-2 hover:border-brand">
           <ChevronLeft className="h-4 w-4 rtl:rotate-180" /> {t("previous")}
         </CmsLink>
       ) : null}
       <span className="text-muted">{t("pageOf", { page: meta.page, total: meta.totalPages })}</span>
       {meta.page < meta.totalPages ? (
-        <CmsLink href={href(meta.page + 1)} className="inline-flex items-center gap-1 rounded-full border border-sand-200 bg-white px-4 py-2 hover:border-forest-800">
+        <CmsLink href={href(meta.page + 1)} className="inline-flex items-center gap-1 rounded-full border border-sand-200 bg-surface px-4 py-2 hover:border-brand">
           {t("next")} <ChevronRight className="h-4 w-4 rtl:rotate-180" />
         </CmsLink>
       ) : null}

@@ -20,7 +20,7 @@ export function VehicleCard({ vehicle }: { vehicle: Vehicle }) {
   ].filter(Boolean) as { icon: typeof Users; label: string }[];
 
   return (
-    <article className="group relative flex h-full flex-col overflow-hidden rounded-2xl bg-white shadow-card transition-transform duration-500 hover:-translate-y-1">
+    <article className="group relative flex h-full flex-col overflow-hidden rounded-2xl bg-surface shadow-card transition-transform duration-500 hover:-translate-y-1">
       {/* IMAGE + TYPE / AVAILABILITY PILLS */}
       <div className="relative">
         <CmsImage
@@ -40,7 +40,7 @@ export function VehicleCard({ vehicle }: { vehicle: Vehicle }) {
       <div className="flex flex-1 flex-col p-5">
         {/* NAME */}
         <div className="flex items-start justify-between gap-3">
-          <h3 className="font-display text-xl leading-snug text-forest-900">
+          <h3 className="font-display text-xl leading-snug text-heading">
             {/* Stretched link: the whole card opens the vehicle overview. */}
             <CmsLink href={`/vehicles/${vehicle.slug}`} className="after:absolute after:inset-0 focus:outline-none">
               {vehicle.name}
@@ -72,7 +72,7 @@ export function VehicleCard({ vehicle }: { vehicle: Vehicle }) {
               {tCommon("from")} <span className="text-lg font-semibold text-gold-600">{rate}</span> {tVehicle("perDay")}
             </p>
           ) : (
-            <p className="text-sm font-medium text-forest-700">{tCommon("priceOnRequest")}</p>
+            <p className="text-sm font-medium text-brand-soft">{tCommon("priceOnRequest")}</p>
           )}
         </div>
       </div>

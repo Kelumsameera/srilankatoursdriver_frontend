@@ -109,8 +109,8 @@ export function AuthForm({ mode }: { mode: Mode }) {
   const busy = isSubmitting || googleBusy;
   const isLogin = mode === "login";
   return (
-    <div className="mx-auto w-full max-w-md rounded-3xl bg-white p-6 shadow-card sm:p-10" data-testid={`${mode}-form`}>
-      <h1 className="text-center text-3xl text-forest-900">{isLogin ? t("signIn") : t("registerTitle")}</h1>
+    <div className="mx-auto w-full max-w-md rounded-3xl bg-surface p-6 shadow-card sm:p-10" data-testid={`${mode}-form`}>
+      <h1 className="text-center text-3xl text-heading">{isLogin ? t("signIn") : t("registerTitle")}</h1>
       {!isLogin && <p className="mt-2 text-center text-sm text-muted">{t("registerSubtitle")}</p>}
 
       <form onSubmit={onSubmit} noValidate className="mt-8 grid gap-5">
@@ -144,7 +144,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
 
       {isLogin && (
         <p className="mt-4 text-center text-sm">
-          <Link href="/account/forgot-password" className="text-forest-700 hover:underline">
+          <Link href="/account/forgot-password" className="text-brand-soft hover:underline">
             {t("forgotPassword")}
           </Link>
         </p>
@@ -163,7 +163,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
 
       <p className="mt-8 text-center text-sm text-muted">
         {isLogin ? t("noAccount") : t("haveAccount")}
-        <Link href={isLogin ? "/account/register" : "/account/login"} className="mt-1 block font-medium text-forest-700 hover:underline">
+        <Link href={isLogin ? "/account/register" : "/account/login"} className="mt-1 block font-medium text-brand-soft hover:underline">
           {isLogin ? t("createAccount") : t("signIn")}
         </Link>
       </p>

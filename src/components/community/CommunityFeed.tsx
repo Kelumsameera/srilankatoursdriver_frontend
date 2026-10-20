@@ -116,7 +116,7 @@ export function CommunityFeed({ initialItems, initialMeta, initialQuery, initial
         maxLength={100}
         placeholder={t("searchPlaceholder")}
         aria-label={t("search")}
-        className="h-12 w-full rounded-full border border-sand-200 bg-white ps-12 pe-12 text-ink shadow-sm focus:border-forest-600 focus:outline-none"
+        className="h-12 w-full rounded-full border border-sand-200 bg-surface ps-12 pe-12 text-ink shadow-sm focus:border-forest-600 focus:outline-none"
       />
       {initialQuery && (
         <button
@@ -150,7 +150,7 @@ export function CommunityFeed({ initialItems, initialMeta, initialQuery, initial
                   aria-current={active ? "page" : undefined}
                   className={cn(
                     "flex w-full items-center gap-3 rounded-full px-4 py-2.5 text-sm font-medium transition-colors lg:rounded-2xl lg:py-3",
-                    active ? "bg-forest-800 text-white" : "bg-white text-forest-800 hover:bg-sand-100 lg:bg-transparent",
+                    active ? "bg-forest-800 text-white" : "bg-surface text-brand hover:bg-sand-100 lg:bg-transparent",
                   )}
                 >
                   <span className={cn("flex h-8 w-8 items-center justify-center rounded-full", active ? "bg-white/15" : "bg-gold-100 text-gold-600")}>
@@ -172,7 +172,7 @@ export function CommunityFeed({ initialItems, initialMeta, initialQuery, initial
                   aria-current={active ? "page" : undefined}
                   className={cn(
                     "w-full rounded-full px-4 py-2.5 text-start text-sm transition-colors lg:rounded-xl lg:py-2",
-                    active ? "bg-gold-500 font-medium text-forest-950" : "bg-white text-muted hover:bg-sand-100 hover:text-forest-800 lg:bg-transparent",
+                    active ? "bg-gold-500 font-medium text-forest-950" : "bg-surface text-muted hover:bg-sand-100 hover:text-brand lg:bg-transparent",
                   )}
                 >
                   {category.name}
@@ -188,7 +188,7 @@ export function CommunityFeed({ initialItems, initialMeta, initialQuery, initial
         {searchBox}
 
         {/* SHARE A MOMENT (opens the story form) */}
-        <div className="rounded-3xl bg-white p-4 shadow-card">
+        <div className="rounded-3xl bg-surface p-4 shadow-card">
           <div className="flex items-center gap-3">
             <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-forest-800 font-display text-lg text-gold-400" aria-hidden>
               {customer ? customer.name.charAt(0).toUpperCase() : <UserRound className="h-5 w-5" />}
@@ -197,7 +197,7 @@ export function CommunityFeed({ initialItems, initialMeta, initialQuery, initial
               {customer ? t("composerPromptNamed", { name: customer.name.split(" ")[0] }) : t("composerPrompt")}
             </Link>
           </div>
-          <div className="mt-3 grid grid-cols-3 border-t border-sand-100 pt-3 text-sm font-medium text-forest-800">
+          <div className="mt-3 grid grid-cols-3 border-t border-sand-100 pt-3 text-sm font-medium text-brand">
             <Link href="/stories/new" className="flex items-center justify-center gap-2 rounded-xl py-2 hover:bg-sand-50">
               <ImagePlus className="h-5 w-5 text-forest-600" aria-hidden /> {t("composerPhoto")}
             </Link>
@@ -212,12 +212,12 @@ export function CommunityFeed({ initialItems, initialMeta, initialQuery, initial
 
         {/* REELS ROW (only on the main feed, when there are reels) */}
         {initialType === "all" && !initialQuery && reels.length > 0 && (
-          <section className="rounded-3xl bg-white p-4 shadow-card" aria-label={t("reelsRow")}>
+          <section className="rounded-3xl bg-surface p-4 shadow-card" aria-label={t("reelsRow")}>
             <div className="mb-3 flex items-center justify-between">
-              <h2 className="flex items-center gap-2 font-sans text-base font-semibold text-forest-900">
+              <h2 className="flex items-center gap-2 font-sans text-base font-semibold text-heading">
                 <Clapperboard className="h-5 w-5 text-rose-500" aria-hidden /> {t("reelsRow")}
               </h2>
-              <Link href="/reels" className="text-sm font-semibold text-forest-700 hover:underline">
+              <Link href="/reels" className="text-sm font-semibold text-brand-soft hover:underline">
                 {t("seeAllReels")}
               </Link>
             </div>
@@ -246,13 +246,13 @@ export function CommunityFeed({ initialItems, initialMeta, initialQuery, initial
             {items.map((item) => (item.kind === "story" ? <StoryCard key={item._id} story={item} /> : <ArticlePostCard key={item._id} post={item} />))}
           </div>
         ) : (
-          <p className="rounded-3xl bg-white p-10 text-center text-muted shadow-card">{initialQuery ? t("noResults", { q: initialQuery }) : t("feedEmpty")}</p>
+          <p className="rounded-3xl bg-surface p-10 text-center text-muted shadow-card">{initialQuery ? t("noResults", { q: initialQuery }) : t("feedEmpty")}</p>
         )}
 
         {/* LOAD MORE (automatic while scrolling; the button is the fallback) */}
         <div ref={sentinel} className="flex justify-center py-4">
           {hasMore ? (
-            <button type="button" onClick={() => { setFailed(false); void loadMore(); }} disabled={loadingMore} className="inline-flex items-center gap-2 rounded-full border border-sand-200 bg-white px-6 py-2.5 text-sm font-medium text-forest-800 hover:border-forest-800 disabled:opacity-60">
+            <button type="button" onClick={() => { setFailed(false); void loadMore(); }} disabled={loadingMore} className="inline-flex items-center gap-2 rounded-full border border-sand-200 bg-surface px-6 py-2.5 text-sm font-medium text-brand hover:border-brand disabled:opacity-60">
               {loadingMore && <Loader2 className="h-4 w-4 animate-spin" aria-hidden />}
               {loadingMore ? t("loading") : t("loadMore")}
             </button>
@@ -264,8 +264,8 @@ export function CommunityFeed({ initialItems, initialMeta, initialQuery, initial
 
       {/* RIGHT COLUMN (large screens): about the community + plan a trip */}
       <aside className="hidden space-y-6 xl:sticky xl:top-28 xl:block xl:self-start">
-        <div className="rounded-3xl bg-white p-6 shadow-card">
-          <h2 className="font-sans text-base font-semibold text-forest-900">{t("aboutTitle")}</h2>
+        <div className="rounded-3xl bg-surface p-6 shadow-card">
+          <h2 className="font-sans text-base font-semibold text-heading">{t("aboutTitle")}</h2>
           <p className="mt-2 text-sm leading-relaxed text-muted">{t("aboutText")}</p>
         </div>
         <div className="rounded-3xl bg-forest-800 p-6 text-white shadow-card">

@@ -109,7 +109,7 @@ export function DestinationMap({ destination, label, unavailable, caption }: { d
 
       {/* CAPTION */}
       <figcaption className="px-4 pb-5 text-center text-sm text-muted">
-        <span className="block font-medium text-forest-800">{marker ? destination.name : unavailable}</span>
+        <span className="block font-medium text-brand">{marker ? destination.name : unavailable}</span>
         <span className="mt-1 block text-xs">{caption}</span>
       </figcaption>
     </figure>

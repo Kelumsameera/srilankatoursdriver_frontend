@@ -1,8 +1,8 @@
 import { getRequestConfig } from "next-intl/server";
 import { IntlErrorCode } from "next-intl";
+import { getUiMessages } from "@/lib/api/server";
 import { defaultLocale, isLocale } from "./routing";
-
-type Messages = { [key: string]: string | Messages };
+import { applyOverrides, type Messages } from "./overrides";
 
 /** Locale messages layered over English, so a key missing from a translation falls back instead of breaking the page. */
 function withFallback(base: Messages, override: Messages): Messages {
@@ -18,7 +18,9 @@ export default getRequestConfig(async ({ requestLocale }) => {
   const requested = await requestLocale;
   const locale = isLocale(requested) ? requested : defaultLocale;
   const english = (await import("../../messages/en.json")).default as Messages;
-  const messages = locale === defaultLocale ? english : withFallback(english, (await import(`../../messages/${locale}.json`)).default as Messages);
+  const bundled = locale === defaultLocale ? english : withFallback(english, (await import(`../../messages/${locale}.json`)).default as Messages);
+  // Texts edited in Admin → Translations → UI texts win over the bundled files.
+  const messages = applyOverrides(bundled, await getUiMessages(locale));
   return {
     locale,
     messages,

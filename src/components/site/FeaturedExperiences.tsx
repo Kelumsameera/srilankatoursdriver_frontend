@@ -17,7 +17,7 @@ interface Labels {
 }
 
 const readMoreLinkClass =
-  "mt-4 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-forest-800 underline decoration-gold-400 underline-offset-4 transition-colors duration-200 hover:text-forest-600 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-forest-800";
+  "mt-4 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-brand underline decoration-gold-400 underline-offset-4 transition-colors duration-200 hover:text-forest-600 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand";
 
 // "Things to see" grid built from the destination's attractions.
 // An attraction without a photo shows a plain panel with its name.
@@ -32,7 +32,7 @@ export function FeaturedExperiences({ items, labels }: { items: NonNullable<Dest
         <DotEyebrow>{labels.eyebrow}</DotEyebrow>
         <h2 id="featured-experiences-title" className="mt-4 font-display text-3xl tracking-tight text-ink sm:text-4xl">
           {labels.heading}
-          <span className="mt-2 block font-display text-2xl normal-case tracking-normal text-forest-700 sm:text-3xl">{labels.subheading}</span>
+          <span className="mt-2 block font-display text-2xl normal-case tracking-normal text-brand-soft sm:text-3xl">{labels.subheading}</span>
         </h2>
       </div>
 
@@ -43,7 +43,7 @@ export function FeaturedExperiences({ items, labels }: { items: NonNullable<Dest
           const hasDescription = Boolean(experience.description?.trim());
 
           return (
-            <li key={experience._id || index} className="dest-card flex min-w-0 flex-col overflow-hidden rounded-lg bg-white shadow-card" {...reveal3d(index)}>
+            <li key={experience._id || index} className="dest-card flex min-w-0 flex-col overflow-hidden rounded-lg bg-surface shadow-card" {...reveal3d(index)}>
               {/* IMAGE */}
               <CmsImage
                 media={experience.image}

@@ -3,8 +3,6 @@
 import { SettingsForm } from "@/components/admin/SettingsForm";
 import { Card } from "@/components/admin/ui";
 
-const LANGS = ["en", "si", "ta", "de", "fr", "es", "it", "zh", "ja", "ko", "ru", "ar", "hi", "pt"].map((v) => ({ value: v, label: v.toUpperCase() }));
-
 export default function SiteSettingsPage() {
   return (
     <SettingsForm
@@ -15,7 +13,7 @@ export default function SiteSettingsPage() {
       aside={
         <Card title="Tip">
           <p className="text-sm text-slate-600">
-            Changing the WhatsApp number updates every WhatsApp button on the site instantly. Translate the business hours and tagline in Translations → Content Translation (Site settings).
+            Changing the WhatsApp number updates every WhatsApp button on the site instantly. Translate the business hours and tagline in Translations → Content Translation (Site settings). The default language is set on Translations → Languages.
           </p>
         </Card>
       }
@@ -47,7 +45,6 @@ export default function SiteSettingsPage() {
           fields: [
             { name: "timezone", label: "Timezone", type: "text" },
             { name: "currency", label: "Default currency", type: "text" },
-            { name: "defaultLanguage", label: "Default language", type: "select", options: LANGS },
             { name: "maintenanceMode", label: "Maintenance mode", type: "switch", hint: "reserved for future use" },
           ],
         },

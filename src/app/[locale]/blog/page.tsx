@@ -57,7 +57,7 @@ export default async function BlogPage({ params, searchParams }: Props) {
         <div className="container-page max-w-7xl">
           {/* TITLE (from the CMS "blog" page) */}
           <header className="mb-6">
-            <h1 className="text-h2 text-forest-900">{pageData?.page.title || t("feedTitle")}</h1>
+            <h1 className="text-h2 text-heading">{pageData?.page.title || t("feedTitle")}</h1>
             <p className="mt-1 text-muted">{pageData?.page.subtitle || t("feedSubtitle")}</p>
           </header>
 

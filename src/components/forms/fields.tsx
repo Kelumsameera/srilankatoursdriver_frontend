@@ -4,7 +4,7 @@ import { cloneElement, forwardRef, isValidElement, useCallback, useRef, type Inp
 import { cn } from "@/lib/utils";
 
 const control =
-  "w-full rounded-xl border border-sand-200 bg-white px-4 py-3 text-[0.95rem] text-ink placeholder:text-muted/70 transition-colors focus:border-forest-600 focus:outline-none focus:ring-2 focus:ring-forest-600/20 aria-[invalid=true]:border-red-500";
+  "w-full rounded-xl border border-sand-200 bg-surface px-4 py-3 text-[0.95rem] text-ink placeholder:text-muted/70 transition-colors focus:border-forest-600 focus:outline-none focus:ring-2 focus:ring-forest-600/20 aria-[invalid=true]:border-red-500";
 
 export function Field({
   label,
@@ -34,7 +34,7 @@ export function Field({
     : children;
   return (
     <div className={cn("flex flex-col gap-1.5", className)}>
-      <label htmlFor={htmlFor} className="text-sm font-medium text-forest-900">
+      <label htmlFor={htmlFor} className="text-sm font-medium text-heading">
         {label}
         {required && <span className="text-red-600"> *</span>}
       </label>

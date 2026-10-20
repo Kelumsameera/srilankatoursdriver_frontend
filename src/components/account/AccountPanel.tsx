@@ -19,8 +19,8 @@ const STATUS_TONE: Record<BookingStatus, string> = {
   contacted: "bg-amber-50 text-amber-800 ring-amber-600/25",
   quoted: "bg-amber-50 text-amber-800 ring-amber-600/25",
   pending: "bg-amber-50 text-amber-800 ring-amber-600/25",
-  confirmed: "bg-forest-50 text-forest-800 ring-forest-600/25",
-  completed: "bg-forest-50 text-forest-800 ring-forest-600/25",
+  confirmed: "bg-forest-50 text-brand ring-forest-600/25",
+  completed: "bg-forest-50 text-brand ring-forest-600/25",
   cancelled: "bg-red-50 text-red-700 ring-red-600/20",
 };
 const TYPE_ICON = { tour: MapIcon, excursion: Compass, vehicle: Car, general: Sparkles } as const;
@@ -78,10 +78,10 @@ export function AccountPanel() {
   return (
     <div className="mx-auto grid grid-cols-1 w-full max-w-6xl gap-6 lg:grid-cols-[320px_1fr]" data-testid="account-panel">
       {/* Profile */}
-      <aside className="h-fit rounded-3xl bg-white p-6 shadow-card sm:p-8 lg:sticky lg:top-28">
+      <aside className="h-fit rounded-3xl bg-surface p-6 shadow-card sm:p-8 lg:sticky lg:top-28">
         <div className="flex flex-col items-center text-center">
           <Avatar customer={customer} size="lg" />
-          <h1 className="mt-4 max-w-full truncate text-2xl text-forest-900">{t("hello", { name: customer.name.split(" ")[0] })}</h1>
+          <h1 className="mt-4 max-w-full truncate text-2xl text-heading">{t("hello", { name: customer.name.split(" ")[0] })}</h1>
           <p className="mt-1 max-w-full truncate text-sm text-muted">{customer.email}</p>
         </div>
         <dl className="mt-6 space-y-3 border-t border-sand-200 pt-6 text-sm">
@@ -92,7 +92,7 @@ export function AccountPanel() {
             label={t("signInMethods")}
             value={
               <span className="flex flex-wrap justify-end gap-1.5">
-                {customer.google && <span className="rounded-full bg-forest-50 px-2 py-0.5 text-xs text-forest-800">Google</span>}
+                {customer.google && <span className="rounded-full bg-forest-50 px-2 py-0.5 text-xs text-brand">Google</span>}
                 {customer.hasPassword && <span className="rounded-full bg-sand-100 px-2 py-0.5 text-xs text-earth-700">{t("password")}</span>}
               </span>
             }
@@ -110,10 +110,10 @@ export function AccountPanel() {
       </aside>
 
       {/* Bookings */}
-      <section className="min-w-0 rounded-3xl bg-white p-6 shadow-card sm:p-8" aria-labelledby="my-bookings">
+      <section className="min-w-0 rounded-3xl bg-surface p-6 shadow-card sm:p-8" aria-labelledby="my-bookings">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <h2 id="my-bookings" className="text-3xl text-forest-900">
+            <h2 id="my-bookings" className="text-3xl text-heading">
               {t("myBookings")}
             </h2>
             <p className="mt-1 text-sm text-muted">{t("myBookingsIntro")}</p>
@@ -127,7 +127,7 @@ export function AccountPanel() {
                   role="tab"
                   aria-selected={filter === f}
                   onClick={() => setFilter(f)}
-                  className={cn("rounded-full px-4 py-1.5 transition-colors", filter === f ? "bg-forest-800 text-white shadow-sm" : "text-earth-700 hover:text-forest-900")}
+                  className={cn("rounded-full px-4 py-1.5 transition-colors", filter === f ? "bg-forest-800 text-white shadow-sm" : "text-earth-700 hover:text-heading")}
                 >
                   {t(`filter_${f}`)}
                 </button>
@@ -165,7 +165,7 @@ export function AccountPanel() {
               <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-gold-100 text-gold-600">
                 <CalendarDays className="h-6 w-6" />
               </span>
-              <p className="mt-4 text-lg text-forest-900">{t("noBookings")}</p>
+              <p className="mt-4 text-lg text-heading">{t("noBookings")}</p>
               <p className="mx-auto mt-1 max-w-sm text-sm text-muted">{t("noBookingsHint")}</p>
               <ButtonLink href="/booking" variant="primary" className="mt-6">
                 {tc("bookNow")}
@@ -197,7 +197,7 @@ function ProfileRow({ label, value }: { label: string; value: ReactNode }) {
 
 function Stat({ label, value, highlight }: { label: string; value: number; highlight?: boolean }) {
   return (
-    <div className={cn("rounded-2xl p-4", highlight ? "bg-forest-800 text-white" : "bg-sand-50 text-forest-900")}>
+    <div className={cn("rounded-2xl p-4", highlight ? "bg-forest-800 text-white" : "bg-sand-50 text-heading")}>
       <p className={cn("text-xs uppercase tracking-wide", highlight ? "text-white/70" : "text-muted")}>{label}</p>
       <p className="mt-1 text-3xl font-semibold">{value}</p>
     </div>
@@ -228,12 +228,12 @@ function BookingCard({ booking: b }: { booking: CustomerBooking }) {
   return (
     <li className="overflow-hidden rounded-2xl border border-sand-200 transition-shadow hover:shadow-soft">
       <div className="flex flex-wrap items-start gap-4 p-5">
-        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-forest-50 text-forest-700">
+        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-forest-50 text-brand-soft">
           <Icon className="h-5 w-5" />
         </span>
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
-            <h3 className="truncate font-sans text-base font-semibold text-forest-900">{b.itemTitle || tb(b.type)}</h3>
+            <h3 className="truncate font-sans text-base font-semibold text-heading">{b.itemTitle || tb(b.type)}</h3>
             <BookingStatusBadge status={b.status} />
           </div>
           <p className="mt-0.5 font-mono text-xs text-muted">
@@ -261,7 +261,7 @@ function BookingCard({ booking: b }: { booking: CustomerBooking }) {
         {quote && (
           <div className="text-end">
             <p className="text-xs uppercase tracking-wide text-muted">{t("quote")}</p>
-            <p className="text-xl font-semibold text-forest-900">{quote}</p>
+            <p className="text-xl font-semibold text-heading">{quote}</p>
           </div>
         )}
       </div>
@@ -284,13 +284,13 @@ function BookingCard({ booking: b }: { booking: CustomerBooking }) {
                   <span
                     className={cn(
                       "relative z-10 flex h-7 w-7 items-center justify-center rounded-full border-2 text-xs font-semibold",
-                      done ? "border-forest-600 bg-forest-600 text-white" : "border-sand-200 bg-white text-muted",
+                      done ? "border-forest-600 bg-forest-600 text-white" : "border-sand-200 bg-surface text-muted",
                       current && "ring-4 ring-forest-600/15",
                     )}
                   >
                     {done ? <Check className="h-3.5 w-3.5" /> : i + 1}
                   </span>
-                  <span className={cn("mt-2 text-[11px] leading-tight sm:text-xs", done ? "font-medium text-forest-900" : "text-muted")}>{t(key)}</span>
+                  <span className={cn("mt-2 text-[11px] leading-tight sm:text-xs", done ? "font-medium text-heading" : "text-muted")}>{t(key)}</span>
                 </li>
               );
             })}
@@ -299,7 +299,7 @@ function BookingCard({ booking: b }: { booking: CustomerBooking }) {
 
         {history.length > 0 && (
           <details className="group mt-3">
-            <summary className="flex cursor-pointer list-none items-center gap-1 text-xs font-medium text-forest-700 hover:text-forest-900">
+            <summary className="flex cursor-pointer list-none items-center gap-1 text-xs font-medium text-brand-soft hover:text-heading">
               <ChevronDown className="h-3.5 w-3.5 transition-transform group-open:rotate-180" />
               {t("history")}
             </summary>

@@ -1,9 +1,10 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { ArrowLeft, ExternalLink, Languages } from "lucide-react";
 import { api, errorMessage } from "@/lib/admin/api";
@@ -11,9 +12,44 @@ import { useAuth } from "@/lib/admin/auth";
 import type { AdminResource } from "@/features/admin/resources";
 import { EntityForm } from "./form/EntityForm";
 import { Card, ErrorBlock, LoadingBlock, PageHeader, StatusBadge } from "./ui";
-import { formatDate } from "@/lib/utils";
+import { cn, formatDate } from "@/lib/utils";
+import { STATE_DOT, TranslationPanel, entityTranslationsQuery } from "./TranslationPanel";
 
 type Row = Record<string, unknown> & { _id: string };
+
+/** EN | SI | TA … tabs above a content form; the dot shows each translation's state (grey = missing). */
+function LanguageTabs({ type, id, value, onChange }: { type: string; id: string; value: string; onChange: (code: string) => void }) {
+  const t = useTranslations("contentLanguage");
+  const languages = useQuery({ queryKey: ["languages"], queryFn: () => api.get<{ code: string; nativeName: string; enabled: boolean }[]>("/admin/languages") });
+  const entity = useQuery(entityTranslationsQuery(type, id));
+  const states = entity.data?.data.locales ?? {};
+  const langs = (languages.data?.data ?? []).filter((l) => l.enabled);
+  if (langs.length <= 1) return null;
+  return (
+    <div className="mb-4 flex gap-1 overflow-x-auto border-b border-slate-200" role="tablist" aria-label={t("label")}>
+      {langs.map((l) => {
+        const state = l.code === "en" ? null : (states[l.code]?.state ?? "missing");
+        return (
+          <button
+            key={l.code}
+            type="button"
+            role="tab"
+            aria-selected={value === l.code}
+            title={state ? `${l.nativeName}: ${t(`states.${state}`)}` : `${l.nativeName} (${t("source")})`}
+            onClick={() => onChange(l.code)}
+            className={cn(
+              "-mb-px flex shrink-0 items-center gap-1.5 border-b-2 px-3 py-2 text-sm font-semibold uppercase",
+              value === l.code ? "border-forest-700 text-forest-800" : "border-transparent text-slate-500 hover:text-slate-800",
+            )}
+          >
+            {l.code}
+            {state && <span className={cn("h-2 w-2 rounded-full", STATE_DOT[state])} aria-hidden />}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
 
 export function ResourceEditor({ resource, id }: { resource: AdminResource; id: string }) {
   const router = useRouter();
@@ -22,6 +58,8 @@ export function ResourceEditor({ resource, id }: { resource: AdminResource; id: 
   const isNew = id === "new";
   const base = `/admin/content/${resource.key}`;
   const p = resource.permission;
+  const [lang, setLang] = useState("en");
+  const showLanguages = !isNew && !!resource.translationType && can("translations:read");
 
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["item", resource.key, id],
@@ -79,43 +117,48 @@ export function ResourceEditor({ resource, id }: { resource: AdminResource; id: 
           </>
         }
       />
-      <EntityForm
-        sections={resource.sections}
-        initial={item}
-        onSubmit={save}
-        readOnly={!can(isNew ? `${p}:create` : `${p}:update`)}
-        submitLabel={isNew ? `Create ${resource.singular.toLowerCase()}` : "Save changes"}
-        aside={
-          !isNew && item ? (
-            <Card title="Info">
-              <dl className="space-y-2 text-sm">
-                {resource.statusField && (
+      {showLanguages && <LanguageTabs type={resource.translationType!} id={id} value={lang} onChange={setLang} />}
+      {showLanguages && lang !== "en" && <TranslationPanel type={resource.translationType!} id={id} locale={lang} />}
+      {/* The English form stays mounted while another language is open, so unsaved edits are kept. */}
+      <div hidden={lang !== "en"}>
+        <EntityForm
+          sections={resource.sections}
+          initial={item}
+          onSubmit={save}
+          readOnly={!can(isNew ? `${p}:create` : `${p}:update`)}
+          submitLabel={isNew ? `Create ${resource.singular.toLowerCase()}` : "Save changes"}
+          aside={
+            !isNew && item ? (
+              <Card title="Info">
+                <dl className="space-y-2 text-sm">
+                  {resource.statusField && (
+                    <div className="flex justify-between">
+                      <dt className="text-slate-500">Status</dt>
+                      <dd>
+                        <StatusBadge status={resource.statusField === "enabled" ? Boolean(item.enabled) : (item.status as string)} />
+                      </dd>
+                    </div>
+                  )}
+                  {typeof item.slug === "string" && (
+                    <div className="flex justify-between gap-2">
+                      <dt className="text-slate-500">Slug</dt>
+                      <dd className="truncate font-mono text-xs">{item.slug}</dd>
+                    </div>
+                  )}
                   <div className="flex justify-between">
-                    <dt className="text-slate-500">Status</dt>
-                    <dd>
-                      <StatusBadge status={resource.statusField === "enabled" ? Boolean(item.enabled) : (item.status as string)} />
-                    </dd>
+                    <dt className="text-slate-500">Created</dt>
+                    <dd>{formatDate(item.createdAt as string)}</dd>
                   </div>
-                )}
-                {typeof item.slug === "string" && (
-                  <div className="flex justify-between gap-2">
-                    <dt className="text-slate-500">Slug</dt>
-                    <dd className="truncate font-mono text-xs">{item.slug}</dd>
+                  <div className="flex justify-between">
+                    <dt className="text-slate-500">Updated</dt>
+                    <dd>{formatDate(item.updatedAt as string, "en", { dateStyle: "medium", timeStyle: "short" })}</dd>
                   </div>
-                )}
-                <div className="flex justify-between">
-                  <dt className="text-slate-500">Created</dt>
-                  <dd>{formatDate(item.createdAt as string)}</dd>
-                </div>
-                <div className="flex justify-between">
-                  <dt className="text-slate-500">Updated</dt>
-                  <dd>{formatDate(item.updatedAt as string, "en", { dateStyle: "medium", timeStyle: "short" })}</dd>
-                </div>
-              </dl>
-            </Card>
-          ) : null
-        }
-      />
+                </dl>
+              </Card>
+            ) : null
+          }
+        />
+      </div>
     </div>
   );
 }

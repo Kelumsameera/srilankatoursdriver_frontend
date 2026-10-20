@@ -128,10 +128,10 @@ export default async function ExcursionDetailPage({ params }: Props) {
 
         {/* PRICE BOX: sticky next to the content on desktop, below it on phones */}
         <aside className="lg:sticky lg:top-28 lg:self-start">
-          <div className="rounded-3xl bg-white p-7 shadow-card">
+          <div className="rounded-3xl bg-surface p-7 shadow-card">
             {/* "From" above a real price, like the tour price box */}
             {price && <p className="text-sm text-muted">{tCommon("from")}</p>}
-            <p className="font-display text-3xl text-forest-800">{price ?? (excursion.priceNote || tCommon("priceOnRequest"))}</p>
+            <p className="font-display text-3xl text-brand">{price ?? (excursion.priceNote || tCommon("priceOnRequest"))}</p>
             <div className="mt-6 flex flex-col gap-3">
               <ButtonLink href={`/booking?type=excursion&excursion=${excursion._id}`} size="lg" className="w-full">
                 {t("book")}
@@ -150,7 +150,7 @@ export default async function ExcursionDetailPage({ params }: Props) {
       {data.related.length > 0 && (
         <section className="bg-sand-100 py-section-sm">
           <div className="container-page">
-            <h2 className="mb-10 text-h2 text-forest-900">{t("related")}</h2>
+            <h2 className="mb-10 text-h2 text-heading">{t("related")}</h2>
             <div className="grid-center-last grid grid-cols-1 gap-grid sm:grid-cols-2 lg:grid-cols-3">
               {data.related.map((relatedExcursion, index) => (
                 <div key={relatedExcursion._id} {...reveal3d(index)}>
