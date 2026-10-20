@@ -30,6 +30,25 @@ describe("site theme defaults", () => {
   });
 });
 
+describe("dark green shades", () => {
+  it("the default theme keeps the original fixed greens from globals.css", () => {
+    expect(themeToCss(DEFAULT_THEME)).not.toMatch(/--brand-(dark|darkest|deep|bright):|--tone-forest-|--tone-sand-/);
+  });
+
+  it("a new primary or secondary colour recolours the dark bands, footer and pale tints too", () => {
+    const ocean = PRESETS.find((p) => p.id === "ocean")!;
+    const css = themeToCss(resolveTheme({ theme: { colors: ocean.colors, darkColors: ocean.darkColors } }));
+    expect(css).toContain("--brand-dark:color-mix(in oklab, var(--brand-primary) 62%, black)");
+    expect(css).toContain("--brand-darkest:color-mix(in oklab, var(--brand-primary) 35%, black)");
+    expect(css).toContain("--brand-deep:");
+    expect(css).toContain("--brand-bright:");
+    // Pale tints only in light mode, so dark mode keeps its own tones
+    expect(css).toMatch(/:not\(\[data-theme="dark"\]\)\{--tone-forest-50:/);
+    // The alternate light band follows the new background too
+    expect(css).toContain("--tone-sand-100:color-mix(in oklab, var(--theme-background) 50%, var(--theme-border))");
+  });
+});
+
 describe("site theme safety", () => {
   it("drops invalid stored values instead of writing them into CSS", () => {
     const t = resolveTheme({

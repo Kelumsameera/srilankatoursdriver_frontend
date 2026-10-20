@@ -22,7 +22,7 @@ import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { DepthScroll } from "@/components/ui/DepthScroll";
 import type { SiteSettings } from "@/types/cms";
 import { travelSans, travelDisplay } from "@/lib/fonts";
-import { THEME_INIT_SCRIPT, googleFonts, googleFontsUrl, resolveTheme, themeToCss } from "@/lib/theme";
+import { DEFAULT_THEME, THEME_INIT_SCRIPT, googleFonts, googleFontsUrl, resolveTheme, themeToCss } from "@/lib/theme";
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -30,11 +30,11 @@ export function generateStaticParams() {
 
 type Props = { children: ReactNode; params: Promise<{ locale: string }> };
 
-export const viewport: Viewport = {
-  themeColor: "#08261a",
-  width: "device-width",
-  initialScale: 1,
-};
+/** Browser bar colour: the original dark green, or the primary colour chosen in Admin → Theme. */
+export async function generateViewport(): Promise<Viewport> {
+  const { colors } = resolveTheme(await getBranding());
+  return { themeColor: colors.primary === DEFAULT_THEME.colors.primary ? "#08261a" : colors.primary, width: "device-width", initialScale: 1 };
+}
 
 /** Site-wide metadata: everything (name, favicon, verification, defaults) comes from the CMS. */
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

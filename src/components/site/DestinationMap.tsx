@@ -87,14 +87,13 @@ export function DestinationMap({ destination, label, unavailable, caption }: { d
             <title>{destination.name}</title>
             <circle r="19" fill="#fff" opacity=".55" />
             <circle r="22" fill="none" stroke="#89621c" strokeWidth="2" />
-            <circle r="9" fill="#0f3d2e" stroke="#fff" strokeWidth="3" filter={`url(#${svgId}-shadow)`} />
+            <circle r="9" className="fill-forest-800" stroke="#fff" strokeWidth="3" filter={`url(#${svgId}-shadow)`} />
             <text
               x={pinLabelOnLeft ? -28 : 28}
               y="6"
               textAnchor={pinLabelOnLeft ? "end" : "start"}
-              className="font-display"
+              className="fill-forest-900 font-display"
               fontSize="19"
-              fill="#08261a"
               stroke="#fff"
               strokeWidth="5"
               paintOrder="stroke"

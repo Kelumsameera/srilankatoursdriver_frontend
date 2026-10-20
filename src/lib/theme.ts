@@ -426,6 +426,26 @@ export function themeToCss(theme: ThemeSettings, scope: ThemeScope = PUBLIC_SCOP
     );
   }
 
+  // Dark bands, overlays and the footer use darker shades of the primary green. They are written as fixed colours in
+  // globals.css; once the admin changes the primary or secondary colour (light or dark palette) they are mixed from
+  // the current palette instead, so the whole site follows the new colours. var() resolves per mode automatically.
+  const greensChanged = (["primary", "secondary"] as const).some((k) => theme.colors[k] !== d.colors[k] || theme.darkColors[k] !== d.darkColors[k]);
+  if (greensChanged) {
+    vars.push(
+      "--brand-darkest:color-mix(in oklab, var(--brand-primary) 35%, black)",
+      "--brand-dark:color-mix(in oklab, var(--brand-primary) 62%, black)",
+      "--brand-deep:color-mix(in oklab, var(--brand-primary) 65%, var(--brand-secondary))",
+      "--brand-bright:color-mix(in oklab, var(--brand-secondary) 85%, white)",
+    );
+    // Pale green tints (light mode only; dark mode has its own tones in globals.css)
+    rules.push(`${root}:not([data-theme="dark"]){--tone-forest-50:color-mix(in oklab, var(--brand-secondary) 7%, white);--tone-forest-100:color-mix(in oklab, var(--brand-secondary) 14%, white)}`);
+  }
+
+  // The alternate light band colour (sand-100) sits between the page background and the border colour.
+  if (theme.colors.background !== d.colors.background || theme.colors.border !== d.colors.border) {
+    rules.push(`${root}:not([data-theme="dark"]){--tone-sand-100:color-mix(in oklab, var(--theme-background) 50%, var(--theme-border))}`);
+  }
+
   rules.unshift(`${root}{${vars.join(";")}}`);
   rules.push(`${root}[data-theme="dark"]{${colorVars(theme.darkColors)}}`);
 

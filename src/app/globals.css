@@ -9,6 +9,12 @@
   --brand-primary: #0f3d2e;
   --brand-secondary: #1f7a4d;
   --brand-accent: #c99a3b;
+  /* Darker / lighter greens of the brand (dark bands, hero overlays, footer). Admin → Theme recalculates them from
+     the primary and secondary colours when those change (src/lib/theme.ts); these are the original values. */
+  --brand-darkest: #04170f;
+  --brand-dark: #08261a;
+  --brand-deep: #155239;
+  --brand-bright: #2b9563;
   /* Site Appearance colours (Admin → Theme, src/lib/theme.ts). Defaults = the original design. */
   --theme-background: #faf6ec;
   --theme-surface: #ffffff;
@@ -122,12 +128,12 @@ html[data-site="admin"][data-theme="dark"] [stroke="#fff"] {
   --font-sans: var(--font-travel-sans, "Poppins"), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-travel-display, "Playfair Display"), ui-serif, Georgia, serif;
 
-  --color-forest-950: #04170f;
-  --color-forest-900: #08261a;
+  --color-forest-950: var(--brand-darkest);
+  --color-forest-900: var(--brand-dark);
   --color-forest-800: var(--brand-primary);
-  --color-forest-700: #155239;
+  --color-forest-700: var(--brand-deep);
   --color-forest-600: var(--brand-secondary);
-  --color-forest-500: #2b9563;
+  --color-forest-500: var(--brand-bright);
   --color-forest-100: var(--tone-forest-100);
   --color-forest-50: var(--tone-forest-50);
 

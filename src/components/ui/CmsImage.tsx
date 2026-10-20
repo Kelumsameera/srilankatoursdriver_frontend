@@ -59,7 +59,7 @@ export function CmsImage({ media, alt, sizes = "100vw", preload, loading, classN
         />
       ) : (
         <div
-          className="absolute inset-0 flex items-center justify-center bg-[radial-gradient(circle_at_30%_20%,#1f7a4d_0%,#0f3d2e_45%,#08261a_100%)]"
+          className="absolute inset-0 flex items-center justify-center bg-[radial-gradient(circle_at_30%_20%,var(--brand-secondary)_0%,var(--brand-primary)_45%,var(--brand-dark)_100%)]"
           aria-hidden={!fallbackLabel}
           role={fallbackLabel ? "img" : undefined}
           aria-label={fallbackLabel}

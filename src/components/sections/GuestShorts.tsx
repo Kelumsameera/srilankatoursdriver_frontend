@@ -52,7 +52,7 @@ function ShortCard({ short }: { short: GuestShort }) {
             {poster ? (
               <Image src={poster} alt="" fill sizes="(min-width:1024px) 25vw, 256px" className="object-cover opacity-90 transition-transform duration-700 group-hover:scale-105" />
             ) : (
-              <span className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,#1f7a4d,#08261a)]" />
+              <span className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,var(--brand-secondary),var(--brand-dark))]" />
             )}
             <span className="absolute inset-0 bg-linear-to-t from-forest-950/80 via-transparent" />
             <span className="relative rounded-full bg-white/90 p-4 text-forest-900 shadow-xl transition-transform group-hover:scale-110">
