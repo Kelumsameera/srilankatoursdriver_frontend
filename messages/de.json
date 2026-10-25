@@ -156,7 +156,10 @@
     "overnight": "Übernachtung",
     "languages": "Sprachen",
     "dayLabel": "Tag {day}",
-    "customise": "Jede Tour ist privat und kann an Ihre Termine und Interessen angepasst werden."
+    "customise": "Jede Tour ist privat und kann an Ihre Termine und Interessen angepasst werden.",
+    "inSeason": "Jetzt Saison",
+    "offSeason": "Nebensaison",
+    "moreTours": "Tagestouren & mehr"
   },
   "destination": {
     "highlights": "Höhepunkte",
@@ -254,7 +257,19 @@
     "errorGeneric": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut oder kontaktieren Sie uns per WhatsApp.",
     "errorFields": "Bitte prüfen Sie die markierten Felder und versuchen Sie es erneut.",
     "errorRateLimited": "Zu viele Anfragen. Bitte warten Sie einige Minuten und versuchen Sie es erneut.",
-    "errorNetwork": "Unser Server ist nicht erreichbar. Bitte prüfen Sie Ihre Internetverbindung und versuchen Sie es erneut."
+    "errorNetwork": "Unser Server ist nicht erreichbar. Bitte prüfen Sie Ihre Internetverbindung und versuchen Sie es erneut.",
+    "tourLength": "Reisedauer",
+    "daysOption": "{days} Tage",
+    "estimate": "Ihr Reisepreis",
+    "estimateTotal": "Gesamt für {count, plural, one {# Reisenden} other {# Reisende}}, {days} Tage",
+    "vehicleLabel": "Fahrzeug: {vehicle}",
+    "perPerson": "Etwa {price} pro Person",
+    "estimateNote": "Privates Fahrzeug mit Fahrer für Ihre Gruppe. Den Endpreis bestätigen wir per E-Mail.",
+    "largeGroup": "Für Gruppen mit mehr als {max} Reisenden senden wir Ihnen ein persönliches Angebot.",
+    "childrenAges": "Alter der Kinder",
+    "childAge": "Kind {n}",
+    "underOne": "Unter 1",
+    "ageYears": "{age, plural, one {# Jahr} other {# Jahre}}"
   },
   "tailorMade": {
     "stepOf": "Schritt {current} von {total}",

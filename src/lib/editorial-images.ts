@@ -1,4 +1,5 @@
 import type { Destination, MediaAsset, Tour } from "@/types/cms";
+import { generatedDestinationImages } from "@/lib/generated-destination-images";
 
 /** Generated CMS covers retain their disclosure in alt text even when hosted on Cloudinary. */
 export function isIllustrative(url?: string, alt?: string): boolean {
@@ -77,6 +78,7 @@ export function travelImageFor(value: string) {
 
 /** Illustrative art that depicts exactly this destination. */
 const DESTINATION_ART: Record<string, MediaAsset> = {
+  ...generatedDestinationImages,
   sigiriya: editorialImages.sigiriya,
   ella: editorialImages.ella,
   kandy: editorialImages.kandy,

@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import type { MediaAsset } from "@/types/cms";
 import { bannerMedia, pageBanner, type PageBannerKey } from "@/lib/page-banners";
 import { Breadcrumbs } from "@/components/site/Breadcrumbs";
+import { HeroVideo } from "@/components/site/HeroVideo";
 import { CmsImage } from "./CmsImage";
 
 export function SectionHeading({
@@ -86,6 +87,7 @@ export async function PageHero({
   image,
   banner = "default",
   eyebrow,
+  video,
   children,
 }: {
   title: string;
@@ -93,6 +95,8 @@ export async function PageHero({
   image?: MediaAsset | null;
   banner?: PageBannerKey;
   eyebrow?: string;
+  /** Optional background video, played over the photo once it can start. */
+  video?: MediaAsset | null;
   children?: ReactNode;
 }) {
   const [locale, t] = await Promise.all([getLocale(), getTranslations("common")]);
@@ -109,6 +113,11 @@ export async function PageHero({
         objectPosition={fallback?.focus}
         markIllustrative={false}
       />
+      {video?.url && video.resourceType === "video" && (
+        <div className="absolute inset-0 -z-10" data-testid="page-hero-video">
+          <HeroVideo src={video.url} />
+        </div>
+      )}
       <div className="absolute inset-0 -z-10 bg-gradient-to-r from-forest-950/85 via-forest-950/55 to-forest-950/20 rtl:bg-gradient-to-l" />
       <div className="absolute inset-0 -z-10 bg-gradient-to-t from-forest-950/60 via-transparent to-forest-950/15" />
       <div className="container-page w-full pb-10 pt-28 sm:pb-12 sm:pt-32 lg:pb-14 lg:pt-36">

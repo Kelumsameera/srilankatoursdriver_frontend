@@ -156,7 +156,10 @@
     "overnight": "Pernoita",
     "languages": "Idiomas",
     "dayLabel": "Dia {day}",
-    "customise": "Todos os tours são privados e podem ser adaptados às suas datas e interesses."
+    "customise": "Todos os tours são privados e podem ser adaptados às suas datas e interesses.",
+    "inSeason": "Época atual",
+    "offSeason": "Fora de época",
+    "moreTours": "Passeios de um dia e mais"
   },
   "destination": {
     "highlights": "Destaques",
@@ -254,7 +257,19 @@
     "errorGeneric": "Algo correu mal. Tente novamente ou contacte-nos pelo WhatsApp.",
     "errorFields": "Verifique os campos destacados e tente novamente.",
     "errorRateLimited": "Muitas solicitações. Aguarde alguns minutos e tente novamente.",
-    "errorNetwork": "Não foi possível contactar o nosso servidor. Verifique a sua ligação à internet e tente novamente."
+    "errorNetwork": "Não foi possível contactar o nosso servidor. Verifique a sua ligação à internet e tente novamente.",
+    "tourLength": "Duração do tour",
+    "daysOption": "{days} dias",
+    "estimate": "Preço do seu tour",
+    "estimateTotal": "Total para {count, plural, one {# viajante} other {# viajantes}}, {days} dias",
+    "vehicleLabel": "Veículo: {vehicle}",
+    "perPerson": "Cerca de {price} por pessoa",
+    "estimateNote": "Veículo privado e motorista para o seu grupo. Confirmaremos o preço final por e-mail.",
+    "largeGroup": "Para grupos com mais de {max} viajantes, enviaremos um orçamento personalizado.",
+    "childrenAges": "Idade das crianças",
+    "childAge": "Criança {n}",
+    "underOne": "Menos de 1",
+    "ageYears": "{age, plural, one {# ano} other {# anos}}"
   },
   "tailorMade": {
     "stepOf": "Passo {current} de {total}",

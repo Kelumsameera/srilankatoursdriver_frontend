@@ -156,7 +156,10 @@
     "overnight": "宿泊地",
     "languages": "対応言語",
     "dayLabel": "{day}日目",
-    "customise": "すべてのツアーはプライベートで、日程やご希望に合わせて変更できます。"
+    "customise": "すべてのツアーはプライベートで、日程やご希望に合わせて変更できます。",
+    "inSeason": "今がシーズン",
+    "offSeason": "オフシーズン",
+    "moreTours": "日帰りツアーほか"
   },
   "destination": {
     "highlights": "見どころ",
@@ -254,7 +257,19 @@
     "errorGeneric": "問題が発生しました。もう一度お試しいただくか、WhatsAppでご連絡ください。",
     "errorFields": "強調表示された項目を確認して、もう一度お試しください。",
     "errorRateLimited": "リクエストが多すぎます。数分待ってからもう一度お試しください。",
-    "errorNetwork": "サーバーに接続できませんでした。インターネット接続を確認して、もう一度お試しください。"
+    "errorNetwork": "サーバーに接続できませんでした。インターネット接続を確認して、もう一度お試しください。",
+    "tourLength": "ツアー日数",
+    "daysOption": "{days}日間",
+    "estimate": "ツアー料金",
+    "estimateTotal": "{count}名様・{days}日間の合計",
+    "vehicleLabel": "車両：{vehicle}",
+    "perPerson": "1名あたり約{price}",
+    "estimateNote": "グループ専用の車両とドライバー付き。最終料金はメールでご確認いたします。",
+    "largeGroup": "{max}名様を超えるグループには個別にお見積もりをお送りします。",
+    "childrenAges": "お子様の年齢",
+    "childAge": "お子様 {n}",
+    "underOne": "1歳未満",
+    "ageYears": "{age}歳"
   },
   "tailorMade": {
     "stepOf": "ステップ {current} / {total}",
@@ -445,8 +460,8 @@
     "note": "料金は {currency} 建てです。銀行のレートとは多少異なる場合があります。"
   },
   "rates": {
-    "showMore": "\u3082\u3063\u3068\u898b\u308b",
-    "showLess": "\u6298\u308a\u305f\u305f\u3080",
+    "showMore": "もっと見る",
+    "showLess": "折りたたむ",
     "title": "ツアーパッケージ料金表",
     "subtitle": "空港（CMB）発 固定料金",
     "headers": {

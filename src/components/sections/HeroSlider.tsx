@@ -6,7 +6,7 @@ import { ArrowRight, ChevronLeft, ChevronRight, Pause, Play, Star } from "lucide
 import type { HeroSlide } from "@/types/cms";
 import { cn } from "@/lib/utils";
 import { cloudinaryUrl, isOptimizable } from "@/lib/cloudinary-loader";
-import { heroMediaSources, PHONE_MEDIA_QUERY, requestHeroPlayback, type HeroPlaybackStatus } from "@/lib/hero-media";
+import { heroMediaSources, isPhone, motionAllowed, requestHeroPlayback, subscribeMotion, subscribePhone, type HeroPlaybackStatus } from "@/lib/hero-media";
 import { CmsLink } from "@/components/ui/CmsLink";
 import { buttonClass, type ButtonVariant } from "@/components/ui/Button";
 import { editorialImages } from "@/lib/editorial-images";
@@ -22,33 +22,6 @@ interface Props {
 }
 
 const INTERVAL = 7000;
-
-/**
- * Whether moving media is welcome: false for visitors who prefer reduced motion or have Data Saver on,
- * and during server rendering (the poster image is shown first, which is also the fastest paint).
- */
-function subscribeMotion(onChange: () => void) {
-  const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-  const connection = (navigator as Navigator & { connection?: EventTarget }).connection;
-  mq.addEventListener("change", onChange);
-  connection?.addEventListener("change", onChange);
-  return () => {
-    mq.removeEventListener("change", onChange);
-    connection?.removeEventListener("change", onChange);
-  };
-}
-function motionAllowed() {
-  const connection = (navigator as Navigator & { connection?: { saveData?: boolean; effectiveType?: string } }).connection;
-  return !window.matchMedia("(prefers-reduced-motion: reduce)").matches && !connection?.saveData && !/^(slow-2g|2g)$/.test(connection?.effectiveType ?? "");
-}
-
-/** Phone-width viewport; false during server rendering (the video src is only set client-side anyway). */
-function subscribePhone(onChange: () => void) {
-  const mq = window.matchMedia(PHONE_MEDIA_QUERY);
-  mq.addEventListener("change", onChange);
-  return () => mq.removeEventListener("change", onChange);
-}
-const isPhone = () => window.matchMedia(PHONE_MEDIA_QUERY).matches;
 
 const thumbOf = (s: HeroSlide) => heroMediaSources(s).desktop;
 const subscribeVisibility = (notify: () => void) => {

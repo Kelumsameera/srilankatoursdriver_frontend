@@ -156,7 +156,10 @@
     "overnight": "Noche en",
     "languages": "Idiomas",
     "dayLabel": "Día {day}",
-    "customise": "Cada tour es privado y se puede adaptar a tus fechas e intereses."
+    "customise": "Cada tour es privado y se puede adaptar a tus fechas e intereses.",
+    "inSeason": "Temporada actual",
+    "offSeason": "Fuera de temporada",
+    "moreTours": "Tours de un día y más"
   },
   "destination": {
     "highlights": "Lo más destacado",
@@ -254,7 +257,19 @@
     "errorGeneric": "Algo salió mal. Inténtalo de nuevo o escríbenos por WhatsApp.",
     "errorFields": "Revisa los campos marcados e inténtalo de nuevo.",
     "errorRateLimited": "Demasiadas solicitudes. Espera unos minutos e inténtalo de nuevo.",
-    "errorNetwork": "No pudimos conectar con nuestro servidor. Comprueba tu conexión a internet e inténtalo de nuevo."
+    "errorNetwork": "No pudimos conectar con nuestro servidor. Comprueba tu conexión a internet e inténtalo de nuevo.",
+    "tourLength": "Duración del tour",
+    "daysOption": "{days} días",
+    "estimate": "Precio de tu tour",
+    "estimateTotal": "Total para {count, plural, one {# viajero} other {# viajeros}}, {days} días",
+    "vehicleLabel": "Vehículo: {vehicle}",
+    "perPerson": "Unos {price} por persona",
+    "estimateNote": "Vehículo privado y conductor para tu grupo. Confirmaremos el precio final por correo electrónico.",
+    "largeGroup": "Para grupos de más de {max} viajeros te enviaremos un presupuesto personalizado.",
+    "childrenAges": "Edad de los niños",
+    "childAge": "Niño {n}",
+    "underOne": "Menos de 1",
+    "ageYears": "{age, plural, one {# año} other {# años}}"
   },
   "tailorMade": {
     "stepOf": "Paso {current} de {total}",
@@ -445,7 +460,7 @@
     "note": "Nuestros precios se indican en {currency}; el tipo de tu banco puede variar ligeramente."
   },
   "rates": {
-    "showMore": "Mostrar m\u00e1s",
+    "showMore": "Mostrar más",
     "showLess": "Mostrar menos",
     "title": "Tarifas de Paquetes de Tours",
     "subtitle": "Tarifas Fijas desde el Aeropuerto (CMB)",

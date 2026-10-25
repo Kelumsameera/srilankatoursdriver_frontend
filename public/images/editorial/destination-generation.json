@@ -1,0 +1,126 @@
+{
+  "date": "2026-10-21",
+  "generator": "Built-in image_gen",
+  "note": "AI-generated illustrative destination art, not documentary photography. CMS uploads take precedence. Each asset has full-width, 1080px and 640px WebP variants.",
+  "sources": [
+    "https://www.srilanka.travel/heritage-discover-the-past",
+    "https://srilanka.travel/tourist-attractions"
+  ],
+  "assets": [
+    {
+      "slug": "arugam-bay",
+      "file": "public/images/editorial/destination-arugam-bay.webp",
+      "prompt": "Use case: photorealistic-natural. Asset: premium Sri Lanka travel website destination cover. Scene: Arugam Bay's main surf point on Sri Lanka's east coast, long curling right-hand wave, sandy crescent bay, low coconut palms and a few distant fishing boats, flat tropical coastline. High quality photographic realism, natural daylight and restrained true-to-life colors, detailed authentic textures, landscape 3:2 wide composition suitable for card crops. Geographic accuracy matters. No fantasy geography, invented landmarks, oversaturation, artificial HDR, text, logos or watermark."
+    },
+    {
+      "slug": "bentota",
+      "file": "public/images/editorial/destination-bentota.webp",
+      "prompt": "Use case: photorealistic-natural. Asset: premium Sri Lanka travel website destination cover. Scene: Bentota beach Sri Lanka, broad golden sand spit separating the Bentota river estuary from the Indian Ocean, coconut groves, gentle surf, oblique coastal view. High quality photographic realism, natural daylight and restrained true-to-life colors, detailed authentic textures, landscape 3:2 wide composition suitable for card crops. Geographic accuracy matters. No fantasy geography, invented landmarks, oversaturation, artificial HDR, text, logos or watermark."
+    },
+    {
+      "slug": "galle",
+      "file": "public/images/editorial/destination-galle.webp",
+      "prompt": "Use case: photorealistic-natural. Asset: premium Sri Lanka travel website destination cover. Scene: Galle Fort lighthouse Sri Lanka, recognizable white cylindrical lighthouse on the stone fort ramparts beside coconut palms, ocean and low historic white buildings, accurate human-scale architecture. High quality photographic realism, natural daylight and restrained true-to-life colors, detailed authentic textures, landscape 3:2 wide composition suitable for card crops. Geographic accuracy matters. No fantasy geography, invented landmarks, oversaturation, artificial HDR, text, logos or watermark."
+    },
+    {
+      "slug": "habarana",
+      "file": "public/images/editorial/destination-habarana.webp",
+      "prompt": "Use case: photorealistic-natural. Asset: high quality Sri Lanka destination cover. Scene: Habarana Sri Lanka, peaceful village reservoir with lotus leaves, dry-zone forest and low rocky outcrops in the distance, authentic rural lakeside landscape, no Sigiriya rock. Photographic realism, natural daylight, restrained realistic colors, authentic details and geography, 3:2 landscape framing for responsive crops. No invented landmarks, dramatic fantasy geography, HDR, text, logos or watermark."
+    },
+    {
+      "slug": "hatton",
+      "file": "public/images/editorial/destination-hatton.webp",
+      "prompt": "Use case: photorealistic-natural. Asset: high quality Sri Lanka destination cover. Scene: Hatton Sri Lanka's tea country, rolling closely clipped tea fields around Castlereagh reservoir, layered green mountain slopes, natural soft morning mist. Photographic realism, natural daylight, restrained realistic colors, authentic details and geography, 3:2 landscape framing for responsive crops. No invented landmarks, dramatic fantasy geography, HDR, text, logos or watermark."
+    },
+    {
+      "slug": "hikkaduwa",
+      "file": "public/images/editorial/destination-hikkaduwa.webp",
+      "prompt": "Use case: photorealistic-natural. Asset: high quality Sri Lanka destination cover. Scene: Hikkaduwa Sri Lanka, shallow clear turquoise coastal water and fringing reef beside sandy beach with coconut palms and modest beachfront buildings, no dramatic cliffs. Photographic realism, natural daylight, restrained realistic colors, authentic details and geography, 3:2 landscape framing for responsive crops. No invented landmarks, dramatic fantasy geography, HDR, text, logos or watermark."
+    },
+    {
+      "slug": "jaffna",
+      "file": "public/images/editorial/destination-jaffna.webp",
+      "prompt": "Use case: photorealistic-natural. Asset: high quality Sri Lanka destination cover. Scene: Jaffna Sri Lanka, Nallur Kandaswamy temple's ochre-gold carved gopuram at its true modest scale, red and white striped boundary wall and sandy forecourt, palmyra palms, authentic Dravidian architecture. Photographic realism, natural daylight, restrained realistic colors, authentic details and geography, 3:2 landscape framing for responsive crops. No invented landmarks, dramatic fantasy geography, HDR, text, logos or watermark."
+    },
+    {
+      "slug": "kalpitiya",
+      "file": "public/images/editorial/destination-kalpitiya.webp",
+      "prompt": "Use case: photorealistic-natural. Asset: high quality Sri Lanka destination cover. Scene: Kalpitiya Sri Lanka, low sandy peninsula and still lagoon with a few small distant kitesurfing kites, sparse palms and coastal vegetation, flat horizon, natural unbuilt coastline. Photographic realism, natural daylight, restrained realistic colors, authentic details and geography, 3:2 landscape framing for responsive crops. No invented landmarks, dramatic fantasy geography, HDR, text, logos or watermark."
+    },
+    {
+      "slug": "kitulgala",
+      "file": "public/images/editorial/destination-kitulgala.webp",
+      "prompt": "Use case: photorealistic-natural. Asset: premium Sri Lanka travel destination image. Scene: Kitulgala Sri Lanka, Kelani river's rocky gentle rapids flowing between dense wet-zone tropical rainforest banks and rounded forest hills, river-level view. High quality realistic travel photography aesthetic, natural daylight, true-to-life restrained colors and local textures, landscape 3:2. Prioritize authentic geography, architecture and natural proportions. Avoid invented landmarks, fantasy scenery, oversaturation, HDR, text, logos, watermark."
+    },
+    {
+      "slug": "negombo",
+      "file": "public/images/editorial/destination-negombo.webp",
+      "prompt": "Use case: photorealistic-natural. Asset: premium Sri Lanka travel destination image. Scene: Negombo Sri Lanka lagoon, authentic colorful wooden fishing boats moored on calm water beside coconut palms and low fishing village houses, warm natural morning light. High quality realistic travel photography aesthetic, natural daylight, true-to-life restrained colors and local textures, landscape 3:2. Prioritize authentic geography, architecture and natural proportions. Avoid invented landmarks, fantasy scenery, oversaturation, HDR, text, logos, watermark."
+    },
+    {
+      "slug": "nuwara-eliya",
+      "file": "public/images/editorial/destination-nuwara-eliya.webp",
+      "prompt": "Use case: photorealistic-natural. Asset: premium Sri Lanka travel destination image. Scene: Nuwara Eliya Sri Lanka, tea estates on rolling cool misty hills, winding narrow estate path, tall eucalyptus and cypress windbreak trees, realistic central highland landscape. High quality realistic travel photography aesthetic, natural daylight, true-to-life restrained colors and local textures, landscape 3:2. Prioritize authentic geography, architecture and natural proportions. Avoid invented landmarks, fantasy scenery, oversaturation, HDR, text, logos, watermark."
+    },
+    {
+      "slug": "passikudah",
+      "file": "public/images/editorial/destination-passikudah.webp",
+      "prompt": "Use case: photorealistic-natural. Asset: premium Sri Lanka travel destination image. Scene: Passikudah Sri Lanka east coast, broad shallow pale turquoise bay, white-gold sand and coconut palms, very calm clear water, long low flat coastline. High quality realistic travel photography aesthetic, natural daylight, true-to-life restrained colors and local textures, landscape 3:2. Prioritize authentic geography, architecture and natural proportions. Avoid invented landmarks, fantasy scenery, oversaturation, HDR, text, logos, watermark."
+    },
+    {
+      "slug": "polonnaruwa",
+      "file": "public/images/editorial/destination-polonnaruwa.webp",
+      "prompt": "Use case: photorealistic-natural. Asset: premium Sri Lanka travel destination image. Scene: Polonnaruwa Sri Lanka, Gal Vihara's monumental reclining Buddha carved directly into horizontally banded grey granite bedrock, natural stone texture, authentic elongated side view and forest backdrop, respectful realistic proportions. High quality realistic travel photography aesthetic, natural daylight, true-to-life restrained colors and local textures, landscape 3:2. Prioritize authentic geography, architecture and natural proportions. Avoid invented landmarks, fantasy scenery, oversaturation, HDR, text, logos, watermark."
+    },
+    {
+      "slug": "dambulla",
+      "file": "public/images/editorial/destination-dambulla.webp",
+      "prompt": "Use case: photorealistic-natural. Asset: premium Sri Lanka travel destination image. Scene: Dambulla Sri Lanka cave temple exterior, long low white colonnaded facade tucked directly beneath a massive dark granite overhang, rock terrace and lush distant plains, no giant golden seated statue. High quality realistic travel photography aesthetic, natural daylight, true-to-life restrained colors and local textures, landscape 3:2. Prioritize authentic geography, architecture and natural proportions. Avoid invented landmarks, fantasy scenery, oversaturation, HDR, text, logos, watermark."
+    },
+    {
+      "slug": "colombo",
+      "file": "public/images/editorial/destination-colombo.webp",
+      "prompt": "Use case: photorealistic-natural. Asset: premium Sri Lanka travel destination image. Scene: Colombo Sri Lanka city, Beira Lake foreground with Lotus Tower's recognizable slender green stem and pink lotus crown in mid-distance, modern tropical skyline, realistic modest perspective. High quality realistic travel photography aesthetic, natural daylight, true-to-life restrained colors and local textures, landscape 3:2. Prioritize authentic geography, architecture and natural proportions. Avoid invented landmarks, fantasy scenery, oversaturation, HDR, text, logos, watermark."
+    },
+    {
+      "slug": "sinharaja",
+      "file": "public/images/editorial/destination-sinharaja.webp",
+      "prompt": "Use case: photorealistic-natural. Asset: premium Sri Lanka travel destination image. Scene: Sinharaja rainforest Sri Lanka, dense lowland tropical evergreen forest, giant buttressed trees, lianas, damp leaf litter and narrow footpath, soft diffuse canopy light, no invented waterfalls. High quality realistic travel photography aesthetic, natural daylight, true-to-life restrained colors and local textures, landscape 3:2. Prioritize authentic geography, architecture and natural proportions. Avoid invented landmarks, fantasy scenery, oversaturation, HDR, text, logos, watermark."
+    },
+    {
+      "slug": "tangalle",
+      "file": "public/images/editorial/destination-tangalle.webp",
+      "prompt": "Use case: photorealistic-natural. Asset: premium Sri Lanka destination cover. Scene: Tangalle Sri Lanka south coast, broad quiet golden beach with gently bending coconut palms, blue Indian Ocean and natural shorebreak, subtle rocky headland in distance. High quality travel photography aesthetic, natural daylight and realistic restrained colors, detailed authentic textures. Landscape 3:2 wide composition for card and banner crops. Respect actual local geography, natural proportions and architecture. No fantasy landscape, invented landmark, HDR, oversaturation, text, logo or watermark."
+    },
+    {
+      "slug": "trincomalee",
+      "file": "public/images/editorial/destination-trincomalee.webp",
+      "prompt": "Use case: photorealistic-natural. Asset: premium Sri Lanka destination cover. Scene: Trincomalee Sri Lanka, Swami Rock headland with Koneswaram temple's small colorful gopuram above rocky cliff and deep blue Indian Ocean, authentic tropical coastal setting, believable temple scale. High quality travel photography aesthetic, natural daylight and realistic restrained colors, detailed authentic textures. Landscape 3:2 wide composition for card and banner crops. Respect actual local geography, natural proportions and architecture. No fantasy landscape, invented landmark, HDR, oversaturation, text, logo or watermark."
+    },
+    {
+      "slug": "udawalawe",
+      "file": "public/images/editorial/destination-udawalawe.webp",
+      "prompt": "Use case: photorealistic-natural. Asset: premium Sri Lanka destination cover. Scene: Udawalawe National Park Sri Lanka, two wild Sri Lankan elephants in open dry grassland and low thorn scrub beside reservoir water, distant low hills, natural wildlife documentary style. High quality travel photography aesthetic, natural daylight and realistic restrained colors, detailed authentic textures. Landscape 3:2 wide composition for card and banner crops. Respect actual local geography, natural proportions and architecture. No fantasy landscape, invented landmark, HDR, oversaturation, text, logo or watermark."
+    },
+    {
+      "slug": "unawatuna",
+      "file": "public/images/editorial/destination-unawatuna.webp",
+      "prompt": "Use case: photorealistic-natural. Asset: premium Sri Lanka destination cover. Scene: Unawatuna Sri Lanka, horseshoe sandy bay, turquoise water, palm-lined shore, low jungle headland with distant small white Peace Pagoda dome, realistic coastal geography. High quality travel photography aesthetic, natural daylight and realistic restrained colors, detailed authentic textures. Landscape 3:2 wide composition for card and banner crops. Respect actual local geography, natural proportions and architecture. No fantasy landscape, invented landmark, HDR, oversaturation, text, logo or watermark."
+    },
+    {
+      "slug": "weligama",
+      "file": "public/images/editorial/destination-weligama.webp",
+      "prompt": "Use case: photorealistic-natural. Asset: premium Sri Lanka destination cover. Scene: Weligama Sri Lanka, broad curved sandy surf bay with gentle rolling waves and tiny distant surfers, palm-lined shore, Taprobane island's small green rocky outcrop offshore, natural proportions. High quality travel photography aesthetic, natural daylight and realistic restrained colors, detailed authentic textures. Landscape 3:2 wide composition for card and banner crops. Respect actual local geography, natural proportions and architecture. No fantasy landscape, invented landmark, HDR, oversaturation, text, logo or watermark."
+    },
+    {
+      "slug": "wellawaya",
+      "file": "public/images/editorial/destination-wellawaya.webp",
+      "prompt": "Use case: photorealistic-natural. Asset: premium Sri Lanka destination cover. Scene: Wellawaya Sri Lanka, Ellewala waterfall's single modest cascade over dark rock into a clear natural forest pool, lush wet tropical foliage, intimate ground-level view, no exaggerated multi-tier falls. High quality travel photography aesthetic, natural daylight and realistic restrained colors, detailed authentic textures. Landscape 3:2 wide composition for card and banner crops. Respect actual local geography, natural proportions and architecture. No fantasy landscape, invented landmark, HDR, oversaturation, text, logo or watermark."
+    },
+    {
+      "slug": "wilpattu",
+      "file": "public/images/editorial/destination-wilpattu.webp",
+      "prompt": "Use case: photorealistic-natural. Asset: premium Sri Lanka destination cover. Scene: Wilpattu National Park Sri Lanka, natural sandy-edged villu freshwater lake surrounded by dry evergreen forest, spotted deer by the water and a distant peacock, quiet realistic wildlife habitat. High quality travel photography aesthetic, natural daylight and realistic restrained colors, detailed authentic textures. Landscape 3:2 wide composition for card and banner crops. Respect actual local geography, natural proportions and architecture. No fantasy landscape, invented landmark, HDR, oversaturation, text, logo or watermark."
+    }
+  ]
+}

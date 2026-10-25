@@ -36,6 +36,7 @@ export default function BookingDetailPage({ params }: { params: Promise<{ id: st
                   ["End date", formatDate(r.endDate as string, "en", { dateStyle: "full" })],
                   ["Adults", String(r.adults ?? "")],
                   ["Children", r.children ? String(r.children) : ""],
+                  ["Children's ages", Array.isArray(r.childrenAges) && r.childrenAges.length ? r.childrenAges.join(", ") : ""],
                   ["Pickup", String(r.pickupLocation ?? "")],
                   ["Language", String(r.locale ?? "").toUpperCase()],
                   ["Message", String(r.message ?? "")],

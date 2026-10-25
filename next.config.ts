@@ -89,6 +89,9 @@ const nextConfig: NextConfig = {
     return [
       { source: "/destination/:slug", destination: "/destinations/:slug", permanent: true },
       { source: "/:locale(en|si|ta|de|fr|es|it|zh|ja|ko|ru|ar|hi|pt)/destination/:slug", destination: "/:locale/destinations/:slug", permanent: true },
+      // The vehicles pages were replaced by the offers page
+      { source: "/vehicles/:slug*", destination: "/offers", permanent: true },
+      { source: "/:locale(en|si|ta|de|fr|es|it|zh|ja|ko|ru|ar|hi|pt)/vehicles/:slug*", destination: "/:locale/offers", permanent: true },
     ];
   },
   async rewrites() {

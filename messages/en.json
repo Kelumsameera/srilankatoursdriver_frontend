@@ -158,7 +158,10 @@
     "overnight": "Overnight",
     "languages": "Languages",
     "dayLabel": "Day {day}",
-    "customise": "Every tour is private and can be customised to your dates and interests."
+    "customise": "Every tour is private and can be customised to your dates and interests.",
+    "inSeason": "In season now",
+    "offSeason": "Off season",
+    "moreTours": "Day tours & more"
   },
   "destination": {
     "highlights": "Highlights",
@@ -256,7 +259,19 @@
     "errorGeneric": "Something went wrong. Please try again or contact us on WhatsApp.",
     "errorFields": "Please check the highlighted fields and try again.",
     "errorRateLimited": "Too many requests. Please wait a few minutes and try again.",
-    "errorNetwork": "We could not reach our server. Please check your internet connection and try again."
+    "errorNetwork": "We could not reach our server. Please check your internet connection and try again.",
+    "tourLength": "Tour length",
+    "daysOption": "{days} days",
+    "estimate": "Your tour price",
+    "estimateTotal": "Total for {count, plural, one {# traveller} other {# travellers}}, {days} days",
+    "vehicleLabel": "Vehicle: {vehicle}",
+    "perPerson": "About {price} per person",
+    "estimateNote": "Private vehicle and driver for your group. We'll confirm the final price by email.",
+    "largeGroup": "For groups of more than {max} travellers we'll send you a personal quote.",
+    "childrenAges": "Children's ages",
+    "childAge": "Child {n}",
+    "underOne": "Under 1",
+    "ageYears": "{age, plural, one {# year} other {# years}}"
   },
   "tailorMade": {
     "stepOf": "Step {current} of {total}",

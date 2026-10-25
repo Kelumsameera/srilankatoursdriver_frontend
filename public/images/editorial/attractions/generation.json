@@ -1,0 +1,854 @@
+{
+  "date": "2026-10-21",
+  "generator": "Built-in image_gen",
+  "promptBrief": "High-quality Sri Lanka tourism attraction card, photorealistic natural editorial photography, landscape 3:2, natural lighting, restrained lifelike colors, real local textures and geography; no fantasy scenery, artificial HDR, oversaturation, text, logos or watermark.",
+  "note": "AI-generated illustrative art. Location subjects listed per file; these are not documentary photographs. Full, 1080px and 640px WebP variants are bundled.",
+  "assets": [
+    {
+      "id": "pidurangala",
+      "file": "pidurangala.webp",
+      "subjects": [
+        {
+          "destination": "sigiriya",
+          "title": "Pidurangala Rock"
+        }
+      ]
+    },
+    {
+      "id": "sigiriya-museum",
+      "file": "sigiriya-museum.webp",
+      "subjects": [
+        {
+          "destination": "sigiriya",
+          "title": "Sigiriya Museum"
+        }
+      ]
+    },
+    {
+      "id": "kumana",
+      "file": "kumana.webp",
+      "subjects": [
+        {
+          "destination": "arugam-bay",
+          "title": "Kumana National Park"
+        }
+      ]
+    },
+    {
+      "id": "arugam-surfing",
+      "file": "arugam-surfing.webp",
+      "subjects": [
+        {
+          "destination": "arugam-bay",
+          "title": "Learn Surfing"
+        }
+      ]
+    },
+    {
+      "id": "kudumbigala",
+      "file": "kudumbigala.webp",
+      "subjects": [
+        {
+          "destination": "arugam-bay",
+          "title": "Kudumbigala Sanctuary"
+        }
+      ]
+    },
+    {
+      "id": "little-adams-peak",
+      "file": "little-adams-peak.webp",
+      "subjects": [
+        {
+          "destination": "ella",
+          "title": "Little Adam's Peak"
+        }
+      ]
+    },
+    {
+      "id": "ravana-falls",
+      "file": "ravana-falls.webp",
+      "subjects": [
+        {
+          "destination": "ella",
+          "title": "Ravana Falls"
+        }
+      ]
+    },
+    {
+      "id": "ella-rock",
+      "file": "ella-rock.webp",
+      "subjects": [
+        {
+          "destination": "ella",
+          "title": "Ella Rock"
+        }
+      ]
+    },
+    {
+      "id": "tooth-temple",
+      "file": "tooth-temple.webp",
+      "subjects": [
+        {
+          "destination": "kandy",
+          "title": "Temple of the Tooth"
+        }
+      ]
+    },
+    {
+      "id": "peradeniya",
+      "file": "peradeniya.webp",
+      "subjects": [
+        {
+          "destination": "kandy",
+          "title": "Royal Botanical Gardens"
+        }
+      ]
+    },
+    {
+      "id": "kandy-lake",
+      "file": "kandy-lake.webp",
+      "subjects": [
+        {
+          "destination": "kandy",
+          "title": "Kandy Lake"
+        }
+      ]
+    },
+    {
+      "id": "galle-streets",
+      "file": "galle-streets.webp",
+      "subjects": [
+        {
+          "destination": "galle",
+          "title": "Dutch-era streets"
+        }
+      ]
+    },
+    {
+      "id": "gregory-lake",
+      "file": "gregory-lake.webp",
+      "subjects": [
+        {
+          "destination": "nuwara-eliya",
+          "title": "Gregory Lake"
+        }
+      ]
+    },
+    {
+      "id": "bentota-water-sports",
+      "file": "bentota-water-sports.webp",
+      "subjects": [
+        {
+          "destination": "bentota",
+          "title": "Water sports"
+        }
+      ]
+    },
+    {
+      "id": "lunuganga",
+      "file": "lunuganga.webp",
+      "subjects": [
+        {
+          "destination": "bentota",
+          "title": "Lunuganga"
+        }
+      ]
+    },
+    {
+      "id": "minneriya",
+      "file": "minneriya.webp",
+      "subjects": [
+        {
+          "destination": "habarana",
+          "title": "Minneriya National Park"
+        }
+      ]
+    },
+    {
+      "id": "kaudulla",
+      "file": "kaudulla.webp",
+      "subjects": [
+        {
+          "destination": "habarana",
+          "title": "Kaudulla National Park"
+        }
+      ]
+    },
+    {
+      "id": "habarana-village",
+      "file": "habarana-village.webp",
+      "subjects": [
+        {
+          "destination": "habarana",
+          "title": "Village experiences"
+        }
+      ]
+    },
+    {
+      "id": "adams-peak",
+      "file": "adams-peak.webp",
+      "subjects": [
+        {
+          "destination": "hatton",
+          "title": "Adam's Peak access"
+        }
+      ]
+    },
+    {
+      "id": "hikkaduwa-reef",
+      "file": "hikkaduwa-reef.webp",
+      "subjects": [
+        {
+          "destination": "hikkaduwa",
+          "title": "Coral reefs"
+        }
+      ]
+    },
+    {
+      "id": "hikkaduwa-snorkelling",
+      "file": "hikkaduwa-snorkelling.webp",
+      "subjects": [
+        {
+          "destination": "hikkaduwa",
+          "title": "Snorkelling"
+        }
+      ]
+    },
+    {
+      "id": "polonnaruwa-palace",
+      "file": "polonnaruwa-palace.webp",
+      "subjects": [
+        {
+          "destination": "polonnaruwa",
+          "title": "Royal Palace"
+        }
+      ]
+    },
+    {
+      "id": "polonnaruwa-vatadage",
+      "file": "polonnaruwa-vatadage.webp",
+      "subjects": [
+        {
+          "destination": "polonnaruwa",
+          "title": "Polonnaruwa Ancient City"
+        }
+      ]
+    },
+    {
+      "id": "golden-temple",
+      "file": "golden-temple.webp",
+      "subjects": [
+        {
+          "destination": "dambulla",
+          "title": "Golden Temple"
+        }
+      ]
+    },
+    {
+      "id": "pophams-arboretum",
+      "file": "pophams-arboretum.webp",
+      "subjects": [
+        {
+          "destination": "dambulla",
+          "title": "Popham's Arboretum"
+        }
+      ]
+    },
+    {
+      "id": "nagadeepa",
+      "file": "nagadeepa.webp",
+      "subjects": [
+        {
+          "destination": "jaffna",
+          "title": "Nagadeepa Temple"
+        }
+      ]
+    },
+    {
+      "id": "delft-island",
+      "file": "delft-island.webp",
+      "subjects": [
+        {
+          "destination": "jaffna",
+          "title": "Delft Island"
+        }
+      ]
+    },
+    {
+      "id": "belilena",
+      "file": "belilena.webp",
+      "subjects": [
+        {
+          "destination": "kitulgala",
+          "title": "Belilena Cave"
+        }
+      ]
+    },
+    {
+      "id": "makandawa",
+      "file": "makandawa.webp",
+      "subjects": [
+        {
+          "destination": "kitulgala",
+          "title": "Makandawa Rainforest"
+        }
+      ]
+    },
+    {
+      "id": "negombo-fish-market",
+      "file": "negombo-fish-market.webp",
+      "subjects": [
+        {
+          "destination": "negombo",
+          "title": "Fish market"
+        }
+      ]
+    },
+    {
+      "id": "negombo-dutch-canal",
+      "file": "negombo-dutch-canal.webp",
+      "subjects": [
+        {
+          "destination": "negombo",
+          "title": "Dutch Canal"
+        },
+        {
+          "destination": "st-marys-church-negombo",
+          "title": "Dutch Canal"
+        }
+      ]
+    },
+    {
+      "id": "passikudah-swimming",
+      "file": "passikudah-swimming.webp",
+      "subjects": [
+        {
+          "destination": "passikudah",
+          "title": "Swimming"
+        }
+      ]
+    },
+    {
+      "id": "passikudah-kayaking",
+      "file": "passikudah-kayaking.webp",
+      "subjects": [
+        {
+          "destination": "passikudah",
+          "title": "Water activities"
+        }
+      ]
+    },
+    {
+      "id": "sinharaja-birds",
+      "file": "sinharaja-birds.webp",
+      "subjects": [
+        {
+          "destination": "sinharaja",
+          "title": "Birdwatching"
+        }
+      ]
+    },
+    {
+      "id": "sinharaja-waterfall",
+      "file": "sinharaja-waterfall.webp",
+      "subjects": [
+        {
+          "destination": "sinharaja",
+          "title": "Waterfall trek"
+        }
+      ]
+    },
+    {
+      "id": "rekawa-turtles",
+      "file": "rekawa-turtles.webp",
+      "subjects": [
+        {
+          "destination": "tangalle",
+          "title": "Rekawa Turtle Conservation Project"
+        }
+      ]
+    },
+    {
+      "id": "hummanaya",
+      "file": "hummanaya.webp",
+      "subjects": [
+        {
+          "destination": "tangalle",
+          "title": "Hummanaya Blowhole"
+        }
+      ]
+    },
+    {
+      "id": "mulkirigala",
+      "file": "mulkirigala.webp",
+      "subjects": [
+        {
+          "destination": "tangalle",
+          "title": "Mulkirigala Temple"
+        }
+      ]
+    },
+    {
+      "id": "fort-frederick",
+      "file": "fort-frederick.webp",
+      "subjects": [
+        {
+          "destination": "trincomalee",
+          "title": "Fort Frederick"
+        }
+      ]
+    },
+    {
+      "id": "nilaveli",
+      "file": "nilaveli.webp",
+      "subjects": [
+        {
+          "destination": "trincomalee",
+          "title": "Nilaveli Beach"
+        }
+      ]
+    },
+    {
+      "id": "stilt-fishing",
+      "file": "stilt-fishing.webp",
+      "subjects": [
+        {
+          "destination": "weligama",
+          "title": "Stilt fishing"
+        }
+      ]
+    },
+    {
+      "id": "buduruwagala",
+      "file": "buduruwagala.webp",
+      "subjects": [
+        {
+          "destination": "wellawaya",
+          "title": "Buduruwagala"
+        }
+      ]
+    },
+    {
+      "id": "diyaluma",
+      "file": "diyaluma.webp",
+      "subjects": [
+        {
+          "destination": "wellawaya",
+          "title": "Diyaluma Falls"
+        }
+      ]
+    },
+    {
+      "id": "wellawaya-rural",
+      "file": "wellawaya-rural.webp",
+      "subjects": [
+        {
+          "destination": "wellawaya",
+          "title": "Rural landscapes"
+        }
+      ]
+    },
+    {
+      "id": "wilpattu-safari",
+      "file": "wilpattu-safari.webp",
+      "subjects": [
+        {
+          "destination": "wilpattu",
+          "title": "Safari"
+        }
+      ]
+    },
+    {
+      "id": "wilpattu-villu",
+      "file": "wilpattu-villu.webp",
+      "subjects": [
+        {
+          "destination": "wilpattu",
+          "title": "Villu wetlands"
+        }
+      ]
+    },
+    {
+      "id": "old-parliament",
+      "file": "old-parliament.webp",
+      "subjects": [
+        {
+          "destination": "old-parliament-building",
+          "title": "Old Parliament exterior"
+        },
+        {
+          "destination": "galle-face-green",
+          "title": "Old Parliament exterior"
+        }
+      ]
+    },
+    {
+      "id": "galle-face",
+      "file": "galle-face.webp",
+      "subjects": [
+        {
+          "destination": "old-parliament-building",
+          "title": "Galle Face promenade"
+        },
+        {
+          "destination": "galle-face-green",
+          "title": "Galle Face promenade"
+        }
+      ]
+    },
+    {
+      "id": "colombo-lighthouse",
+      "file": "colombo-lighthouse.webp",
+      "subjects": [
+        {
+          "destination": "old-parliament-building",
+          "title": "Colombo Lighthouse"
+        }
+      ]
+    },
+    {
+      "id": "red-mosque",
+      "file": "red-mosque.webp",
+      "subjects": [
+        {
+          "destination": "jami-ul-alfar-mosque",
+          "title": "Red Mosque exterior"
+        }
+      ]
+    },
+    {
+      "id": "pettah-market",
+      "file": "pettah-market.webp",
+      "subjects": [
+        {
+          "destination": "jami-ul-alfar-mosque",
+          "title": "Pettah Market"
+        }
+      ]
+    },
+    {
+      "id": "coconut-tree-hill",
+      "file": "coconut-tree-hill.webp",
+      "subjects": [
+        {
+          "destination": "mirissa",
+          "title": "Coconut Tree Hill"
+        }
+      ]
+    },
+    {
+      "id": "independence-square",
+      "file": "independence-square.webp",
+      "subjects": [
+        {
+          "destination": "colombo",
+          "title": "Independence Square"
+        },
+        {
+          "destination": "colombo-city",
+          "title": "Independence Square"
+        }
+      ]
+    },
+    {
+      "id": "yala-safari",
+      "file": "yala-safari.webp",
+      "subjects": [
+        {
+          "destination": "yala",
+          "title": "Wildlife safari"
+        },
+        {
+          "destination": "yala-national-park",
+          "title": "Wildlife safari"
+        }
+      ]
+    },
+    {
+      "id": "st-marys-nave",
+      "file": "st-marys-nave.webp",
+      "subjects": [
+        {
+          "destination": "st-marys-church-negombo",
+          "title": "Painted nave and ceiling"
+        }
+      ]
+    },
+    {
+      "id": "kelaniya-shrine",
+      "file": "kelaniya-shrine.webp",
+      "subjects": [
+        {
+          "destination": "kelaniya-raja-maha-viharaya",
+          "title": "Kelaniya shrine hall"
+        }
+      ]
+    },
+    {
+      "id": "seema-malaka",
+      "file": "seema-malaka.webp",
+      "subjects": [
+        {
+          "destination": "gangaramaya-temple",
+          "title": "Seema Malaka"
+        }
+      ]
+    },
+    {
+      "id": "peace-pagoda",
+      "file": "peace-pagoda.webp",
+      "subjects": [
+        {
+          "destination": "unawatuna",
+          "title": "Japanese Peace Pagoda"
+        }
+      ]
+    },
+    {
+      "id": "kelani-river",
+      "file": "kelani-river.webp",
+      "subjects": [
+        {
+          "destination": "kelaniya-raja-maha-viharaya",
+          "title": "Kelani River"
+        }
+      ]
+    },
+    {
+      "id": "patanangala",
+      "file": "patanangala.webp",
+      "subjects": [
+        {
+          "destination": "yala-national-park",
+          "title": "Patanangala coast"
+        }
+      ]
+    },
+    {
+      "id": "kelaniya-stupa",
+      "file": "kelaniya-stupa.webp",
+      "subjects": [
+        {
+          "destination": "kelaniya-raja-maha-viharaya",
+          "title": "Kelaniya stupa"
+        }
+      ]
+    },
+    {
+      "id": "hakgala",
+      "file": "hakgala.webp",
+      "subjects": [
+        {
+          "destination": "nuwara-eliya",
+          "title": "Hakgala Botanical Garden"
+        }
+      ]
+    },
+    {
+      "id": "dalawella",
+      "file": "dalawella.webp",
+      "subjects": [
+        {
+          "destination": "unawatuna",
+          "title": "Dalawella rope swings"
+        }
+      ]
+    },
+    {
+      "id": "khan-clock-tower",
+      "file": "khan-clock-tower.webp",
+      "subjects": [
+        {
+          "destination": "jami-ul-alfar-mosque",
+          "title": "Khan Clock Tower"
+        }
+      ]
+    },
+    {
+      "id": "sithulpawwa",
+      "file": "sithulpawwa.webp",
+      "subjects": [
+        {
+          "destination": "yala-national-park",
+          "title": "Sithulpawwa rock temple"
+        }
+      ]
+    },
+    {
+      "id": "st-marys-exterior",
+      "file": "st-marys-exterior.webp",
+      "subjects": [
+        {
+          "destination": "st-marys-church-negombo",
+          "title": "St Mary's Church exterior"
+        }
+      ]
+    },
+    {
+      "id": "bentota-river",
+      "file": "bentota-river.webp",
+      "subjects": [
+        {
+          "destination": "bentota",
+          "title": "Bentota River"
+        }
+      ]
+    },
+    {
+      "id": "yala-leopard",
+      "file": "yala-leopard.webp",
+      "subjects": [
+        {
+          "destination": "yala",
+          "title": "Leopard watching"
+        }
+      ]
+    },
+    {
+      "id": "weligama-surfing",
+      "file": "weligama-surfing.webp",
+      "subjects": [
+        {
+          "destination": "weligama",
+          "title": "Surf lessons"
+        }
+      ]
+    },
+    {
+      "id": "victoria-park",
+      "file": "victoria-park.webp",
+      "subjects": [
+        {
+          "destination": "nuwara-eliya",
+          "title": "Victoria Park"
+        }
+      ]
+    },
+    {
+      "id": "jungle-beach",
+      "file": "jungle-beach.webp",
+      "subjects": [
+        {
+          "destination": "unawatuna",
+          "title": "Jungle Beach"
+        }
+      ]
+    },
+    {
+      "id": "whale-watching",
+      "file": "whale-watching.webp",
+      "subjects": [
+        {
+          "destination": "mirissa",
+          "title": "Whale watching"
+        }
+      ]
+    },
+    {
+      "id": "galle-face-sunset",
+      "file": "galle-face-sunset.webp",
+      "subjects": [
+        {
+          "destination": "galle-face-green",
+          "title": "Sunset by the ocean"
+        }
+      ]
+    },
+    {
+      "id": "colombo-museum",
+      "file": "colombo-museum.webp",
+      "subjects": [
+        {
+          "destination": "colombo",
+          "title": "Colombo National Museum"
+        },
+        {
+          "destination": "colombo-city",
+          "title": "Colombo National Museum"
+        }
+      ],
+      "prompt": "Use case: photorealistic-natural. Asset: high-quality Sri Lanka tourism attraction card. Scene: Colombo National Museum Sri Lanka, recognizable two-storey white colonial neoclassical building, central porch and arched windows, broad green lawn and tall tropical trees. Realistic editorial photography aesthetic, landscape 3:2 composition, natural lighting, restrained lifelike colors, detailed true textures, believable scale and geography. No invented landmarks, fantasy scenery, artificial HDR, oversaturation, text, logos or watermark. AI illustration, aim for authentic place character."
+    },
+    {
+      "id": "elephant-transit-home",
+      "file": "elephant-transit-home.webp",
+      "subjects": [
+        {
+          "destination": "udawalawe",
+          "title": "Elephant Transit Home"
+        }
+      ],
+      "prompt": "Use case: photorealistic-natural. Asset: high-quality Sri Lanka tourism attraction card. Scene: Elephant Transit Home Udawalawe Sri Lanka, several young Sri Lankan elephants walking together in a spacious open sandy care area beside a simple fenced feeding shelter, no riding or chains, realistic anatomy. Realistic editorial photography aesthetic, landscape 3:2 composition, natural lighting, restrained lifelike colors, detailed true textures, believable scale and geography. No invented landmarks, fantasy scenery, artificial HDR, oversaturation, text, logos or watermark. AI illustration, aim for authentic place character."
+    },
+    {
+      "id": "gangaramaya",
+      "file": "gangaramaya.webp",
+      "subjects": [
+        {
+          "destination": "colombo",
+          "title": "Gangaramaya Temple"
+        },
+        {
+          "destination": "gangaramaya-temple",
+          "title": "Gangaramaya temple courtyard"
+        }
+      ],
+      "prompt": "Use case: photorealistic-natural. Asset: high-quality Sri Lanka tourism attraction card. Scene: Gangaramaya Buddhist Temple Colombo Sri Lanka, intimate temple courtyard with ornate shrine architecture, golden Buddha statues and tropical trees, detailed authentic urban temple setting. Realistic editorial photography aesthetic, landscape 3:2 composition, natural lighting, restrained lifelike colors, detailed true textures, believable scale and geography. No invented landmarks, fantasy scenery, artificial HDR, oversaturation, text, logos or watermark. AI illustration, aim for authentic place character."
+    },
+    {
+      "id": "kalpitiya-dolphins",
+      "file": "kalpitiya-dolphins.webp",
+      "subjects": [
+        {
+          "destination": "kalpitiya",
+          "title": "Dolphin watching"
+        }
+      ],
+      "prompt": "Use case: photorealistic-natural. Asset: high-quality Sri Lanka tourism attraction card. Scene: Spinner dolphins off Kalpitiya Sri Lanka, small pod surfacing naturally through blue Indian Ocean water, one dolphin making a low natural leap, realistic anatomy and daylight. Realistic editorial photography aesthetic, landscape 3:2 composition, natural lighting, restrained lifelike colors, detailed true textures, believable scale and geography. No invented landmarks, fantasy scenery, artificial HDR, oversaturation, text, logos or watermark. AI illustration, aim for authentic place character."
+    },
+    {
+      "id": "kalpitiya-kitesurfing",
+      "file": "kalpitiya-kitesurfing.webp",
+      "subjects": [
+        {
+          "destination": "kalpitiya",
+          "title": "Kitesurfing"
+        }
+      ],
+      "prompt": "Use case: photorealistic-natural. Asset: high-quality Sri Lanka tourism attraction card. Scene: Kalpitiya lagoon Sri Lanka, one kitesurfer moving over shallow flat blue-green lagoon water, a colored crescent kite high in the sky, flat sand spit and sparse coconut palms. Realistic editorial photography aesthetic, landscape 3:2 composition, natural lighting, restrained lifelike colors, detailed true textures, believable scale and geography. No invented landmarks, fantasy scenery, artificial HDR, oversaturation, text, logos or watermark. AI illustration, aim for authentic place character."
+    },
+    {
+      "id": "kitulgala-rafting",
+      "file": "kitulgala-rafting.webp",
+      "subjects": [
+        {
+          "destination": "kitulgala",
+          "title": "Whitewater rafting"
+        }
+      ],
+      "prompt": "Use case: photorealistic-natural. Asset: high-quality Sri Lanka tourism attraction card. Scene: Whitewater rafting on Kelani River Kitulgala Sri Lanka, small group wearing helmets and lifejackets in an inflatable raft on moderate rocky rapids, dense rainforest banks, realistic equipment. Realistic editorial photography aesthetic, landscape 3:2 composition, natural lighting, restrained lifelike colors, detailed true textures, believable scale and geography. No invented landmarks, fantasy scenery, artificial HDR, oversaturation, text, logos or watermark. AI illustration, aim for authentic place character."
+    },
+    {
+      "id": "pigeon-island",
+      "file": "pigeon-island.webp",
+      "subjects": [
+        {
+          "destination": "trincomalee",
+          "title": "Pigeon Island"
+        }
+      ],
+      "prompt": "Use case: photorealistic-natural. Asset: high-quality Sri Lanka tourism attraction card. Scene: Pigeon Island National Park near Nilaveli Sri Lanka, low rocky island with scrub vegetation, white coral rubble beach and clear turquoise shallow sea over reef, no tall cliffs. Realistic editorial photography aesthetic, landscape 3:2 composition, natural lighting, restrained lifelike colors, detailed true textures, believable scale and geography. No invented landmarks, fantasy scenery, artificial HDR, oversaturation, text, logos or watermark. AI illustration, aim for authentic place character."
+    },
+    {
+      "id": "udawalawe-safari",
+      "file": "udawalawe-safari.webp",
+      "subjects": [
+        {
+          "destination": "udawalawe",
+          "title": "Jeep safari"
+        }
+      ],
+      "prompt": "Use case: photorealistic-natural. Asset: high-quality Sri Lanka tourism attraction card. Scene: Udawalawe National Park Sri Lanka, open safari jeep seen from behind on dusty park track amid low thorn scrub and dry grassland, distant elephants and reservoir, documentary travel photo. Realistic editorial photography aesthetic, landscape 3:2 composition, natural lighting, restrained lifelike colors, detailed true textures, believable scale and geography. No invented landmarks, fantasy scenery, artificial HDR, oversaturation, text, logos or watermark. AI illustration, aim for authentic place character."
+    }
+  ]
+}

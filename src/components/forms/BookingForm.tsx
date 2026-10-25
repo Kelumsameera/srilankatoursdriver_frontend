@@ -5,7 +5,7 @@ import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useLocale, useTranslations } from "next-intl";
 import { Loader2 } from "lucide-react";
-import { bookingSchema, clean, type BookingValues } from "@/validations/public";
+import { bookingSchema, clean, MAX_CHILD_AGE, MAX_CHILD_AGES, type BookingValues } from "@/validations/public";
 import { submitPublic } from "@/lib/api/public-client";
 import { useCustomerAuth } from "@/lib/customer/auth";
 import { Link } from "@/i18n/navigation";
@@ -13,14 +13,25 @@ import { buttonClass } from "@/components/ui/Button";
 import { Field, Honeypot, Input, Select, SuccessPanel, Textarea, applyServerErrors, failureKey, failureType, useSubmitLock } from "./fields";
 import { track } from "@/lib/analytics";
 import { useValidationMessages } from "./useValidationMessages";
+import { formatPrice } from "@/lib/utils";
+import { groupPriceFor, maxGroupSize, tripEndDate } from "@/lib/group-price";
+import type { GroupPrice } from "@/types/cms";
 
 interface Option {
   id: string;
   label: string;
 }
 
+interface TourOption extends Option {
+  days?: number;
+  /** Category id: tours of the same family are offered as the other lengths. */
+  family?: string;
+  currency?: string;
+  groupPrices?: GroupPrice[];
+}
+
 interface Props {
-  tours: Option[];
+  tours: TourOption[];
   excursions: Option[];
   vehicles: Option[];
   initial: { type?: string; tour?: string; excursion?: string; vehicle?: string };
@@ -60,6 +71,23 @@ export function BookingForm({ tours, excursions, vehicles, initial }: Props) {
     },
   });
   const type = useWatch({ control, name: "type" });
+  const [tourId, startDate, adults, children] = useWatch({ control, name: ["tour", "startDate", "adults", "children"] });
+
+  // Price list: the selected tour, its other lengths (same category, also priced) and the price for this group
+  const selectedTour = type === "tour" ? tours.find((x) => x.id === tourId) : undefined;
+  const priced = selectedTour?.groupPrices?.length ? selectedTour : undefined;
+  const lengths = priced ? tours.filter((x) => x.family === priced.family && x.groupPrices?.length && x.days).sort((a, b) => a.days! - b.days!) : [];
+  const count = (n: number | undefined) => (typeof n === "number" && Number.isFinite(n) ? n : 0);
+  const persons = count(adults) + count(children);
+  const priceRow = groupPriceFor(priced?.groupPrices, persons);
+  const maxPersons = maxGroupSize(priced?.groupPrices);
+  const money = (amount: number) => formatPrice(amount, priced?.currency ?? "USD", locale);
+
+  // Fill the end date from the start date and the tour's length
+  useEffect(() => {
+    const end = selectedTour?.days ? tripEndDate(startDate ?? "", selectedTour.days) : "";
+    if (end) setValue("endDate", end, { shouldValidate: true });
+  }, [selectedTour?.days, startDate, setValue]);
 
   // Signed-in customers: fill in the saved name/email (never overwriting what was already typed).
   useEffect(() => {
@@ -71,7 +99,9 @@ export function BookingForm({ tours, excursions, vehicles, initial }: Props) {
 
   const onSubmit = lock(handleSubmit(async (values) => {
     setFailure(null);
-    const payload = clean({ ...values, locale });
+    // Only the ages of the children still counted (the form keeps entries when the number goes down)
+    const ages = (values.childrenAges ?? []).slice(0, Math.min(values.children ?? 0, MAX_CHILD_AGES));
+    const payload = clean({ ...values, childrenAges: ages.length ? ages : undefined, locale });
     for (const k of ["tour", "excursion", "vehicle"] as const) if (k !== values.type) delete payload[k];
     track("submit_trip_inquiry", { form: "booking" });
     const res = await submitPublic<{ reference: string }>("/bookings", payload);
@@ -131,6 +161,17 @@ export function BookingForm({ tours, excursions, vehicles, initial }: Props) {
           </Select>
         </Field>
       )}
+      {lengths.length > 1 && (
+        <Field label={t("tourLength")} htmlFor="tourLength" className="sm:col-span-2">
+          <Select id="tourLength" value={priced?.id} onChange={(ev) => setValue("tour", ev.target.value, { shouldValidate: true })}>
+            {lengths.map((o) => (
+              <option key={o.id} value={o.id}>
+                {t("daysOption", { days: o.days! })}
+              </option>
+            ))}
+          </Select>
+        </Field>
+      )}
       <Field label={t("name")} htmlFor="name" required error={e.customer?.name?.message}>
         <Input id="name" autoComplete="name" aria-invalid={!!e.customer?.name} {...register("customer.name")} />
       </Field>
@@ -155,6 +196,41 @@ export function BookingForm({ tours, excursions, vehicles, initial }: Props) {
       <Field label={t("children")} htmlFor="children" error={e.children?.message}>
         <Input id="children" type="number" min={0} max={100} {...register("children", { valueAsNumber: true })} />
       </Field>
+      {count(children) > 0 && (
+        <fieldset className="grid grid-cols-2 gap-4 sm:col-span-2 sm:grid-cols-4" data-testid="children-ages">
+          <legend className="mb-2 text-sm font-medium text-ink">{t("childrenAges")}</legend>
+          {Array.from({ length: Math.min(count(children), MAX_CHILD_AGES) }, (_, i) => (
+            <Field key={i} label={t("childAge", { n: i + 1 })} htmlFor={`childAge${i}`} required error={e.childrenAges?.[i]?.message}>
+              <Select id={`childAge${i}`} aria-invalid={!!e.childrenAges?.[i]} {...register(`childrenAges.${i}`, { setValueAs: (v) => (v === "" || v === undefined ? Number.NaN : Number(v)) })}>
+                <option value="">{t("select")}</option>
+                {Array.from({ length: MAX_CHILD_AGE + 1 }, (_, age) => (
+                  <option key={age} value={age}>
+                    {age === 0 ? t("underOne") : t("ageYears", { age })}
+                  </option>
+                ))}
+              </Select>
+            </Field>
+          ))}
+        </fieldset>
+      )}
+      {priced && persons >= 1 && (
+        <div className="rounded-2xl border border-gold-400/40 bg-sand-50 p-5 sm:col-span-2" aria-live="polite" data-testid="booking-price">
+          {priceRow ? (
+            <>
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-gold-600">{t("estimate")}</p>
+              <p className="mt-1 font-display text-4xl text-brand">{money(priceRow.price)}</p>
+              <p className="mt-1 text-sm text-ink">
+                {t("estimateTotal", { count: persons, days: priced.days ?? 1 })}
+                {priceRow.vehicle && <> · {t("vehicleLabel", { vehicle: priceRow.vehicle })}</>}
+              </p>
+              {persons > 1 && <p className="mt-0.5 text-sm text-muted">{t("perPerson", { price: money(Math.round(priceRow.price / persons)) ?? "" })}</p>}
+              <p className="mt-3 text-xs text-muted">{t("estimateNote")}</p>
+            </>
+          ) : (
+            <p className="text-sm text-ink">{t("largeGroup", { max: maxPersons })}</p>
+          )}
+        </div>
+      )}
       <Field label={t("pickup")} htmlFor="pickup" className="sm:col-span-2">
         <Input id="pickup" {...register("pickupLocation")} />
       </Field>

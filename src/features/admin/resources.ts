@@ -107,6 +107,19 @@ function categoryResource(kind: string, title: string, folder: MediaFolder): Adm
           { name: "order", label: "Order", type: "number" },
           { name: "enabled", label: "Enabled", type: "switch" },
           { name: "image", label: "Image", type: "media", folder },
+          ...(kind === "tour"
+            ? [
+                {
+                  name: "heroVideo",
+                  label: "Season hero video",
+                  type: "media",
+                  accept: "video",
+                  folder: "hero",
+                  span: 2,
+                  hint: "Down South Tours / East Coast Tours only: plays behind the Tours page header while this category is in season (Down South Nov–Jun, East Coast Jul–Oct).",
+                } satisfies FieldDef,
+              ]
+            : []),
         ],
       },
     ],
@@ -152,6 +165,19 @@ export const RESOURCES: Record<string, AdminResource> = {
           { name: "price", label: "Price (from)", type: "number", min: 0, nullable: true, hint: "leave empty for 'price on request'" },
           { name: "currency", label: "Currency", type: "text" },
           { name: "priceNote", label: "Price note", type: "text", span: 2, placeholder: "per person sharing" },
+          {
+            name: "groupPrices",
+            label: "Price list by group size",
+            type: "objectList",
+            itemTitle: "persons",
+            addLabel: "Add group size",
+            hint: "Whole-group price for each number of travellers. The booking form shows it automatically; leave empty for no automatic price.",
+            fields: [
+              { name: "persons", label: "Travellers", type: "number", min: 1, required: true },
+              { name: "price", label: "Price (whole group)", type: "number", min: 0, required: true },
+              { name: "vehicle", label: "Vehicle", type: "text", placeholder: "Sedan car" },
+            ],
+          },
           { name: "startLocation", label: "Start location", type: "text" },
           { name: "endLocation", label: "End location", type: "text" },
           { name: "tourType", label: "Tour type", type: "text" },

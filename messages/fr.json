@@ -156,7 +156,10 @@
     "overnight": "Nuit à",
     "languages": "Langues",
     "dayLabel": "Jour {day}",
-    "customise": "Chaque circuit est privé et peut être adapté à vos dates et à vos envies."
+    "customise": "Chaque circuit est privé et peut être adapté à vos dates et à vos envies.",
+    "inSeason": "En saison maintenant",
+    "offSeason": "Hors saison",
+    "moreTours": "Excursions d'une journée et plus"
   },
   "destination": {
     "highlights": "Points forts",
@@ -254,7 +257,19 @@
     "errorGeneric": "Une erreur est survenue. Réessayez ou contactez-nous sur WhatsApp.",
     "errorFields": "Veuillez vérifier les champs signalés et réessayer.",
     "errorRateLimited": "Trop de demandes. Veuillez patienter quelques minutes et réessayer.",
-    "errorNetwork": "Impossible de joindre notre serveur. Vérifiez votre connexion Internet et réessayez."
+    "errorNetwork": "Impossible de joindre notre serveur. Vérifiez votre connexion Internet et réessayez.",
+    "tourLength": "Durée du circuit",
+    "daysOption": "{days} jours",
+    "estimate": "Prix de votre circuit",
+    "estimateTotal": "Total pour {count, plural, one {# voyageur} other {# voyageurs}}, {days} jours",
+    "vehicleLabel": "Véhicule : {vehicle}",
+    "perPerson": "Environ {price} par personne",
+    "estimateNote": "Véhicule privé et chauffeur pour votre groupe. Nous confirmerons le prix final par e-mail.",
+    "largeGroup": "Pour les groupes de plus de {max} voyageurs, nous vous enverrons un devis personnalisé.",
+    "childrenAges": "Âge des enfants",
+    "childAge": "Enfant {n}",
+    "underOne": "Moins d'1 an",
+    "ageYears": "{age, plural, one {# an} other {# ans}}"
   },
   "tailorMade": {
     "stepOf": "Étape {current} sur {total}",

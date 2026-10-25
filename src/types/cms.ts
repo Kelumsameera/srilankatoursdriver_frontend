@@ -130,6 +130,8 @@ export interface Category {
   description?: string;
   icon?: string;
   image?: MediaAsset | null;
+  /** Seasonal tour categories: tours page hero video while in season. */
+  heroVideo?: MediaAsset | null;
 }
 
 export interface TourDay {
@@ -192,6 +194,12 @@ export interface Vehicle {
   seo?: Seo;
 }
 
+export interface GroupPrice {
+  persons: number;
+  price: number;
+  vehicle?: string;
+}
+
 export interface Tour {
   _id: string;
   title: string;
@@ -221,6 +229,10 @@ export interface Tour {
   itinerary?: TourDay[];
   faqs?: { question: string; answer: string }[];
   featured?: boolean;
+  /** Booking form price list: the whole group's price by number of travellers. */
+  groupPrices?: GroupPrice[];
+  /** Tour lists only: 0 in season now, 1 day tour, 2 other, 3 off season. */
+  seasonRank?: number;
   seo?: Seo;
   updatedAt?: string;
 }

@@ -156,7 +156,10 @@
     "overnight": "住宿地",
     "languages": "语言",
     "dayLabel": "第 {day} 天",
-    "customise": "所有线路均为私人定制，可根据您的日期和兴趣调整。"
+    "customise": "所有线路均为私人定制，可根据您的日期和兴趣调整。",
+    "inSeason": "当季推荐",
+    "offSeason": "淡季",
+    "moreTours": "一日游及更多"
   },
   "destination": {
     "highlights": "亮点",
@@ -254,7 +257,19 @@
     "errorGeneric": "出现问题，请重试或通过 WhatsApp 联系我们。",
     "errorFields": "请检查标出的字段后重试。",
     "errorRateLimited": "请求过于频繁，请稍等几分钟后重试。",
-    "errorNetwork": "无法连接到我们的服务器，请检查您的网络连接后重试。"
+    "errorNetwork": "无法连接到我们的服务器，请检查您的网络连接后重试。",
+    "tourLength": "行程天数",
+    "daysOption": "{days} 天",
+    "estimate": "您的行程价格",
+    "estimateTotal": "{count} 位旅客、{days} 天的总价",
+    "vehicleLabel": "车辆：{vehicle}",
+    "perPerson": "约每人 {price}",
+    "estimateNote": "为您的团队提供专车和司机。最终价格将通过电子邮件确认。",
+    "largeGroup": "超过 {max} 位旅客的团队，我们将为您单独报价。",
+    "childrenAges": "儿童年龄",
+    "childAge": "儿童 {n}",
+    "underOne": "不满 1 岁",
+    "ageYears": "{age} 岁"
   },
   "tailorMade": {
     "stepOf": "第 {current} 步，共 {total} 步",
@@ -445,8 +460,8 @@
     "note": "我们的价格以 {currency} 报价；您银行的汇率可能略有不同。"
   },
   "rates": {
-    "showMore": "\u663e\u793a\u66f4\u591a",
-    "showLess": "\u6536\u8d77",
+    "showMore": "显示更多",
+    "showLess": "收起",
     "title": "旅游套餐资费表",
     "subtitle": "自机场 (CMB) 出发的固定费率",
     "headers": {

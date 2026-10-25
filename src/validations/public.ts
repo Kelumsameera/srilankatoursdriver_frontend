@@ -44,6 +44,8 @@ export function bookingSchema(m: ValidationMessages) {
       endDate: z.string().optional(),
       adults: z.number({ error: m.required }).int().min(1, m.min(1)).max(100),
       children: optionalInt,
+      /** One age per child; checked below against the number of children (stale extra entries are ignored). */
+      childrenAges: z.array(z.number().or(z.nan())).optional(),
       pickupLocation: z.string().max(200).optional(),
       message: z.string().max(3000).optional(),
       website: z.string().max(0).optional(),
@@ -52,8 +54,15 @@ export function bookingSchema(m: ValidationMessages) {
       if (v.type !== "general" && !v[v.type]) ctx.addIssue({ code: "custom", path: [v.type], message: m.select });
       if (v.startDate && new Date(v.startDate) < today()) ctx.addIssue({ code: "custom", path: ["startDate"], message: m.future });
       if (v.startDate && v.endDate && new Date(v.endDate) < new Date(v.startDate)) ctx.addIssue({ code: "custom", path: ["endDate"], message: m.after });
+      for (let i = 0; i < Math.min(v.children ?? 0, MAX_CHILD_AGES); i++) {
+        const age = v.childrenAges?.[i];
+        if (!(typeof age === "number" && Number.isInteger(age) && age >= 0 && age <= MAX_CHILD_AGE)) ctx.addIssue({ code: "custom", path: ["childrenAges", i], message: m.required });
+      }
     });
 }
+/** Oldest age that counts as a child, and how many age fields the form shows at most. */
+export const MAX_CHILD_AGE = 17;
+export const MAX_CHILD_AGES = 20;
 export type BookingValues = z.input<ReturnType<typeof bookingSchema>>;
 
 export function tailorMadeSchema(m: ValidationMessages) {

@@ -156,7 +156,10 @@
     "overnight": "Pernottamento",
     "languages": "Lingue",
     "dayLabel": "Giorno {day}",
-    "customise": "Ogni tour è privato e può essere adattato alle tue date e ai tuoi interessi."
+    "customise": "Ogni tour è privato e può essere adattato alle tue date e ai tuoi interessi.",
+    "inSeason": "Ora di stagione",
+    "offSeason": "Fuori stagione",
+    "moreTours": "Tour di un giorno e altro"
   },
   "destination": {
     "highlights": "Punti salienti",
@@ -254,7 +257,19 @@
     "errorGeneric": "Qualcosa è andato storto. Riprova o contattaci su WhatsApp.",
     "errorFields": "Controlla i campi evidenziati e riprova.",
     "errorRateLimited": "Troppe richieste. Attendi qualche minuto e riprova.",
-    "errorNetwork": "Impossibile raggiungere il nostro server. Controlla la connessione a Internet e riprova."
+    "errorNetwork": "Impossibile raggiungere il nostro server. Controlla la connessione a Internet e riprova.",
+    "tourLength": "Durata del tour",
+    "daysOption": "{days} giorni",
+    "estimate": "Prezzo del tuo tour",
+    "estimateTotal": "Totale per {count, plural, one {# viaggiatore} other {# viaggiatori}}, {days} giorni",
+    "vehicleLabel": "Veicolo: {vehicle}",
+    "perPerson": "Circa {price} a persona",
+    "estimateNote": "Veicolo privato e autista per il tuo gruppo. Confermeremo il prezzo finale via e-mail.",
+    "largeGroup": "Per gruppi di oltre {max} viaggiatori ti invieremo un preventivo personalizzato.",
+    "childrenAges": "Età dei bambini",
+    "childAge": "Bambino {n}",
+    "underOne": "Meno di 1",
+    "ageYears": "{age, plural, one {# anno} other {# anni}}"
   },
   "tailorMade": {
     "stepOf": "Passo {current} di {total}",
@@ -445,7 +460,7 @@
     "note": "I nostri prezzi sono indicati in {currency}; il tasso della tua banca può variare leggermente."
   },
   "rates": {
-    "showMore": "Mostra di pi\u00f9",
+    "showMore": "Mostra di più",
     "showLess": "Mostra meno",
     "title": "Tariffe dei Pacchetti Tour",
     "subtitle": "Tariffe Fisse dall'Aeroporto (CMB)",

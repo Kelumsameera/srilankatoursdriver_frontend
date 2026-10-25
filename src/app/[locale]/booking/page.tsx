@@ -37,7 +37,7 @@ export default async function BookingPage({ params, searchParams }: Props) {
       <section className="py-14 sm:py-20">
         <div className="container-page grid grid-cols-1 gap-10 lg:grid-cols-[1fr_340px]">
           <BookingForm
-            tours={(tours?.items ?? []).map((x) => ({ id: x._id, label: x.title }))}
+            tours={(tours?.items ?? []).map((x) => ({ id: x._id, label: x.title, days: x.durationDays, family: x.category?._id, currency: x.currency, groupPrices: x.groupPrices }))}
             excursions={(excursions?.items ?? []).map((x) => ({ id: x._id, label: x.title }))}
             vehicles={(vehicles?.items ?? []).map((x) => ({ id: x._id, label: x.name }))}
             initial={{ type: param(sp, "type"), tour: param(sp, "tour"), excursion: param(sp, "excursion"), vehicle: param(sp, "vehicle") }}
