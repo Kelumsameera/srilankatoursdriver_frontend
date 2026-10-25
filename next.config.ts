@@ -53,6 +53,7 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  experimental: { agentUpgrade: "security" },
   // The production build type-checks only app code: scripts/ and tests/ import from ../backend,
   // which is not present when the frontend is deployed on its own (Vercel).
   typescript: { tsconfigPath: "tsconfig.build.json" },
