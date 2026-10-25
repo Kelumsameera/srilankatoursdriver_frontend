@@ -464,6 +464,10 @@
     "showLess": "عرض أقل",
     "title": "أسعار باقات الجولات",
     "subtitle": "أسعار ثابتة من مطار كولومبو (CMB)",
+    "excursionTitle": "أسعار التنقل",
+    "excursionSubtitle": "أسعار ثابتة للتوصيل والاستقبال",
+    "startingPoint": "نقطة الانطلاق",
+    "transfersFrom": "التنقل من",
     "headers": {
       "destination": "الوجهة",
       "car": "سيارة (USD)",

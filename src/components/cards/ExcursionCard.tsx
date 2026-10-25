@@ -1,17 +1,12 @@
-import { useLocale, useTranslations } from "next-intl";
 import { Clock, MapPin } from "lucide-react";
 import type { Excursion } from "@/types/cms";
-import { formatPrice } from "@/lib/utils";
 import { CmsImage } from "@/components/ui/CmsImage";
 import { CmsLink } from "@/components/ui/CmsLink";
 import { Badge } from "@/components/ui/misc";
 import { travelImageFor } from "@/lib/editorial-images";
 
-// Excursion card: photo, category + duration badges, title (the whole card is a link), short text, place and price
+// Excursion card: photo, category + duration badges, title (the whole card is a link), short text and place (rates are on the excursion page)
 export function ExcursionCard({ excursion }: { excursion: Excursion }) {
-  const tCommon = useTranslations("common");
-  const locale = useLocale();
-  const price = formatPrice(excursion.price, excursion.currency, locale);
   // A video can't be a card picture, so fall back to a matching editorial photo
   const cover = excursion.heroMedia?.url && excursion.heroMedia.resourceType !== "video"
     ? excursion.heroMedia
@@ -48,17 +43,12 @@ export function ExcursionCard({ excursion }: { excursion: Excursion }) {
         </h3>
         {excursion.shortDescription && <p className="mt-2 line-clamp-2 text-sm text-muted">{excursion.shortDescription}</p>}
 
-        {/* PLACE + PRICE */}
-        <div className="mt-auto flex items-center justify-between pt-5 text-sm">
-          {excursion.location ? (
-            <span className="flex items-center gap-1 text-muted">
-              <MapPin className="h-4 w-4 text-gold-600" aria-hidden /> {excursion.location}
-            </span>
-          ) : (
-            <span />
-          )}
-          <span className="font-semibold text-brand">{price ? `${tCommon("from")} ${price}` : excursion.priceNote || ""}</span>
-        </div>
+        {/* PLACE */}
+        {excursion.location && (
+          <div className="mt-auto flex items-center gap-1 pt-5 text-sm text-muted">
+            <MapPin className="h-4 w-4 text-gold-600" aria-hidden /> {excursion.location}
+          </div>
+        )}
       </div>
     </article>
   );

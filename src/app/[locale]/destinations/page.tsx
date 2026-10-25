@@ -8,7 +8,6 @@ import {
   PageRenderer,
   hasActiveHero,
 } from "@/components/sections/PageRenderer";
-import { TransferRates } from "@/components/site/TransferRates";
 import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 import { DotEyebrow } from "@/components/destinations/Eyebrow";
 import { DestinationsBrowser } from "@/components/destinations/DestinationsBrowser";
@@ -122,9 +121,6 @@ export default async function DestinationsPage({
           )}
         </div>
       </section>
-
-      {/* TRANSFER RATES */}
-      <TransferRates settings={settings} collapsible />
 
       {/* EXTRA SECTIONS ADDED IN THE ADMIN (the hero is shown at the top) */}
       {pageData && (

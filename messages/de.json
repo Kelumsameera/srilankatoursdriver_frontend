@@ -464,6 +464,10 @@
     "showLess": "Weniger anzeigen",
     "title": "Preise für Tour-Pakete",
     "subtitle": "Festpreise ab Flughafen (CMB)",
+    "excursionTitle": "Transferpreise",
+    "excursionSubtitle": "Festpreise für Abholung und Absetzen",
+    "startingPoint": "Startpunkt",
+    "transfersFrom": "Transfers ab",
     "headers": {
       "destination": "Zielort",
       "car": "Auto (USD)",

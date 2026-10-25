@@ -464,6 +464,10 @@
     "showLess": "접기",
     "title": "투어 패키지 요금표",
     "subtitle": "공항(CMB) 출발 고정 요금",
+    "excursionTitle": "이동 요금",
+    "excursionSubtitle": "픽업 및 드롭오프 고정 요금",
+    "startingPoint": "출발지",
+    "transfersFrom": "출발지:",
     "headers": {
       "destination": "목적지",
       "car": "승용차 (USD)",

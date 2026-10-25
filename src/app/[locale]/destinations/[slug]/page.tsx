@@ -14,7 +14,6 @@ import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 import { CheckList, DetailSection, MediaStrip } from "@/components/site/DetailBits";
 import { destinationCover } from "@/lib/editorial-images";
 import { DestinationMap } from "@/components/site/DestinationMap";
-import { TransferRates } from "@/components/site/TransferRates";
 import { FeaturedExperiences } from "@/components/site/FeaturedExperiences";
 import { DotEyebrow } from "@/components/destinations/Eyebrow";
 import { NearbyCarousel } from "@/components/destinations/NearbyCarousel";
@@ -282,9 +281,6 @@ export default async function DestinationDetailPage({ params }: Props) {
           </div>
         </section>
       )}
-
-      {/* TRANSFER RATES */}
-      <TransferRates settings={settings} compact collapsible />
 
       {/* NEARBY DESTINATIONS */}
       {relatedDestinations.length > 0 && (

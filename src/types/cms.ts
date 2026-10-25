@@ -45,6 +45,12 @@ export interface TransferRate {
   distanceKm?: number | null;
 }
 
+/** One "Transfers from <origin>" price table (excursions page). */
+export interface ExcursionRateTable {
+  origin: string;
+  rows?: TransferRate[];
+}
+
 export interface SiteSettings {
   siteName: string;
   businessName: string;
@@ -82,6 +88,15 @@ export interface SiteSettings {
     currency?: string;
     note?: string;
     rows?: TransferRate[];
+  };
+  /** Transfer price tables per starting point, shown on the excursions page. */
+  excursionRates?: {
+    enabled?: boolean;
+    title?: string;
+    subtitle?: string;
+    currency?: string;
+    note?: string;
+    tables?: ExcursionRateTable[];
   };
   /** Accreditation / partner logos for the trust bar. */
   partners?: { name: string; url?: string; logo?: MediaAsset | null }[];

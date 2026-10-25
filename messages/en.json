@@ -569,6 +569,10 @@
     "showLess": "Show less",
     "title": "Tour Package Rates",
     "subtitle": "Fixed Rates from Airport (CMB)",
+    "excursionTitle": "Transfer Rates",
+    "excursionSubtitle": "Fixed prices for pick-up and drop-off",
+    "startingPoint": "Starting point",
+    "transfersFrom": "Transfers from",
     "headers": {
       "destination": "Destination",
       "car": "Car (USD)",

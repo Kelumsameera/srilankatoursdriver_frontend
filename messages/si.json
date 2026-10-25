@@ -466,6 +466,10 @@
     "showLess": "අඩුවෙන් පෙන්වන්න",
     "title": "සංචාරක පැකේජ මිල ගණන්",
     "subtitle": "ගුවන්තොටුපළේ (CMB) සිට නියමිත මිල ගණන්",
+    "excursionTitle": "ප්‍රවාහන ගාස්තු",
+    "excursionSubtitle": "පික්-අප් සහ ඩ්‍රොප්-ඕෆ් සඳහා නියමිත මිල ගණන්",
+    "startingPoint": "ආරම්භක ස්ථානය",
+    "transfersFrom": "මෙතැන් සිට ප්‍රවාහන:",
     "headers": {
       "destination": "ගමනාන්තය",
       "car": "මෝටර් රථ (USD)",

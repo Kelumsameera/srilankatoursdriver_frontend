@@ -464,6 +464,10 @@
     "showLess": "Mostrar menos",
     "title": "Tarifas de Paquetes de Tours",
     "subtitle": "Tarifas Fijas desde el Aeropuerto (CMB)",
+    "excursionTitle": "Tarifas de traslado",
+    "excursionSubtitle": "Precios fijos de recogida y entrega",
+    "startingPoint": "Punto de partida",
+    "transfersFrom": "Traslados desde",
     "headers": {
       "destination": "Destino",
       "car": "Coche (USD)",

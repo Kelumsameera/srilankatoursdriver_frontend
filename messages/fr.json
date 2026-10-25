@@ -464,6 +464,10 @@
     "showLess": "Afficher moins",
     "title": "Tarifs des Forfaits",
     "subtitle": "Tarifs Fixes depuis l'Aéroport (CMB)",
+    "excursionTitle": "Tarifs des transferts",
+    "excursionSubtitle": "Prix fixes pour la prise en charge et la dépose",
+    "startingPoint": "Point de départ",
+    "transfersFrom": "Transferts depuis",
     "headers": {
       "destination": "Destination",
       "car": "Voiture (USD)",

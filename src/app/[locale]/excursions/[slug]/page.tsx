@@ -11,6 +11,7 @@ import { Markdown } from "@/components/ui/Markdown";
 import { SocialIcons } from "@/components/ui/icons";
 import { ExcursionCard } from "@/components/cards/ExcursionCard";
 import { Breadcrumbs } from "@/components/site/Breadcrumbs";
+import { ExcursionRates } from "@/components/site/ExcursionRates";
 import { CheckList, DetailSection, FactList, MediaStrip } from "@/components/site/DetailBits";
 import { travelImageFor } from "@/lib/editorial-images";
 import { reveal3d } from "@/lib/reveal";
@@ -145,6 +146,9 @@ export default async function ExcursionDetailPage({ params }: Props) {
           </div>
         </aside>
       </div>
+
+      {/* RATES FROM THIS PLACE (Admin → Rates) */}
+      <ExcursionRates settings={settings} excursion={excursion} />
 
       {/* RELATED EXCURSIONS */}
       {data.related.length > 0 && (

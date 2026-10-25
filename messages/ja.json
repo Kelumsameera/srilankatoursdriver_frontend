@@ -464,6 +464,10 @@
     "showLess": "折りたたむ",
     "title": "ツアーパッケージ料金表",
     "subtitle": "空港（CMB）発 固定料金",
+    "excursionTitle": "送迎料金",
+    "excursionSubtitle": "送迎の固定料金",
+    "startingPoint": "出発地",
+    "transfersFrom": "出発地：",
     "headers": {
       "destination": "目的地",
       "car": "普通車 (USD)",
