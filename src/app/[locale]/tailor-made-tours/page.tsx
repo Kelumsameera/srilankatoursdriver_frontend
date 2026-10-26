@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
-import { getList, getPage, getSiteSettings } from "@/lib/api/server";
+import { getPage, getSiteSettings } from "@/lib/api/server";
 import { buildMetadata } from "@/lib/seo";
 import { PageHero } from "@/components/ui/misc";
 import { Markdown } from "@/components/ui/Markdown";
@@ -18,23 +18,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function TailorMadePage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const [data, destinations, vehicles, settings] = await Promise.all([
-    getPage("tailor-made-tours", locale),
-    getList("destinations", { locale, limit: 60 }),
-    getList("vehicles", { locale, limit: 60 }),
-    getSiteSettings(locale),
-  ]);
+  const [data, settings] = await Promise.all([getPage("tailor-made-tours", locale), getSiteSettings(locale)]);
   return (
     <>
       {data && hasActiveHero(data.sections) ? <PageRenderer sections={data.sections} settings={settings} part="hero" /> : <PageHero title={data?.page.title ?? ""} subtitle={data?.page.subtitle} image={data?.page.heroImage} banner="tailor-made-tours" />}
       <section className="py-14 sm:py-20">
         <div className="container-page max-w-5xl">
           {data?.page.content && <Markdown content={data.page.content} className="mb-10" />}
-          <TailorMadeForm
-            destinations={(destinations?.items ?? []).map((d) => ({ id: d._id, label: d.name }))}
-            vehicles={(vehicles?.items ?? []).map((v) => ({ id: v._id, label: v.name }))}
-            defaultCurrency={settings?.currency}
-          />
+          <TailorMadeForm />
         </div>
       </section>
       {data && <PageRenderer sections={data.sections} settings={settings} part="body" />}

@@ -276,18 +276,12 @@
   "tailorMade": {
     "stepOf": "පියවර {current} / {total}",
     "steps": {
-      "personal": "පුද්ගලික තොරතුරු",
-      "dates": "සංචාර දින",
-      "travelers": "සංචාරකයින්",
-      "arrival": "පැමිණීම",
-      "departure": "පිටත්වීම",
-      "destinations": "ගමනාන්ත",
-      "interests": "රුචිකත්වයන්",
-      "hotels": "හෝටල්",
-      "vehicle": "වාහනය",
-      "budget": "අයවැය",
+      "trip": "ගමන් කරන ආකාරය",
+      "holiday": "නිවාඩු වර්ගය",
+      "stay": "නවාතැන් සහ සේවා",
       "requirements": "අමතර අවශ්‍යතා",
-      "review": "පරීක්ෂා කර යවන්න"
+      "dates": "සංචාරකයින් සහ දින",
+      "contact": "ඔබේ විස්තර"
     },
     "firstName": "මුල් නම",
     "lastName": "වාසගම",
@@ -337,6 +331,64 @@
       "surfing": "සර්ෆින්",
       "whales": "තල්මසුන් නැරඹීම",
       "religion": "විහාර සහ ආධ්‍යාත්මිකත්වය"
+    },
+    "selectPlaceholder": "තෝරන්න..",
+    "travelType": "ඔබ ගමන් කිරීමට කැමති කෙසේද?",
+    "vehicleType": "වාහන වර්ගය",
+    "transportMethod": "ප්‍රවාහන ක්‍රමය",
+    "holidayType": "මා සොයන නිවාඩු වර්ගය",
+    "accommodation": "මා කැමති නවාතැන් වර්ගය",
+    "mealPlan": "අමතර ආහාර සැලැස්මක් තෝරන්න (විකල්ප)",
+    "services": "මට අවශ්‍ය අමතර සේවා",
+    "myRequirements": "මගේ අමතර අවශ්‍යතා",
+    "startDate": "ආරම්භක දිනය",
+    "endDate": "අවසාන දිනය",
+    "name": "නම",
+    "whatsappNumber": "WhatsApp අංකය",
+    "countryCode": "රටේ කේතය",
+    "travelTypes": {
+      "alone": "තනියම",
+      "couple": "යුවළක් ලෙස",
+      "family": "පවුල සමඟ",
+      "friends": "මිතුරන් සමඟ"
+    },
+    "vehicleTypes": {
+      "car": "කාර්",
+      "van": "වෑන්",
+      "bus": "බස්"
+    },
+    "transportMethods": {
+      "driver": "රියදුරා සහ වාහනය පමණි",
+      "driverGuide": "රියදුරා, වාහනය සහ මඟපෙන්වන්නෙක්"
+    },
+    "holidayTypes": {
+      "nature": "සොබාදහම, වනජීවී සහ සෆාරි",
+      "culture": "සංස්කෘතික සහ උරුම",
+      "beach": "වෙරළේ විවේකය",
+      "trekking": "කඳු නැගීම සහ ඇවිදීම",
+      "activity": "ක්‍රියාකාරකම් සහ ක්‍රීඩා",
+      "boat": "බෝට්ටු ගමන් සහ දූපත් සංචාර",
+      "train": "දුම්රිය ගමන්",
+      "factory": "කර්මාන්තශාලා නැරඹීම",
+      "waterSports": "ජල ක්‍රීඩා",
+      "diving": "ස්නෝකලින් සහ කිමිදීම",
+      "whales": "තල්මසුන් සහ ඩොල්ෆින්"
+    },
+    "accommodationTypes": {
+      "3star": "තරු 3",
+      "4star": "තරු 4",
+      "5star": "තරු 5",
+      "own": "මම මගේම නවාතැන් සොයා ගනිමි"
+    },
+    "mealPlans": {
+      "bb": "ඇඳ සහ උදේ ආහාරය (B/B)",
+      "hb": "ඇඳ, උදේ සහ රාත්‍රී ආහාරය (H/B)",
+      "fb": "ඇඳ, උදේ, දිවා සහ රාත්‍රී ආහාරය (F/B)"
+    },
+    "extraServices": {
+      "trainTickets": "දුම්රිය ටිකට්පත්",
+      "entranceTickets": "ඇතුල්වීම් සහ ක්‍රියාකාරකම් ටිකට්පත්",
+      "airportTransfer": "ගුවන්තොටුපළ ප්‍රවාහනය"
     }
   },
   "contact": {

@@ -7,6 +7,42 @@ import { formatDate } from "@/lib/utils";
 
 type Rec = Record<string, unknown>;
 
+/** English labels of the public form's choice keys (older enquiries keep their free-text values). */
+const LABELS: Record<string, string> = {
+  alone: "Alone",
+  couple: "As a couple",
+  family: "With the family",
+  friends: "With friends",
+  car: "Car",
+  van: "Van",
+  bus: "Bus",
+  driver: "Driver and vehicle only",
+  driverGuide: "Driver, vehicle with a guide",
+  nature: "Nature, wildlife & safari",
+  culture: "Cultural & heritage",
+  beach: "Beach relaxing",
+  trekking: "Trekking & climbing",
+  activity: "Activity and game",
+  boat: "Boat trips & island visits",
+  train: "Train rides",
+  factory: "Factory visits",
+  waterSports: "Water sports",
+  diving: "Snorkelling & diving",
+  whales: "Whales and dolphins",
+  "3star": "3 star",
+  "4star": "4 star",
+  "5star": "5 star",
+  own: "Arranges own accommodation",
+  bb: "Bed & breakfast (B/B)",
+  hb: "Half board (H/B)",
+  fb: "Full board (F/B)",
+  trainTickets: "Train tickets",
+  entranceTickets: "Entrance & activity tickets",
+  airportTransfer: "Airport transfer",
+};
+const label = (v: unknown) => (typeof v === "string" ? (LABELS[v] ?? v) : "");
+const labels = (v: unknown) => ((v as string[] | undefined) ?? []).map(label).join(", ");
+
 export default function TailorMadeDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   return (
@@ -32,19 +68,20 @@ export default function TailorMadeDetailPage({ params }: { params: Promise<{ id:
         const h = (r.hotels ?? {}) as Rec;
         const v = (r.vehicle ?? {}) as Rec;
         const b = (r.budget ?? {}) as Rec;
+        const trip = (r.trip ?? {}) as Rec;
         const transfer = (x: Rec) => [x.airport, x.flightNumber, x.time, x.needsTransfer ? "transfer needed" : null].filter(Boolean).join(" · ");
         return (
           <>
-            <Card title="1. Personal information">
-              <Detail rows={[["Name", `${p.firstName} ${p.lastName ?? ""}`], ["Email", p.email], ["Phone", p.phone], ["WhatsApp", p.whatsapp], ["Country", p.country], ["Language", String(r.locale ?? "").toUpperCase()]]} />
+            <Card title="Contact">
+              <Detail rows={[["Name", `${p.firstName} ${p.lastName ?? ""}`], ["Email", p.email], ["WhatsApp", p.whatsapp], ["Phone", p.phone], ["Country", p.country], ["Language", String(r.locale ?? "").toUpperCase()]]} />
             </Card>
-            <Card title="2–5. Dates, travellers, arrival & departure">
+            <Card title="Travellers & dates">
               <Detail
                 rows={[
-                  ["Arrival date", formatDate(t.arrivalDate as string, "en", { dateStyle: "full" })],
-                  ["Departure date", formatDate(t.departureDate as string, "en", { dateStyle: "full" })],
+                  ["Start date", formatDate(t.arrivalDate as string, "en", { dateStyle: "full" })],
+                  ["End date", formatDate(t.departureDate as string, "en", { dateStyle: "full" })],
                   ["Duration", t.durationDays ? `${t.durationDays} days` : ""],
-                  ["Flexible dates", t.flexibleDates ? "Yes" : "No"],
+                  ["Flexible dates", t.flexibleDates ? "Yes" : ""],
                   ["Adults", String(tr.adults ?? "")],
                   ["Children", tr.children ? String(tr.children) : ""],
                   ["Infants", tr.infants ? String(tr.infants) : ""],
@@ -54,16 +91,23 @@ export default function TailorMadeDetailPage({ params }: { params: Promise<{ id:
                 ]}
               />
             </Card>
-            <Card title="6–11. Preferences">
+            <Card title="Preferences">
               <Detail
                 rows={[
+                  ["How they travel", label(trip.travelType)],
+                  ["Vehicle type", label(trip.vehicleType)],
+                  ["Transportation", label(trip.transportMethod)],
+                  ["Holiday types", labels(r.interests)],
+                  ["Accommodation", label(r.accommodation)],
+                  ["Meal plan", label(r.mealPlan)],
+                  ["Additional services", labels(r.services)],
+                  ["Additional requirements", String(r.additionalRequirements ?? "")],
+                  // Fields of the older, longer form.
                   ["Destinations", ((r.destinations as { name: string }[]) ?? []).map((x) => x.name).join(", ")],
                   ["Other places / ideas", String(r.otherDestinations ?? "")],
-                  ["Interests", ((r.interests as string[]) ?? []).join(", ")],
                   ["Hotels", [h.category, h.roomType, h.notes].filter(Boolean).join(" · ")],
                   ["Vehicle", [(v.vehicleRef as { name?: string } | null)?.name, v.preference].filter(Boolean).join(" · ")],
                   ["Budget", b.amount ? `${b.amount} ${b.currency}${b.perPerson ? " per person" : " total"}` : String(b.range ?? "")],
-                  ["Additional requirements", String(r.additionalRequirements ?? "")],
                 ]}
               />
             </Card>

@@ -65,52 +65,51 @@ export const MAX_CHILD_AGE = 17;
 export const MAX_CHILD_AGES = 20;
 export type BookingValues = z.input<ReturnType<typeof bookingSchema>>;
 
+/** Choices of the tailor-made form; the same keys are accepted by the API. */
+export const TRAVEL_TYPES = ["alone", "couple", "family", "friends"] as const;
+export const VEHICLE_TYPES = ["car", "van", "bus"] as const;
+export const TRANSPORT_METHODS = ["driver", "driverGuide"] as const;
+export const HOLIDAY_TYPES = ["nature", "culture", "beach", "trekking", "activity", "boat", "train", "factory", "waterSports", "diving", "whales"] as const;
+export const ACCOMMODATION_TYPES = ["3star", "4star", "5star", "own"] as const;
+export const MEAL_PLANS = ["bb", "hb", "fb"] as const;
+export const EXTRA_SERVICES = ["trainTickets", "entranceTickets", "airportTransfer"] as const;
+
+/** A select that starts on "select.." (empty) but must end up on one of the choices. */
+const choice = <T extends readonly [string, ...string[]]>(values: T, m: ValidationMessages) =>
+  z.union([z.enum(values), z.literal("")]).refine((v) => v !== "", m.select);
+
 export function tailorMadeSchema(m: ValidationMessages) {
-  const transfer = z.object({
-    airport: z.string().max(120).optional(),
-    flightNumber: z.string().max(20).optional(),
-    time: z.string().max(20).optional(),
-    needsTransfer: z.boolean().optional(),
-  });
   return z
     .object({
-      personal: z.object({
-        firstName: z.string().trim().min(1, m.required),
-        lastName: z.string().trim().max(80).optional(),
-        email: z.string().trim().email(m.email),
-        phone,
-        whatsapp: phone,
-        country: z.string().trim().max(80).optional(),
+      trip: z.object({
+        travelType: choice(TRAVEL_TYPES, m),
+        vehicleType: choice(VEHICLE_TYPES, m),
+        transportMethod: choice(TRANSPORT_METHODS, m),
+      }),
+      interests: z.array(z.enum(HOLIDAY_TYPES)).min(1, m.select),
+      accommodation: choice(ACCOMMODATION_TYPES, m),
+      mealPlan: z.union([z.enum(MEAL_PLANS), z.literal("")]).optional(),
+      services: z.array(z.enum(EXTRA_SERVICES)),
+      additionalRequirements: z.string().max(5000).optional(),
+      travelers: z.object({
+        adults: z.number({ error: m.required }).int().min(1, m.min(1)).max(100),
+        children: optionalInt,
       }),
       travel: z.object({
         arrivalDate: z.string().min(1, m.required),
         departureDate: z.string().min(1, m.required),
-        flexibleDates: z.boolean().optional(),
       }),
-      travelers: z.object({
-        adults: z.number({ error: m.required }).int().min(1, m.min(1)).max(100),
-        children: optionalInt,
-        infants: optionalInt,
-        childAges: z.string().max(120).optional(),
+      personal: z.object({
+        firstName: z.string().trim().min(2, m.minLength(2)).max(80),
+        email: z.string().trim().email(m.email),
       }),
-      arrival: transfer,
-      departure: transfer,
-      destinations: z.array(z.string()).max(40),
-      otherDestinations: z.string().max(1000).optional(),
-      interests: z.array(z.string()).max(30),
-      hotels: z.object({
-        category: z.enum(["budget", "standard", "boutique", "luxury", "mixed"]),
-        roomType: z.string().max(120).optional(),
-        notes: z.string().max(1000).optional(),
-      }),
-      vehicle: z.object({ vehicleRef: z.string().optional(), preference: z.string().max(200).optional() }),
-      budget: z.object({
-        amount: z.number().min(0).optional().or(z.nan().transform(() => undefined)),
-        currency: z.string().length(3),
-        perPerson: z.boolean().optional(),
-        range: z.string().max(80).optional(),
-      }),
-      additionalRequirements: z.string().max(5000).optional(),
+      /** WhatsApp: country (for its dial code) + number, joined into personal.whatsapp on submit. */
+      whatsappCountry: z.string().min(1, m.select),
+      whatsappNumber: z
+        .string()
+        .trim()
+        .min(1, m.required)
+        .regex(/^[\d\s()-]{5,20}$/, m.minLength(5)),
       website: z.string().max(0).optional(),
     })
     .superRefine((v, ctx) => {

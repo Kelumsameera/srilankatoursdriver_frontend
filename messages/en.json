@@ -276,18 +276,12 @@
   "tailorMade": {
     "stepOf": "Step {current} of {total}",
     "steps": {
-      "personal": "Personal information",
-      "dates": "Travel dates",
-      "travelers": "Travellers",
-      "arrival": "Arrival",
-      "departure": "Departure",
-      "destinations": "Destinations",
-      "interests": "Interests",
-      "hotels": "Hotels",
-      "vehicle": "Vehicle",
-      "budget": "Budget",
+      "trip": "How you'll travel",
+      "holiday": "Type of holiday",
+      "stay": "Accommodation & services",
       "requirements": "Additional requirements",
-      "review": "Review & submit"
+      "dates": "Travellers & dates",
+      "contact": "Your details"
     },
     "firstName": "First name",
     "lastName": "Last name",
@@ -337,6 +331,64 @@
       "surfing": "Surfing",
       "whales": "Whale watching",
       "religion": "Temples & spirituality"
+    },
+    "selectPlaceholder": "select..",
+    "travelType": "How do you want to travel?",
+    "vehicleType": "Type of Vehicle",
+    "transportMethod": "Method of Transportation",
+    "holidayType": "Type of holiday I am looking for",
+    "accommodation": "My preferred accommodation type",
+    "mealPlan": "Select Your Additional Required Meal Plan. (Optional)",
+    "services": "Additional services I require",
+    "myRequirements": "My additional requirements",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "name": "Name",
+    "whatsappNumber": "Whatsapp Number",
+    "countryCode": "Country code",
+    "travelTypes": {
+      "alone": "Alone",
+      "couple": "As a couple",
+      "family": "With the family",
+      "friends": "With friends"
+    },
+    "vehicleTypes": {
+      "car": "Car",
+      "van": "Van",
+      "bus": "Bus"
+    },
+    "transportMethods": {
+      "driver": "Driver and vehicle only",
+      "driverGuide": "Driver, Vehicle with a Guide"
+    },
+    "holidayTypes": {
+      "nature": "Nature, Wildlife & Safari",
+      "culture": "Cultural & Heritage",
+      "beach": "Beach Relaxing",
+      "trekking": "Trekking & Climbing",
+      "activity": "Activity and Game",
+      "boat": "Boat trips & Island visits",
+      "train": "Train Rides",
+      "factory": "Factory Visits",
+      "waterSports": "Water Sports",
+      "diving": "Snorkelling & Diving",
+      "whales": "Whales and Dolphins"
+    },
+    "accommodationTypes": {
+      "3star": "3 Star",
+      "4star": "4 Star",
+      "5star": "5 Star",
+      "own": "I’ll Arrange My Own"
+    },
+    "mealPlans": {
+      "bb": "Bed & Breakfast (B/B)",
+      "hb": "Bed, Breakfast & Dinner (H/B)",
+      "fb": "Bed, Breakfast, Lunch & Dinner (F/B)"
+    },
+    "extraServices": {
+      "trainTickets": "Train Tickets",
+      "entranceTickets": "Entrance & Activity Tickets",
+      "airportTransfer": "Airport Transfer"
     }
   },
   "contact": {
