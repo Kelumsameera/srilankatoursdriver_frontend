@@ -17,6 +17,11 @@ import type { BlogPost } from "@/types/cms";
 // /en/blog/best-time-to-visit -> Next.js gives us the locale and the slug from the URL
 type Props = { params: Promise<{ locale: string; slug: string }> };
 
+/** No paths at build time: each one is rendered on its first visit, then cached and revalidated (ISR). */
+export function generateStaticParams() {
+  return [];
+}
+
 // The cover picture. A video can't be used here, so fall back to a matching editorial photo.
 function coverImageFor(post: BlogPost) {
   return post.coverImage?.url && post.coverImage.resourceType !== "video"

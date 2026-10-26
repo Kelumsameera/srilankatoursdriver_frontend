@@ -209,7 +209,8 @@
     "location": "الموقع",
     "book": "احجز هذه الرحلة",
     "included": "يشمل",
-    "related": "رحلات أخرى"
+    "related": "رحلات أخرى",
+    "getDirections": "احصل على الاتجاهات"
   },
   "vehicle": {
     "features": "المزايا",

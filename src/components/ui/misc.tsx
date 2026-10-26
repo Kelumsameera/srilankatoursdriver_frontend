@@ -80,6 +80,7 @@ export function EmptyState({ text }: { text: string }) {
 /**
  * Inner-page header: CMS page title / subtitle / image. Until the admin uploads a hero image, the
  * bundled photo for `banner` is shown instead (with its Creative Commons credit).
+ * A video as the page's header image plays over that photo and wins over the `video` prop.
  */
 export async function PageHero({
   title,
@@ -101,6 +102,7 @@ export async function PageHero({
 }) {
   const [locale, t] = await Promise.all([getLocale(), getTranslations("common")]);
   const fallback = image?.url && image.resourceType !== "video" ? null : pageBanner(banner);
+  const heroVideo = image?.url && image.resourceType === "video" ? image : video;
   return (
     <section className="page-banner relative isolate flex min-h-[20rem] items-end overflow-hidden bg-forest-900 text-white sm:min-h-[23rem] lg:min-h-[25rem]" data-scroll-reveal>
       <CmsImage
@@ -113,9 +115,9 @@ export async function PageHero({
         objectPosition={fallback?.focus}
         markIllustrative={false}
       />
-      {video?.url && video.resourceType === "video" && (
+      {heroVideo?.url && heroVideo.resourceType === "video" && (
         <div className="absolute inset-0 -z-10" data-testid="page-hero-video">
-          <HeroVideo src={video.url} />
+          <HeroVideo src={heroVideo.url} />
         </div>
       )}
       <div className="absolute inset-0 -z-10 bg-gradient-to-r from-forest-950/85 via-forest-950/55 to-forest-950/20 rtl:bg-gradient-to-l" />

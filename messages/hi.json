@@ -209,7 +209,8 @@
     "location": "स्थान",
     "book": "यह भ्रमण बुक करें",
     "included": "शामिल",
-    "related": "और भ्रमण"
+    "related": "और भ्रमण",
+    "getDirections": "दिशा-निर्देश पाएं"
   },
   "vehicle": {
     "features": "सुविधाएँ",

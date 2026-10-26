@@ -209,7 +209,8 @@
     "location": "Local",
     "book": "Reservar esta excursão",
     "included": "Incluído",
-    "related": "Mais excursões"
+    "related": "Mais excursões",
+    "getDirections": "Como chegar"
   },
   "vehicle": {
     "features": "Características",

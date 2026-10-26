@@ -343,6 +343,7 @@ export const RESOURCES: Record<string, AdminResource> = {
           category("excursion"),
           { name: "destination", label: "Destination", type: "relation", endpoint: "/admin/destinations", labelKey: "name" },
           { name: "location", label: "Location", type: "text" },
+          { name: "coordinates", label: "Map location", type: "group", mapPicker: true, span: 2, hint: "Pin on the Sri Lanka map of the excursion page, e.g. Kandy 7.2906 / 80.6337. Leave both empty to hide the map.", fields: [{ name: "lat", label: "Latitude (5.5 – 10)", type: "number", min: SRI_LANKA_BOUNDS.lat[0], max: SRI_LANKA_BOUNDS.lat[1], nullable: true }, { name: "lng", label: "Longitude (79 – 82.5)", type: "number", min: SRI_LANKA_BOUNDS.lng[0], max: SRI_LANKA_BOUNDS.lng[1], nullable: true }] },
           { name: "duration", label: "Duration", type: "text", placeholder: "Half day" },
           { name: "price", label: "Price (from)", type: "number", min: 0, nullable: true },
           { name: "currency", label: "Currency", type: "text" },

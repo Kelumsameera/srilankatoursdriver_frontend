@@ -209,7 +209,8 @@
     "location": "Ort",
     "book": "Diesen Ausflug buchen",
     "included": "Inklusive",
-    "related": "Weitere Ausflüge"
+    "related": "Weitere Ausflüge",
+    "getDirections": "Route planen"
   },
   "vehicle": {
     "features": "Ausstattung",

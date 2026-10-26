@@ -209,7 +209,8 @@
     "location": "장소",
     "book": "이 액티비티 예약",
     "included": "포함 사항",
-    "related": "다른 액티비티"
+    "related": "다른 액티비티",
+    "getDirections": "길찾기"
   },
   "vehicle": {
     "features": "편의 사양",

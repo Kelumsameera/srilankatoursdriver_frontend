@@ -161,7 +161,11 @@
     "customise": "Every tour is private and can be customised to your dates and interests.",
     "inSeason": "In season now",
     "offSeason": "Off season",
-    "moreTours": "Day tours & more"
+    "moreTours": "Day tours & more",
+    "anyLength": "Any length",
+    "daysCount": "{count} days",
+    "oneDay": "One day",
+    "otherLengths": "Other"
   },
   "destination": {
     "highlights": "Highlights",
@@ -211,7 +215,8 @@
     "location": "Location",
     "book": "Book this excursion",
     "included": "Included",
-    "related": "More excursions"
+    "related": "More excursions",
+    "getDirections": "Get directions"
   },
   "vehicle": {
     "features": "Features",
@@ -412,6 +417,7 @@
     "verified": "Verified guest",
     "via": "via {platform}",
     "readOnTripadvisor": "Read our reviews on TripAdvisor",
+    "travellerReview": "A Tripadvisor traveller review",
     "basedOn": "{count, plural, one {Based on # review} other {Based on # reviews}}"
   },
   "gallery": {

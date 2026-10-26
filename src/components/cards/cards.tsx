@@ -5,6 +5,7 @@ import { cn, formatDate } from "@/lib/utils";
 import { CmsImage } from "@/components/ui/CmsImage";
 import { CmsLink } from "@/components/ui/CmsLink";
 import { Badge, Stars } from "@/components/ui/misc";
+import { TripAdvisorBubbles, TripAdvisorMark } from "@/components/ui/TripAdvisorBubbles";
 import { destinationCover } from "@/lib/editorial-images";
 
 /** `framed`: landscape crop with a fine gold outline (homepage destinations band). */
@@ -52,14 +53,17 @@ export function ReviewCard({ review }: { review: Review }) {
   const t = useTranslations("reviews");
   const locale = useLocale();
   const platform = review.platform && review.platform !== "website" ? review.platform : null;
+  // TripAdvisor display rules: its bubbles + logo, the text in quotes, credited to a Tripadvisor traveller
+  const tripAdvisor = platform === "tripadvisor";
   return (
     <figure className="dest-card flex h-full flex-col rounded-3xl bg-surface p-7 shadow-card">
       <div className="flex items-center justify-between gap-2">
-        <Stars rating={review.rating} />
-        {review.verified && <Badge>{t("verified")}</Badge>}
+        {tripAdvisor ? <TripAdvisorBubbles rating={review.rating} /> : <Stars rating={review.rating} />}
+        {tripAdvisor ? <TripAdvisorMark className="text-xs" /> : review.verified && <Badge>{t("verified")}</Badge>}
       </div>
       {review.title && <p className="mt-4 font-display text-lg text-heading">“{review.title}”</p>}
-      <blockquote className="mt-3 line-clamp-6 flex-1 text-sm leading-relaxed text-ink/85">{review.review}</blockquote>
+      <blockquote className="mt-3 line-clamp-6 flex-1 text-sm leading-relaxed text-ink/85">{tripAdvisor ? `“${review.review}”` : review.review}</blockquote>
+      {tripAdvisor && <p className="mt-3 text-xs text-muted">{t("travellerReview")}</p>}
       <figcaption className="mt-6 flex items-center gap-3 border-t border-sand-100 pt-5">
         {review.photo?.url ? (
           <CmsImage media={review.photo} alt={review.guestName} sizes="44px" wrapperClassName="h-11 w-11 shrink-0 rounded-full" />

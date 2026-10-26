@@ -9,6 +9,8 @@ import { TourCard, sharedDescriptions } from "@/components/cards/TourCard";
 import { TallTourCard } from "@/components/cards/TallTourCard";
 import { Botanical, PaperEdge } from "./home/Decor";
 import { reveal3d } from "@/lib/reveal";
+import { seasonMonths } from "@/lib/season";
+import { SeasonalTours } from "./SeasonalTours";
 import { Heading, sectionData, sectionTheme, type SectionProps } from "./sectionParts";
 
 // Card widths for a centred row of up to 3 cards: a last row with only 1 or 2 cards sits in the middle, not on the left.
@@ -69,12 +71,25 @@ async function FeaturedTourBand({ section, tour }: { section: PageSection; tour:
   );
 }
 
+/** A section limited to one group of tours: a chosen category, or "In season now" (the seasonal category of the month). */
+export function isCategorisedTours(section: PageSection) {
+  return Boolean(section.settings?.category) || section.settings?.source === "season";
+}
+
 // "popularTours" section: a grid of tour cards, or with the Split layout one big featured tour and the rest below it
-export function PopularToursSection({ section, ctx }: SectionProps) {
-  const { theme, light } = sectionTheme(section);
+export async function PopularToursSection({ section: raw, ctx }: SectionProps) {
+  const { theme, light } = sectionTheme(raw);
   // A general (uncategorised) tour section skips tours that a category section on the same page already shows.
-  const tours = sectionData<Tour>(section).filter((tour) => section.settings?.category || !ctx.categorisedTours?.has(tour._id));
+  const tours = sectionData<Tour>(raw).filter((tour) => isCategorisedTours(raw) || !ctx.categorisedTours?.has(tour._id));
   if (!tours.length) return null;
+  // "In season now": the season line follows the season ("(July – October)"), so a typed one can't go out of date.
+  const months = raw.settings?.source === "season" ? seasonMonths(tours[0], await getLocale()) : undefined;
+  const section = months ? { ...raw, badge: `(${months})` } : raw;
+
+  // IN SEASON NOW (grid layout): heading, a 12-month season ruler and the tours
+  if (section.settings?.source === "season" && (section.settings.layout ?? "grid") === "grid") {
+    return <SeasonalTours section={section} tours={tours} ctx={ctx} theme={theme} light={light} />;
+  }
   // Descriptions that several cards share are hidden, so the grid doesn't repeat the same text
   const shared = sharedDescriptions(tours);
 

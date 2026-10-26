@@ -209,7 +209,8 @@
     "location": "地点",
     "book": "预订此活动",
     "included": "包含",
-    "related": "更多活动"
+    "related": "更多活动",
+    "getDirections": "获取路线"
   },
   "vehicle": {
     "features": "配置",

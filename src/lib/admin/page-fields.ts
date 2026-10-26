@@ -191,7 +191,19 @@ export function sectionForm(type: string): FormSection[] {
             ...(data
               ? ([
                   { name: "limit", label: "Number of items", type: "number", min: 1, max: 24 },
-                  { name: "source", label: "Which items", type: "select", options: [{ value: "featured", label: "Featured first" }, { value: "latest", label: "Latest" }, { value: "all", label: "All (ordered)" }] },
+                  {
+                    name: "source",
+                    label: "Which items",
+                    type: "select",
+                    options: [
+                      { value: "featured", label: "Featured first" },
+                      { value: "latest", label: "Latest" },
+                      { value: "all", label: "All (ordered)" },
+                      // Switches by itself: Down South tours November–June, East Coast tours July–October. The season line
+                      // then shows those months automatically (PopularToursSection).
+                      ...(type === "popularTours" ? [{ value: "season", label: "In season now (Down South / East Coast)" }] : []),
+                    ],
+                  },
                 ] as FieldDef[])
               : []),
             // Category filter, e.g. a "Seasonal tours" or "One-day tours" section showing only that category.

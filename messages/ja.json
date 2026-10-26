@@ -209,7 +209,8 @@
     "location": "場所",
     "book": "このアクティビティを予約",
     "included": "含まれるもの",
-    "related": "その他のアクティビティ"
+    "related": "その他のアクティビティ",
+    "getDirections": "経路を表示"
   },
   "vehicle": {
     "features": "装備",

@@ -6,7 +6,7 @@ import { distinctPhotos, isDark, type SectionContext, type SectionProps } from "
 import { HeroSection } from "./HeroSection";
 import { WhyChooseUsSection } from "./WhyChooseUsSection";
 import { FeaturesSection } from "./FeaturesSection";
-import { PopularToursSection } from "./PopularToursSection";
+import { PopularToursSection, isCategorisedTours } from "./PopularToursSection";
 import { DestinationsSection } from "./DestinationsSection";
 import { ExcursionsSection } from "./ExcursionsSection";
 import { VehiclesSection } from "./VehiclesSection";
@@ -123,7 +123,7 @@ export async function PageRenderer({
   // PAGE CONTEXT: facts some sections need about the whole page
   const categorisedTours = new Set(
     sections
-      .filter((s) => s.type === "popularTours" && s.settings?.category && s.enabled !== false && Array.isArray(s.data))
+      .filter((s) => s.type === "popularTours" && isCategorisedTours(s) && s.enabled !== false && Array.isArray(s.data))
       .flatMap((s) => (s.data as Tour[]).map((t) => t._id)),
   );
   const highlights = sections.find((s) => s.type === "whyChooseUs" && s.enabled !== false)?.items ?? [];

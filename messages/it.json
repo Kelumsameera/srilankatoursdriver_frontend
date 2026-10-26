@@ -209,7 +209,8 @@
     "location": "Luogo",
     "book": "Prenota questa escursione",
     "included": "Incluso",
-    "related": "Altre escursioni"
+    "related": "Altre escursioni",
+    "getDirections": "Indicazioni stradali"
   },
   "vehicle": {
     "features": "Dotazioni",

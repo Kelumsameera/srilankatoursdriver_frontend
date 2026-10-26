@@ -3,13 +3,16 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getCategories, getList, getPage, getSiteSettings } from "@/lib/api/server";
 import { buildMetadata } from "@/lib/seo";
 import type { Tour } from "@/types/cms";
-import { PageHero, EmptyState, SectionHeading } from "@/components/ui/misc";
+import { EmptyState, SectionHeading } from "@/components/ui/misc";
+import { ToursHero } from "@/components/sections/ToursHero";
+import { tourHeroMedia } from "@/lib/tour-hero";
 import { TourCard, sharedDescriptions } from "@/components/cards/TourCard";
-import { CategoryFilter, Pagination, pageParam, param, type SearchParams } from "@/components/site/listing";
+import { CategoryFilter, FilterBar, FilterDivider, Pagination, TourDaysFilter, pageParam, param, tourDaysParam, type SearchParams } from "@/components/site/listing";
 import { reveal3d } from "@/lib/reveal";
+import { seasonFirst, seasonMonths } from "@/lib/season";
 import { PageRenderer, hasActiveHero } from "@/components/sections/PageRenderer";
 
-// /en/tours?category=cultural&page=2 -> Next.js gives us the locale from the URL and the ?query values
+// /en/tours?category=cultural&days=5&page=2 -> Next.js gives us the locale from the URL and the ?query values
 type Props = { params: Promise<{ locale: string }>; searchParams: SearchParams };
 
 // generateMetadata is Next.js's way to set the <title> and SEO tags. It runs on the server before the page.
@@ -27,29 +30,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   });
 }
 
-// Seasonal package months – keep in sync with seasonalTourCategories() in backend/src/services/public.service.ts
-const SEASON_MONTHS: Record<string, [number, number]> = { "east-coast-tours": [7, 10], "down-south-tours": [11, 6] };
-
-// Slug of the seasonal category in season now (Sri Lanka time), e.g. "east-coast-tours" in August
-function inSeasonCategory(now = new Date()) {
-  const month = Number(new Intl.DateTimeFormat("en-US", { timeZone: "Asia/Colombo", month: "numeric" }).format(now));
-  return Object.keys(SEASON_MONTHS).find((slug) => {
-    const [from, to] = SEASON_MONTHS[slug];
-    return from <= to ? month >= from && month <= to : month >= from || month <= to;
-  });
-}
-
-// Intl gives the traditional Sinhala names (ඇසළ, වප් …); visitors know the everyday Gregorian ones
-const SI_MONTHS = ["ජනවාරි", "පෙබරවාරි", "මාර්තු", "අප්‍රේල්", "මැයි", "ජූනි", "ජූලි", "අගෝස්තු", "සැප්තැම්බර්", "ඔක්තෝබර්", "නොවැම්බර්", "දෙසැම්බර්"];
-
-// "July – October" in the page's language
-function seasonMonths(tour: Tour | undefined, locale: string) {
-  const range = tour?.category?.slug ? SEASON_MONTHS[tour.category.slug] : undefined;
-  if (!range) return undefined;
-  const month = new Intl.DateTimeFormat(locale, { month: "long", timeZone: "UTC" });
-  const name = (m: number) => (locale === "si" ? SI_MONTHS[m - 1] : month.format(new Date(Date.UTC(2026, m - 1, 15))));
-  return range.map(name).join(" – ");
-}
 
 // This is a server component (no "use client"): the data is fetched on the server,
 // so Google sees the full list of tours in the HTML.
@@ -59,6 +39,8 @@ export default async function ToursPage({ params, searchParams }: Props) {
   setRequestLocale(locale);
   const query = await searchParams;
   const category = param(query, "category");
+  // Tour length chip: 5, 8, 10, 12, 14 days, one day ("1") or "other"
+  const days = tourDaysParam(query);
   const page = pageParam(query);
   // "All" shows every tour in season groups on one page; a category filter keeps the paged grid
   const grouped = !category;
@@ -66,7 +48,7 @@ export default async function ToursPage({ params, searchParams }: Props) {
   const [pageData, categories, tourList, settings, tCommon, tTour] = await Promise.all([
     getPage("tours", locale),
     getCategories("tour", locale),
-    getList("tours", grouped ? { locale, limit: 60 } : { locale, page, limit: 12, category }),
+    getList("tours", grouped ? { locale, limit: 60, days } : { locale, page, limit: 12, category, days }),
     getSiteSettings(locale),
     getTranslations("common"),
     getTranslations("tour"),
@@ -74,8 +56,11 @@ export default async function ToursPage({ params, searchParams }: Props) {
   const selectedCategory = categories?.find((item) => item.slug === category || item._id === category);
   const repeatedDescriptions = sharedDescriptions(tourList?.items ?? []);
   const tours = tourList?.items ?? [];
-  // Header video of the seasonal category in season now (set in Admin → Tour categories)
-  const seasonVideo = categories?.find((c) => c.slug === inSeasonCategory())?.heroVideo;
+  // A selected category uses its own CMS video; otherwise a video set as the page's header image
+  // (Admin → Pages → Tours), else the bundled coastal footage.
+  const pageHero = pageData?.page.heroImage?.url ? pageData.page.heroImage : undefined;
+  const pageVideo = pageHero?.resourceType === "video" ? pageHero : undefined;
+  const hero = tourHeroMedia(selectedCategory?.slug ?? category, selectedCategory?.heroVideo ?? pageVideo);
 
   const grid = (items: Tour[]) => (
     <div className="grid-center-last grid grid-cols-1 gap-grid sm:grid-cols-2 lg:grid-cols-3" data-testid="tour-list">
@@ -100,12 +85,19 @@ export default async function ToursPage({ params, searchParams }: Props) {
   return (
     <>
       {/* HERO */}
-      {pageData && hasActiveHero(pageData.sections) ? <PageRenderer sections={pageData.sections} settings={settings} part="hero" /> : <PageHero title={pageData?.page.title ?? ""} subtitle={pageData?.page.subtitle} image={pageData?.page.heroImage} banner="tours" video={seasonVideo} />}
+      {pageData && hasActiveHero(pageData.sections) ? <PageRenderer sections={pageData.sections} settings={settings} part="hero" /> : <ToursHero title={pageData?.page.title || tTour("moreTours")} subtitle={pageData?.page.subtitle} image={pageHero && !pageVideo ? pageHero : hero.poster} video={hero.video} />}
 
-      {/* TOUR LIST: category chips, cards, pages */}
-      <section className="py-section">
+      {/* TOUR LIST: category chips, cards, pages – less space above so the filters sit close to the hero */}
+      <section id="tour-packages" className="scroll-mt-28 pb-section pt-8 md:pt-10">
         <div className="container-page">
-          <CategoryFilter basePath="/tours" categories={categories ?? []} active={category} />
+          {/* Seasonal packages lead the category chips, then the tour length chips – one compact group of about two lines */}
+          <div className="mb-12 rounded-2xl border border-sand-200 bg-surface p-5 shadow-card sm:p-7">
+          <FilterBar>
+            <CategoryFilter basePath="/tours" categories={seasonFirst(categories ?? [])} active={category} query={{ days }} className="" inline />
+            <FilterDivider />
+            <TourDaysFilter basePath="/tours" active={days} category={category} inline />
+          </FilterBar>
+          </div>
           {selectedCategory?.description && (
             <div className="mb-8 max-w-4xl">
               <h2 className="font-display text-3xl text-heading">{selectedCategory.name}</h2>
@@ -117,7 +109,7 @@ export default async function ToursPage({ params, searchParams }: Props) {
           ) : grouped ? (
             <div className="space-y-16 md:space-y-24">
               {seasonGroups.map((g) => (
-                <div key={g.key} data-testid={`tour-group-${g.key}`}>
+                <div key={g.key} data-testid={`tour-group-${g.key}`} className="border-t border-sand-200 pt-8 first:border-t-0 first:pt-0">
                   <SectionHeading eyebrow={g.eyebrow} title={g.title} badge={g.months} />
                   {grid(g.items)}
                 </div>
@@ -126,7 +118,7 @@ export default async function ToursPage({ params, searchParams }: Props) {
           ) : (
             grid(tours)
           )}
-          {tourList && !grouped && <Pagination meta={tourList.meta} basePath="/tours" query={{ category }} />}
+          {tourList && !grouped && <Pagination meta={tourList.meta} basePath="/tours" query={{ category, days }} />}
         </div>
       </section>
 

@@ -16,10 +16,23 @@ const TOWNS = [
 // Length of 50 km on this map (1° of latitude = 125 units ≈ 111.2 km)
 const SCALE_50KM = (50 / 111.2) * 125;
 
-// Sri Lanka map with a pin on the destination.
+// Sri Lanka map with a pin on the destination (or excursion).
+// fade: no frame – the sea fades out to transparent a little way past the coast.
 // The background picture (public/maps/sri-lanka-terrain.webp) is public-domain elevation data,
 // drawn with the same projection as the pin (see lib/destination-map.ts).
-export function DestinationMap({ destination, label, unavailable, caption }: { destination: Destination; label: string; unavailable: string; caption: string }) {
+export function DestinationMap({
+  destination,
+  label,
+  unavailable,
+  caption,
+  fade = false,
+}: {
+  destination: Pick<Destination, "name" | "location">;
+  label: string;
+  unavailable: string;
+  caption: string;
+  fade?: boolean;
+}) {
   // A unique id for the SVG clip-path / shadow, so two maps on one page do not clash
   const svgId = useId().replace(/:/g, "");
   const marker = destinationMarker(destination.location);
@@ -39,13 +52,21 @@ export function DestinationMap({ destination, label, unavailable, caption }: { d
           <clipPath id={`${svgId}-frame`}>
             <rect width="400" height="600" rx="28" />
           </clipPath>
+          {/* Island + a soft, blurred band of sea around it; everything further out becomes transparent */}
+          <filter id={`${svgId}-blur`} x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="14" />
+          </filter>
+          <mask id={`${svgId}-fade`} maskUnits="userSpaceOnUse" x="0" y="0" width="400" height="600">
+            <path d={SRI_LANKA_COASTLINE} fill="#fff" stroke="#fff" strokeWidth="44" strokeLinejoin="round" filter={`url(#${svgId}-blur)`} />
+            <path d={SRI_LANKA_COASTLINE} fill="#fff" />
+          </mask>
           <filter id={`${svgId}-shadow`} x="-50%" y="-50%" width="200%" height="200%">
             <feDropShadow dx="0" dy="3" stdDeviation="3" floodColor="#08261a" floodOpacity=".35" />
           </filter>
         </defs>
 
         {/* MAP PICTURE + COASTLINE */}
-        <g clipPath={`url(#${svgId}-frame)`}>
+        <g {...(fade ? { mask: `url(#${svgId}-fade)` } : { clipPath: `url(#${svgId}-frame)` })}>
           <image href="/maps/sri-lanka-terrain.webp" width="400" height="600" preserveAspectRatio="none" />
           <path d={SRI_LANKA_COASTLINE} fill="none" stroke="#f7f4e8" strokeWidth="1.6" strokeOpacity=".7" strokeLinejoin="round" />
           <path d={SRI_LANKA_COASTLINE} fill="none" stroke="#5b6d4f" strokeWidth=".6" strokeOpacity=".7" strokeLinejoin="round" />
@@ -63,23 +84,28 @@ export function DestinationMap({ destination, label, unavailable, caption }: { d
           ))}
         </g>
 
-        {/* NORTH ARROW */}
-        <g transform="translate(352 58)" fill="#20372c" aria-hidden>
-          <path d="M0-20L8 8 0 3-8 8Z" fill="#f7f4e8" stroke="#20372c" strokeWidth="1.2" strokeLinejoin="round" />
-          <path d="M0-20L0 3-8 8Z" />
-          <text y="24" textAnchor="middle" fontSize="12" fontWeight="600">
-            N
-          </text>
-        </g>
+        {/* NORTH ARROW + 50 KM SCALE BAR (left out on the faded map, where they would float on the page background) */}
+        {!fade && (
+          <>
+            {/* NORTH ARROW */}
+            <g transform="translate(352 58)" fill="#20372c" aria-hidden>
+              <path d="M0-20L8 8 0 3-8 8Z" fill="#f7f4e8" stroke="#20372c" strokeWidth="1.2" strokeLinejoin="round" />
+              <path d="M0-20L0 3-8 8Z" />
+              <text y="24" textAnchor="middle" fontSize="12" fontWeight="600">
+                N
+              </text>
+            </g>
 
-        {/* 50 KM SCALE BAR */}
-        <g transform="translate(30 570)" fontSize="11" fill="#20372c" aria-hidden>
-          <rect width={SCALE_50KM / 2} height="5" fill="#20372c" />
-          <rect x={SCALE_50KM / 2} width={SCALE_50KM / 2} height="5" fill="#f7f4e8" stroke="#20372c" strokeWidth="1" />
-          <text x={SCALE_50KM + 6} y="6">
-            50 km
-          </text>
-        </g>
+            {/* 50 KM SCALE BAR */}
+            <g transform="translate(30 570)" fontSize="11" fill="#20372c" aria-hidden>
+              <rect width={SCALE_50KM / 2} height="5" fill="#20372c" />
+              <rect x={SCALE_50KM / 2} width={SCALE_50KM / 2} height="5" fill="#f7f4e8" stroke="#20372c" strokeWidth="1" />
+              <text x={SCALE_50KM + 6} y="6">
+                50 km
+              </text>
+            </g>
+          </>
+        )}
 
         {/* PIN + DESTINATION NAME (only when the destination has a location) */}
         {marker && (

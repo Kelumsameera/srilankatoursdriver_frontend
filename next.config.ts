@@ -24,9 +24,10 @@ const apiOrigin = (() => {
 const isDev = process.env.NODE_ENV === "development";
 const contentSecurityPolicy = [
   "default-src 'self'",
-  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""} https://accounts.google.com/gsi/client`,
+  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""} https://accounts.google.com/gsi/client https://www.jscache.com https://www.tripadvisor.com https://static.tacdn.com`,
   // fonts.googleapis.com: Google Fonts chosen in Admin → Theme (allow-list in src/lib/theme.ts).
-  "style-src 'self' 'unsafe-inline' https://accounts.google.com/gsi/style https://fonts.googleapis.com",
+  // jscache.com / tripadvisor.com / static.tacdn.com: the TripAdvisor "Write a review" widget.
+  "style-src 'self' 'unsafe-inline' https://accounts.google.com/gsi/style https://fonts.googleapis.com https://static.tacdn.com",
   // CMS content may reference images on any HTTPS host (Markdown, older media records).
   "img-src 'self' data: blob: https:",
   "media-src 'self' blob: https://res.cloudinary.com",
@@ -35,7 +36,7 @@ const contentSecurityPolicy = [
   "frame-src https://www.youtube-nocookie.com https://www.youtube.com https://www.instagram.com https://www.tiktok.com https://www.google.com https://maps.google.com https://www.openstreetmap.org https://accounts.google.com/gsi/",
   "object-src 'none'",
   "base-uri 'self'",
-  "form-action 'self'",
+  "form-action 'self' https://www.tripadvisor.com",
   "frame-ancestors 'self'",
 ].join("; ");
 

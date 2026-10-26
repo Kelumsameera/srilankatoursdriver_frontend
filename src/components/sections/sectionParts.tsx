@@ -100,7 +100,7 @@ export function Heading({ section, light, withAction = true, ctx }: { section: P
 
 /** Section-heading actions as quiet text links ("View all destinations →"), as in the design.
  * The link is only 23px tall, so an invisible after: layer makes the tap area 44px+ without moving anything. */
-function HeadingLinks({ section, ctx, light }: { section: PageSection; ctx: SectionContext; light?: boolean }) {
+export function HeadingLinks({ section, ctx, light }: { section: PageSection; ctx: SectionContext; light?: boolean }) {
   const links = (section.buttons ?? []).filter((b) => b.label && b.url);
   if (!links.length) return null;
   return (

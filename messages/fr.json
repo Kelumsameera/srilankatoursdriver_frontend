@@ -209,7 +209,8 @@
     "location": "Lieu",
     "book": "Réserver cette excursion",
     "included": "Inclus",
-    "related": "Autres excursions"
+    "related": "Autres excursions",
+    "getDirections": "Itinéraire"
   },
   "vehicle": {
     "features": "Équipements",

@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { getDetail, getList, getPage } from "@/lib/api/server";
+import { TAGS, getDetail, getList, getPage } from "@/lib/api/server";
 import { SECTION_TYPES, pageForm, sectionForm } from "@/lib/admin/page-fields";
 import { allFields, fromFormValues, toFormValues } from "@/components/admin/form/values";
 import { pageUpdate, sectionUpdate } from "../../backend/src/validations/content";
@@ -7,16 +7,16 @@ import { pageUpdate, sectionUpdate } from "../../backend/src/validations/content
 afterEach(() => vi.unstubAllGlobals());
 
 describe("published CMS edits", () => {
-  it("loads the current page and section data without the persistent cache or webhook", async () => {
-    const response = (title: string) => new Response(JSON.stringify({ success: true, data: { page: { title }, sections: [] } }));
-    const fetch = vi.fn().mockResolvedValueOnce(response("Before")).mockResolvedValueOnce(response("After"));
+  // Cached (a no-store page fetch made every route dynamic and slow), but refreshed by any content change
+  // through the webhook's tags, and within a minute even when the webhook is not configured.
+  it("caches page data briefly, tagged with every content type the sections embed", async () => {
+    const fetch = vi.fn().mockResolvedValue(new Response(JSON.stringify({ success: true, data: { page: { title: "Home" }, sections: [] } })));
     vi.stubGlobal("fetch", fetch);
-    expect((await getPage("home", "en"))?.page.title).toBe("Before");
-    expect((await getPage("home", "en"))?.page.title).toBe("After");
-    for (const [, options] of fetch.mock.calls) {
-      expect(options.cache).toBe("no-store");
-      expect(options.next).toBeUndefined();
-    }
+    expect((await getPage("home", "en"))?.page.title).toBe("Home");
+    const [, options] = fetch.mock.calls[0];
+    expect(options.cache).toBeUndefined();
+    expect(options.next.revalidate).toBeLessThanOrEqual(60);
+    expect(options.next.tags).toEqual(expect.arrayContaining([...Object.values(TAGS)]));
   });
 
   it("preserves Next.js dynamic-render signals instead of treating them as API failures", async () => {

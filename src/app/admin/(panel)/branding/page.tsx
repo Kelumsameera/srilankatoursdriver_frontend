@@ -24,6 +24,9 @@ export default function BrandingPage() {
               <strong>Mobile</strong> – small screens
             </li>
             <li>
+              <strong>Icon + text</strong> – when the icon or line 1 is set, it replaces the logo images everywhere
+            </li>
+            <li>
               <strong>Favicon</strong> – browser tab (square PNG/SVG)
             </li>
           </ul>
@@ -37,6 +40,16 @@ export default function BrandingPage() {
         </Card>
       }
       sections={[
+        {
+          title: "Icon + text logo",
+          description:
+            "Set the icon and/or the text to show them instead of the logo images below. Leave both empty to keep using the logo images.",
+          fields: [
+            { name: "logoIcon", label: "Logo icon", type: "media", accept: "image", folder: "branding", hint: "Square or upright PNG/SVG with a transparent background (e.g. the map pin)." },
+            { name: "logoTextLine1", label: "Logo text – line 1", type: "text", placeholder: "SRI LANKA", hint: "Max 30 characters. Empty with an icon set → the site name is shown." },
+            { name: "logoTextLine2", label: "Logo text – line 2 (optional)", type: "text", placeholder: "TOURS DRIVER", hint: "Smaller gold line under line 1. Max 30 characters." },
+          ],
+        },
         {
           title: "Logos",
           fields: [
