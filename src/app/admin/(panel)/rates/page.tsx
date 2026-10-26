@@ -12,45 +12,17 @@ const rateRowFields: FieldDef[] = [
   { name: "duration", label: "Est. duration", type: "text", placeholder: "4 hours (toll road)", span: 2 },
 ];
 
-/**
- * Transfer price tables: the airport table ("Tour Package Rates – Fixed rates from Airport (CMB)", not shown
- * on the site at the moment) and the per-starting-point tables on the excursions page.
- */
+/** Transfer price tables, one per starting point; each excursion page shows the table that starts at its place. */
 export default function TransferRatesPage() {
   return (
     <SettingsForm
       title="Transfer Rates"
-      description="Fixed transfer prices per destination. The excursion tables are shown on the Excursions page, one starting point at a time. Leave a list empty (or switch it off) to hide its table."
+      description="Fixed transfer prices per destination. Each excursion page shows the table for its starting point. Leave the list empty (or switch it off) to hide the tables."
       endpoint="/admin/site-settings"
       permission="settings:update"
       sections={[
         {
-          title: "Table",
-          fields: [
-            {
-              name: "transferRates",
-              label: "Settings",
-              type: "group",
-              fields: [
-                { name: "enabled", label: "Show on the website", type: "switch" },
-                { name: "currency", label: "Currency", type: "text", defaultValue: "USD", required: true, placeholder: "USD", hint: "3-letter code, e.g. USD" },
-                { name: "title", label: "Title", type: "text", placeholder: "Tour Package Rates", hint: "empty = translated default" },
-                { name: "subtitle", label: "Subtitle", type: "text", placeholder: "Fixed Rates from Airport (CMB)", hint: "empty = translated default" },
-                { name: "note", label: "Note under the table", type: "textarea", span: 2, placeholder: "Prices include highway tolls where specified." },
-                {
-                  name: "rows",
-                  label: "Destinations",
-                  type: "objectList",
-                  itemTitle: "destination",
-                  addLabel: "Add destination",
-                  fields: rateRowFields,
-                },
-              ],
-            },
-          ],
-        },
-        {
-          title: "Excursions page – transfers per starting point",
+          title: "Excursion pages – transfers per starting point",
           fields: [
             {
               name: "excursionRates",
