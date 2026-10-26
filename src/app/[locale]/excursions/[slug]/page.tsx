@@ -19,6 +19,11 @@ import type { Excursion } from "@/types/cms";
 // /en/excursions/kandy -> Next.js gives us the locale and the slug from the URL
 type Props = { params: Promise<{ locale: string; slug: string }> };
 
+/** Generate each published excursion on its first visit, then reuse the tagged ISR cache. */
+export function generateStaticParams() {
+  return [];
+}
+
 // The big hero picture. A video can't be used here, so fall back to a matching editorial photo.
 function heroImageFor(excursion: Excursion) {
   return excursion.heroMedia?.url && excursion.heroMedia.resourceType !== "video"

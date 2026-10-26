@@ -9,6 +9,11 @@ import { PageRenderer, hasActiveHero } from "@/components/sections/PageRenderer"
 
 type Props = { params: Promise<{ locale: string; slug: string }> };
 
+/** No paths at build time: each one is rendered on its first visit, then cached and revalidated (ISR). */
+export function generateStaticParams() {
+  return [];
+}
+
 // System pages have their own routes; only custom CMS pages (privacy-policy, about-us …) render here.
 const SYSTEM = new Set(["home", "about", "tours", "destinations", "excursions", "vehicles", "tailor-made-tours", "gallery", "blog", "reviews", "contact", "booking", "faqs"]);
 

@@ -71,7 +71,10 @@ async function apiGet<T>(path: string, opts: FetchOptions = {}): Promise<{ data:
   let res: Response;
   try {
     res = await fetch(url, {
-      headers: { accept: "application/json" },
+      headers: {
+        accept: "application/json",
+        ...(process.env.REVALIDATE_SECRET ? { "x-revalidate-secret": process.env.REVALIDATE_SECRET } : {}),
+      },
       ...(opts.noStore
         ? { cache: "no-store" as const }
         : { next: { revalidate: opts.revalidate ?? REVALIDATE_SECONDS, tags: [...(opts.tags ?? []), TAGS.translations] } }),
@@ -120,11 +123,14 @@ export const getSeo = cache((key: string) =>
 export const getTripAdvisor = cache(() => orNull(apiGet<TripAdvisorSummary>("/reviews/tripadvisor", { tags: [TAGS.reviews], revalidate: 21600 })));
 
 /**
- * Read page edits and embedded section data on every request. React cache still deduplicates
- * metadata/page calls within one render; visibility must not depend on the optional backend webhook.
+ * A page with its sections and their embedded data (tours, reviews, …), so it depends on every content tag.
+ * Cached like everything else – a no-store fetch here made every page (the layout calls it too) render
+ * dynamically and wait on the API. The backend webhook refreshes it instantly; without the webhook,
+ * admin edits still show within PAGE_REVALIDATE_SECONDS.
  */
+const PAGE_REVALIDATE_SECONDS = 60;
 export const getPage = cache((slug: string, locale: string) =>
-  orNull(apiGet<PageResponse>(`/pages/${encodeURIComponent(slug)}${qs({ locale })}`, { noStore: true })),
+  orNull(apiGet<PageResponse>(`/pages/${encodeURIComponent(slug)}${qs({ locale })}`, { tags: ALL_CONTENT_TAGS, revalidate: PAGE_REVALIDATE_SECONDS })),
 );
 
 export async function getPreviewPage(slug: string, locale: string, token: string) {

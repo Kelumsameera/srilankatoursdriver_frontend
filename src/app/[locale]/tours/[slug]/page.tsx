@@ -25,6 +25,11 @@ import { reveal3d } from "@/lib/reveal";
 // /en/tours/galle-one-day-tour -> Next.js gives us the locale and the slug from the URL
 type Props = { params: Promise<{ locale: string; slug: string }> };
 
+/** No paths at build time: each one is rendered on its first visit, then cached and revalidated (ISR). */
+export function generateStaticParams() {
+  return [];
+}
+
 // The big hero picture. A video can't be used here, so fall back to a matching editorial photo.
 function heroImageFor(tour: Tour) {
   return tour.heroMedia?.url && tour.heroMedia.resourceType !== "video" ? tour.heroMedia : tourImage(tour);
