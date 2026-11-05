@@ -23,6 +23,7 @@ import { DepthScroll } from "@/components/ui/DepthScroll";
 import type { SiteSettings } from "@/types/cms";
 import { travelSans, travelDisplay } from "@/lib/fonts";
 import { DEFAULT_THEME, THEME_INIT_SCRIPT, googleFonts, googleFontsUrl, resolveTheme, themeToCss } from "@/lib/theme";
+import Script from "next/script";
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -110,7 +111,8 @@ export default async function LocaleLayout({ children, params }: Props) {
           </>
         )}
         <style id="site-theme" dangerouslySetInnerHTML={{ __html: themeCss }} />
-        {theme.mode === "visitor" && <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />}
+        {/* Runs before hydration so the visitor's light/dark choice applies without a flash */}
+        {theme.mode === "visitor" && <Script id="theme-init" strategy="beforeInteractive" dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />}
       </head>
       <body className="flex min-h-dvh flex-col" suppressHydrationWarning>
         <a href="#main" className="sr-only z-50 rounded bg-surface px-4 py-2 focus:not-sr-only focus:fixed focus:inset-s-4 focus:top-4">
