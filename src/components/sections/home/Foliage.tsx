@@ -84,7 +84,7 @@ export function FoliageCluster({ side, className, front, inset = false }: { side
         // cover text. `front` places them over a photo instead (hero corners, kept clear of text and controls).
         "pointer-events-none absolute overflow-visible",
         inset
-          ? "z-0 aspect-1129/1393 w-16 sm:w-20 md:w-[clamp(5rem,8vw,7rem)] lg:w-[clamp(7rem,10vw,9.5rem)]"
+          ? "z-0 aspect-1129/1393 w-24 sm:w-28 md:w-[clamp(7rem,9vw,8.5rem)] lg:w-[clamp(8rem,10vw,9.5rem)]"
           : front
             ? "z-0 h-40 w-32 sm:h-56 sm:w-48 lg:h-88 lg:w-72 2xl:h-108 2xl:w-80"
             : "-z-10 hidden h-80 w-64 md:block xl:h-104 xl:w-80",
