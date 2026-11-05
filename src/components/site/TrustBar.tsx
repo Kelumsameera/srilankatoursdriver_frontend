@@ -44,24 +44,24 @@ export async function TrustBar({ settings }: { settings: SiteSettings }) {
       {(partners.length > 0 || social.length > 0) && (
         <section className="bg-surface" aria-labelledby="trust-heading" data-testid="trust-bar">
           <div className="h-1 w-full bg-linear-to-r from-forest-600 via-gold-500 to-forest-600" aria-hidden />
-          <div className="container-page py-7 sm:py-12">
-            <div className="mb-4 text-center sm:mb-8">
+          <div className="container-page py-5 sm:py-8">
+            <div className="mb-3 text-center sm:mb-5">
               <p className="eyebrow mb-2 max-sm:text-[0.6rem] sm:mb-3">{t("accredited")}</p>
-              <h2 id="trust-heading" className="text-2xl text-heading sm:text-3xl">
+              <h2 id="trust-heading" className="text-xl text-heading sm:text-2xl">
                 {t("trustedBy")}
               </h2>
-              <div className="mx-auto mt-3 h-0.5 w-12 sm:mt-5 sm:h-1 sm:w-16 rounded-full bg-gold-500" aria-hidden />
+              <div className="mx-auto mt-2 h-0.5 w-12 sm:mt-3 sm:w-14 rounded-full bg-gold-500" aria-hidden />
             </div>
 
             {partners.length > 0 && (
-              <ul className="mb-5 grid grid-cols-3 gap-2 sm:mb-10 sm:gap-4 lg:grid-cols-5">
+              <ul className="mb-4 grid grid-cols-3 gap-2 sm:mb-6 sm:gap-3 lg:grid-cols-5">
                 {partners.map((p) => {
                   const inner = p.logo?.url ? (
                     <CmsImage
                       media={p.logo}
                       alt={p.logo.alt || p.name}
                       sizes="160px"
-                      wrapperClassName="h-8 w-full bg-transparent sm:h-11"
+                      wrapperClassName="h-7 w-full bg-transparent sm:h-9"
                       className="object-contain! transition-transform duration-500 motion-safe:group-hover:scale-110"
                     />
                   ) : (
@@ -69,7 +69,7 @@ export async function TrustBar({ settings }: { settings: SiteSettings }) {
                   );
                   // Logos stay in full colour; on hover the tile lifts, the logo grows and a light shine sweeps across
                   const cls =
-                    "group relative flex h-14 items-center justify-center overflow-hidden rounded-xl border border-sand-200 bg-sand-50 dark:bg-white/90 dark:hover:bg-white p-2 sm:h-20 sm:rounded-2xl sm:p-4 transition-all duration-500 hover:border-gold-400 hover:bg-surface hover:shadow-card motion-safe:hover:-translate-y-1";
+                    "group relative flex h-12 items-center justify-center overflow-hidden rounded-xl border border-sand-200 bg-sand-50 dark:bg-white/90 dark:hover:bg-white p-2 sm:h-16 sm:rounded-2xl sm:p-3 transition-all duration-500 hover:border-gold-400 hover:bg-surface hover:shadow-card motion-safe:hover:-translate-y-1";
                   const shine = (
                     <span
                       className="pointer-events-none absolute inset-y-0 -inset-s-full w-1/2 -skew-x-12 bg-linear-to-r from-transparent via-white/70 to-transparent opacity-0 transition-all duration-700 group-hover:opacity-100 motion-safe:group-hover:inset-s-full"
@@ -97,9 +97,9 @@ export async function TrustBar({ settings }: { settings: SiteSettings }) {
 
             {social.length > 0 && (
               <>
-                <div className="mb-4 flex items-center gap-3 sm:mb-6 sm:gap-6" aria-hidden>
+                <div className="mb-3 flex items-center gap-3 sm:mb-4 sm:gap-6" aria-hidden>
                   <div className="h-px flex-1 bg-sand-200" />
-                  <span className="font-display text-base sm:text-xl italic text-earth-500">{t("stayConnected")}</span>
+                  <span className="font-display text-base sm:text-lg italic text-earth-500">{t("stayConnected")}</span>
                   <div className="h-px flex-1 bg-sand-200" />
                 </div>
                 <ul className="flex flex-wrap items-center justify-center gap-3" aria-label={t("followUs")}>
@@ -111,7 +111,7 @@ export async function TrustBar({ settings }: { settings: SiteSettings }) {
                           href={url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="group flex items-center gap-3 rounded-2xl border border-sand-200 bg-surface px-5 py-3 text-sm font-semibold text-heading shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-brand hover:bg-forest-800 hover:text-white"
+                          className="group flex items-center gap-2 rounded-2xl border border-sand-200 bg-surface px-4 py-2 text-sm font-semibold text-heading shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-brand hover:bg-forest-800 hover:text-white"
                         >
                           <Icon className="h-5 w-5 text-forest-600 transition-colors group-hover:text-gold-400" />
                           {NETWORK_LABEL[network] ?? network}
