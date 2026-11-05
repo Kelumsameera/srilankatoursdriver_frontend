@@ -22,10 +22,10 @@ export function DestinationsSection({ section, ctx }: SectionProps) {
       <FoliageCluster inset side="right" className="bottom-8 md:bottom-12 lg:bottom-14" />
       <Heading section={section} light ctx={ctx} />
 
-      {/* DESTINATION CARDS: 2 per row on phones */}
+      {/* DESTINATION CARDS: 2 rows of 2 on phones (the rest is hidden there), all of them from sm up */}
       <div className="relative z-10 grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-3 lg:grid-cols-4">
         {destinations.map((destination, index) => (
-          <div key={destination._id} {...reveal3d(index, 4)}>
+          <div key={destination._id} className={index >= 4 ? "max-sm:hidden" : undefined} {...reveal3d(index, 4)}>
             <DestinationCard destination={destination} framed />
           </div>
         ))}
