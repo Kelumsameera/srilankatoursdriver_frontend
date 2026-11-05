@@ -116,7 +116,7 @@ export function SiteHeader({ nav, logoLight, logoDark, logoMobile, logoMobileLig
     >
       {/* HEADER BAR */}
       <div className={cn(
-        "flex h-16 w-full items-center gap-3 px-4 sm:px-6 lg:px-8 2xl:px-10",
+        "flex h-16 w-full items-center gap-2 px-3 sm:gap-3 sm:px-6 lg:px-8 2xl:px-10",
         wrappedNav ? "xl:grid xl:h-auto xl:grid-cols-[auto_1fr] xl:grid-rows-[5rem_auto] xl:gap-x-3 xl:gap-y-0" : "xl:h-20",
       )}>
         {/* LOGO */}
@@ -179,7 +179,7 @@ export function SiteHeader({ nav, logoLight, logoDark, logoMobile, logoMobileLig
         </nav>
 
         {/* ACTIONS: language, phone, account, Book Now, menu button. ms-auto keeps them on the right when the nav is hidden. */}
-        <div className={cn("ms-auto flex shrink-0 items-center gap-0.5 sm:gap-1 2xl:gap-2", wrappedNav && "xl:col-start-2 xl:row-start-1")}>
+        <div className={cn("ms-auto flex shrink-0 items-center gap-0 sm:gap-1 2xl:gap-2", wrappedNav && "xl:col-start-2 xl:row-start-1")}>
           <LanguageSwitcher enabled={languages} tone={solid ? "dark" : "light"} />
 
           {themeToggle && <ThemeToggle tone={solid ? "dark" : "light"} />}

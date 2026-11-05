@@ -46,10 +46,25 @@ export function Logo({ branding, siteName, tone = "dark", mobile, className, pre
             style={{ width: iconWidth, height: iconHeight }}
           />
         )}
-        <span className="flex flex-col whitespace-nowrap font-display font-bold uppercase leading-none tracking-wide">
-          <span className={cn(mobile ? "text-base" : "text-lg sm:text-xl", tone === "light" ? "text-white" : "text-heading")}>{text.lines[0]}</span>
+        {/* LOGO TEXT: real text, so its colours can change here (orange → red gradient like the logo artwork) */}
+        <span className="flex flex-col whitespace-nowrap font-sans font-bold uppercase leading-none">
+          <span
+            className={cn(
+              "bg-linear-to-r from-[#f0703a] to-[#d9342b] bg-clip-text tracking-[0.08em] text-transparent",
+              mobile ? "text-base" : "text-xl sm:text-2xl",
+            )}
+          >
+            {text.lines[0]}
+          </span>
           {text.lines[1] && (
-            <span className={cn("mt-0.5", mobile ? "text-xs" : "text-sm sm:text-base", tone === "light" ? "text-gold-400" : "text-gold-600")}>{text.lines[1]}</span>
+            <span
+              className={cn(
+                "mt-1 bg-linear-to-r from-[#e9603a] to-[#d22f2b] bg-clip-text tracking-[0.16em] text-transparent",
+                mobile ? "text-[0.7rem]" : "text-sm sm:text-base",
+              )}
+            >
+              {text.lines[1]}
+            </span>
           )}
         </span>
       </span>
