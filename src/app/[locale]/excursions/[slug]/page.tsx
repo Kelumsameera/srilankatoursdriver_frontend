@@ -159,10 +159,10 @@ export default async function ExcursionDetailPage({ params }: Props) {
         </aside>
       </div>
 
-      {/* MAP (below the description): where the excursion is on the whole island (no card – the sea fades into the page), with a directions link */}
+      {/* MAP (below the description): where the excursion is on the whole island (no card – the sea fades into the page), bigger on desktop, with a directions link */}
       <section className="container-page pb-14" data-testid="excursion-map">
         {hasPin && (
-          <div className="[&_svg]:max-w-60">
+          <div className="[&_svg]:max-w-60 lg:[&_svg]:max-w-[26rem]">
             <DestinationMap
               destination={{ name: placeName, location: excursion.coordinates }}
               label={tDestination("mapLabel", { name: placeName })}

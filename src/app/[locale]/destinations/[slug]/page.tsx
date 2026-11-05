@@ -2,12 +2,12 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { CalendarDays, Car, Route } from "lucide-react";
+import { CalendarDays, Car, MapPin, Navigation, Route } from "lucide-react";
 import { getDetail, getList, getNearbyDestinations, getPage, getSiteSettings } from "@/lib/api/server";
 import { buildMetadata, jsonLd } from "@/lib/seo";
 import { SITE_URL } from "@/lib/config";
 import { CmsImage, isIllustrative } from "@/components/ui/CmsImage";
-import { ButtonLink } from "@/components/ui/Button";
+import { ButtonLink, buttonClass } from "@/components/ui/Button";
 import { Markdown } from "@/components/ui/Markdown";
 import { TourCard, sharedDescriptions } from "@/components/cards/TourCard";
 import { Breadcrumbs } from "@/components/site/Breadcrumbs";
@@ -70,13 +70,14 @@ export default async function DestinationDetailPage({ params }: Props) {
   // Tells next-intl which language this page is rendered in
   setRequestLocale(locale);
 
-  const [data, listingPage, settings, nearbyDestinations, t, tCommon] = await Promise.all([
+  const [data, listingPage, settings, nearbyDestinations, t, tCommon, tExcursion] = await Promise.all([
     getDetail("destinations", slug, locale),
     getPage("destinations", locale),
     getSiteSettings(locale),
     getNearbyDestinations(slug, locale),
     getTranslations("destination"),
     getTranslations("common"),
+    getTranslations("excursion"),
   ]);
   // notFound() shows the Next.js 404 page
   if (!data) notFound();
@@ -93,6 +94,9 @@ export default async function DestinationDetailPage({ params }: Props) {
   // Nearby destinations, or the same-category ones from the detail API when nearby is empty
   const relatedDestinations = nearbyDestinations?.length ? nearbyDestinations : data.related;
   const hasTours = Boolean(tours?.items.length);
+  // "Get directions" opens Google Maps, routing from wherever the visitor is
+  const directionsTarget = validCoordinates(destination.location) ? `${destination.location?.lat},${destination.location?.lng}` : `${destination.name}, Sri Lanka`;
+  const directionsLink = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(directionsTarget)}`;
 
   // The two "practical information" cards that have the same layout
   const infoCards = [
@@ -146,10 +150,18 @@ export default async function DestinationDetailPage({ params }: Props) {
               </div>
             </div>
 
-            {/* MAP */}
-            <div className="min-w-0" data-scroll-reveal>
-              <div className="rounded-2xl border border-sand-200 bg-sand-50 px-3 pt-3 [&_svg]:max-w-55">
-                <DestinationMap destination={destination} label={t("mapLabel", { name: destination.name })} unavailable={t("locationUnavailable")} caption={t("mapCaption")} />
+            {/* MAP: same look as the excursion page (no card – the sea fades into the page), bigger on desktop */}
+            <div className="min-w-0" data-scroll-reveal data-testid="destination-map-block">
+              <div className="[&_svg]:max-w-55 lg:[&_svg]:max-w-[22rem]">
+                <DestinationMap destination={destination} label={t("mapLabel", { name: destination.name })} unavailable={t("locationUnavailable")} caption={t("mapCaption")} fade />
+              </div>
+              <div className="flex items-center justify-between gap-3 border-t border-sand-200 pt-5">
+                <span className="flex items-center gap-1 text-sm text-muted">
+                  <MapPin className="h-4 w-4 text-gold-600" aria-hidden /> {destination.name}
+                </span>
+                <a href={directionsLink} target="_blank" rel="noopener noreferrer" className={buttonClass("outline", "sm", "shrink-0")}>
+                  <Navigation className="h-4 w-4" aria-hidden /> {tExcursion("getDirections")}
+                </a>
               </div>
             </div>
           </section>
