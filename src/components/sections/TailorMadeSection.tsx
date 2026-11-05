@@ -36,13 +36,14 @@ export async function TailorMadeSection({ section, ctx }: SectionProps) {
   return (
     <section className={cn("relative overflow-x-clip", light ? "bg-forest-900 text-white" : "bg-sand-50")}>
       <div className="grid lg:grid-cols-2">
-        {/* Full-bleed photo with a wavy edge towards the content (design). */}
-        <div className="relative min-h-[18rem] overflow-hidden sm:min-h-[24rem] lg:min-h-[36rem]">
+        {/* Full-bleed photo with a wavy edge towards the content (design).
+            The edges use the section's own background colour, so they match in light and dark mode. */}
+        <div className="relative min-h-[18rem] overflow-hidden sm:min-h-[24rem] lg:min-h-[36rem] [--next-section-color:var(--color-sand-50)]">
           <div data-parallax="-60" className="absolute -inset-y-16 inset-x-0">
             <CmsImage media={photo} alt={photo.alt || section.title || ""} sizes="(min-width: 1024px) 50vw, 100vw" wrapperClassName="absolute inset-0" />
           </div>
-          <OrganicEdge className={cn("inset-e-0 hidden lg:block rtl:-scale-x-100", light ? "text-heading" : "text-cream")} />
-          <PaperEdge className={cn("lg:hidden", light ? "text-heading" : "text-cream")} />
+          <OrganicEdge className={cn("inset-e-0 hidden lg:block rtl:-scale-x-100", light ? "text-forest-900" : "text-sand-50")} />
+          <PaperEdge className="lg:hidden" />
           {section.badge && (
             <p className="absolute inset-s-5 top-5 max-w-[11rem] rounded-2xl bg-gold-500 px-4 py-3 text-small font-semibold leading-tight text-forest-950 shadow-card">
               {section.badge}
