@@ -119,9 +119,9 @@ export function SiteHeader({ nav, logoLight, logoDark, logoMobile, logoMobileLig
         "flex h-16 w-full items-center gap-2 px-3 sm:gap-3 sm:px-6 lg:px-8 2xl:px-10",
         wrappedNav ? "xl:grid xl:h-auto xl:grid-cols-[auto_1fr] xl:grid-rows-[5rem_auto] xl:gap-x-3 xl:gap-y-0" : "xl:h-20",
       )}>
-        {/* LOGO */}
-        <div className="flex shrink-0 items-center">
-          <CmsLink href="/" className="flex items-center" ariaLabel={tCommon("home")}>
+        {/* LOGO: may shrink on very narrow phones so the menu button always fits */}
+        <div className="flex min-w-0 shrink items-center">
+          <CmsLink href="/" className="flex min-w-0 items-center" ariaLabel={tCommon("home")}>
             {/* On the solid bar: the dark logo, or the light one in dark mode */}
             <span className="hidden sm:block dark:sm:hidden">{solid ? logoDark : logoLight}</span>
             <span className="sm:hidden dark:hidden">{solid ? logoMobile : logoMobileLight}</span>
