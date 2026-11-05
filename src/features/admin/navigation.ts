@@ -1,5 +1,4 @@
 import {
-  Activity,
   BarChart3,
   BookOpen,
   Bot,
@@ -164,8 +163,6 @@ export const ADMIN_NAV: NavGroup[] = [
     ],
   },
 ];
-
-export const ACTIVITY_ICON = Activity;
 
 const NAV_PERMS = ADMIN_NAV.flatMap((g) => [...(g.href ? [{ href: g.href, perm: g.perm }] : []), ...(g.children ?? [])])
   .map((l) => ({ path: l.href.split("?")[0], perm: l.perm }))

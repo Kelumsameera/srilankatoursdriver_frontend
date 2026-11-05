@@ -21,7 +21,6 @@ import type {
   SiteSettings,
   Story,
   Tour,
-  TripAdvisorSummary,
   Vehicle,
 } from "@/types/cms";
 
@@ -120,7 +119,6 @@ export const getUiMessages = cache((locale: string) => orNull(apiGet<Record<stri
 export const getSeo = cache((key: string) =>
   orNull(apiGet<{ global: SeoMetadata | null; route: SeoMetadata | null }>(`/seo/${key}`, { tags: [TAGS.seo] })),
 );
-export const getTripAdvisor = cache(() => orNull(apiGet<TripAdvisorSummary>("/reviews/tripadvisor", { tags: [TAGS.reviews], revalidate: 21600 })));
 
 /**
  * A page with its sections and their embedded data (tours, reviews, …), so it depends on every content tag.
