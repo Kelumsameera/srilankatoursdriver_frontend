@@ -5,7 +5,7 @@ import { CmsImage } from "@/components/ui/CmsImage";
 import { CmsLink } from "@/components/ui/CmsLink";
 import { Markdown } from "@/components/ui/Markdown";
 import { editorialImages } from "@/lib/editorial-images";
-import { GoldText, PaperEdge } from "./home/Decor";
+import { GoldText } from "./home/Decor";
 import { Buttons, type SectionProps } from "./sectionParts";
 
 /** Interest tiles of the tailor-made section (keys of `tailorMade.interests`). */
@@ -15,15 +15,6 @@ const INTEREST_TILES = [
   { key: "wildlife", icon: PawPrint },
   { key: "adventure", icon: Mountain },
 ] as const;
-
-/** Wavy vertical edge between a full-bleed photo and the content beside it (colour = the section background). */
-function OrganicEdge({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 64 800" preserveAspectRatio="none" aria-hidden className={cn("pointer-events-none absolute inset-y-0 h-full w-10 xl:w-16", className)}>
-      <path fill="currentColor" d="M64 0H38C22 70 46 130 30 200s-30 120-8 200 28 130 8 200-18 140 8 200h26Z" />
-    </svg>
-  );
-}
 
 // "tailorMade" section: a full-bleed photo beside the text, chips, buttons and four interest tiles
 export async function TailorMadeSection({ section, ctx }: SectionProps) {
@@ -36,14 +27,11 @@ export async function TailorMadeSection({ section, ctx }: SectionProps) {
   return (
     <section className={cn("relative overflow-x-clip", light ? "bg-forest-900 text-white" : "bg-sand-50")}>
       <div className="grid lg:grid-cols-2">
-        {/* Full-bleed photo with a wavy edge towards the content (design).
-            The edges use the section's own background colour, so they match in light and dark mode. */}
-        <div className="relative min-h-[18rem] overflow-hidden sm:min-h-[24rem] lg:min-h-[36rem] [--next-section-color:var(--color-sand-50)]">
+        {/* Full-bleed photo with a wavy edge towards the content; the edge is cut out of the photo (tailor-photo-mask in globals.css) */}
+        <div className="tailor-photo-mask relative min-h-[18rem] overflow-hidden sm:min-h-[24rem] lg:min-h-[36rem]">
           <div data-parallax="-60" className="absolute -inset-y-16 inset-x-0">
             <CmsImage media={photo} alt={photo.alt || section.title || ""} sizes="(min-width: 1024px) 50vw, 100vw" wrapperClassName="absolute inset-0" />
           </div>
-          <OrganicEdge className={cn("inset-e-0 hidden lg:block rtl:-scale-x-100", light ? "text-forest-900" : "text-sand-50")} />
-          <PaperEdge className="lg:hidden" />
           {section.badge && (
             <p className="absolute inset-s-5 top-5 max-w-[11rem] rounded-2xl bg-gold-500 px-4 py-3 text-small font-semibold leading-tight text-forest-950 shadow-card">
               {section.badge}

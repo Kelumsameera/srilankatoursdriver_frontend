@@ -413,6 +413,32 @@ html[data-site="public"][data-theme="dark"] main section:is(.bg-sand-50, .bg-san
   }
 }
 
+/* Tailor-made photo: the wavy edge is cut out of the photo (mask) instead of painted over it,
+   so the section background – paper grain in light mode, plain in dark – shows through and always matches. */
+@utility tailor-photo-mask {
+  --edge: 2.5rem;
+  mask-image: linear-gradient(#000, #000), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 90' preserveAspectRatio='none'%3E%3Cpath opacity='.55' d='M0 0V54C92 44 160 66 250 60s162-34 256-30 168 38 266 36 172-40 270-38 152 32 236 30 110-20 162-18V0Z'/%3E%3Cpath d='M0 0V38C70 30 130 52 214 46s150-30 236-26 150 34 246 32 168-36 262-34 160 30 250 28 120-22 182-20 54 10 50 10V0Z'/%3E%3C/svg%3E");
+  mask-size: 100% calc(100% - var(--edge) + 1px), 100% var(--edge);
+  mask-position: top, bottom;
+  mask-repeat: no-repeat;
+  @variant sm {
+    --edge: 3.5rem;
+  }
+  @variant lg {
+    --edge: 2.5rem;
+    mask-image: linear-gradient(#000, #000), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 800' preserveAspectRatio='none'%3E%3Cpath d='M0 0H38C22 70 46 130 30 200s-30 120-8 200 28 130 8 200-18 140 8 200H0Z'/%3E%3C/svg%3E");
+    mask-size: calc(100% - var(--edge) + 1px) 100%, var(--edge) 100%;
+    mask-position: left, right;
+    &:where([dir="rtl"], [dir="rtl"] *) {
+      mask-image: linear-gradient(#000, #000), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 800' preserveAspectRatio='none'%3E%3Cg transform='translate%2864 0%29 scale%28-1 1%29'%3E%3Cpath d='M0 0H38C22 70 46 130 30 200s-30 120-8 200 28 130 8 200-18 140 8 200H0Z'/%3E%3C/g%3E%3C/svg%3E");
+      mask-position: right, left;
+    }
+  }
+  @variant xl {
+    --edge: 4rem;
+  }
+}
+
 @utility container-page {
   margin-inline: auto;
   width: 100%;
