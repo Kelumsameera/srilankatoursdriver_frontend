@@ -138,11 +138,12 @@ export function sectionForm(type: string): FormSection[] {
               } as FieldDef,
             ]
           : []),
-        ...(["tailorMade", "cta", "richText"].includes(type)
+        ...(["tailorMade", "cta", "richText", "popularTours"].includes(type)
           ? [
               {
                 name: "media",
                 label: type === "tailorMade" ? "Photo (shows the split photo layout)" : "Background image",
+                hint: type === "popularTours" ? "grid and staggered layouts: fills the bottom and fades into the background above" : undefined,
                 type: "media",
                 folder: "pages",
                 span: 2,
@@ -185,6 +186,33 @@ export function sectionForm(type: string): FormSection[] {
                       { value: "split", label: "Featured tour band (first tour large, dark green)" },
                       { value: "staggered", label: "Staggered tall photo cards (3 at different heights)" },
                     ],
+                  },
+                  // Background image (Content → Background image): size and place
+                  { name: "backdropHeight", label: "Background image height (%)", type: "number", min: 10, max: 100, hint: "of the section, from the bottom – default 75" },
+                  { name: "backdropWidth", label: "Background image width (%)", type: "number", min: 10, max: 100, hint: "of the section – default 100" },
+                  {
+                    name: "backdropAlign",
+                    label: "Background image side",
+                    type: "select",
+                    options: [
+                      { value: "center", label: "Centre" },
+                      { value: "left", label: "Left" },
+                      { value: "right", label: "Right" },
+                    ],
+                    defaultValue: "center",
+                    hint: "used when the width is under 100%",
+                  },
+                  {
+                    name: "backdropFocus",
+                    label: "Background image focus",
+                    type: "select",
+                    options: [
+                      { value: "bottom", label: "Bottom of the photo" },
+                      { value: "center", label: "Middle of the photo" },
+                      { value: "top", label: "Top of the photo" },
+                    ],
+                    defaultValue: "bottom",
+                    hint: "which part of the photo stays in view",
                   },
                 ] as FieldDef[])
               : []),
@@ -262,3 +290,18 @@ export const pageForm: FormSection[] = [
   },
 ];
 
+/** Page form for one page: the tours page also gets its list of header videos that take turns. */
+export function pageFormFor(slug: string): FormSection[] {
+  if (slug !== "tours") return pageForm;
+  const [header, ...rest] = pageForm;
+  const videos: FieldDef = {
+    name: "heroVideos",
+    label: "Header videos",
+    type: "mediaList",
+    accept: "video",
+    folder: "pages",
+    span: 2,
+    hint: "they take turns like the homepage hero (up to 8); a selected tour category still shows its own video",
+  };
+  return [{ ...header, fields: [...header.fields.slice(0, 3), videos, ...header.fields.slice(3)] }, ...rest];
+}

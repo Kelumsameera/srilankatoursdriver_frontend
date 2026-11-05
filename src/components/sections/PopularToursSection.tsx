@@ -1,7 +1,7 @@
 import { getLocale, getTranslations } from "next-intl/server";
 import { ArrowRight, Calendar, MapPin } from "lucide-react";
 import type { PageSection, Tour } from "@/types/cms";
-import { formatPrice } from "@/lib/utils";
+import { cn, formatPrice } from "@/lib/utils";
 import { ButtonLink } from "@/components/ui/Button";
 import { CmsImage } from "@/components/ui/CmsImage";
 import { Section } from "@/components/ui/misc";
@@ -71,6 +71,60 @@ async function FeaturedTourBand({ section, tour }: { section: PageSection; tour:
   );
 }
 
+// Top of the backdrop photo fades into the section's own background colour (Admin → section → Theme)
+const FADE_FROM: Record<string, string> = {
+  light: "from-sand-50 via-sand-50/70",
+  sand: "from-sand-100 via-sand-100/70",
+  forest: "from-forest-800 via-forest-800/70",
+  dark: "from-forest-950 via-forest-950/70",
+};
+
+// Fades the photo's free side edges into the background when it is narrower than the section
+const SIDE_FADE: Record<string, string> = {
+  left: "linear-gradient(to right, #000 75%, transparent)",
+  center: "linear-gradient(to right, transparent, #000 20%, #000 80%, transparent)",
+  right: "linear-gradient(to left, #000 75%, transparent)",
+};
+
+/** Height / width (% of the section) from Admin → section → Display, kept inside 10–100. */
+function percent(value: number | undefined, fallback: number) {
+  return typeof value === "number" && Number.isFinite(value) ? Math.min(100, Math.max(10, value)) : fallback;
+}
+
+/**
+ * Optional background photo (Admin → section → Background image): sits at the bottom of the section and fades out
+ * towards the top, so it blends into the background above it. Its height, width, side and focus are set under
+ * Display. Sits behind the cards.
+ */
+function SectionBackdrop({ section, theme }: { section: PageSection; theme: string }) {
+  const media = section.media;
+  if (!media?.url || media.resourceType === "video") return null;
+  const s = section.settings ?? {};
+  const height = percent(s.backdropHeight, 75);
+  const width = percent(s.backdropWidth, 100);
+  const align = s.backdropAlign ?? "center";
+  const fade = width < 100 ? SIDE_FADE[align] : undefined;
+  return (
+    <div
+      aria-hidden
+      className={cn("pointer-events-none absolute bottom-0 -z-10", align === "left" ? "start-0" : align === "right" ? "end-0" : "left-1/2 -translate-x-1/2")}
+      style={{ height: `${height}%`, width: `${width}%`, maskImage: fade, WebkitMaskImage: fade }}
+      data-testid="section-backdrop"
+    >
+      <CmsImage
+        media={media}
+        alt=""
+        sizes={`${width}vw`}
+        wrapperClassName="absolute inset-0 bg-transparent"
+        className="object-cover"
+        objectPosition={`center ${s.backdropFocus ?? "bottom"}`}
+        markIllustrative={false}
+      />
+      <div className={`absolute inset-0 bg-gradient-to-b to-transparent ${FADE_FROM[theme] ?? FADE_FROM.light}`} />
+    </div>
+  );
+}
+
 /** A section limited to one group of tours: a chosen category, or "In season now" (the seasonal category of the month). */
 export function isCategorisedTours(section: PageSection) {
   return Boolean(section.settings?.category) || section.settings?.source === "season";
@@ -122,7 +176,8 @@ export async function PopularToursSection({ section: raw, ctx }: SectionProps) {
     // Each card drifts at its own speed while scrolling (HomeMotion), for the layered 3D look
     const drift = ["30", "-20", "12"];
     return (
-      <Section theme={theme} className="relative overflow-hidden">
+      <Section theme={theme} className="relative isolate overflow-hidden">
+        <SectionBackdrop section={section} theme={theme} />
         {!light && <Botanical />}
         <div data-scroll-reveal>
           <Heading section={section} light={light} ctx={ctx} />
@@ -142,7 +197,8 @@ export async function PopularToursSection({ section: raw, ctx }: SectionProps) {
 
   // GRID LAYOUT
   return (
-    <Section theme={theme} className="relative overflow-hidden">
+    <Section theme={theme} className="relative isolate overflow-hidden">
+      <SectionBackdrop section={section} theme={theme} />
       {!light && <Botanical />}
       <div data-scroll-reveal>
         <Heading section={section} light={light} ctx={ctx} />

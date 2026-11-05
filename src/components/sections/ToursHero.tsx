@@ -1,17 +1,18 @@
 import { getTranslations } from "next-intl/server";
 import { ArrowDown, MapPin } from "lucide-react";
 import { CmsImage } from "@/components/ui/CmsImage";
-import { HeroVideo } from "@/components/site/HeroVideo";
+import { HeroVideoRotator } from "@/components/site/HeroVideoRotator";
 import type { MediaAsset } from "@/types/cms";
 
-export async function ToursHero({ title, subtitle, image, video }: {
-  title: string; subtitle?: string; image: MediaAsset; video: MediaAsset;
+/** Tours page header: title, button and background videos that take turns (one video simply loops). */
+export async function ToursHero({ title, subtitle, image, videos }: {
+  title: string; subtitle?: string; image: MediaAsset; videos: MediaAsset[];
 }) {
   const [tTour, tDestination] = await Promise.all([getTranslations("tour"), getTranslations("destination")]);
   return (
     <section className="relative isolate flex min-h-[36rem] items-end overflow-hidden bg-forest-950 text-white sm:min-h-[42rem] lg:min-h-[46rem]">
       <CmsImage media={image} alt="" preload wrapperClassName="absolute inset-0 -z-20" markIllustrative={false} />
-      <HeroVideo src={video.url} className="-z-10" controls />
+      <HeroVideoRotator sources={videos.map((v) => v.url ?? "").filter(Boolean)} className="-z-10" />
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-forest-950/85 via-forest-950/40 to-transparent rtl:bg-gradient-to-l" />
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-forest-950/85 via-transparent to-forest-950/20" />
       <div className="container-page relative w-full pb-20 pt-36 sm:pb-24 lg:pb-28">

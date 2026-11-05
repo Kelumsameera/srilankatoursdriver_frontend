@@ -20,7 +20,7 @@ export async function ExcursionRates({ settings, excursion, id = "excursion-rate
   if (excursion && !match) return null;
   if (!cfg || cfg.enabled === false || !tables.length) return null;
   const t = await getTranslations("rates");
-  const currency = cfg.currency || "LKR";
+  const currency = cfg.currency || "USD";
 
   return (
     <section id={id} className="scroll-mt-24 bg-surface py-10 sm:px-4 sm:py-20 max-sm:[&_th]:px-3 max-sm:[&_td]:px-3 max-sm:[&_th]:py-3 max-sm:[&_td]:py-3 max-sm:[&_th]:text-xs max-sm:[&_td_span]:px-2 max-sm:[&_td_span]:text-xs" aria-labelledby={`${id}-title`} data-testid="excursion-rates">
@@ -37,7 +37,10 @@ export async function ExcursionRates({ settings, excursion, id = "excursion-rate
             <h3 className="mb-5 text-xl text-heading">
               {t("transfersFrom")} {excursion?.title}
             </h3>
-            <RatesTable rows={match.rows} currency={currency} labelledBy={`${id}-title`} />
+            {/* Phones: first 5 rows, then "Show more" so the page doesn't scroll forever */}
+            <RatesDisclosure enabled={match.rows.length > 5} mobileOnly more={t("showMore")} less={t("showLess")}>
+              <RatesTable rows={match.rows} currency={currency} labelledBy={`${id}-title`} />
+            </RatesDisclosure>
           </>
         ) : (
           <RatesOriginPicker origins={tables.map((tbl) => tbl.origin)} label={t("startingPoint")} heading={t("transfersFrom")}>

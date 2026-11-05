@@ -433,7 +433,18 @@ export interface PageSection {
   buttons?: LinkButton[];
   media?: MediaAsset | null;
   /** source "season" (tour sections): the seasonal category in season now – Down South Nov–Jun, East Coast Jul–Oct. */
-  settings?: { limit?: number; source?: "featured" | "latest" | "all" | "season"; theme?: "light" | "sand" | "forest" | "dark"; layout?: string; category?: string | null };
+  settings?: {
+    limit?: number;
+    source?: "featured" | "latest" | "all" | "season";
+    theme?: "light" | "sand" | "forest" | "dark";
+    layout?: string;
+    category?: string | null;
+    /** Background image of a tour section: % of the section's height / width, side, and the part of the photo shown. */
+    backdropHeight?: number;
+    backdropWidth?: number;
+    backdropAlign?: "left" | "center" | "right";
+    backdropFocus?: "top" | "center" | "bottom";
+  };
   enabled?: boolean;
   order?: number;
   data?: unknown;
@@ -445,6 +456,8 @@ export interface CmsPage {
   title: string;
   subtitle?: string;
   heroImage?: MediaAsset | null;
+  /** Tours page: header videos that take turns. */
+  heroVideos?: MediaAsset[];
   content?: string;
   seo?: Seo;
   isSystem?: boolean;

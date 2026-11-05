@@ -9,7 +9,7 @@ import { api, errorMessage } from "@/lib/admin/api";
 import { useAuth } from "@/lib/admin/auth";
 import { cn } from "@/lib/utils";
 import { EntityForm } from "@/components/admin/form/EntityForm";
-import { SECTION_TYPES, typeLabel, sectionForm, pageForm } from "@/lib/admin/page-fields";
+import { SECTION_TYPES, typeLabel, sectionForm, pageFormFor } from "@/lib/admin/page-fields";
 import { Button, Card, ConfirmDialog, ErrorBlock, LoadingBlock, Modal, PageHeader, Select, StatusBadge, Label } from "@/components/admin/ui";
 
 interface Section {
@@ -193,7 +193,7 @@ export default function PageEditor({ params }: { params: Promise<{ slug: string 
       <div>
         <h2 className="mb-3 font-sans text-sm font-semibold uppercase tracking-wide text-slate-500">Page details & SEO</h2>
         <EntityForm
-          sections={pageForm}
+          sections={pageFormFor(slug)}
           initial={page}
           readOnly={!editable}
           onSubmit={async (payload) => {

@@ -703,6 +703,33 @@ export const RESOURCES: Record<string, AdminResource> = {
     ],
   },
 
+  // Facts the AI travel assistant may quote. Published FAQs are used too.
+  "chat-knowledge": {
+    key: "chat-knowledge",
+    title: "AI Knowledge",
+    singular: "Knowledge entry",
+    description: "Company facts the AI travel assistant may quote (policies, pick-up, payments). Only published entries are used. Never put prices here – they come from each tour's price list.",
+    endpoint: "/admin/chat-knowledge",
+    permission: "faqs",
+    titleKey: "title",
+    statusField: "status",
+    statusOptions: ["draft", "published", "archived"],
+    reorderable: true,
+    duplicable: true,
+    columns: [{ key: "title", label: "Title" }, { key: "order", label: "Order", kind: "number" }, { key: "status", label: "Status", kind: "status" }],
+    defaults: { status: "published" },
+    sections: [
+      {
+        title: "Knowledge",
+        fields: [
+          { name: "title", label: "Title", type: "text", required: true, span: 2 },
+          { name: "content", label: "Text", type: "textarea", required: true, span: 2, hint: "Up to 4000 characters, plain text" },
+        ],
+      },
+      { title: "Publishing", fields: publishing() },
+    ],
+  },
+
   navigation: {
     key: "navigation",
     title: "Navbar",

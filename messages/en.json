@@ -1,6 +1,7 @@
 {
   "common": {
     "pauseSlideshow": "Pause slideshow",
+    "showVideo": "Show video {number}",
     "playSlideshow": "Play slideshow",
     "illustrativeImage": "Illustrative vehicle image",
     "illustrativeLabel": "Illustrative image",
@@ -647,5 +648,28 @@
     "included": "Included",
     "bonuses": "Complimentary bonuses",
     "priceLabel": "Exclusive price"
+  },
+  "chat": {
+    "title": "Travel assistant",
+    "welcome": "Hello! Ask me about our tours, places in Sri Lanka, prices from our price list, or send a booking request.",
+    "draftTitle": "Please check your booking request",
+    "draftTour": "Tour",
+    "draftDate": "Start date",
+    "draftTravellers": "Travellers",
+    "draftPeople": "{adults} adults, {children} children",
+    "draftContact": "Contact",
+    "draftNote": "Nothing is booked yet. After you confirm, our team checks availability and contacts you to confirm the booking.",
+    "confirm": "Confirm and send request",
+    "bookingSent": "Thank you! Your booking request {reference} has been sent. Our team will contact you to confirm it.",
+    "bookingError": "The booking request could not be sent. Please check the details or contact our team.",
+    "placeholder": "Type your question…",
+    "send": "Send",
+    "close": "Close",
+    "delete": "Delete this chat",
+    "thinking": "Thinking…",
+    "error": "Sorry, the assistant could not answer right now.",
+    "errorLimit": "You have sent many messages. Please contact our team.",
+    "whatsapp": "Chat with our team on WhatsApp",
+    "disclaimer": "AI answers can be wrong. Prices and bookings are only confirmed by our team."
   }
 }

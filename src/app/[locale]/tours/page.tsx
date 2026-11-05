@@ -56,11 +56,13 @@ export default async function ToursPage({ params, searchParams }: Props) {
   const selectedCategory = categories?.find((item) => item.slug === category || item._id === category);
   const repeatedDescriptions = sharedDescriptions(tourList?.items ?? []);
   const tours = tourList?.items ?? [];
-  // A selected category uses its own CMS video; otherwise a video set as the page's header image
-  // (Admin → Pages → Tours), else the bundled coastal footage.
+  // A selected category uses its own CMS video; otherwise the page's header videos take turns
+  // (Admin → Pages → Tours → Header videos, or one video set as the header image), else the bundled coastal footage.
   const pageHero = pageData?.page.heroImage?.url ? pageData.page.heroImage : undefined;
   const pageVideo = pageHero?.resourceType === "video" ? pageHero : undefined;
-  const hero = tourHeroMedia(selectedCategory?.slug ?? category, selectedCategory?.heroVideo ?? pageVideo);
+  const pageVideos = (pageData?.page.heroVideos ?? []).filter((v) => v?.url && v.resourceType === "video");
+  const hero = tourHeroMedia(selectedCategory?.slug ?? category, selectedCategory?.heroVideo ?? pageVideos[0] ?? pageVideo);
+  const heroVideos = selectedCategory?.heroVideo?.url || !pageVideos.length ? [hero.video] : pageVideos;
 
   const grid = (items: Tour[]) => (
     <div className="grid-center-last grid grid-cols-1 gap-grid sm:grid-cols-2 lg:grid-cols-3" data-testid="tour-list">
@@ -85,7 +87,7 @@ export default async function ToursPage({ params, searchParams }: Props) {
   return (
     <>
       {/* HERO */}
-      {pageData && hasActiveHero(pageData.sections) ? <PageRenderer sections={pageData.sections} settings={settings} part="hero" /> : <ToursHero title={pageData?.page.title || tTour("moreTours")} subtitle={pageData?.page.subtitle} image={pageHero && !pageVideo ? pageHero : hero.poster} video={hero.video} />}
+      {pageData && hasActiveHero(pageData.sections) ? <PageRenderer sections={pageData.sections} settings={settings} part="hero" /> : <ToursHero title={pageData?.page.title || tTour("moreTours")} subtitle={pageData?.page.subtitle} image={pageHero && !pageVideo ? pageHero : hero.poster} videos={heroVideos} />}
 
       {/* TOUR LIST: category chips, cards, pages – less space above so the filters sit close to the hero */}
       <section id="tour-packages" className="scroll-mt-28 pb-section pt-8 md:pt-10">

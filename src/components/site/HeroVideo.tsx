@@ -11,7 +11,7 @@ import { HERO_VIDEO_WIDTH, isPhone, motionAllowed, requestHeroPlayback, safeMedi
  * Muted, looping background video for a page header. The header's photo stays underneath and shows
  * until the video plays, and for visitors who prefer reduced motion or have Data Saver on.
  */
-export function HeroVideo({ src, className, controls = false }: { src?: string; className?: string; controls?: boolean }) {
+export function HeroVideo({ src, className, controls = false, paused = false }: { src?: string; className?: string; controls?: boolean; /** Held still (e.g. a slideshow's pause button). */ paused?: boolean }) {
   const t = useTranslations("common");
   const safe = safeMediaSource(src);
   const motion = useSyncExternalStore(subscribeMotion, motionAllowed, () => false);
@@ -23,8 +23,12 @@ export function HeroVideo({ src, className, controls = false }: { src?: string; 
   useEffect(() => {
     const video = ref.current;
     if (!video || !url) return;
+    if (paused) {
+      video.pause();
+      return;
+    }
     return requestHeroPlayback(video, setStatus);
-  }, [url]);
+  }, [url, paused]);
 
   if (!url) return null;
   return (

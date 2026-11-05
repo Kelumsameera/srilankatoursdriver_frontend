@@ -139,6 +139,48 @@ export const PRESETS: { id: string; name: string; colors: ThemeColors; darkColor
     colors: light("#1e1b4b", "#4338ca", "#f59e0b", "#f5f5fa", "#1a1a2e", "#5f6077", "#e0e0ec"),
     darkColors: dark("#1e1b4b", "#818cf8", "#fbbf24", "#0b0b17", "#151528", "#e6e6f2", "#a0a1b8", "#2a2a44"),
   },
+  {
+    id: "tea-country",
+    name: "Tea Country",
+    colors: light("#2f4a1f", "#4f7d24", "#d9a441", "#f7f8ef", "#1c2414", "#5a6650", "#e1e6d2"),
+    darkColors: dark("#2f4a1f", "#8cc152", "#e6b85c", "#0c120a", "#151f11", "#e8eedf", "#a3b294", "#27351f"),
+  },
+  {
+    id: "cinnamon",
+    name: "Cinnamon & Spice",
+    colors: light("#5c2a14", "#9a4a24", "#e0a526", "#fbf5ee", "#2b1a10", "#755d4d", "#efdfcf"),
+    darkColors: dark("#5c2a14", "#d98352", "#f0bc4a", "#140b06", "#22140c", "#f4e9df", "#b8a08f", "#3a2617"),
+  },
+  {
+    id: "lagoon",
+    name: "Lagoon",
+    colors: light("#064e5a", "#0b7a6e", "#ff7a59", "#f2faf9", "#0f2427", "#4c696c", "#d3ebe8"),
+    darkColors: dark("#064e5a", "#2dd4bf", "#ff9a7f", "#061416", "#0c2226", "#e0f2f0", "#8fb3b2", "#1b3a3e"),
+  },
+  {
+    id: "royal-maroon",
+    name: "Royal Maroon",
+    colors: light("#5a1a2b", "#8e2c48", "#c9a227", "#fbf7f2", "#24161a", "#6b585d", "#ecdfd8"),
+    darkColors: dark("#5a1a2b", "#d0607f", "#e2c25a", "#130a0d", "#211217", "#f3e8ea", "#b39ea4", "#3b2229"),
+  },
+  {
+    id: "sand-sea",
+    name: "Sand & Sea",
+    colors: light("#12355b", "#236f8b", "#d4a259", "#fbf8f1", "#14202c", "#5c6872", "#ebe3d3"),
+    darkColors: dark("#12355b", "#5cb3d1", "#e2b876", "#081019", "#0f1c29", "#e7edf2", "#97a8b6", "#1e3043"),
+  },
+  {
+    id: "monsoon",
+    name: "Monsoon",
+    colors: light("#1f2f3d", "#3f6b8c", "#e0b04a", "#f4f6f8", "#151d24", "#5a6671", "#dde3e8"),
+    darkColors: dark("#1f2f3d", "#7fb0d6", "#ecc469", "#0b1015", "#141c24", "#e5ebf0", "#9babb8", "#26323e"),
+  },
+  {
+    id: "charcoal-gold",
+    name: "Charcoal & Gold",
+    colors: light("#1f2326", "#3d4a52", "#c49a3a", "#f7f7f5", "#18191b", "#5c6065", "#e2e2de"),
+    darkColors: dark("#1f2326", "#9aa7b0", "#ddb663", "#0d0e0f", "#17191b", "#ececea", "#a3a6aa", "#2b2e31"),
+  },
 ];
 
 /** Google Fonts the admin may choose (only these are ever requested). Poppins and Playfair are self-hosted. */

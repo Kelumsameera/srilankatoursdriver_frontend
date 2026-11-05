@@ -3,15 +3,15 @@
 import { useId, useRef, useState, type ReactNode } from "react";
 import { ChevronDown } from "lucide-react";
 
-export function RatesDisclosure({ children, enabled, more, less }: { children: ReactNode; enabled: boolean; more: string; less: string }) {
+export function RatesDisclosure({ children, enabled, more, less, mobileOnly = false }: { children: ReactNode; enabled: boolean; more: string; less: string; mobileOnly?: boolean }) {
   const [expanded, setExpanded] = useState(false);
   const contentId = useId();
   const container = useRef<HTMLDivElement>(null);
   return (
     <div ref={container} className="scroll-mt-48">
-      <div id={contentId} className={enabled && !expanded ? "[&_tbody_tr:nth-child(n+6)]:hidden" : undefined}>{children}</div>
+      <div id={contentId} className={enabled && !expanded ? (mobileOnly ? "max-sm:[&_tbody_tr:nth-child(n+6)]:hidden" : "[&_tbody_tr:nth-child(n+6)]:hidden") : undefined}>{children}</div>
       {enabled && (
-        <div className="mt-4 text-center">
+        <div className={`mt-4 text-center${mobileOnly ? " sm:hidden" : ""}`}>
           <button type="button" aria-expanded={expanded} aria-controls={contentId}
             onClick={() => {
               if (expanded && container.current && container.current.getBoundingClientRect().top < 0) {
