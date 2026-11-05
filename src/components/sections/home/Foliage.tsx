@@ -84,7 +84,7 @@ export function FoliageCluster({ side, className, front, inset = false }: { side
         // cover text. `front` places them over a photo instead (hero corners, kept clear of text and controls).
         "pointer-events-none absolute overflow-visible",
         inset
-          ? "z-0 aspect-1129/1393 w-16 sm:w-20 md:w-[clamp(5rem,8vw,7rem)]"
+          ? "z-0 aspect-1129/1393 w-16 sm:w-20 md:w-[clamp(5rem,8vw,7rem)] lg:w-[clamp(7rem,10vw,9.5rem)]"
           : front
             ? "z-0 h-40 w-32 sm:h-56 sm:w-48 lg:h-88 lg:w-72 2xl:h-108 2xl:w-80"
             : "-z-10 hidden h-80 w-64 md:block xl:h-104 xl:w-80",
@@ -104,7 +104,7 @@ export function FoliageCluster({ side, className, front, inset = false }: { side
         src="/images/decor/homepage-tropical-foliage-corner-v2.webp"
         alt=""
         fill
-        sizes={inset ? "112px" : "(max-width: 639px) 8rem, (max-width: 1023px) 12rem, 20rem"}
+        sizes={inset ? "(min-width: 1024px) 152px, 112px" : "(max-width: 639px) 8rem, (max-width: 1023px) 12rem, 20rem"}
         className="object-contain object-bottom-left"
       />
     </div>

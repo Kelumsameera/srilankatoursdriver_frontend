@@ -17,9 +17,9 @@ export function DestinationsSection({ section, ctx }: SectionProps) {
     // Keep decorative foliage inside the green band and clear of neighbouring content.
     <Section theme={light ? theme : "forest"} className="relative isolate overflow-hidden pb-28 md:pb-20 md:[&>.container-page]:px-[clamp(6rem,10vw,9rem)]">
       <PaperEdge flip className="text-cream" />
-      {/* Left and right foliage at the same height (mirror images): bottom on phones, vertically centred from md */}
-      <FoliageCluster inset side="left" className="bottom-8 md:bottom-auto md:top-1/2 md:-translate-y-1/2" />
-      <FoliageCluster inset side="right" className="bottom-8 md:bottom-auto md:top-1/2 md:-translate-y-1/2" />
+      {/* Left and right foliage at the same height (mirror images), low down near the bottom wave */}
+      <FoliageCluster inset side="left" className="bottom-8 md:bottom-12 lg:bottom-14" />
+      <FoliageCluster inset side="right" className="bottom-8 md:bottom-12 lg:bottom-14" />
       <Heading section={section} light ctx={ctx} />
 
       {/* DESTINATION CARDS */}
