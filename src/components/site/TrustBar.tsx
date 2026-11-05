@@ -43,40 +43,49 @@ export async function TrustBar({ settings }: { settings: SiteSettings }) {
       {/* Partner logos are dark artwork, so their tiles stay light in dark mode too */}
       {(partners.length > 0 || social.length > 0) && (
         <section className="bg-surface" aria-labelledby="trust-heading" data-testid="trust-bar">
-          <div className="h-1 w-full bg-linear-to-rrom-forest-600 via-gold-500 to-forest-600" aria-hidden />
-          <div className="container-page py-7 sm:py-20">
-            <div className="mb-4 text-center sm:mb-12">
+          <div className="h-1 w-full bg-linear-to-r from-forest-600 via-gold-500 to-forest-600" aria-hidden />
+          <div className="container-page py-7 sm:py-12">
+            <div className="mb-4 text-center sm:mb-8">
               <p className="eyebrow mb-2 max-sm:text-[0.6rem] sm:mb-3">{t("accredited")}</p>
-              <h2 id="trust-heading" className="text-2xl text-heading sm:text-4xl">
+              <h2 id="trust-heading" className="text-2xl text-heading sm:text-3xl">
                 {t("trustedBy")}
               </h2>
               <div className="mx-auto mt-3 h-0.5 w-12 sm:mt-5 sm:h-1 sm:w-16 rounded-full bg-gold-500" aria-hidden />
             </div>
 
             {partners.length > 0 && (
-              <ul className="mb-5 grid grid-cols-3 gap-2 sm:mb-14 sm:gap-4 sm:grid-cols-3 lg:grid-cols-5">
+              <ul className="mb-5 grid grid-cols-3 gap-2 sm:mb-10 sm:gap-4 lg:grid-cols-5">
                 {partners.map((p) => {
                   const inner = p.logo?.url ? (
                     <CmsImage
                       media={p.logo}
                       alt={p.logo.alt || p.name}
                       sizes="160px"
-                      wrapperClassName="h-9 w-full bg-transparent sm:h-14"
-                      className="object-contain! opacity-60 grayscale transition duration-500 group-hover:opacity-100 group-hover:grayscale-0"
+                      wrapperClassName="h-8 w-full bg-transparent sm:h-11"
+                      className="object-contain! transition-transform duration-500 motion-safe:group-hover:scale-110"
                     />
                   ) : (
                     <span className="font-display text-xs text-brand dark:text-forest-800 sm:text-lg">{p.name}</span>
                   );
+                  // Logos stay in full colour; on hover the tile lifts, the logo grows and a light shine sweeps across
                   const cls =
-                    "group flex h-16 items-center justify-center rounded-xl border border-sand-200 bg-sand-50 dark:bg-white/90 dark:hover:bg-white p-2 sm:h-28 sm:rounded-3xl sm:p-6 transition-all duration-500 hover:-translate-y-1 hover:border-gold-400 hover:bg-surface hover:shadow-card";
+                    "group relative flex h-14 items-center justify-center overflow-hidden rounded-xl border border-sand-200 bg-sand-50 dark:bg-white/90 dark:hover:bg-white p-2 sm:h-20 sm:rounded-2xl sm:p-4 transition-all duration-500 hover:border-gold-400 hover:bg-surface hover:shadow-card motion-safe:hover:-translate-y-1";
+                  const shine = (
+                    <span
+                      className="pointer-events-none absolute inset-y-0 -inset-s-full w-1/2 -skew-x-12 bg-linear-to-r from-transparent via-white/70 to-transparent opacity-0 transition-all duration-700 group-hover:opacity-100 motion-safe:group-hover:inset-s-full"
+                      aria-hidden
+                    />
+                  );
                   return (
                     <li key={p.name}>
                       {p.url ? (
                         <a href={p.url} target="_blank" rel="noopener noreferrer" className={cls} aria-label={p.name} title={p.name}>
+                          {shine}
                           {inner}
                         </a>
                       ) : (
                         <div className={cls} title={p.name}>
+                          {shine}
                           {inner}
                         </div>
                       )}
@@ -88,7 +97,7 @@ export async function TrustBar({ settings }: { settings: SiteSettings }) {
 
             {social.length > 0 && (
               <>
-                <div className="mb-4 flex items-center gap-3 sm:mb-8 sm:gap-6" aria-hidden>
+                <div className="mb-4 flex items-center gap-3 sm:mb-6 sm:gap-6" aria-hidden>
                   <div className="h-px flex-1 bg-sand-200" />
                   <span className="font-display text-base sm:text-xl italic text-earth-500">{t("stayConnected")}</span>
                   <div className="h-px flex-1 bg-sand-200" />
