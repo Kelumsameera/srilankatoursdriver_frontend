@@ -1,0 +1,1 @@
+Badge presentation based on the business owner's supplied reference, using the existing site Tripadvisor owl vector. These are website/email presentation assets, not certificate scans. The owner confirmed awards from 2024; the public listing separately confirms 2026.
