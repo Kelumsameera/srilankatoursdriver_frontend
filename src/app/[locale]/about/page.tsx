@@ -1,14 +1,6 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import {
-  ArrowUpRight,
-  Award,
-  CheckCircle2,
-  Heart,
-  Shield,
-  Star,
-  Users,
-} from "lucide-react";
+import { ArrowUpRight, Award, CheckCircle2, Heart, Shield, Star, Users } from "lucide-react";
 import { getPage, getSiteSettings } from "@/lib/api/server";
 import { buildMetadata } from "@/lib/seo";
 import { editorialImages } from "@/lib/editorial-images";
@@ -17,19 +9,13 @@ import { TripAdvisorAwards } from "@/components/site/TripAdvisorAwards";
 import { PageHero } from "@/components/ui/misc";
 import { CmsLink } from "@/components/ui/CmsLink";
 import { Markdown } from "@/components/ui/Markdown";
-import {
-  PageRenderer,
-  hasActiveHero,
-} from "@/components/sections/PageRenderer";
+import { PageRenderer, hasActiveHero } from "@/components/sections/PageRenderer";
 
 type Props = { params: Promise<{ locale: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
-  const [data, t] = await Promise.all([
-    getPage("about", locale),
-    getTranslations({ locale, namespace: "about" }),
-  ]);
+  const [data, t] = await Promise.all([getPage("about", locale), getTranslations({ locale, namespace: "about" })]);
   return buildMetadata({
     locale,
     path: "/about",
@@ -65,11 +51,7 @@ const STATS = [
 export default async function AboutPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const [data, settings, t] = await Promise.all([
-    getPage("about", locale),
-    getSiteSettings(locale),
-    getTranslations("about"),
-  ]);
+  const [data, settings, t] = await Promise.all([getPage("about", locale), getSiteSettings(locale), getTranslations("about")]);
   const page = data?.page;
   const storyImage = page?.heroImage?.url && page.heroImage.resourceType !== "video" ? page.heroImage : editorialImages.road;
 
@@ -77,35 +59,18 @@ export default async function AboutPage({ params }: Props) {
     <>
       {/* HEADER: prefer the admin's hero section, otherwise use the page image. */}
       {data && hasActiveHero(data.sections) ? (
-        <PageRenderer
-          sections={data.sections}
-          settings={settings}
-          part="hero"
-        />
+        <PageRenderer sections={data.sections} settings={settings} part="hero" />
       ) : (
-        <PageHero
-          title={page?.title || t("title")}
-          subtitle={page?.subtitle || t("desc1")}
-          image={storyImage}
-        />
+        <PageHero title={page?.title || t("title")} subtitle={page?.subtitle || t("desc1")} image={storyImage} />
       )}
 
       <section className="bg-surface py-20 sm:py-28">
         <div className="container-page grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
           <div className="relative">
-            <CmsImage
-              media={storyImage}
-              alt={storyImage.alt || page?.title || t("title")}
-              sizes="(min-width: 1024px) 50vw, 100vw"
-              wrapperClassName="aspect-[4/5] rounded-[2.5rem] shadow-card"
-            />
+            <CmsImage media={storyImage} alt={storyImage.alt || page?.title || t("title")} sizes="(min-width: 1024px) 50vw, 100vw" wrapperClassName="aspect-[4/5] rounded-[2.5rem] shadow-card" />
             <div className="absolute inset-x-6 bottom-6 rounded-2xl bg-surface/90 p-6 shadow-card backdrop-blur sm:inset-x-8 sm:bottom-8">
-              <p className="font-display text-xl italic text-brand-soft">
-                {t("heading")}
-              </p>
-              <p className="font-display text-2xl font-semibold uppercase tracking-tight text-gold-600 wrap-anywhere [hyphens:auto] sm:text-3xl">
-                {t("headingHighlight")}
-              </p>
+              <p className="font-display text-xl italic text-brand-soft">{t("heading")}</p>
+              <p className="font-display text-2xl font-semibold uppercase tracking-tight text-gold-600 wrap-anywhere [hyphens:auto] sm:text-3xl">{t("headingHighlight")}</p>
             </div>
           </div>
 
@@ -115,11 +80,7 @@ export default async function AboutPage({ params }: Props) {
               <span className="eyebrow">{t("label")}</span>
             </div>
             <h2 className="mb-8 text-4xl leading-[1.1] text-heading lg:text-5xl">
-              {t("heading")}{" "}
-              <span className="text-forest-600 underline decoration-gold-400 decoration-2 underline-offset-8">
-                {t("headingHighlight")}
-              </span>{" "}
-              {t("headingEnd")}
+              {t("heading")} <span className="text-forest-600 underline decoration-gold-400 decoration-2 underline-offset-8">{t("headingHighlight")}</span> {t("headingEnd")}
             </h2>
             {page?.content ? (
               <Markdown content={page.content} className="mb-10 text-lg" />
@@ -133,14 +94,9 @@ export default async function AboutPage({ params }: Props) {
               {(["item1", "item2", "item3", "item4"] as const).map((k) => (
                 <li key={k} className="flex items-center gap-3">
                   <span className="rounded-full bg-forest-50 p-1">
-                    <CheckCircle2
-                      className="h-4 w-4 text-forest-600"
-                      aria-hidden
-                    />
+                    <CheckCircle2 className="h-4 w-4 text-forest-600" aria-hidden />
                   </span>
-                  <span className="text-sm font-semibold text-ink">
-                    {t(`checklist.${k}`)}
-                  </span>
+                  <span className="text-sm font-semibold text-ink">{t(`checklist.${k}`)}</span>
                 </li>
               ))}
             </ul>
@@ -158,16 +114,9 @@ export default async function AboutPage({ params }: Props) {
       <section className="bg-surface pb-20 sm:pb-28">
         <dl className="container-page grid grid-cols-2 gap-5 lg:grid-cols-4">
           {STATS.map((s) => (
-            <div
-              key={s.key}
-              className="flex min-w-0 flex-col-reverse rounded-4xl border border-sand-200 bg-sand-50 px-3 py-6 text-center sm:p-10"
-            >
-              <dt className="mt-2 text-[0.72rem] font-bold uppercase tracking-[0.08em] text-gold-600 sm:tracking-[0.2em]">
-                {t(`stats.${s.key}`)}
-              </dt>
-              <dd className="font-display text-3xl text-heading sm:text-5xl">
-                {s.value}
-              </dd>
+            <div key={s.key} className="flex min-w-0 flex-col-reverse rounded-4xl border border-sand-200 bg-sand-50 px-3 py-6 text-center sm:p-10">
+              <dt className="mt-2 text-[0.72rem] font-bold uppercase tracking-[0.08em] text-gold-600 sm:tracking-[0.2em]">{t(`stats.${s.key}`)}</dt>
+              <dd className="font-display text-3xl text-heading sm:text-5xl">{s.value}</dd>
             </div>
           ))}
         </dl>
@@ -176,40 +125,26 @@ export default async function AboutPage({ params }: Props) {
       <section className="bg-sand-100 py-20 sm:py-28">
         <ul className="container-page grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {REASONS.map(({ key, icon: Icon }) => (
-            <li
-              key={key}
-              className="group rounded-[2.5rem] bg-surface p-9 shadow-sm transition-shadow hover:shadow-card"
-            >
+            <li key={key} className="group rounded-[2.5rem] bg-surface p-9 shadow-sm transition-shadow hover:shadow-card">
               <span className="mb-7 flex h-14 w-14 items-center justify-center rounded-2xl bg-forest-50 transition-colors group-hover:bg-forest-800">
-                <Icon
-                  className="h-7 w-7 text-forest-600 transition-colors group-hover:text-gold-400"
-                  aria-hidden
-                />
+                <Icon className="h-7 w-7 text-forest-600 transition-colors group-hover:text-gold-400" aria-hidden />
               </span>
-              <h3 className="mb-3 text-xl text-heading">
-                {t(`reasons.${key}.title`)}
-              </h3>
-              <p className="text-sm leading-relaxed text-muted">
-                {t(`reasons.${key}.desc`)}
-              </p>
+              <h3 className="mb-3 text-xl text-heading">{t(`reasons.${key}.title`)}</h3>
+              <p className="text-sm leading-relaxed text-muted">{t(`reasons.${key}.desc`)}</p>
             </li>
           ))}
         </ul>
       </section>
 
       {settings?.tripadvisor?.awards?.length && !data?.sections.some((section) => section.type === "tripadvisor" && section.enabled !== false) ? (
-        <section className="bg-surface py-12">
-          <div className="container-page"><TripAdvisorAwards awards={settings.tripadvisor.awards} /></div>
+        <section className="bg-linear-to-b from-surface to-sand-50 py-12 sm:py-16">
+          <div className="container-page">
+            <TripAdvisorAwards awards={settings.tripadvisor.awards} title={t("awardsTitle")} description={t("awardsSubtitle")} label={t("awardsLabel")} />
+          </div>
         </section>
       ) : null}
 
-      {data && (
-        <PageRenderer
-          sections={data.sections}
-          settings={settings}
-          part="body"
-        />
-      )}
+      {data && <PageRenderer sections={data.sections} settings={settings} part="body" />}
     </>
   );
 }

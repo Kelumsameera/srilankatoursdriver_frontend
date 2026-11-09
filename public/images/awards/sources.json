@@ -1,0 +1,26 @@
+[
+  {
+    "year": 2024,
+    "source": "https://vivujourneys.com/wp-content/uploads/2025/04/TC-LOGO_2024-1.jpg",
+    "width": 600,
+    "height": 600,
+    "sha256": "15fca7f9b61921e4243930b70a888f3297f48951d65a803ef8c6f2833e5943d4",
+    "processing": "Decoded to PNG without resizing, recoloring, cropping or changing the year"
+  },
+  {
+    "year": 2025,
+    "source": "https://rustygate.co.za/wp-content/uploads/2025/05/TC_transparent_BF-Logo_LL_2025_CMYK-scaled-e1747122716911.webp",
+    "width": 1830,
+    "height": 1930,
+    "sha256": "fe5de37c2b40f35dfcefce1f4f90e927ce87fffc6b7b8e8218db5780d1dee480",
+    "processing": "Decoded to PNG without resizing, recoloring, cropping or changing the year"
+  },
+  {
+    "year": 2026,
+    "source": "https://www.blueharborhouse.com/wp-content/uploads/2026/07/Tripadvisor-TC-Badge-Travelers-Choice-Center-Aligned-Black-L.png",
+    "width": 1009,
+    "height": 1174,
+    "sha256": "1e2dea65f97332e194f65964bf58e162ae6aeaedd4a9400ac74e41c684f10cf0",
+    "processing": "Original PNG copied unchanged"
+  }
+]

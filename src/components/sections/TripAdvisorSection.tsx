@@ -18,9 +18,13 @@ export async function TripAdvisorSection({ section, ctx }: SectionProps) {
   const enabled = ctx.settings?.tripadvisor?.enabled !== false;
   // Switched off in settings: no section at all (the profile link always has something to show)
   const awards = ctx.settings?.tripadvisor?.awards;
-  if (!enabled) return awards?.length ? <Section theme={theme}><TripAdvisorAwards awards={awards} /></Section> : null;
+  if (!enabled) {
+    if (!awards?.length) return null;
+    const tAbout = await getTranslations("about");
+    return <Section theme={theme}><TripAdvisorAwards awards={awards} label={tAbout("awardsLabel")} /></Section>;
+  }
   const tReviews = await getTranslations("reviews");
-  const locale = await getLocale();
+  const [locale, tAbout] = await Promise.all([getLocale(), getTranslations("about")]);
 
   return (
     <Section theme={theme}>
@@ -46,7 +50,7 @@ export async function TripAdvisorSection({ section, ctx }: SectionProps) {
           <p className="-mt-6 text-small text-muted">{ctx.settings.tripadvisor.ratingText}</p>
         ) : null}
 
-        <TripAdvisorAwards awards={awards} />
+        <TripAdvisorAwards awards={awards} label={tAbout("awardsLabel")} />
 
         {/* LATEST REVIEWS */}
         {tripAdvisor?.reviews?.length ? (
