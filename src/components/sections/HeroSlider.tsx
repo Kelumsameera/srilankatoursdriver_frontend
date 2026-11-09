@@ -224,7 +224,7 @@ export function HeroSlider({ slides, pageTitle, rating, whatsapp, labels }: Prop
                   className={buttonClass(
                     (b.variant === "outline" ? "outline-light" : b.variant === "secondary" ? "ghost-light" : (b.variant ?? (bi === 0 ? "primary" : "outline-light"))) as ButtonVariant,
                     "lg",
-                    "rounded-md",
+                    "rounded-full",
                   )}
                 >
                   {b.label}

@@ -11,7 +11,10 @@ import {
 } from "lucide-react";
 import { getPage, getSiteSettings } from "@/lib/api/server";
 import { buildMetadata } from "@/lib/seo";
+import { editorialImages } from "@/lib/editorial-images";
 import { CmsImage } from "@/components/ui/CmsImage";
+import { TripAdvisorAwards } from "@/components/site/TripAdvisorAwards";
+import { PageHero } from "@/components/ui/misc";
 import { CmsLink } from "@/components/ui/CmsLink";
 import { Markdown } from "@/components/ui/Markdown";
 import {
@@ -68,10 +71,11 @@ export default async function AboutPage({ params }: Props) {
     getTranslations("about"),
   ]);
   const page = data?.page;
+  const storyImage = page?.heroImage?.url && page.heroImage.resourceType !== "video" ? page.heroImage : editorialImages.road;
 
   return (
     <>
-      {/* HEADER: the admin's hero section if it has one, else the green title band */}
+      {/* HEADER: prefer the admin's hero section, otherwise use the page image. */}
       {data && hasActiveHero(data.sections) ? (
         <PageRenderer
           sections={data.sections}
@@ -79,35 +83,19 @@ export default async function AboutPage({ params }: Props) {
           part="hero"
         />
       ) : (
-        <section className="relative isolate overflow-hidden bg-linear-to-br from-forest-800 via-forest-900 to-forest-950 text-white">
-          <div
-            className="pointer-events-none absolute inset-0 -z-10 opacity-[0.07]"
-            style={{
-              backgroundImage:
-                "repeating-linear-gradient(-45deg, #fff 0, #fff 1px, transparent 0, transparent 50%)",
-              backgroundSize: "16px 16px",
-            }}
-            aria-hidden
-          />
-          <div className="container-page pb-16 pt-36 text-center sm:pb-20 sm:pt-44">
-            <h1 className="mx-auto max-w-4xl animate-fade-up text-4xl leading-tight sm:text-5xl lg:text-6xl">
-              {page?.title || t("title")}
-            </h1>
-            {page?.subtitle && (
-              <p className="mx-auto mt-5 max-w-2xl animate-fade-up text-lg text-white/80 [animation-delay:120ms]">
-                {page.subtitle}
-              </p>
-            )}
-          </div>
-        </section>
+        <PageHero
+          title={page?.title || t("title")}
+          subtitle={page?.subtitle || t("desc1")}
+          image={storyImage}
+        />
       )}
 
       <section className="bg-surface py-20 sm:py-28">
         <div className="container-page grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
           <div className="relative">
             <CmsImage
-              media={page?.heroImage}
-              alt={page?.heroImage?.alt || page?.title || t("title")}
+              media={storyImage}
+              alt={storyImage.alt || page?.title || t("title")}
               sizes="(min-width: 1024px) 50vw, 100vw"
               wrapperClassName="aspect-[4/5] rounded-[2.5rem] shadow-card"
             />
@@ -208,6 +196,12 @@ export default async function AboutPage({ params }: Props) {
           ))}
         </ul>
       </section>
+
+      {settings?.tripadvisor?.awards?.length && !data?.sections.some((section) => section.type === "tripadvisor" && section.enabled !== false) ? (
+        <section className="bg-surface py-12">
+          <div className="container-page"><TripAdvisorAwards awards={settings.tripadvisor.awards} /></div>
+        </section>
+      ) : null}
 
       {data && (
         <PageRenderer

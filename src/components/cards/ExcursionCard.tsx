@@ -1,11 +1,11 @@
-import { Clock, MapPin } from "lucide-react";
+import { MapPin } from "lucide-react";
 import type { Excursion } from "@/types/cms";
 import { CmsImage } from "@/components/ui/CmsImage";
 import { CmsLink } from "@/components/ui/CmsLink";
 import { Badge } from "@/components/ui/misc";
 import { excursionCover } from "@/lib/editorial-images";
 
-// Excursion card: photo, category + duration badges, title (the whole card is a link), short text and place (rates are on the excursion page)
+// Excursion card: photo, category badge, title (the whole card is a link), short text and place (rates are on the excursion page)
 export function ExcursionCard({ excursion }: { excursion: Excursion }) {
   // A video can't be a card picture, so fall back to a matching editorial photo
   const cover = excursionCover(excursion);
@@ -26,11 +26,6 @@ export function ExcursionCard({ excursion }: { excursion: Excursion }) {
         {/* BADGES */}
         <div className="mb-3 flex flex-wrap gap-2">
           {excursion.category?.name && <Badge>{excursion.category.name}</Badge>}
-          {excursion.duration && (
-            <Badge className="bg-sand-100 text-earth-700">
-              <Clock className="h-3 w-3" aria-hidden /> {excursion.duration}
-            </Badge>
-          )}
         </div>
 
         {/* TITLE: stretched link, the whole card opens the excursion */}

@@ -4,6 +4,7 @@ import type { TripAdvisorSummary } from "@/types/cms";
 import { Section, SectionHeading } from "@/components/ui/misc";
 import { TripAdvisorBubbles, TripAdvisorMark } from "@/components/ui/TripAdvisorBubbles";
 import { formatDate } from "@/lib/utils";
+import { TripAdvisorAwards } from "@/components/site/TripAdvisorAwards";
 import { SocialIcons } from "@/components/ui/icons";
 import { sectionTheme, type SectionProps } from "./sectionParts";
 import { TRIPADVISOR_PROFILE_URL } from "./TripAdvisorWriteReview";
@@ -16,7 +17,8 @@ export async function TripAdvisorSection({ section, ctx }: SectionProps) {
   const profile = tripAdvisor?.webUrl || ctx.settings?.tripadvisor?.profileUrl || ctx.settings?.social?.tripadvisor || TRIPADVISOR_PROFILE_URL;
   const enabled = ctx.settings?.tripadvisor?.enabled !== false;
   // Switched off in settings: no section at all (the profile link always has something to show)
-  if (!enabled) return null;
+  const awards = ctx.settings?.tripadvisor?.awards;
+  if (!enabled) return awards?.length ? <Section theme={theme}><TripAdvisorAwards awards={awards} /></Section> : null;
   const tReviews = await getTranslations("reviews");
   const locale = await getLocale();
 
@@ -43,6 +45,8 @@ export async function TripAdvisorSection({ section, ctx }: SectionProps) {
         ) : ctx.settings?.tripadvisor?.ratingText ? (
           <p className="-mt-6 text-small text-muted">{ctx.settings.tripadvisor.ratingText}</p>
         ) : null}
+
+        <TripAdvisorAwards awards={awards} />
 
         {/* LATEST REVIEWS */}
         {tripAdvisor?.reviews?.length ? (

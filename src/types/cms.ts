@@ -79,7 +79,7 @@ export interface SiteSettings {
     termsUrl?: string;
     cookieUrl?: string;
   };
-  tripadvisor?: { enabled?: boolean; profileUrl?: string; ratingText?: string };
+  tripadvisor?: { enabled?: boolean; profileUrl?: string; ratingText?: string; awards?: TripAdvisorAward[] };
   /** Fixed airport-transfer price table shown on destination pages. */
   transferRates?: {
     enabled?: boolean;
@@ -503,4 +503,11 @@ export interface ApiEnvelope<T> {
   meta?: PaginationMeta;
   errors?: { path: string; message: string }[];
   code?: string;
+}
+
+/** Award years are entered from verified Tripadvisor listing evidence, never inferred. */
+export interface TripAdvisorAward {
+  year: number;
+  name: string;
+  sourceUrl: string;
 }

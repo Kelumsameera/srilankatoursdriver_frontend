@@ -100,10 +100,13 @@ function SectionBackdrop({ section, theme }: { section: PageSection; theme: stri
   const media = section.media;
   if (!media?.url || media.resourceType === "video") return null;
   const s = section.settings ?? {};
+  const honeymoon = section.name === "Home honeymoon-tours";
   const height = percent(s.backdropHeight, 75);
   const width = percent(s.backdropWidth, 100);
   const align = s.backdropAlign ?? "center";
   const fade = width < 100 ? SIDE_FADE[align] : undefined;
+  // Fade the image itself so the section texture shows through without a rectangular edge.
+  const topFade = honeymoon ? "linear-gradient(to bottom, transparent 0%, transparent 6%, rgb(0 0 0 / 0.1) 18%, rgb(0 0 0 / 0.55) 36%, #000 60%)" : undefined;
   return (
     <div
       aria-hidden
@@ -111,16 +114,18 @@ function SectionBackdrop({ section, theme }: { section: PageSection; theme: stri
       style={{ height: `${height}%`, width: `${width}%`, maskImage: fade, WebkitMaskImage: fade }}
       data-testid="section-backdrop"
     >
-      <CmsImage
-        media={media}
-        alt=""
-        sizes={`${width}vw`}
-        wrapperClassName="absolute inset-0 bg-transparent"
-        className="object-cover"
-        objectPosition={`center ${s.backdropFocus ?? "bottom"}`}
-        markIllustrative={false}
-      />
-      <div className={`absolute inset-0 bg-gradient-to-b to-transparent ${FADE_FROM[theme] ?? FADE_FROM.light}`} />
+      <div className="absolute inset-0" style={{ maskImage: topFade, WebkitMaskImage: topFade }}>
+        <CmsImage
+          media={media}
+          alt=""
+          sizes={`${width}vw`}
+          wrapperClassName="absolute inset-0 bg-transparent"
+          className="object-cover"
+          objectPosition={honeymoon ? "70% bottom" : `center ${s.backdropFocus ?? "bottom"}`}
+          markIllustrative={false}
+        />
+      </div>
+      {!honeymoon && <div className={`absolute inset-0 bg-gradient-to-b to-transparent ${FADE_FROM[theme] ?? FADE_FROM.light}`} />}
     </div>
   );
 }
@@ -169,12 +174,16 @@ export async function PopularToursSection({ section: raw, ctx }: SectionProps) {
   }
 
   // STAGGERED LAYOUT: tall photo cards at different heights (left low, middle high, right a little bigger).
-  // The pattern repeats every 3 cards; phones show a simple column.
+  // The pattern repeats every 3 cards; honeymoon cards retain the same composition on phones.
   if (section.settings?.layout === "staggered") {
-    const offsets = ["lg:mt-24", "lg:mt-0", "lg:mt-12"];
-    const heights = ["aspect-[4/5] lg:aspect-[3/4.4]", "aspect-[4/5] lg:aspect-[3/4]", "aspect-[4/5] lg:aspect-[3/4.6]"];
+    const honeymoon = section.name === "Home honeymoon-tours";
+    const offsets = honeymoon ? ["mt-10 sm:mt-16 lg:mt-24", "mt-0", "mt-5 sm:mt-8 lg:mt-12"] : ["lg:mt-24", "lg:mt-0", "lg:mt-12"];
+    const heights = honeymoon
+      ? ["aspect-[3/6.4] lg:aspect-[3/4.4]", "aspect-[3/5.8] lg:aspect-[3/4]", "aspect-[3/6.6] lg:aspect-[3/4.6]"]
+      : ["aspect-[4/5] lg:aspect-[3/4.4]", "aspect-[4/5] lg:aspect-[3/4]", "aspect-[4/5] lg:aspect-[3/4.6]"];
     // Each card drifts at its own speed while scrolling (HomeMotion), for the layered 3D look
     const drift = ["30", "-20", "12"];
+    const honeymoonImage = honeymoon && section.media?.resourceType !== "video" ? section.media ?? undefined : undefined;
     return (
       <Section theme={theme} className="relative isolate overflow-hidden">
         <SectionBackdrop section={section} theme={theme} />
@@ -182,11 +191,17 @@ export async function PopularToursSection({ section: raw, ctx }: SectionProps) {
         <div data-scroll-reveal>
           <Heading section={section} light={light} ctx={ctx} />
         </div>
-        <div className="relative grid grid-cols-1 items-start gap-grid sm:grid-cols-2 lg:grid-cols-[1fr_1fr_1.12fr] lg:gap-10 lg:pb-12">
+        <div className={cn("relative grid items-start lg:gap-10 lg:pb-12", honeymoon ? "grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1.12fr)] gap-2 sm:gap-4" : "grid-cols-1 gap-grid sm:grid-cols-2 lg:grid-cols-[1fr_1fr_1.12fr]")}>
           {tours.map((tour, index) => (
             <div key={tour._id} className={offsets[index % 3]} {...reveal3d(index)}>
               <div data-parallax={drift[index % 3]}>
-                <TallTourCard tour={tour} className={heights[index % 3]} />
+                <TallTourCard
+                  tour={tour}
+                  compact={honeymoon}
+                  className={heights[index % 3]}
+                  image={index === tours.length - 1 ? honeymoonImage : undefined}
+                  objectPosition={honeymoonImage && index === tours.length - 1 ? "85% center" : undefined}
+                />
               </div>
             </div>
           ))}

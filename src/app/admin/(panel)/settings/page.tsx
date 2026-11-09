@@ -55,6 +55,11 @@ export default function SiteSettingsPage() {
               { name: "enabled", label: "Show TripAdvisor section", type: "switch" },
               { name: "profileUrl", label: "Profile URL", type: "url" },
               { name: "ratingText", label: "Rating text (shown when the API is not configured)", type: "text", span: 2 },
+              { name: "awards", label: "Awards by year", type: "objectList", itemTitle: "year", addLabel: "Add verified award", span: 2, fields: [
+                { name: "year", label: "Award year", type: "number", min: 2000, max: 2100, required: true },
+                { name: "name", label: "Award name", type: "text", required: true, placeholder: "Travellers' Choice" },
+                { name: "sourceUrl", label: "Official Tripadvisor listing URL", type: "url", required: true, span: 2, hint: "Add a year only when the award is confirmed on your Tripadvisor listing or certificate." },
+              ] },
             ] },
           ],
         },
