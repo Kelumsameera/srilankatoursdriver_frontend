@@ -1,5 +1,6 @@
-import type { Destination, MediaAsset, Tour } from "@/types/cms";
+import type { Destination, Excursion, MediaAsset, Tour } from "@/types/cms";
 import { generatedDestinationImages } from "@/lib/generated-destination-images";
+import { generatedExcursionImages } from "@/lib/generated-excursion-images";
 
 /** Generated CMS covers retain their disclosure in alt text even when hosted on Cloudinary. */
 export function isIllustrative(url?: string, alt?: string): boolean {
@@ -68,6 +69,14 @@ export const editorialImages = {
 
 export function travelImageFor(value: string) {
   const text = value.toLowerCase();
+  const normalized = text.replace(/[^a-z0-9]+/g, " ").trim();
+  const aliases: Record<string, string> = { pasikuda: "passikudah", pasikudah: "passikudah", passikuda: "passikudah", pasikuna: "passikudah", jafna: "jaffna", polonaruwa: "polonnaruwa", trinkomale: "trincomalee", hikaduwa: "hikkaduwa" };
+  for (const [name, slug] of Object.entries(aliases)) {
+    if (` ${normalized} `.includes(` ${name} `)) return DESTINATION_ART[slug];
+  }
+  for (const [slug, image] of Object.entries(DESTINATION_ART)) {
+    if (` ${normalized} `.includes(` ${slug.replace(/-/g, " ")} `)) return image;
+  }
   if (/sigiriya|lion.?rock|dambulla/.test(text)) return editorialImages.sigiriya;
   if (/ella|nine.?arch|demodara|hill.?country|nuwara.?eliya/.test(text)) return editorialImages.ella;
   if (/kandy|tooth|peradeniya/.test(text)) return editorialImages.kandy;
@@ -98,6 +107,17 @@ export function destinationImage(destination: Pick<Destination, "name" | "slug">
 export function destinationCover(destination: Pick<Destination, "name" | "slug" | "heroMedia">): MediaAsset | null {
   const hero = destination.heroMedia;
   return hero?.url && hero.resourceType !== "video" ? hero : destinationImage(destination);
+}
+
+/** Use the same location-specific cover on excursion cards, detail pages and SEO. */
+export function excursionCover(excursion: Pick<Excursion, "heroMedia" | "destination" | "slug" | "title" | "location">): MediaAsset {
+  // These curated covers intentionally replace the existing low-resolution CMS images.
+  const curated = generatedExcursionImages[excursion.slug];
+  if (curated) return curated;
+  const hero = excursion.heroMedia;
+  if (hero?.url && hero.resourceType !== "video") return hero;
+  const destination = excursion.destination && destinationImage(excursion.destination);
+  return destination || travelImageFor(`${excursion.slug} ${excursion.title} ${excursion.location ?? ""} ${excursion.destination?.name ?? ""}`);
 }
 
 export function tourImage(tour: Pick<Tour, "title" | "slug" | "startLocation" | "endLocation" | "destinations" | "itinerary">): MediaAsset {

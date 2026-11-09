@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
+import { Fragment, useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
@@ -19,7 +19,7 @@ function isActive(pathname: string, search: string, href: string) {
   const [path, query] = href.split("?");
   if (query) return pathname === path && search === query;
   if (path === "/admin") return pathname === "/admin";
-  return (pathname === path || pathname.startsWith(`${path}/`)) && !search.startsWith("status=");
+  return (pathname === path || pathname.startsWith(`${path}/`));
 }
 
 /** Sidebar labels are English in navigation.ts; show the admin language's version when there is one. */
@@ -39,7 +39,8 @@ function useActiveLink() {
   const pathname = usePathname();
   const search = useSearchParams().toString();
   const visible = useVisibleNav();
-  const links = visible.flatMap((g) => (g.children ?? []).map((c) => ({ ...c, group: g })));
+  // Single-link groups (Bookings, Customers …) count as their own link, so their detail pages get breadcrumbs too
+  const links = visible.flatMap((g) => (g.href ? [{ label: g.label, href: g.href, perm: g.perm, group: g }] : (g.children ?? []).map((c) => ({ ...c, group: g }))));
   const active = links.filter((c) => isActive(pathname, search, c.href)).sort((a, b) => b.href.length - a.href.length)[0];
   return { visible, active, pathname, search };
 }
@@ -114,13 +115,21 @@ function Sidebar({ collapsed = false, onNavigate, onExpand }: { collapsed?: bool
 
   return (
     <nav aria-label="Admin" className={cn("space-y-0.5 text-sm", collapsed ? "p-2" : "p-3")}>
-      {visible.map((g) => {
+      {visible.map((g, index) => {
         const label = navLabel(g.label);
+        // SECTION HEADING before the first group of each section (a thin line when collapsed)
+        const newSection = g.section !== visible[index - 1]?.section;
+        const heading = !newSection ? null : collapsed ? (
+          index > 0 && <hr className="my-2 border-white/10" />
+        ) : (
+          <p className={cn("px-3 pb-1 text-[0.68rem] font-semibold uppercase tracking-wider text-white/40", index > 0 ? "pt-4" : "pt-1")}>{navLabel(g.section)}</p>
+        );
         if (g.href) {
           const current = isActive(pathname, search, g.href);
           return (
+            <Fragment key={g.label}>
+            {heading}
             <Link
-              key={g.label}
               href={g.href}
               onClick={onNavigate}
               title={collapsed ? label : undefined}
@@ -134,10 +143,13 @@ function Sidebar({ collapsed = false, onNavigate, onExpand }: { collapsed?: bool
               <g.icon className="h-4 w-4 shrink-0" aria-hidden />
               <span className={cn(collapsed && "sr-only")}>{label}</span>
             </Link>
+            </Fragment>
           );
         }
         return (
-          <div key={g.label}>
+          <Fragment key={g.label}>
+          {heading}
+          <div>
             <button
               type="button"
               title={collapsed ? label : undefined}
@@ -174,6 +186,7 @@ function Sidebar({ collapsed = false, onNavigate, onExpand }: { collapsed?: bool
               </ul>
             )}
           </div>
+          </Fragment>
         );
       })}
     </nav>

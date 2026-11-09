@@ -58,12 +58,12 @@ const banners = {
     credit: { author: "dronepicr", ...BY2, source: commons("Mirissa_beach_aerial_(29448581263).jpg") },
   },
   excursions: {
-    src: "/images/banners/excursions-banner.webp",
-    alt: "Evening light at the Temple of the Tooth in Kandy",
-    width: 1920,
-    height: 1280,
-    focus: "65% 50%",
-    credit: { author: "Ernest Jourdier", ...BY4, source: commons("Temple_of_the_Tooth_Kandy.jpg") },
+    src: "/images/editorial/excursions/kandy-v2.webp",
+    alt: "AI-generated illustrative view of the Temple of the Sacred Tooth Relic beside Kandy Lake",
+    width: 1536,
+    height: 1024,
+    focus: "50% 50%",
+    illustrative: true,
   },
   gallery: {
     src: "/images/banners/gallery-banner.webp",

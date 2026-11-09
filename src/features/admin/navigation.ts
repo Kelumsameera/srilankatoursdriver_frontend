@@ -12,7 +12,9 @@ import {
   Map,
   MapPin,
   MessageSquare,
+  PanelsTopLeft,
   Settings,
+  Star,
   UserRound,
   Users,
   Wand2,
@@ -27,6 +29,8 @@ export interface NavLink {
   perm?: string;
 }
 export interface NavGroup {
+  /** Sidebar heading this group sits under. */
+  section: string;
   label: string;
   icon: LucideIcon;
   href?: string;
@@ -34,38 +38,22 @@ export interface NavGroup {
   children?: NavLink[];
 }
 
-const statusLinks = (base: string, statuses: string[], perm: string) =>
-  statuses.map((s) => ({ label: s.charAt(0).toUpperCase() + s.slice(1), href: `${base}?status=${s}`, perm }));
-
+// Sidebar sections, top to bottom: daily work first, then content, then website settings
 export const ADMIN_NAV: NavGroup[] = [
-  { label: "Dashboard", icon: LayoutDashboard, href: "/admin", perm: "dashboard:read" },
-  { label: "Analytics", icon: BarChart3, href: "/admin/analytics", perm: "analytics:read" },
+  // OVERVIEW
+  { section: "Overview", label: "Dashboard", icon: LayoutDashboard, href: "/admin", perm: "dashboard:read" },
+  { section: "Overview", label: "Analytics", icon: BarChart3, href: "/admin/analytics", perm: "analytics:read" },
+
+  // BOOKINGS & ENQUIRIES (the status tabs are on each list page)
+  { section: "Bookings & Enquiries", label: "Bookings", icon: CalendarCheck, href: "/admin/bookings", perm: "bookings:read" },
+  { section: "Bookings & Enquiries", label: "Tailor-Made Enquiries", icon: Wand2, href: "/admin/tailor-made", perm: "enquiries:read" },
+  { section: "Bookings & Enquiries", label: "Contact Messages", icon: MessageSquare, href: "/admin/messages", perm: "contacts:read" },
+  { section: "Bookings & Enquiries", label: "Customers", icon: UserRound, href: "/admin/customers", perm: "customers:read" },
+  { section: "Bookings & Enquiries", label: "AI Chats", icon: Bot, href: "/admin/chats", perm: "bookings:read" },
+
+  // CONTENT
   {
-    label: "Website",
-    icon: Globe2,
-    children: [
-      { label: "Site Settings", href: "/admin/settings", perm: "settings:read" },
-      { label: "Branding", href: "/admin/branding", perm: "branding:read" },
-      { label: "Theme", href: "/admin/theme", perm: "branding:read" },
-      { label: "Homepage", href: "/admin/pages/home", perm: "pages:read" },
-      { label: "Navbar", href: "/admin/content/navigation", perm: "navigation:read" },
-      { label: "Footer", href: "/admin/footer", perm: "settings:read" },
-      { label: "Pages", href: "/admin/pages", perm: "pages:read" },
-      { label: "SEO", href: "/admin/content/seo", perm: "seo:read" },
-      { label: "Transfer Rates", href: "/admin/rates", perm: "settings:read" },
-      { label: "Social Media", href: "/admin/social", perm: "settings:read" },
-    ],
-  },
-  {
-    label: "Media",
-    icon: ImageIcon,
-    children: [
-      { label: "Media Library", href: "/admin/media", perm: "media:read" },
-      { label: "Hero Media", href: "/admin/content/hero", perm: "hero:read" },
-      { label: "Gallery", href: "/admin/content/gallery", perm: "gallery:read" },
-    ],
-  },
-  {
+    section: "Content",
     label: "Tours",
     icon: Map,
     children: [
@@ -76,6 +64,7 @@ export const ADMIN_NAV: NavGroup[] = [
     ],
   },
   {
+    section: "Content",
     label: "Destinations",
     icon: MapPin,
     children: [
@@ -84,6 +73,7 @@ export const ADMIN_NAV: NavGroup[] = [
     ],
   },
   {
+    section: "Content",
     label: "Excursions",
     icon: Compass,
     children: [
@@ -92,6 +82,7 @@ export const ADMIN_NAV: NavGroup[] = [
     ],
   },
   {
+    section: "Content",
     label: "Vehicles",
     icon: Car,
     children: [
@@ -100,23 +91,8 @@ export const ADMIN_NAV: NavGroup[] = [
     ],
   },
   {
-    label: "Bookings",
-    icon: CalendarCheck,
-    children: [
-      { label: "All Bookings", href: "/admin/bookings", perm: "bookings:read" },
-      ...statusLinks("/admin/bookings", ["new", "contacted", "quoted", "confirmed", "cancelled", "completed"], "bookings:read"),
-    ],
-  },
-  {
-    label: "Tailor-Made Tours",
-    icon: Wand2,
-    children: [
-      { label: "Enquiries", href: "/admin/tailor-made", perm: "enquiries:read" },
-      ...statusLinks("/admin/tailor-made", ["new", "processing", "quoted", "confirmed", "closed"], "enquiries:read"),
-    ],
-  },
-  {
-    label: "Content",
+    section: "Content",
+    label: "Blog & Community",
     icon: BookOpen,
     children: [
       { label: "Blog", href: "/admin/content/blog", perm: "blog:read" },
@@ -124,17 +100,58 @@ export const ADMIN_NAV: NavGroup[] = [
       { label: "Guest Stories", href: "/admin/content/stories", perm: "blog:read" },
       { label: "Categories", href: "/admin/content/blog-categories", perm: "categories:read" },
       { label: "Guest Shorts", href: "/admin/content/guest-shorts", perm: "guestShorts:read" },
+    ],
+  },
+  {
+    section: "Content",
+    label: "Reviews & FAQs",
+    icon: Star,
+    children: [
       { label: "Reviews", href: "/admin/content/reviews", perm: "reviews:read" },
+      { label: "Testimonials", href: "/admin/content/testimonials", perm: "reviews:read" },
       { label: "FAQs", href: "/admin/content/faqs", perm: "faqs:read" },
       { label: "AI Knowledge", href: "/admin/content/chat-knowledge", perm: "faqs:read" },
-      { label: "Testimonials", href: "/admin/content/testimonials", perm: "reviews:read" },
+    ],
+  },
+  {
+    section: "Content",
+    label: "Media",
+    icon: ImageIcon,
+    children: [
+      { label: "Media Library", href: "/admin/media", perm: "media:read" },
+      { label: "Hero Media", href: "/admin/content/hero", perm: "hero:read" },
+      { label: "Gallery", href: "/admin/content/gallery", perm: "gallery:read" },
       { label: "Gallery Categories", href: "/admin/content/gallery-categories", perm: "categories:read" },
     ],
   },
-  { label: "Customers", icon: UserRound, href: "/admin/customers", perm: "customers:read" },
-  { label: "Contact Messages", icon: MessageSquare, href: "/admin/messages", perm: "contacts:read" },
-  { label: "AI Chats", icon: Bot, href: "/admin/chats", perm: "bookings:read" },
+
+  // WEBSITE: pages and menus, then settings and look
   {
+    section: "Website",
+    label: "Pages & Menus",
+    icon: PanelsTopLeft,
+    children: [
+      { label: "Homepage", href: "/admin/pages/home", perm: "pages:read" },
+      { label: "Pages", href: "/admin/pages", perm: "pages:read" },
+      { label: "Navbar", href: "/admin/content/navigation", perm: "navigation:read" },
+      { label: "Footer", href: "/admin/footer", perm: "settings:read" },
+      { label: "SEO", href: "/admin/content/seo", perm: "seo:read" },
+    ],
+  },
+  {
+    section: "Website",
+    label: "Site Settings",
+    icon: Globe2,
+    children: [
+      { label: "General Settings", href: "/admin/settings", perm: "settings:read" },
+      { label: "Branding", href: "/admin/branding", perm: "branding:read" },
+      { label: "Theme", href: "/admin/theme", perm: "branding:read" },
+      { label: "Transfer Rates", href: "/admin/rates", perm: "settings:read" },
+      { label: "Social Media", href: "/admin/social", perm: "settings:read" },
+    ],
+  },
+  {
+    section: "Website",
     label: "Translations",
     icon: FileText,
     children: [
@@ -144,7 +161,10 @@ export const ADMIN_NAV: NavGroup[] = [
       { label: "UI Texts", href: "/admin/translations/ui-texts", perm: "translations:read" },
     ],
   },
+
+  // ADMIN
   {
+    section: "Admin",
     label: "Users",
     icon: Users,
     children: [
@@ -154,6 +174,7 @@ export const ADMIN_NAV: NavGroup[] = [
     ],
   },
   {
+    section: "Admin",
     label: "System",
     icon: Settings,
     children: [

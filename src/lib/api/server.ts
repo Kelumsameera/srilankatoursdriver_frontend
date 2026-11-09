@@ -65,11 +65,16 @@ interface FetchOptions {
   noStore?: boolean;
 }
 
+// Bound upstream stalls well below the function deadline, including response body reads.
+const API_TIMEOUT_MS = 10_000;
+
 async function apiGet<T>(path: string, opts: FetchOptions = {}): Promise<{ data: T; meta?: PaginationMeta }> {
   const url = `${SERVER_API_URL}${path}`;
   let res: Response;
+  let body: ApiEnvelope<T> | null;
   try {
     res = await fetch(url, {
+      signal: AbortSignal.timeout(API_TIMEOUT_MS),
       headers: {
         accept: "application/json",
         ...(process.env.REVALIDATE_SECRET ? { "x-revalidate-secret": process.env.REVALIDATE_SECRET } : {}),
@@ -78,11 +83,15 @@ async function apiGet<T>(path: string, opts: FetchOptions = {}): Promise<{ data:
         ? { cache: "no-store" as const }
         : { next: { revalidate: opts.revalidate ?? REVALIDATE_SECONDS, tags: [...(opts.tags ?? []), TAGS.translations] } }),
     });
+    body = (await res.json().catch((err: unknown) => {
+      // Invalid JSON is handled as an invalid envelope; transport failures must remain 503s.
+      if (err instanceof SyntaxError) return null;
+      throw err;
+    })) as ApiEnvelope<T> | null;
   } catch (err) {
     unstable_rethrow(err);
     throw new ApiRequestError(503, `API unreachable at ${SERVER_API_URL}: ${(err as Error).message}`);
   }
-  const body = (await res.json().catch(() => null)) as ApiEnvelope<T> | null;
   if (!res.ok || !body?.success) throw new ApiRequestError(res.status, body?.message ?? `Request failed: ${res.status}`);
   return { data: body.data, meta: body.meta };
 }

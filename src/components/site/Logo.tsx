@@ -29,6 +29,12 @@ export function Logo({ branding, siteName, tone = "dark", mobile, className, pre
   const text = textLogo(branding, siteName);
 
   if (text) {
+    const fontFamily = {
+      Poppins: '"Poppins", sans-serif',
+      "Playfair Display": '"Playfair Display", serif',
+      Arial: 'Arial, sans-serif',
+      Georgia: 'Georgia, serif',
+    }[branding?.logoFont ?? "Poppins"];
     const iconHeight = mobile ? 36 : 48;
     const { width: w, height: h } = text.icon ?? {};
     const iconWidth = w && h ? Math.round((iconHeight * w) / h) : iconHeight;
@@ -46,9 +52,10 @@ export function Logo({ branding, siteName, tone = "dark", mobile, className, pre
             style={{ width: iconWidth, height: iconHeight }}
           />
         )}
-        {/* LOGO TEXT: real text in the site theme colours (green + gold, white + gold on dark backgrounds) */}
-        <span className="flex flex-col whitespace-nowrap font-sans font-bold uppercase leading-none">
+        {/* Editable text stays separate from the icon, with independent colours for each background. */}
+        <span className="flex flex-col whitespace-nowrap font-bold leading-none" style={{ fontFamily }}>
           <span
+            style={{ color: tone === "light" ? branding?.logoLightTextColor1 : branding?.logoTextColor1 }}
             className={cn(
               "tracking-[0.08em]",
               tone === "light" ? "text-white" : "text-brand",
@@ -59,6 +66,7 @@ export function Logo({ branding, siteName, tone = "dark", mobile, className, pre
           </span>
           {text.lines[1] && (
             <span
+              style={{ color: tone === "light" ? branding?.logoLightTextColor2 : branding?.logoTextColor2 }}
               className={cn(
                 "mt-1 tracking-[0.16em]",
               tone === "light" ? "text-gold-400" : "text-gold-600",

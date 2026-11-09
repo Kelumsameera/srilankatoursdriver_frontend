@@ -14,7 +14,7 @@ import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 import { ExcursionRates } from "@/components/site/ExcursionRates";
 import { DestinationMap } from "@/components/site/DestinationMap";
 import { CheckList, DetailSection, FactList, MediaStrip } from "@/components/site/DetailBits";
-import { travelImageFor } from "@/lib/editorial-images";
+import { excursionCover } from "@/lib/editorial-images";
 import { destinationMarker } from "@/lib/destination-map";
 import { reveal3d } from "@/lib/reveal";
 import type { Excursion } from "@/types/cms";
@@ -29,9 +29,7 @@ export function generateStaticParams() {
 
 // The big hero picture. A video can't be used here, so fall back to a matching editorial photo.
 function heroImageFor(excursion: Excursion) {
-  return excursion.heroMedia?.url && excursion.heroMedia.resourceType !== "video"
-    ? excursion.heroMedia
-    : travelImageFor(`${excursion.slug} ${excursion.title} ${excursion.location ?? ""} ${excursion.destination?.name ?? ""}`);
+  return excursionCover(excursion);
 }
 
 // generateMetadata is Next.js's way to set the <title> and SEO tags. It runs on the server before the page.

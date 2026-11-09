@@ -55,7 +55,8 @@ export default async function ExcursionsPage({ params, searchParams }: Props) {
           <CategoryFilter basePath="/excursions" categories={categories ?? []} active={category} />
           {excursionList?.items.length ? (
             <div className="grid-center-last grid grid-cols-1 gap-grid sm:grid-cols-2 lg:grid-cols-3">
-              {excursionList.items.map((excursion, index) => (
+              {/* A-Z by the (translated) title */}
+              {[...excursionList.items].sort((a, b) => a.title.localeCompare(b.title, locale)).map((excursion, index) => (
                 <div key={excursion._id} {...reveal3d(index)}>
                   <ExcursionCard excursion={excursion} />
                 </div>

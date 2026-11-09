@@ -114,6 +114,11 @@ export interface Branding {
   logoIcon?: MediaAsset | null;
   logoTextLine1?: string;
   logoTextLine2?: string;
+  logoFont?: "Poppins" | "Playfair Display" | "Arial" | "Georgia";
+  logoTextColor1?: string;
+  logoTextColor2?: string;
+  logoLightTextColor1?: string;
+  logoLightTextColor2?: string;
   logoAlt?: string;
   logoWidth?: number;
   logoHeight?: number;

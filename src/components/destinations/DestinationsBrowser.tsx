@@ -51,7 +51,9 @@ export function DestinationsBrowser({ destinations, initialCategory, eagerFirstI
     return () => window.removeEventListener("popstate", onBackOrForward);
   }, []);
 
-  const visibleDestinations = activeCategory ? destinations.filter((destination) => destination.category?.slug === activeCategory) : destinations;
+  // Cards A-Z by the (translated) name
+  const sorted = [...destinations].sort((a, b) => a.name.localeCompare(b.name));
+  const visibleDestinations = activeCategory ? sorted.filter((destination) => destination.category?.slug === activeCategory) : sorted;
   const pageSize = 6;
   const pageCount = Math.ceil(visibleDestinations.length / pageSize);
   const currentPage = position.category === activeCategory ? Math.min(position.index, Math.max(pageCount - 1, 0)) : 0;

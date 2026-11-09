@@ -3,14 +3,12 @@ import type { Excursion } from "@/types/cms";
 import { CmsImage } from "@/components/ui/CmsImage";
 import { CmsLink } from "@/components/ui/CmsLink";
 import { Badge } from "@/components/ui/misc";
-import { travelImageFor } from "@/lib/editorial-images";
+import { excursionCover } from "@/lib/editorial-images";
 
 // Excursion card: photo, category + duration badges, title (the whole card is a link), short text and place (rates are on the excursion page)
 export function ExcursionCard({ excursion }: { excursion: Excursion }) {
   // A video can't be a card picture, so fall back to a matching editorial photo
-  const cover = excursion.heroMedia?.url && excursion.heroMedia.resourceType !== "video"
-    ? excursion.heroMedia
-    : travelImageFor(`${excursion.slug} ${excursion.title} ${excursion.location ?? ""}`);
+  const cover = excursionCover(excursion);
 
   return (
     <article className="group relative flex h-full flex-col overflow-hidden rounded-3xl bg-surface shadow-card">
