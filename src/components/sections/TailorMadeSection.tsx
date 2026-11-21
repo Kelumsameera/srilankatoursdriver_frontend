@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { CmsImage } from "@/components/ui/CmsImage";
 import { CmsLink } from "@/components/ui/CmsLink";
 import { Markdown } from "@/components/ui/Markdown";
-import { editorialImages } from "@/lib/editorial-images";
+import { bannerMedia, pageBanner } from "@/lib/page-banners";
 import { GoldText } from "./home/Decor";
 import { Buttons, type SectionProps } from "./sectionParts";
 
@@ -21,8 +21,12 @@ export async function TailorMadeSection({ section, ctx }: SectionProps) {
   const tTailorMade = await getTranslations("tailorMade");
   // Design: an ivory content panel beside a full-bleed photo, whatever theme is stored for the section.
   const light = false;
-  // The section's own photo, else a real photo from this page, else an editorial road photo
-  const photo = section.media?.url ? section.media : ctx.photos?.[2] ?? ctx.photos?.[0] ?? editorialImages.road;
+  // A large photo panel needs a full-resolution image, not an arbitrary gallery thumbnail.
+  const banner = pageBanner("tailor-made-tours");
+  const customPhoto = section.media?.url && section.media.resourceType !== "video" && (section.media.width ?? 0) >= 1200
+    ? section.media
+    : null;
+  const photo = customPhoto ?? bannerMedia(banner);
 
   return (
     <section className={cn("relative overflow-x-clip", light ? "bg-forest-900 text-white" : "bg-sand-50")}>
@@ -30,8 +34,15 @@ export async function TailorMadeSection({ section, ctx }: SectionProps) {
         {/* Full-bleed photo with a wavy edge towards the content; the edge is cut out of the photo (tailor-photo-mask in globals.css) */}
         <div className="tailor-photo-mask relative min-h-[18rem] overflow-hidden sm:min-h-[24rem] lg:min-h-[36rem]">
           <div data-parallax="-60" className="absolute -inset-y-16 inset-x-0">
-            <CmsImage media={photo} alt={photo.alt || section.title || ""} sizes="(min-width: 1024px) 50vw, 100vw" wrapperClassName="absolute inset-0" />
+            <CmsImage media={photo} alt={photo.alt || section.title || ""} sizes="(min-width: 1024px) 50vw, 100vw" wrapperClassName="absolute inset-0" objectPosition={customPhoto ? undefined : banner.focus} />
           </div>
+          {!customPhoto && banner.credit && (
+            <p className="absolute bottom-3 start-4 z-10 rounded bg-black/50 px-2 py-1 text-[0.65rem] text-white/90">
+              <a href={banner.credit.source} target="_blank" rel="noopener noreferrer" className="underline">{banner.credit.author}</a>
+              {" ? "}
+              <a href={banner.credit.licenseUrl} target="_blank" rel="noopener noreferrer" className="underline">{banner.credit.license}</a>
+            </p>
+          )}
           {section.badge && (
             <p className="absolute inset-s-5 top-5 max-w-[11rem] rounded-2xl bg-gold-500 px-4 py-3 text-small font-semibold leading-tight text-forest-950 shadow-card">
               {section.badge}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { RealisticChristmasSleigh } from "./RealisticChristmasSleigh";
 
 /**
  * Christmas decorations that react to scrolling (on while Admin → Theme → snow animation is on).
@@ -66,59 +67,21 @@ export function ChristmasScrollDecor() {
       {sleigh && (
         // Clipped to the viewport so the off-screen start/end of the flight never widens the page
         <div className="fixed inset-0 z-[55] overflow-hidden">
-          <Sleigh onDone={() => setSleigh(false)} />
+          <div
+            className="xmas-sleigh absolute top-[18%] left-0 w-[300px] sm:w-[430px]"
+            onAnimationEnd={(event) => {
+              // Only the completed flight dismisses the team; the sprite also animates.
+              if (event.target === event.currentTarget && event.animationName === "xmas-fly") {
+                setSleigh(false);
+              }
+            }}
+          >
+            <RealisticChristmasSleigh />
+          </div>
         </div>
       )}
       <GiftBox open={gift} />
     </div>
-  );
-}
-
-/** Santa, sleigh and two reindeer flying left to right across the upper part of the screen. */
-function Sleigh({ onDone }: { onDone: () => void }) {
-  return (
-    <svg className="xmas-sleigh absolute top-[18%] left-0 w-[220px] sm:w-[300px]" viewBox="0 0 300 90" onAnimationEnd={onDone}>
-      {/* sparkle trail */}
-      <g fill="#fde68a">
-        <circle cx="4" cy="62" r="1.6" />
-        <circle cx="16" cy="56" r="1.2" />
-        <circle cx="28" cy="64" r="1.8" />
-        <circle cx="40" cy="58" r="1" />
-      </g>
-      {/* reins */}
-      <path d="M118 52 Q170 40 205 42 M118 52 Q200 50 255 36" stroke="#8a6414" strokeWidth="1.2" fill="none" />
-      {/* sleigh */}
-      <path d="M50 46 h62 q10 0 10 12 v6 h-66 q-12 0 -12 -10z" fill="#c81e1e" stroke="#7f1d1d" strokeWidth="1.2" />
-      <path d="M42 72 h80 q10 0 12 -8" stroke="#d4a537" strokeWidth="3" fill="none" strokeLinecap="round" />
-      <path d="M60 64 v8 M108 64 v8" stroke="#d4a537" strokeWidth="2.5" />
-      {/* gift sack */}
-      <ellipse cx="62" cy="40" rx="13" ry="12" fill="#7c4a1e" />
-      <rect x="54" y="26" width="10" height="9" fill="#1f8a4c" />
-      <rect x="64" y="24" width="9" height="11" fill="#e0b03c" />
-      {/* Santa */}
-      <circle cx="95" cy="34" r="10" fill="#c81e1e" />
-      <circle cx="98" cy="22" r="6" fill="#f5cba7" />
-      <path d="M92 24 q6 10 12 0 q-2 8 -6 9 q-4 -1 -6 -9z" fill="#fff" />
-      <path d="M92 19 q6 -12 14 -4 l-14 4z" fill="#c81e1e" />
-      <circle cx="107" cy="14" r="2.4" fill="#fff" />
-      <rect x="86" y="36" width="18" height="3" fill="#1c1917" />
-      {/* reindeer */}
-      <Reindeer x={190} />
-      <Reindeer x={240} nose="#ef4444" />
-    </svg>
-  );
-}
-
-function Reindeer({ x, nose = "#3f2a1a" }: { x: number; nose?: string }) {
-  return (
-    <g transform={`translate(${x} 0)`}>
-      <ellipse cx="18" cy="44" rx="18" ry="8" fill="#8b5a2b" />
-      <path d="M4 48 l-8 12 M10 50 l-2 14 M28 50 l6 12 M32 47 l12 8" stroke="#5c3a1a" strokeWidth="3" strokeLinecap="round" />
-      <path d="M30 40 q6 -10 12 -12" stroke="#8b5a2b" strokeWidth="6" strokeLinecap="round" fill="none" />
-      <ellipse cx="46" cy="27" rx="7" ry="5" fill="#8b5a2b" />
-      <circle cx="53" cy="27" r="2.4" fill={nose} />
-      <path d="M42 22 l-4 -10 m2 5 l-5 -2 M46 22 l2 -10 m-1 5 l4 -3" stroke="#5c3a1a" strokeWidth="1.6" strokeLinecap="round" fill="none" />
-    </g>
   );
 }
 

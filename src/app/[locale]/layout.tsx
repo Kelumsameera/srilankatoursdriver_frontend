@@ -8,6 +8,7 @@ import { getBranding, getLanguages, getList, getNavigation, getPage, getSeo, get
 import { hasActiveHero } from "@/components/sections/PageRenderer";
 import { SITE_URL } from "@/lib/config";
 import { cloudinaryUrl } from "@/lib/cloudinary-loader";
+import { siteIconUrl } from "@/lib/site-icon";
 import { alternates, getSiteLanguages, jsonLd, organizationJsonLd } from "@/lib/seo";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
@@ -47,7 +48,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const siteName = settings?.siteName ?? "";
   // "{siteName}" in the SEO title template is replaced with the Site Settings value, so renaming the site updates every title.
   const template = (seo?.global?.titleTemplate?.includes("%s") ? seo.global.titleTemplate : "%s | {siteName}").replace(/\{siteName\}/g, siteName);
-  const faviconUrl = branding?.favicon?.url;
+  const faviconUrl = siteIconUrl(branding);
   return {
     metadataBase: new URL(SITE_URL),
     title: { default: (seo?.global?.seoTitle || siteName).replace(/\{siteName\}/g, siteName), template },
@@ -57,10 +58,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     icons: faviconUrl
       ? {
           icon: [
-            { url: cloudinaryUrl(faviconUrl, { width: 32, height: 32, crop: "fill", format: "png" }), sizes: "32x32" },
-            { url: cloudinaryUrl(faviconUrl, { width: 192, height: 192, crop: "fill", format: "png" }), sizes: "192x192" },
+            { url: cloudinaryUrl(faviconUrl, { width: 32, height: 32, crop: "fit", format: "png" }), sizes: "32x32" },
+            { url: cloudinaryUrl(faviconUrl, { width: 192, height: 192, crop: "fit", format: "png" }), sizes: "192x192" },
           ],
-          apple: cloudinaryUrl(faviconUrl, { width: 180, height: 180, crop: "fill", format: "png" }),
+          apple: cloudinaryUrl(faviconUrl, { width: 180, height: 180, crop: "fit", format: "png" }),
         }
       : { icon: "/favicon-fallback.svg" },
     ...(seo?.global?.googleSiteVerification ? { verification: { google: seo.global.googleSiteVerification } } : {}),
@@ -147,7 +148,7 @@ export default async function LocaleLayout({ children, params }: Props) {
             </main>
             {settingsRes && <TrustBar settings={settings} />}
             {settingsRes && theme.snowfall && <ChristmasFooterScene locale={locale} />}
-            {settingsRes && <SiteFooter settings={settings} branding={branding} tours={footerTours?.items ?? []} destinations={footerDestinations?.items ?? []} />}
+            {settingsRes && <SiteFooter festive={theme.snowfall} settings={settings} branding={branding} tours={footerTours?.items ?? []} destinations={footerDestinations?.items ?? []} />}
             <CurrencyConverter siteCurrency={settings.currency} />
             <WhatsAppFloat phone={settings.whatsapp} message={settings.whatsappMessage} />
             <WhatsAppClickTracker />

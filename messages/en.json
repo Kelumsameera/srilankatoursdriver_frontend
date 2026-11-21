@@ -422,6 +422,7 @@
     "basedOn": "{count, plural, one {Based on # review} other {Based on # reviews}}"
   },
   "gallery": {
+    "momentsTitle": "Travel Moments with Our Guests",
     "photos": "Photos",
     "videos": "Videos"
   },

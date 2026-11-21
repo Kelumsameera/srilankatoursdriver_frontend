@@ -1,13 +1,16 @@
+import { useId } from "react";
+
 /**
  * Two gold jingle bells tied together under a red ribbon bow with holly, gently swinging
  * (CSS .bell-swing in globals.css). Decorative only.
  */
 export function ChristmasBells() {
+  const goldId = useId();
   return (
     <span aria-hidden="true" className="pointer-events-none ms-1 flex shrink-0 self-start sm:ms-2">
       <svg className="bell-swing block h-auto w-[30px] sm:w-[46px]" viewBox="0 0 46 52">
         <defs>
-          <linearGradient id="xmas-bell-gold" x1="0" x2="1" y1="0" y2="0">
+          <linearGradient id={goldId} x1="0" x2="1" y1="0" y2="0">
             <stop offset="0" stopColor="#f7d774" />
             <stop offset="0.55" stopColor="#d4a537" />
             <stop offset="1" stopColor="#9a7420" />
@@ -16,11 +19,11 @@ export function ChristmasBells() {
 
         {/* left bell, tilted out */}
         <g transform="rotate(22 23 14)">
-          <Bell />
+          <Bell goldId={goldId} />
         </g>
         {/* right bell, tilted the other way */}
         <g transform="rotate(-22 23 14)">
-          <Bell />
+          <Bell goldId={goldId} />
         </g>
 
         {/* holly leaves and berries behind the bow */}
@@ -41,12 +44,12 @@ export function ChristmasBells() {
 }
 
 /** One bell hanging straight down from the knot at (23, 14). */
-function Bell() {
+function Bell({ goldId }: { goldId: string }) {
   return (
     <>
       <path
         d="M23 15 c-6 0 -8 5 -8 11 v6 l-3.5 5 h23 l-3.5 -5 v-6 c0 -6 -2 -11 -8 -11z"
-        fill="url(#xmas-bell-gold)"
+        fill={`url(#${goldId})`}
         stroke="#8a661b"
         strokeWidth="0.9"
       />
