@@ -5,7 +5,7 @@
 export function ChristmasBells() {
   return (
     <span aria-hidden="true" className="pointer-events-none ms-1 flex shrink-0 self-start sm:ms-2">
-      <svg className="bell-swing block" width="46" height="52" viewBox="0 0 46 52">
+      <svg className="bell-swing block h-auto w-[30px] sm:w-[46px]" viewBox="0 0 46 52">
         <defs>
           <linearGradient id="xmas-bell-gold" x1="0" x2="1" y1="0" y2="0">
             <stop offset="0" stopColor="#f7d774" />

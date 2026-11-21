@@ -25,7 +25,7 @@ const ORNAMENTS: Ornament[] = [
 
 export function ChristmasOrnaments() {
   return (
-    <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 z-50 h-0">
+    <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 z-50 h-[260px] overflow-hidden">
       {ORNAMENTS.map((o, i) => (
         <Ball key={i} index={i} {...o} />
       ))}

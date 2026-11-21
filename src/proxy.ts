@@ -67,6 +67,6 @@ export const config = {
     "/((?!api|admin|manager|staff|_next|_vercel|sitemap.xml|robots.txt|.*\\..*).*)",
     // Proxied API calls, except this app's own route handlers and the multipart upload routes: Vercel caps
     // request bodies that pass through Proxy at 4 MB, so uploads go straight to the rewrite.
-    "/api/((?!currency|revalidate|admin/media/upload|admin/media/[^/]+/replace).*)",
+    "/api/((?!currency|revalidate|internal-mail|admin/media/upload|admin/media/[^/]+/replace).*)",
   ],
 };
