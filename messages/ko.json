@@ -390,6 +390,9 @@
     "banner": "미리보기 모드 – 비활성화된 섹션도 표시됩니다. 이 페이지는 공개되지 않았습니다."
   },
   "about": {
+    "teamLabel": "Our team",
+    "teamTitle": "Meet the people behind your journey",
+    "teamLanguages": "Speaks",
     "title": "Sri Lanka Tours Driver 소개",
     "awardsTitle": "여행자에게 인정받은 서비스",
     "awardsSubtitle": "고객에게 오래 기억될 여행을 선사한 공로로 Tripadvisor Travelers’ Choice를 수상했습니다.",

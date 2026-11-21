@@ -6,6 +6,7 @@ import { buildMetadata } from "@/lib/seo";
 import { editorialImages } from "@/lib/editorial-images";
 import { CmsImage } from "@/components/ui/CmsImage";
 import { TripAdvisorAwards } from "@/components/site/TripAdvisorAwards";
+import { TeamShowcase } from "@/components/site/TeamShowcase";
 import { PageHero } from "@/components/ui/misc";
 import { CmsLink } from "@/components/ui/CmsLink";
 import { Markdown } from "@/components/ui/Markdown";
@@ -135,6 +136,9 @@ export default async function AboutPage({ params }: Props) {
           ))}
         </ul>
       </section>
+
+      {/* Admin → Our Team; skipped when the about page already has its own team section. */}
+      {!data?.sections.some((section) => section.type === "team" && section.enabled !== false) && <TeamShowcase team={settings?.team} />}
 
       {settings?.tripadvisor?.awards?.length && !data?.sections.some((section) => section.type === "tripadvisor" && section.enabled !== false) ? (
         <section className="bg-linear-to-b from-surface to-sand-50 py-12 sm:py-16">

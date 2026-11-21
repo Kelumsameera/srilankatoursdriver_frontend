@@ -553,6 +553,9 @@
     "banner": "Preview mode – disabled sections are visible. This page is not public."
   },
   "about": {
+    "teamLabel": "Our team",
+    "teamTitle": "Meet the people behind your journey",
+    "teamLanguages": "Speaks",
     "title": "About Sri Lanka Tours Driver",
     "awardsTitle": "Recognized by travelers",
     "awardsSubtitle": "Proud recipients of Tripadvisor Travelers’ Choice awards, celebrating the journeys our guests remember.",
