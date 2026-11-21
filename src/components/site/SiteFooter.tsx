@@ -5,16 +5,18 @@ import { interpolate, telLink, whatsappLink } from "@/lib/utils";
 import { CmsLink } from "@/components/ui/CmsLink";
 import { SocialIcons } from "@/components/ui/icons";
 import { Logo } from "./Logo";
+import { ChristmasBells } from "./ChristmasBells";
 
 interface Props {
   settings: SiteSettings;
   branding: Branding | null;
   tours: Tour[];
   destinations: Destination[];
+  festive?: boolean;
 }
 
 /** Every piece of footer content is managed in Admin → Footer / Site Settings / Social Media. */
-export async function SiteFooter({ settings, branding, tours, destinations }: Props) {
+export async function SiteFooter({ settings, branding, tours, destinations, festive = false }: Props) {
   const t = await getTranslations("footer");
   const tc = await getTranslations("contact");
   const f = settings.footer ?? {};
@@ -30,9 +32,12 @@ export async function SiteFooter({ settings, branding, tours, destinations }: Pr
       <div className="pointer-events-none absolute -end-32 -top-32 h-96 w-96 rounded-full bg-forest-600/20 blur-3xl" aria-hidden />
       <div className="container-page relative grid gap-8 py-10 sm:gap-12 sm:py-20 lg:grid-cols-12 lg:gap-10">
         <div className="lg:col-span-3">
-          <CmsLink href="/" className="inline-block" ariaLabel={settings.siteName}>
-            <Logo branding={branding} siteName={settings.siteName} tone="light" />
-          </CmsLink>
+          <div className="flex items-center">
+            <CmsLink href="/" className="min-w-0" ariaLabel={settings.siteName}>
+              <Logo branding={branding} siteName={settings.siteName} tone="light" />
+            </CmsLink>
+            {festive && <ChristmasBells />}
+          </div>
           {f.description && <p className="mt-4 max-w-sm text-sm leading-relaxed sm:mt-6 sm:text-base">{f.description}</p>}
           {/* Map + location under the logo and text, balancing the link columns on the right. */}
           {mapSrc && (

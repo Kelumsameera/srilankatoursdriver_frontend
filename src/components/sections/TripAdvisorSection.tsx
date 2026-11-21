@@ -21,7 +21,7 @@ export async function TripAdvisorSection({ section, ctx }: SectionProps) {
   if (!enabled) {
     if (!awards?.length) return null;
     const tAbout = await getTranslations("about");
-    return <Section theme={theme}><TripAdvisorAwards awards={awards} label={tAbout("awardsLabel")} /></Section>;
+    return <Section theme={theme} className="py-8! sm:py-10! lg:py-10!"><TripAdvisorAwards awards={awards} title={tAbout("awardsTitle")} label={tAbout("awardsLabel")} /></Section>;
   }
   const tReviews = await getTranslations("reviews");
   const [locale, tAbout] = await Promise.all([getLocale(), getTranslations("about")]);
@@ -50,7 +50,7 @@ export async function TripAdvisorSection({ section, ctx }: SectionProps) {
           <p className="-mt-6 text-small text-muted">{ctx.settings.tripadvisor.ratingText}</p>
         ) : null}
 
-        <TripAdvisorAwards awards={awards} label={tAbout("awardsLabel")} />
+        <TripAdvisorAwards awards={awards} title={tAbout("awardsTitle")} label={tAbout("awardsLabel")} />
 
         {/* LATEST REVIEWS */}
         {tripAdvisor?.reviews?.length ? (

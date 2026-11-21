@@ -13,7 +13,7 @@ export async function GallerySection({ section, ctx }: SectionProps) {
 
   return (
     <Section theme={theme}>
-      <Heading section={section} light={light} ctx={ctx} />
+      <Heading section={{ ...section, title: section.title?.trim() || tGallery("momentsTitle") }} light={light} ctx={ctx} />
       <GalleryGrid
         items={items}
         variant={section.settings?.layout === "carousel" ? "marquee" : "strip"}

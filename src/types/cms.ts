@@ -100,6 +100,14 @@ export interface SiteSettings {
   };
   /** Accreditation / partner logos for the trust bar. */
   partners?: { name: string; url?: string; logo?: MediaAsset | null }[];
+  /** "Our team" section (Admin → Our Team). */
+  team?: {
+    enabled?: boolean;
+    title?: string;
+    subtitle?: string;
+    members?: { _id?: string; name: string; role?: string; bio?: string; languages?: string[]; photo?: MediaAsset | null; enabled?: boolean }[];
+    images?: MediaAsset[];
+  };
   maintenanceMode?: boolean;
   updatedAt?: string;
 }

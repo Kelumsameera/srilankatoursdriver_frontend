@@ -74,7 +74,7 @@ export function SiteHeader({ nav, logoLight, logoDark, logoMobile, logoMobileLig
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [pathname]);
 
   // A new page closes the mobile menu (state is reset during render, React's pattern for "reset on prop change")
   if (pathname !== lastPathname) {
@@ -102,8 +102,13 @@ export function SiteHeader({ nav, logoLight, logoDark, logoMobile, logoMobileLig
   }, [menuOpen]);
 
   const interiorPage = pathname !== "/";
-  const destinationDetail = /^\/destinations\/[^/]+\/?$/.test(pathname);
-  const imageHeroPage = destinationDetail || (pathname === "/destinations" && destinationsHero);
+  // Standard CMS pages (including custom slugs) render PageHero or a CMS hero.
+  // Utility/feed pages have no image behind the header and need a solid bar.
+  const noHeroRoots = ["account", "blog", "community", "reels", "stories", "destinations"];
+  const segments = pathname.split("/").filter(Boolean);
+  const cmsHeroPage = segments.length === 1 && !noHeroRoots.includes(segments[0]);
+  const detailHeroPage = /^\/(destinations|tours|excursions|blog|preview)\/[^/]+\/?$/.test(pathname);
+  const imageHeroPage = pathname === "/" || cmsHeroPage || detailHeroPage || (pathname === "/destinations" && destinationsHero);
   const solid = (interiorPage && !imageHeroPage) || scrolled || menuOpen;
   // Nav items marked "CTA" in Admin → Navigation become the Book Now button; the rest are links
   const links = nav.filter((item) => !item.isCta);

@@ -148,6 +148,7 @@ export const ADMIN_NAV: NavGroup[] = [
       { label: "Theme", href: "/admin/theme", perm: "branding:read" },
       { label: "Transfer Rates", href: "/admin/rates", perm: "settings:read" },
       { label: "Social Media", href: "/admin/social", perm: "settings:read" },
+      { label: "Our Team", href: "/admin/team", perm: "settings:read" },
     ],
   },
   {

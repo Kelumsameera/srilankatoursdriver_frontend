@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
+    "check:translations": "node scripts/check-translations.mjs",
     "lint": "eslint ."
   },
   "dependencies": {
