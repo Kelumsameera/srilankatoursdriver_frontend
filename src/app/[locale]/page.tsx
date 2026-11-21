@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { getPage, getSiteSettings } from "@/lib/api/server";
+import { getBranding, getPage, getSiteSettings } from "@/lib/api/server";
+import { resolveTheme } from "@/lib/theme";
+import { ChristmasOrnaments } from "@/components/site/ChristmasOrnaments";
 import { buildMetadata } from "@/lib/seo";
 import { PageRenderer, hasActiveHero } from "@/components/sections/PageRenderer";
 import { PageHero } from "@/components/ui/misc";
@@ -20,7 +22,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function HomePage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const [data, settings] = await Promise.all([getPage("home", locale), getSiteSettings(locale)]);
+  const [data, settings, branding] = await Promise.all([getPage("home", locale), getSiteSettings(locale), getBranding()]);
   if (!data) {
     const t = await getTranslations("errors");
     return <PageHero title={settings?.siteName ?? ""} subtitle={t("unavailable")} />;
@@ -28,6 +30,8 @@ export default async function HomePage({ params }: Props) {
   const hasHero = hasActiveHero(data.sections);
   return (
     <HomeMotion>
+      {/* Seasonal: shown while Admin → Theme → snow animation is on */}
+      {resolveTheme(branding).snowfall && <ChristmasOrnaments />}
       {!hasHero && <PageHero title={data.page.title} subtitle={data.page.subtitle} image={data.page.heroImage} />}
       <PageRenderer sections={data.sections} settings={settings} content={data.page.content} pageTitle={data.page.title} />
     </HomeMotion>

@@ -1,5 +1,6 @@
 "use client";
 
+import { ChristmasBells } from "./ChristmasBells";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { ChevronDown, Menu, Phone, X } from "lucide-react";
@@ -15,6 +16,8 @@ import { LanguageSwitcher } from "./LanguageSwitcher";
 interface Props {
   /** Show the light/dark switch (Admin → Theme → Mode: "Visitor chooses"). */
   themeToggle?: boolean;
+  /** Christmas bells hanging beside the logo (on while Admin → Theme → snow animation is on). */
+  festive?: boolean;
   destinationsHero?: boolean;
   nav: NavItem[];
   logoLight: ReactNode;
@@ -52,7 +55,7 @@ const desktopNavItem = "relative flex min-h-11 items-center rounded-full px-1.5 
  * Transparent over the hero, white once the page is scrolled or the mobile menu is open.
  * Below 1280px the nav moves into the mobile menu (fixed breakpoint, no measuring, so it never changes between page loads).
  */
-export function SiteHeader({ nav, logoLight, logoDark, logoMobile, logoMobileLight, languages, phone, whatsapp, themeToggle = false, destinationsHero = false }: Props) {
+export function SiteHeader({ nav, logoLight, logoDark, logoMobile, logoMobileLight, languages, phone, whatsapp, themeToggle = false, festive = false, destinationsHero = false }: Props) {
   const tNav = useTranslations("nav");
   const tCommon = useTranslations("common");
   const pathname = usePathname();
@@ -128,6 +131,7 @@ export function SiteHeader({ nav, logoLight, logoDark, logoMobile, logoMobileLig
             <span className="hidden dark:sm:block">{logoLight}</span>
             <span className="hidden dark:block dark:sm:hidden">{logoMobileLight}</span>
           </CmsLink>
+          {festive && <ChristmasBells />}
         </div>
 
         {/* DESKTOP NAV (from 1280px) */}
