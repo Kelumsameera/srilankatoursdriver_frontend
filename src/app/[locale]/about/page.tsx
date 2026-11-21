@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ArrowUpRight, Award, CheckCircle2, Heart, Shield, Star, Users } from "lucide-react";
@@ -7,6 +8,7 @@ import { editorialImages } from "@/lib/editorial-images";
 import { CmsImage } from "@/components/ui/CmsImage";
 import { TripAdvisorAwards } from "@/components/site/TripAdvisorAwards";
 import { TeamShowcase } from "@/components/site/TeamShowcase";
+import { reveal3d } from "@/lib/reveal";
 import { PageHero } from "@/components/ui/misc";
 import { CmsLink } from "@/components/ui/CmsLink";
 import { Markdown } from "@/components/ui/Markdown";
@@ -67,7 +69,7 @@ export default async function AboutPage({ params }: Props) {
 
       <section className="bg-surface py-20 sm:py-28">
         <div className="container-page grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
-          <div className="relative">
+          <div className="relative" data-scroll-reveal>
             <CmsImage media={storyImage} alt={storyImage.alt || page?.title || t("title")} sizes="(min-width: 1024px) 50vw, 100vw" wrapperClassName="aspect-[4/5] rounded-[2.5rem] shadow-card" />
             <div className="absolute inset-x-6 bottom-6 rounded-2xl bg-surface/90 p-6 shadow-card backdrop-blur sm:inset-x-8 sm:bottom-8">
               <p className="font-display text-xl italic text-brand-soft">{t("heading")}</p>
@@ -75,7 +77,7 @@ export default async function AboutPage({ params }: Props) {
             </div>
           </div>
 
-          <div>
+          <div data-scroll-reveal style={{ "--reveal-delay": "120ms" } as CSSProperties}>
             <div className="mb-6 flex items-center gap-3">
               <span className="h-0.5 w-10 bg-gold-500" aria-hidden />
               <span className="eyebrow">{t("label")}</span>
@@ -114,8 +116,8 @@ export default async function AboutPage({ params }: Props) {
 
       <section className="bg-surface pb-20 sm:pb-28">
         <dl className="container-page grid grid-cols-2 gap-5 lg:grid-cols-4">
-          {STATS.map((s) => (
-            <div key={s.key} className="flex min-w-0 flex-col-reverse rounded-4xl border border-sand-200 bg-sand-50 px-3 py-6 text-center sm:p-10">
+          {STATS.map((s, index) => (
+            <div key={s.key} {...reveal3d(index, 4)} className="flex min-w-0 flex-col-reverse rounded-4xl border border-sand-200 bg-sand-50 px-3 py-6 text-center sm:p-10">
               <dt className="mt-2 text-[0.72rem] font-bold uppercase tracking-[0.08em] text-gold-600 sm:tracking-[0.2em]">{t(`stats.${s.key}`)}</dt>
               <dd className="font-display text-3xl text-heading sm:text-5xl">{s.value}</dd>
             </div>
@@ -125,8 +127,8 @@ export default async function AboutPage({ params }: Props) {
 
       <section className="bg-sand-100 py-20 sm:py-28">
         <ul className="container-page grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {REASONS.map(({ key, icon: Icon }) => (
-            <li key={key} className="group rounded-[2.5rem] bg-surface p-9 shadow-sm transition-shadow hover:shadow-card">
+          {REASONS.map(({ key, icon: Icon }, index) => (
+            <li key={key} {...reveal3d(index)} className="group rounded-[2.5rem] bg-surface p-9 shadow-sm transition-shadow hover:shadow-card">
               <span className="mb-7 flex h-14 w-14 items-center justify-center rounded-2xl bg-forest-50 transition-colors group-hover:bg-forest-800">
                 <Icon className="h-7 w-7 text-forest-600 transition-colors group-hover:text-gold-400" aria-hidden />
               </span>

@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import type { SiteSettings } from "@/types/cms";
 import { CmsImage } from "@/components/ui/CmsImage";
+import { reveal3d } from "@/lib/reveal";
 
 /**
  * "Our team" block (Admin → Our Team): member cards, then group photos.
@@ -15,7 +16,7 @@ export async function TeamShowcase({ team }: { team: SiteSettings["team"] }) {
   return (
     <section className="bg-surface py-20 sm:py-28" aria-labelledby="team-heading" data-testid="team-section">
       <div className="container-page">
-        <div className="mx-auto mb-12 max-w-2xl text-center">
+        <div className="mx-auto mb-12 max-w-2xl text-center" data-scroll-reveal>
           <p className="eyebrow mb-3">{t("teamLabel")}</p>
           <h2 id="team-heading" className="text-3xl text-heading sm:text-4xl">
             {team.title || t("teamTitle")}
@@ -27,8 +28,9 @@ export async function TeamShowcase({ team }: { team: SiteSettings["team"] }) {
         {members.length > 0 && (
           <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {members.map((m, i) => (
-              <li key={m._id ?? `${m.name}-${i}`} className="overflow-hidden rounded-[2rem] border border-sand-200 bg-sand-50 shadow-sm transition-shadow hover:shadow-card">
+              <li key={m._id ?? `${m.name}-${i}`} {...reveal3d(i)} className="overflow-hidden rounded-[2rem] border border-sand-200 bg-sand-50 shadow-sm transition-shadow hover:shadow-card">
                 <CmsImage
+                  depth
                   media={m.photo ?? undefined}
                   alt={m.photo?.alt || m.name}
                   sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
@@ -54,7 +56,7 @@ export async function TeamShowcase({ team }: { team: SiteSettings["team"] }) {
         {images.length > 0 && (
           <ul className={`grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 ${members.length > 0 ? "mt-12" : ""}`}>
             {images.map((img, i) => (
-              <li key={img.publicId ?? img.url ?? i} className={i === 0 && images.length > 2 ? "col-span-2 row-span-2" : ""}>
+              <li key={img.publicId ?? img.url ?? i} {...reveal3d(i)} className={i === 0 && images.length > 2 ? "col-span-2 row-span-2" : ""}>
                 <CmsImage media={img} alt={img.alt || team.title || t("teamTitle")} sizes="(min-width: 1024px) 33vw, 50vw" wrapperClassName="aspect-square h-full rounded-2xl" />
               </li>
             ))}

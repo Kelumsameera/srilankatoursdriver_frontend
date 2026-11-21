@@ -6,7 +6,6 @@ import { ChristmasOrnaments } from "@/components/site/ChristmasOrnaments";
 import { buildMetadata } from "@/lib/seo";
 import { PageRenderer, hasActiveHero } from "@/components/sections/PageRenderer";
 import { PageHero } from "@/components/ui/misc";
-import { HomeMotion } from "@/components/ui/HomeMotion";
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -29,11 +28,11 @@ export default async function HomePage({ params }: Props) {
   }
   const hasHero = hasActiveHero(data.sections);
   return (
-    <HomeMotion>
+    <>
       {/* Seasonal: shown while Admin → Theme → snow animation is on */}
       {resolveTheme(branding).snowfall && <ChristmasOrnaments />}
       {!hasHero && <PageHero title={data.page.title} subtitle={data.page.subtitle} image={data.page.heroImage} />}
       <PageRenderer sections={data.sections} settings={settings} content={data.page.content} pageTitle={data.page.title} />
-    </HomeMotion>
+    </>
   );
 }

@@ -85,7 +85,8 @@ export function HomeMotion({ children }: { children: ReactNode }) {
     };
     register();
     const mutations = new MutationObserver(register);
-    mutations.observe(host, { subtree: true, childList: true });
+    // attributes too: ScrollReveal adds data-parallax to card grids after the page loads
+    mutations.observe(host, { subtree: true, childList: true, attributes: true, attributeFilter: ["data-parallax"] });
     window.addEventListener("scroll", schedule, { passive: true });
     window.addEventListener("resize", schedule);
     host.addEventListener("pointermove", move, { passive: true });

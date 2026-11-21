@@ -20,6 +20,7 @@ import { Logo } from "@/components/site/Logo";
 import { CustomerAuthProvider } from "@/lib/customer/auth";
 import { PageViewTracker } from "@/components/site/PageViewTracker";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
+import { HomeMotion } from "@/components/ui/HomeMotion";
 import { DepthScroll } from "@/components/ui/DepthScroll";
 import { Snowfall } from "@/components/ui/Snowfall";
 import { ChristmasScrollDecor } from "@/components/site/ChristmasScrollDecor";
@@ -144,7 +145,10 @@ export default async function LocaleLayout({ children, params }: Props) {
               </div>
             )}
             <main id="main" className="flex-1">
-              <ScrollReveal>{children}</ScrollReveal>
+              <ScrollReveal>
+                {/* Parallax drift + mouse tilt on every page (was home only) */}
+                <HomeMotion>{children}</HomeMotion>
+              </ScrollReveal>
             </main>
             {settingsRes && <TrustBar settings={settings} />}
             {settingsRes && theme.snowfall && <ChristmasFooterScene locale={locale} />}
