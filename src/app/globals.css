@@ -745,3 +745,9 @@ html[data-festive] [data-section][data-lit] h2::after {
   html[data-festive] [data-section] h2::after { transition: none; }
   .xmas-tuktuk { transform: translateX(60vw); }
 }
+
+/* Safety net: decorations must never make the page wider than the screen (mobile crop). clip keeps sticky working. */
+html[data-festive],
+html[data-festive] body {
+  overflow-x: clip;
+}

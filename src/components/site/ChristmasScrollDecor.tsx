@@ -63,7 +63,12 @@ export function ChristmasScrollDecor() {
 
   return (
     <div aria-hidden="true" className="pointer-events-none">
-      {sleigh && <Sleigh onDone={() => setSleigh(false)} />}
+      {sleigh && (
+        // Clipped to the viewport so the off-screen start/end of the flight never widens the page
+        <div className="fixed inset-0 z-[55] overflow-hidden">
+          <Sleigh onDone={() => setSleigh(false)} />
+        </div>
+      )}
       <GiftBox open={gift} />
     </div>
   );
@@ -72,7 +77,7 @@ export function ChristmasScrollDecor() {
 /** Santa, sleigh and two reindeer flying left to right across the upper part of the screen. */
 function Sleigh({ onDone }: { onDone: () => void }) {
   return (
-    <svg className="xmas-sleigh fixed top-[18%] left-0 z-[55] w-[220px] sm:w-[300px]" viewBox="0 0 300 90" onAnimationEnd={onDone}>
+    <svg className="xmas-sleigh absolute top-[18%] left-0 w-[220px] sm:w-[300px]" viewBox="0 0 300 90" onAnimationEnd={onDone}>
       {/* sparkle trail */}
       <g fill="#fde68a">
         <circle cx="4" cy="62" r="1.6" />
