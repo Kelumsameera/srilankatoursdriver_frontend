@@ -268,6 +268,9 @@ export function ThemeEditor() {
                       ? "Every visitor sees the dark palette."
                       : "Every visitor sees the light palette (the original design)."}
                 </p>
+                <div className="mt-4">
+                  <Switch checked={theme.snowfall} disabled={readOnly} onChange={(snowfall) => set((t) => ({ ...t, snowfall }))} label="Falling snow animation (seasonal)" />
+                </div>
               </div>
               <div className="mb-4">
                 <Segmented

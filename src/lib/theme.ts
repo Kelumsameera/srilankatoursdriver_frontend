@@ -75,6 +75,8 @@ export interface ThemeSettings {
   buttonStyle: ButtonStyle;
   /** Multiplies the space between and inside page sections (1 = today). */
   spacingScale: number;
+  /** Falling-snow animation over the whole public site (seasonal, e.g. with the Christmas preset). */
+  snowfall: boolean;
   customCss: string;
 }
 
@@ -181,6 +183,12 @@ export const PRESETS: { id: string; name: string; colors: ThemeColors; darkColor
     colors: light("#1f2326", "#3d4a52", "#c49a3a", "#f7f7f5", "#18191b", "#5c6065", "#e2e2de"),
     darkColors: dark("#1f2326", "#9aa7b0", "#ddb663", "#0d0e0f", "#17191b", "#ececea", "#a3a6aa", "#2b2e31"),
   },
+  {
+    id: "christmas",
+    name: "Christmas",
+    colors: light("#8b1a1a", "#1d6b3a", "#d4a537", "#fbf7f2", "#2a1414", "#6e5a5a", "#efdcd6"),
+    darkColors: dark("#5e1010", "#3fa868", "#e6c15c", "#0e0b0d", "#1a1416", "#f4ece9", "#b7a5a5", "#3a2528"),
+  },
 ];
 
 /** Google Fonts the admin may choose (only these are ever requested). Poppins and Playfair are self-hosted. */
@@ -239,6 +247,7 @@ export const DEFAULT_THEME: ThemeSettings = {
   radiusScale: 1,
   buttonStyle: "pill",
   spacingScale: 1,
+  snowfall: false,
   customCss: "",
 };
 
@@ -343,6 +352,7 @@ export function resolveTheme(branding?: { colors?: Partial<Record<string, string
       },
     },
     radiusScale: num(t.radiusScale, d.radiusScale, 0, 2),
+    snowfall: t.snowfall === true,
     buttonStyle: oneOf(t.buttonStyle, ["pill", "rounded", "square"] as const, d.buttonStyle),
     spacingScale: num(t.spacingScale, d.spacingScale, 0.75, 1.5),
     customCss: typeof t.customCss === "string" ? sanitizeCustomCss(t.customCss) : "",

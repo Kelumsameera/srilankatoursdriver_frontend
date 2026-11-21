@@ -20,6 +20,9 @@ import { CustomerAuthProvider } from "@/lib/customer/auth";
 import { PageViewTracker } from "@/components/site/PageViewTracker";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { DepthScroll } from "@/components/ui/DepthScroll";
+import { Snowfall } from "@/components/ui/Snowfall";
+import { ChristmasScrollDecor } from "@/components/site/ChristmasScrollDecor";
+import { ChristmasFooterScene } from "@/components/site/ChristmasFooterScene";
 import type { SiteSettings } from "@/types/cms";
 import { travelSans, travelDisplay } from "@/lib/fonts";
 import { DEFAULT_THEME, THEME_INIT_SCRIPT, googleFonts, googleFontsUrl, resolveTheme, themeToCss } from "@/lib/theme";
@@ -101,7 +104,7 @@ export default async function LocaleLayout({ children, params }: Props) {
   return (
     // Browser extensions (password managers, launchers, translators…) add attributes to <html>/<body> before
     // React hydrates; suppressHydrationWarning ignores attribute differences on these two elements only.
-    <html data-scroll-behavior="smooth" data-theme={fixedMode} lang={locale} dir={dir} style={brandStyle} className={`${travelSans.variable} ${travelDisplay.variable}`} data-site="public" suppressHydrationWarning>
+    <html data-scroll-behavior="smooth" data-theme={fixedMode} data-festive={theme.snowfall ? "" : undefined} lang={locale} dir={dir} style={brandStyle} className={`${travelSans.variable} ${travelDisplay.variable}`} data-site="public" suppressHydrationWarning>
       <head>
         {fontsUrl && (
           <>
@@ -127,6 +130,7 @@ export default async function LocaleLayout({ children, params }: Props) {
               phone={settings.phone}
               whatsapp={whatsapp}
               themeToggle={theme.mode === "visitor"}
+              festive={theme.snowfall}
               logoLight={<Logo branding={branding} siteName={settings.siteName} tone="light" preload />}
               logoDark={<Logo branding={branding} siteName={settings.siteName} tone="dark" />}
               logoMobile={<Logo branding={branding} siteName={settings.siteName} tone="dark" mobile className="max-h-10" />}
@@ -142,11 +146,14 @@ export default async function LocaleLayout({ children, params }: Props) {
               <ScrollReveal>{children}</ScrollReveal>
             </main>
             {settingsRes && <TrustBar settings={settings} />}
+            {settingsRes && theme.snowfall && <ChristmasFooterScene locale={locale} />}
             {settingsRes && <SiteFooter settings={settings} branding={branding} tours={footerTours?.items ?? []} destinations={footerDestinations?.items ?? []} />}
             <CurrencyConverter siteCurrency={settings.currency} />
             <WhatsAppFloat phone={settings.whatsapp} message={settings.whatsappMessage} />
             <WhatsAppClickTracker />
             <DepthScroll />
+            {theme.snowfall && <Snowfall />}
+            {theme.snowfall && <ChristmasScrollDecor />}
             <PageViewTracker />
           </CustomerAuthProvider>
         </NextIntlClientProvider>
