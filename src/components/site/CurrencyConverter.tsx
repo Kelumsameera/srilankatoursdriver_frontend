@@ -39,25 +39,46 @@ export function CurrencyConverter({ siteCurrency = "USD" }: { siteCurrency?: str
   const toggle = useRef<HTMLButtonElement>(null);
   const panel = useRef<HTMLDivElement>(null);
 
-  // Load once when first opened; after a failure, closing and reopening retries.
-  const inFlight = useRef(false);
+  // Refresh while open, and immediately when the visitor returns to the tab.
   useEffect(() => {
-    if (!open || rates || inFlight.current) return;
-    inFlight.current = true;
-    setState("loading");
-    fetch("/api/currency?base=USD")
-      .then((r) => r.json())
-      .then((json: { success: boolean; data?: Rates }) => {
-        if (json.success && json.data) {
+    if (!open) return;
+    const controller = new AbortController();
+    let inFlight = false;
+    const refresh = async () => {
+      if (inFlight || document.visibilityState === "hidden") return;
+      inFlight = true;
+      setState("loading");
+      try {
+        const response = await fetch("/api/currency?base=USD", {
+          cache: "no-store",
+          signal: AbortSignal.any([controller.signal, AbortSignal.timeout(15_000)]),
+        });
+        const json = (await response.json()) as { success: boolean; data?: Rates };
+        if (!response.ok || !json.success || !json.data) throw new Error("Rates unavailable");
+        if (!controller.signal.aborted) {
           setRates(json.data);
           setState("idle");
-        } else setState("error");
-      })
-      .catch(() => setState("error"))
-      .finally(() => {
-        inFlight.current = false;
-      });
-  }, [open, rates]);
+        }
+      } catch {
+        if (!controller.signal.aborted) setState("error");
+      } finally {
+        inFlight = false;
+      }
+    };
+    void refresh();
+    const timer = window.setInterval(() => void refresh(), 5 * 60 * 1000);
+    const onReturn = () => void refresh();
+    window.addEventListener("focus", onReturn);
+    window.addEventListener("online", onReturn);
+    document.addEventListener("visibilitychange", onReturn);
+    return () => {
+      controller.abort();
+      window.clearInterval(timer);
+      window.removeEventListener("focus", onReturn);
+      window.removeEventListener("online", onReturn);
+      document.removeEventListener("visibilitychange", onReturn);
+    };
+  }, [open]);
 
   useEffect(() => {
     if (!open) return;

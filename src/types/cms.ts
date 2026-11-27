@@ -120,9 +120,13 @@ export interface Branding {
   favicon?: MediaAsset | null;
   /** Icon + text logo (Admin → Branding). When the icon or line 1 is set it replaces the logo images. */
   logoIcon?: MediaAsset | null;
+  logoIconWidth?: number;
+  logoIconHeight?: number;
   logoTextLine1?: string;
   logoTextLine2?: string;
-  logoFont?: "Poppins" | "Playfair Display" | "Arial" | "Georgia";
+  logoTextLine1Size?: number;
+  logoTextLine2Size?: number;
+  logoFont?: "SriLankan" | "Poppins" | "Playfair Display" | "Arial" | "Georgia";
   logoTextColor1?: string;
   logoTextColor2?: string;
   logoLightTextColor1?: string;

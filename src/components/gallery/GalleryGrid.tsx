@@ -124,7 +124,7 @@ export function GalleryGrid({ items, labels, filters, variant = "masonry" }: Pro
       )}
 
       {current && (
-        <div role="dialog" aria-modal="true" aria-label={current.title || "Gallery"} className="fixed inset-0 z-50 flex items-center justify-center bg-forest-950/95 p-4" onClick={close}>
+        <div role="dialog" aria-modal="true" aria-label={current.title || labels.photos} className="fixed inset-0 z-50 flex items-center justify-center bg-forest-950/95 p-4" onClick={close}>
           <button ref={closeBtn} type="button" onClick={close} className="absolute inset-e-4 top-4 rounded-full p-2 text-white hover:bg-white/10" aria-label={labels.close}>
             <X className="h-7 w-7" />
           </button>

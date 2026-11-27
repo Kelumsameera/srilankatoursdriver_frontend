@@ -30,7 +30,7 @@ interface Props {
   whatsapp?: { phone?: string; message?: string };
 }
 
-// Header height: 64px on phones/tablets, 80px on desktop; Tamil/Hindi add a 96px nav row.
+// Header height: 64px on phones/tablets, 80px on desktop.
 // Keep in sync with: the open menu height below, the scroll-margin for anchors in app/globals.css and the
 // "content unavailable" bar in app/[locale]/layout.tsx.
 
@@ -45,28 +45,60 @@ function isActive(pathname: string, url?: string) {
 const navTextColor = (solid: boolean) => (solid ? "text-heading hover:text-forest-600" : "text-white/90 hover:text-white");
 
 // Desktop nav link and dropdown button. min-h-11 gives a 44px tap target; the text stays the same size.
-// Longer translations get a full-width desktop row; links wrap as whole items.
-const WRAPPED_NAV_LOCALES = ["ta", "hi"];
+// Links stay on one line; the font and spacing fit the available desktop width.
 
-const desktopNavItem = "relative flex min-h-11 items-center rounded-full px-1.5 text-[0.78rem] font-medium transition-colors 2xl:px-2.5 2xl:text-[0.88rem]";
+const desktopNavItem = "relative flex min-h-11 items-center rounded-full px-[0.5em] text-[1em] font-medium transition-colors";
 
 /**
  * Site header: logo on the left, the main nav in the middle (from 1280px), language / phone / account / Book Now on the right.
  * Transparent over the hero, white once the page is scrolled or the mobile menu is open.
- * Below 1280px the nav moves into the mobile menu (fixed breakpoint, no measuring, so it never changes between page loads).
+ * Below 1280px the nav moves into the mobile menu. Desktop links always remain visible on a single line.
  */
 export function SiteHeader({ nav, logoLight, logoDark, logoMobile, logoMobileLight, languages, phone, whatsapp, themeToggle = false, festive = false, destinationsHero = false }: Props) {
   const tNav = useTranslations("nav");
   const tCommon = useTranslations("common");
   const pathname = usePathname();
-  const wrappedNav = WRAPPED_NAV_LOCALES.includes(useLocale());
-  const navItemClass = cn(desktopNavItem, "whitespace-nowrap", wrappedNav && "justify-center text-center leading-relaxed");
+  const locale = useLocale();
+  const navItemClass = cn(desktopNavItem, "whitespace-nowrap");
 
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
   const [lastPathname, setLastPathname] = useState(pathname);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const barRef = useRef<HTMLDivElement>(null);
+  const logoRef = useRef<HTMLDivElement>(null);
+  const actionsRef = useRef<HTMLDivElement>(null);
+  const linksRef = useRef<HTMLUListElement>(null);
+  const navRef = useRef<HTMLElement>(null);
+  const navScale = useRef(1);
+  const [dropdownPosition, setDropdownPosition] = useState({ top: 80, left: 0 });
+
+  // Fit translated labels without wrapping, clipping, or hiding desktop links.
+  useEffect(() => {
+    const bar = barRef.current;
+    const logo = logoRef.current;
+    const actions = actionsRef.current;
+    const list = linksRef.current;
+    const navigation = navRef.current;
+    if (!bar || !logo || !actions || !list || !navigation) return;
+    const measure = () => {
+      if (!navigation.clientWidth) return;
+      const naturalWidth = list.getBoundingClientRect().width / navScale.current;
+      if (!naturalWidth) return;
+      // Keep text readable; very long translations can scroll within this same row.
+      const scale = Math.max(0.85, Math.min(1, Math.floor((navigation.clientWidth - 4) / naturalWidth * 1000) / 1000));
+      list.style.marginInline = scale === 0.85 && naturalWidth * scale > navigation.clientWidth ? "0" : "auto";
+      if (scale > 0 && Math.abs(scale - navScale.current) >= 0.002) {
+        navScale.current = scale;
+        list.style.fontSize = `${0.88 * scale}rem`;
+      }
+    };
+    const observer = new ResizeObserver(measure);
+    [bar, logo, actions, list, navigation].forEach((element) => observer.observe(element));
+    measure();
+    return () => observer.disconnect();
+  }, [nav, locale]);
 
   // Solid bar once the page is scrolled a little
   useEffect(() => {
@@ -123,12 +155,12 @@ export function SiteHeader({ nav, logoLight, logoDark, logoMobile, logoMobileLig
       )}
     >
       {/* HEADER BAR */}
-      <div className={cn(
-        "flex h-16 w-full items-center gap-2 px-3 sm:gap-3 sm:px-6 lg:px-8 2xl:px-10",
-        wrappedNav ? "xl:grid xl:h-auto xl:grid-cols-[auto_1fr] xl:grid-rows-[5rem_auto] xl:gap-x-3 xl:gap-y-0" : "xl:h-20",
+      <div ref={barRef} className={cn(
+        "flex h-16 w-full items-center gap-2 px-3 sm:gap-3 sm:px-6 lg:px-8 xl:gap-2 xl:px-5",
+        "xl:h-20",
       )}>
         {/* LOGO: may shrink on very narrow phones so the menu button always fits */}
-        <div className="flex min-w-0 shrink items-center">
+        <div ref={logoRef} className="flex min-w-0 shrink items-center xl:shrink-0 xl:[zoom:0.8]">
           <CmsLink href="/" className="flex min-w-0 items-center" ariaLabel={tCommon("home")}>
             {/* On the solid bar: the dark logo, or the light one in dark mode */}
             <span className="hidden sm:block dark:sm:hidden">{solid ? logoDark : logoLight}</span>
@@ -140,22 +172,34 @@ export function SiteHeader({ nav, logoLight, logoDark, logoMobile, logoMobileLig
         </div>
 
         {/* DESKTOP NAV (from 1280px) */}
-        <nav aria-label="Main" className={cn("hidden min-w-0 flex-1 justify-center xl:flex", wrappedNav && "xl:col-span-2 xl:row-start-2 xl:min-h-24 xl:pb-2")}>
+        <nav ref={navRef} aria-label="Main" className="hidden min-w-0 flex-1 items-center overflow-x-auto overscroll-x-contain xl:flex">
           <ul
-            className={cn("flex min-w-0 items-center", wrappedNav ? "w-full flex-wrap justify-center gap-x-4" : "gap-0 2xl:gap-0.5")}
+            ref={linksRef}
+            className="flex w-max shrink-0 items-center gap-0 text-[0.88rem]"
           >
             {links.map((item) => {
               const active = isActive(pathname, item.url);
               return (
-                <li key={item._id} className="group relative min-w-0">
+                <li
+                  key={item._id}
+                  className="group relative min-w-0 shrink-0"
+                  onMouseEnter={(event) => {
+                    const rect = event.currentTarget.getBoundingClientRect();
+                    setDropdownPosition({ top: rect.bottom, left: Math.max(8, Math.min(rect.left, window.innerWidth - 232)) });
+                  }}
+                  onFocus={(event) => {
+                    const rect = event.currentTarget.getBoundingClientRect();
+                    setDropdownPosition({ top: rect.bottom, left: Math.max(8, Math.min(rect.left, window.innerWidth - 232)) });
+                  }}
+                >
                   {item.children?.length ? (
                     <>
                       {/* Dropdown: opens on hover and on keyboard focus */}
                       <button type="button" aria-haspopup="true" className={cn(navItemClass, "gap-0.5", navTextColor(solid))}>
                         <span className="min-w-0">{item.label}</span>
-                        <ChevronDown className="h-3 w-3 shrink-0 2xl:h-3.5 2xl:w-3.5" aria-hidden />
+                        <ChevronDown className="h-[1em] w-[1em] shrink-0" aria-hidden />
                       </button>
-                      <ul className="invisible absolute inset-s-0 top-full min-w-56 translate-y-2 rounded-2xl border border-sand-200 bg-surface p-2 opacity-0 shadow-soft transition-all group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
+                      <ul style={dropdownPosition} className="invisible fixed z-50 w-56 translate-y-2 rounded-2xl border border-sand-200 bg-surface p-2 opacity-0 shadow-soft transition-all group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
                         {item.children.map((child) => (
                           <li key={child._id}>
                             <CmsLink href={child.url} newTab={child.openInNewTab} className="block rounded-xl px-3 py-3 text-sm text-heading hover:bg-sand-100">
@@ -188,7 +232,7 @@ export function SiteHeader({ nav, logoLight, logoDark, logoMobile, logoMobileLig
         </nav>
 
         {/* ACTIONS: language, phone, account, Book Now, menu button. ms-auto keeps them on the right when the nav is hidden. */}
-        <div className={cn("ms-auto flex shrink-0 items-center gap-0 sm:gap-1 2xl:gap-2", wrappedNav && "xl:col-start-2 xl:row-start-1")}>
+        <div ref={actionsRef} className={cn("ms-auto flex shrink-0 items-center gap-0 sm:gap-1 xl:gap-0 xl:[zoom:0.85]")}>
           <LanguageSwitcher enabled={languages} tone={solid ? "dark" : "light"} />
 
           {themeToggle && <ThemeToggle tone={solid ? "dark" : "light"} />}
@@ -207,8 +251,8 @@ export function SiteHeader({ nav, logoLight, logoDark, logoMobile, logoMobileLig
 
           {/* Book Now: the same primary button as the CTA and section buttons (ButtonLink, size md) */}
           {ctas.map((cta) => (
-            <span key={cta._id} className="hidden sm:block">
-              <CmsLink href={cta.url} whatsapp={whatsapp} className={buttonClass("primary", "md")}>
+            <span key={cta._id} className="hidden max-w-48 sm:block">
+              <CmsLink href={cta.url} whatsapp={whatsapp} className={buttonClass("primary", "md", "whitespace-nowrap xl:px-4")}>
                 {cta.label}
               </CmsLink>
             </span>
@@ -221,7 +265,7 @@ export function SiteHeader({ nav, logoLight, logoDark, logoMobile, logoMobileLig
             aria-expanded={menuOpen}
             aria-controls="mobile-menu"
             aria-label={menuOpen ? tNav("closeMenu") : tNav("openMenu")}
-            className={cn("inline-flex h-11 w-11 items-center justify-center rounded-full xl:hidden", solid ? "text-heading" : "text-white")}
+            className={cn("inline-flex h-11 w-11 items-center justify-center rounded-full", "xl:hidden", solid ? "text-heading" : "text-white")}
           >
             {menuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
@@ -288,7 +332,6 @@ export function SiteHeader({ nav, logoLight, logoDark, logoMobile, logoMobileLig
         </div>
       )}
     </header>
-    {wrappedNav && interiorPage && !imageHeroPage && <div aria-hidden="true" className="hidden xl:block xl:h-24 xl:shrink-0" />}
     </>
   );
 }

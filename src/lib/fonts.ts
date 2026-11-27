@@ -19,3 +19,11 @@ export const travelDisplay = localFont({
   variable: "--font-travel-display",
   fallback: ["Playfair Display", "Georgia"],
 });
+
+export const sriLankan = localFont({
+  src: "../../public/fonts/srilankan/SriLankan.ttf",
+  weight: "400",
+  display: "swap",
+  variable: "--font-srilankan",
+  fallback: ["Arial", "sans-serif"],
+});

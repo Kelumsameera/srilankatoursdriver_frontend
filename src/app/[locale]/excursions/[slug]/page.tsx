@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Clock, MapPin, Navigation } from "lucide-react";
+import { MapPin, Navigation } from "lucide-react";
 import { getDetail, getPage, getSiteSettings } from "@/lib/api/server";
 import { buildMetadata } from "@/lib/seo";
 import { whatsappLink } from "@/lib/utils";
@@ -13,7 +13,7 @@ import { ExcursionCard } from "@/components/cards/ExcursionCard";
 import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 import { ExcursionRates } from "@/components/site/ExcursionRates";
 import { DestinationMap } from "@/components/site/DestinationMap";
-import { CheckList, DetailSection, FactList, MediaStrip } from "@/components/site/DetailBits";
+import { CheckList, DetailSection, MediaStrip } from "@/components/site/DetailBits";
 import { excursionCover } from "@/lib/editorial-images";
 import { destinationMarker } from "@/lib/destination-map";
 import { reveal3d } from "@/lib/reveal";
@@ -83,28 +83,13 @@ export default async function ExcursionDetailPage({ params }: Props) {
       {/* HERO: title, short text and the key facts */}
       <section className="relative isolate overflow-hidden bg-forest-900 text-white">
         <CmsImage media={heroImage} alt={heroImage.alt || excursion.title} preload wrapperClassName="absolute inset-0 -z-10" className="animate-ken-burns" />
-        <div className="absolute inset-0 -z-10 bg-gradient-to-t from-forest-950 via-forest-950/55 to-forest-950/25" />
+        <div className="absolute inset-0 -z-10 bg-linear-to-t from-forest-950 via-forest-950/55 to-forest-950/25" />
         <div className="container-page pb-14 pt-40 sm:pt-52">
-          <Breadcrumbs
-            locale={locale}
-            items={[
-              { label: tCommon("home"), href: "/" },
-              { label: listingPage?.page.title ?? "", href: "/excursions" },
-              { label: excursion.title },
-            ]}
-          />
+          <Breadcrumbs locale={locale} items={[{ label: tCommon("home"), href: "/" }, { label: listingPage?.page.title ?? "", href: "/excursions" }, { label: excursion.title }]} />
           <h1 className="max-w-4xl text-h1 leading-tight">{excursion.title}</h1>
           {excursion.shortDescription && <p className="mt-5 max-w-3xl text-lead text-white/80">{excursion.shortDescription}</p>}
 
           {/* FACTS: duration, place (prices live in the rates table) */}
-          <div className="mt-10 border-t border-white/15 pt-8">
-            <FactList
-              facts={[
-                { icon: <Clock className="h-5 w-5" />, label: t("duration"), value: excursion.duration },
-                { icon: <MapPin className="h-5 w-5" />, label: t("location"), value: excursion.location || excursion.destination?.name },
-              ]}
-            />
-          </div>
         </div>
       </section>
 
@@ -160,7 +145,7 @@ export default async function ExcursionDetailPage({ params }: Props) {
       {/* MAP (below the description): where the excursion is on the whole island (no card – the sea fades into the page), bigger on desktop, with a directions link */}
       <section className="container-page pb-14" data-testid="excursion-map">
         {hasPin && (
-          <div className="[&_svg]:max-w-60 lg:[&_svg]:max-w-[26rem]">
+          <div className="[&_svg]:max-w-60 lg:[&_svg]:max-w-104">
             <DestinationMap
               destination={{ name: placeName, location: excursion.coordinates }}
               label={tDestination("mapLabel", { name: placeName })}

@@ -42,7 +42,7 @@ function forwardClientIp(request: NextRequest) {
 async function localize(request: NextRequest) {
   const { enabled, defaultLocale } = await siteLanguages();
   const [, first, ...rest] = request.nextUrl.pathname.split("/");
-  if (isLocale(first) && !enabled.includes(first)) {
+  if (first === "si" || (isLocale(first) && !enabled.includes(first))) {
     const url = request.nextUrl.clone();
     url.pathname = `/${[defaultLocale, ...rest].join("/")}`.replace(/\/$/, "") || "/";
     return NextResponse.redirect(url);

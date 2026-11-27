@@ -206,7 +206,7 @@
     "next": "下一个",
     "listEyebrow": "探索斯里兰卡",
     "listIntro": "从古老圣城、云雾茶园到野生国家公园和棕榈海滩，选择您想去的地方，我们将围绕它们为您打造旅程。",
-    "filterLabel": "按类别筛选目的地",
+    "filterLabel": "按地点筛选目的地",
     "allCategories": "全部",
     "resultsCount": "{count, plural, other {# 个目的地}}",
     "noMatches": "没有符合此筛选条件的目的地。"
@@ -461,9 +461,9 @@
     "banner": "预览模式——已停用的版块可见。此页面未公开。"
   },
   "about": {
-    "teamLabel": "Our team",
-    "teamTitle": "Meet the people behind your journey",
-    "teamLanguages": "Speaks",
+    "teamLabel": "我们的团队",
+    "teamTitle": "认识为您打造旅程的团队成员",
+    "teamLanguages": "使用语言",
     "title": "关于 Sri Lanka Tours Driver",
     "awardsTitle": "深受旅行者认可",
     "awardsSubtitle": "我们很荣幸获得 Tripadvisor Travelers’ Choice 奖项，感谢每一段让宾客难忘的旅程。",

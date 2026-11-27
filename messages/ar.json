@@ -206,7 +206,7 @@
     "next": "التالي",
     "listEyebrow": "اكتشف سريلانكا",
     "listIntro": "من المدن المقدسة ومزارع الشاي الضبابية إلى المحميات الطبيعية والشواطئ المحاطة بالنخيل، اختر الأماكن التي تود رؤيتها وسنصمم الرحلة حولها.",
-    "filterLabel": "تصفية الوجهات حسب الفئة",
+    "filterLabel": "تصفية الوجهات حسب الموقع",
     "allCategories": "الكل",
     "resultsCount": "{count, plural, zero {لا وجهات} one {وجهة واحدة} two {وجهتان} few {# وجهات} many {# وجهة} other {# وجهة}}",
     "noMatches": "لا توجد وجهات تطابق هذا التصفية."
@@ -461,9 +461,9 @@
     "banner": "وضع المعاينة – الأقسام المعطلة ظاهرة. هذه الصفحة غير منشورة."
   },
   "about": {
-    "teamLabel": "Our team",
-    "teamTitle": "Meet the people behind your journey",
-    "teamLanguages": "Speaks",
+    "teamLabel": "فريقنا",
+    "teamTitle": "تعرّف على الأشخاص الذين يقفون وراء رحلتك",
+    "teamLanguages": "يتحدث",
     "title": "عن Sri Lanka Tours Driver",
     "awardsTitle": "تقدير المسافرين",
     "awardsSubtitle": "نفخر بحصولنا على جوائز Travelers’ Choice من Tripadvisor، تقديرًا للرحلات التي لا ينساها ضيوفنا.",

@@ -48,7 +48,7 @@ function sampleValues(nodes, count) {
 }
 let errors = 0;
 let checked = 0;
-for (const file of readdirSync(messagesDir).filter((name) => name.endsWith(".json"))) {
+for (const file of readdirSync(messagesDir).filter((name) => name.endsWith(".json") && name !== "si.json")) {
   const translated = flatten(JSON.parse(readFileSync(resolve(messagesDir, file), "utf8")));
   let localeErrors = 0;
   for (const [key, source] of Object.entries(english)) {

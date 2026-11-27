@@ -206,7 +206,7 @@
     "next": "次へ",
     "listEyebrow": "スリランカを発見",
     "listIntro": "聖なる古都や霧に包まれた茶畑から、野生の国立公園、ヤシの木が並ぶビーチまで。行きたい場所を選んでいただければ、それに合わせて旅をお作りします。",
-    "filterLabel": "カテゴリーで目的地を絞り込む",
+    "filterLabel": "場所で目的地を絞り込む",
     "allCategories": "すべて",
     "resultsCount": "{count, plural, other {#件の目的地}}",
     "noMatches": "この条件に一致する目的地はありません。"
@@ -461,9 +461,9 @@
     "banner": "プレビューモード – 無効なセクションも表示されています。このページは公開されていません。"
   },
   "about": {
-    "teamLabel": "Our team",
-    "teamTitle": "Meet the people behind your journey",
-    "teamLanguages": "Speaks",
+    "teamLabel": "私たちのチーム",
+    "teamTitle": "あなたの旅を支えるスタッフをご紹介",
+    "teamLanguages": "対応言語",
     "title": "Sri Lanka Tours Driver について",
     "awardsTitle": "旅人に選ばれたサービス",
     "awardsSubtitle": "旅の思い出を大切にするお客様に支えられ、Tripadvisor Travelers’ Choiceを受賞しました。",

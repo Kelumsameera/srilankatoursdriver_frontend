@@ -536,31 +536,41 @@ html[data-site="public"][data-theme="dark"] main section:is(.bg-sand-50, .bg-san
   :where(html[data-site="public"] [id]) {
     scroll-margin-top: 6rem;
   }
-
-  /* Tamil and Hindi use an 80px brand row plus a 96px navigation row. */
-  html[data-site="public"]:is([lang="ta"], [lang="hi"]) [id] {
-    scroll-margin-top: 12rem;
-  }
-
-  html[data-site="public"]:is([lang="ta"], [lang="hi"]) .container-page.min-h-svh {
-    padding-top: 13rem;
-  }
-
-  html[data-site="public"]:is([lang="ta"], [lang="hi"]) .page-banner > .container-page {
-    padding-top: 13rem;
-  }
 }
 
-/* Sections rise in with a slight 3D tilt (the bottom edge leans back, then stands up). */
+/* ── Scroll reveals ─────────────────────────────────────────────────────────────────────────────────
+   `data-scroll-reveal` hides an element until ScrollReveal adds `.is-visible`. Only active once
+   `html.motion-ready` is set (JS ran); without JS or with reduced motion everything stays visible.
+   Variants are the attribute value (see RevealVariant in lib/reveal.ts). Knobs:
+     --reveal-delay     stagger before the transition (ms)        --reveal-distance  slide distance
+     --reveal-duration  transition length (ms)                    --reveal-easing    timing function
+   Sections rise in with a slight 3D tilt (the bottom edge leans back, then stands up). */
 html.motion-ready [data-scroll-reveal]:not(.is-visible) {
   opacity: 0;
-  transform: perspective(1600px) translateY(28px) rotateX(5deg);
+  transform: perspective(1600px) translateY(var(--reveal-distance, 28px)) rotateX(5deg);
 }
 
 [data-scroll-reveal] {
+  /* Timing + geometry knobs shared by every variant. */
+  --reveal-delay: 0ms;
+  --reveal-duration: 900ms;
+  --reveal-easing: cubic-bezier(0.22, 1, 0.36, 1);
+  --reveal-distance: 28px;
+  --reveal-scale: 0.94;
+  --reveal-blur: 12px;
+  --reveal-rotate: 8deg;
   transform-origin: 50% 100%;
-  transition: opacity 700ms cubic-bezier(0.22, 1, 0.36, 1), transform 900ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition:
+    opacity calc(var(--reveal-duration) * 0.78) var(--reveal-easing),
+    transform var(--reveal-duration) var(--reveal-easing),
+    filter var(--reveal-duration) var(--reveal-easing),
+    clip-path var(--reveal-duration) var(--reveal-easing);
   transition-delay: var(--reveal-delay, 0ms);
+}
+
+/* Opacity + transform are promoted while animating; released once visible. */
+html.motion-ready [data-scroll-reveal]:not(.is-visible) {
+  will-change: opacity, transform;
 }
 
 /* 3-column card grids: a last card alone in its row sits in the middle column instead of on the left. */
@@ -600,11 +610,94 @@ html.motion-ready [data-scroll-reveal="3d"]:not(.is-visible) {
   transition-delay: var(--reveal-delay, 0ms);
 }
 
+/* ── Reveal variants (data-scroll-reveal="…"). Specificity beats the base rise; `.is-visible` resets. ── */
+
+/* Explicit rise + fade. */
+html.motion-ready [data-scroll-reveal="rise"]:not(.is-visible) {
+  opacity: 0;
+  transform: translateY(var(--reveal-distance, 28px));
+}
+/* Opacity only. */
+html.motion-ready [data-scroll-reveal="fade"]:not(.is-visible) {
+  opacity: 0;
+  transform: none;
+}
+/* Slide down from above. */
+html.motion-ready [data-scroll-reveal="drop"]:not(.is-visible) {
+  opacity: 0;
+  transform: translateY(calc(var(--reveal-distance, 28px) * -1));
+}
+/* Slide in from the left. */
+html.motion-ready [data-scroll-reveal="left"]:not(.is-visible) {
+  opacity: 0;
+  transform: translateX(calc(var(--reveal-distance, 28px) * -1));
+}
+/* Slide in from the right. */
+html.motion-ready [data-scroll-reveal="right"]:not(.is-visible) {
+  opacity: 0;
+  transform: translateX(var(--reveal-distance, 28px));
+}
+/* Grow from 94%. */
+html.motion-ready [data-scroll-reveal="scale"]:not(.is-visible) {
+  opacity: 0;
+  transform: scale(var(--reveal-scale, 0.94));
+}
+/* Shrink from 106% into place. */
+html.motion-ready [data-scroll-reveal="zoom"]:not(.is-visible) {
+  opacity: 0;
+  transform: scale(1.06);
+}
+/* Un-blur + slide up. */
+html.motion-ready [data-scroll-reveal="blur"]:not(.is-visible) {
+  opacity: 0;
+  transform: translateY(calc(var(--reveal-distance, 28px) * 0.5));
+  filter: blur(var(--reveal-blur, 12px));
+}
+/* 3D flip in on the Y axis. */
+html.motion-ready [data-scroll-reveal="flip"]:not(.is-visible) {
+  opacity: 0;
+  transform: perspective(1200px) rotateY(var(--reveal-rotate, 8deg)) translateY(calc(var(--reveal-distance, 28px) * 0.5));
+  transform-origin: 50% 50%;
+}
+/* Small 3D swing in. */
+html.motion-ready [data-scroll-reveal="swing"]:not(.is-visible) {
+  opacity: 0;
+  transform: perspective(1200px) rotate(var(--reveal-rotate, 8deg)) scale(var(--reveal-scale, 0.94));
+}
+/* Wipe in from the inline-start edge. */
+html.motion-ready [data-scroll-reveal="clip"]:not(.is-visible) {
+  opacity: 1;
+  transform: none;
+  clip-path: inset(0 100% 0 0);
+}
+html[dir="rtl"].motion-ready [data-scroll-reveal="clip"]:not(.is-visible),
+[dir="rtl"].motion-ready [data-scroll-reveal="clip"]:not(.is-visible) {
+  clip-path: inset(0 0 0 100%);
+}
+/* Wipe in from the bottom (line / section reveal). */
+html.motion-ready [data-scroll-reveal="mask"]:not(.is-visible) {
+  opacity: 1;
+  transform: none;
+  clip-path: inset(0 0 100% 0);
+}
+
+[data-scroll-reveal="clip"],
+[data-scroll-reveal="mask"] {
+  /* Clip-wipe variants don't fade; keep them crisp. */
+  transition:
+    transform var(--reveal-duration) var(--reveal-easing),
+    clip-path var(--reveal-duration) var(--reveal-easing);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
 [data-scroll-reveal].is-visible {
   opacity: 1;
   /* "none", not translateY(0): any transform creates a stacking context, which would stop decorative foliage from
      reaching over the edge into the next section. */
   transform: none;
+  filter: none;
+  clip-path: none;
+  will-change: auto;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -612,7 +705,10 @@ html.motion-ready [data-scroll-reveal="3d"]:not(.is-visible) {
   html.motion-ready [data-scroll-reveal]:not(.is-visible) {
     opacity: 1;
     transform: none;
+    filter: none;
+    clip-path: none;
     transition: none;
+    will-change: auto;
   }
 }
 
@@ -793,4 +889,47 @@ html[data-festive] body {
   .xmas-footer-flight { animation: none; transform: translateX(12vw); will-change: auto; }
   .xmas-svg-team-motion { display: none; }
   .xmas-svg-team-still { display: block; }
+}
+
+/* -- Scroll progress (components/ui/ScrollProgress.tsx) -------------------------------------------
+   --scroll-progress (0 ? 1) is written by JS on <html> for the whole page, on the bar, and on any
+   [data-scroll-progress] element for its own travel through the viewport. Fixed bar pinned to the top. */
+.scroll-progress {
+  position: fixed;
+  inset-inline: 0;
+  top: 0;
+  z-index: 60;
+  height: 3px;
+  pointer-events: none;
+  background: transparent;
+  /* Keep the bar visually on top of the sticky header's bottom edge. */
+}
+.scroll-progress-bar {
+  display: block;
+  height: 100%;
+  width: 100%;
+  transform: scaleX(var(--scroll-progress, 0));
+  transform-origin: 0 50%;
+  background: linear-gradient(90deg, var(--brand-accent, #c9a227), var(--color-gold-500, #d8b24a));
+  will-change: transform;
+}
+[dir="rtl"] .scroll-progress-bar {
+  transform-origin: 100% 50%;
+}
+
+/* Scroll-linked helpers: applied only when motion is welcome. --scroll-progress comes from ScrollProgress. */
+@media (prefers-reduced-motion: no-preference) {
+  [data-scroll-progress] {
+    --scroll-progress: 0;
+  }
+  /* Fade a fixed/sticky element in as the page scrolls. */
+  .scroll-fade-in { opacity: var(--scroll-progress, 1); }
+  /* Grow/shrink an element with scroll. */
+  .scroll-scale { scale: calc(0.9 + 0.1 * var(--scroll-progress, 1)); }
+  /* Parallax a decorative element against the scroll. */
+  .scroll-shift-y { translate: 0 calc((0.5 - var(--scroll-progress, 0.5)) * var(--scroll-shift, 40px)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-progress { display: none; }
 }

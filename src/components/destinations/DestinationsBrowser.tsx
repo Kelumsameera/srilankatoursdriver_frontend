@@ -11,41 +11,41 @@ import { CmsLink } from "@/components/ui/CmsLink";
 import { reveal3d } from "@/lib/reveal";
 import { destinationCover } from "@/lib/editorial-images";
 
-// Category buttons + the grid of destination cards.
-// The chosen category is kept in the URL (?category=beach) so a filtered list can be shared or reloaded.
-export function DestinationsBrowser({ destinations, initialCategory, eagerFirstImage = false }: { destinations: Destination[]; initialCategory?: string; eagerFirstImage?: boolean }) {
+// Location buttons + the grid of destination cards.
+// The chosen destination is kept in the URL (?location=ella) so a filtered list can be shared or reloaded.
+export function DestinationsBrowser({ destinations, initialLocation, eagerFirstImage = false }: { destinations: Destination[]; initialLocation?: string; eagerFirstImage?: boolean }) {
   const t = useTranslations("destination");
   const listRef = useRef<HTMLUListElement>(null);
   const listId = useId();
-  const [position, setPosition] = useState<{ category?: string; index: number }>({ index: 0 });
+  const [position, setPosition] = useState<{ location?: string; index: number }>({ index: 0 });
 
-  // One button per category that the destinations actually use, sorted A-Z
-  const categories = useMemo(() => {
+  // One button per available destination location, sorted A-Z.
+  const locations = useMemo(() => {
     const namesBySlug = new Map<string, string>();
     for (const destination of destinations) {
-      if (destination.category?.slug && !namesBySlug.has(destination.category.slug)) {
-        namesBySlug.set(destination.category.slug, destination.category.name);
+      if (destination.slug && !namesBySlug.has(destination.slug)) {
+        namesBySlug.set(destination.slug, destination.name);
       }
     }
     return [...namesBySlug].map(([slug, name]) => ({ slug, name })).sort((a, b) => a.name.localeCompare(b.name));
   }, [destinations]);
 
-  // undefined = "All". A ?category= value that does not exist is ignored.
-  const [activeCategory, setActiveCategory] = useState(() => (categories.some((category) => category.slug === initialCategory) ? initialCategory : undefined));
+  // undefined = "All". A ?location= value that does not exist is ignored.
+  const [activeLocation, setActiveLocation] = useState(() => (locations.some((location) => location.slug === initialLocation) ? initialLocation : undefined));
 
-  // Write the chosen category into the URL without reloading the page
+  // Write the chosen location into the URL without reloading the page.
   useEffect(() => {
     const url = new URL(window.location.href);
-    if (activeCategory) url.searchParams.set("category", activeCategory);
-    else url.searchParams.delete("category");
+    if (activeLocation) url.searchParams.set("location", activeLocation);
+    else url.searchParams.delete("location");
     url.searchParams.delete("page");
     window.history.replaceState(window.history.state, "", url);
-  }, [activeCategory]);
+  }, [activeLocation]);
 
-  // The browser back / forward buttons change the URL, so read the category back from it
+  // The browser back / forward buttons change the URL, so read the location back from it.
   useEffect(() => {
     function onBackOrForward() {
-      setActiveCategory(new URL(window.location.href).searchParams.get("category") ?? undefined);
+      setActiveLocation(new URL(window.location.href).searchParams.get("location") ?? undefined);
     }
     window.addEventListener("popstate", onBackOrForward);
     return () => window.removeEventListener("popstate", onBackOrForward);
@@ -53,20 +53,20 @@ export function DestinationsBrowser({ destinations, initialCategory, eagerFirstI
 
   // Cards A-Z by the (translated) name
   const sorted = [...destinations].sort((a, b) => a.name.localeCompare(b.name));
-  const visibleDestinations = activeCategory ? sorted.filter((destination) => destination.category?.slug === activeCategory) : sorted;
+  const visibleDestinations = activeLocation ? sorted.filter((destination) => destination.slug === activeLocation) : sorted;
   const pageSize = 6;
   const pageCount = Math.ceil(visibleDestinations.length / pageSize);
-  const currentPage = position.category === activeCategory ? Math.min(position.index, Math.max(pageCount - 1, 0)) : 0;
+  const currentPage = position.location === activeLocation ? Math.min(position.index, Math.max(pageCount - 1, 0)) : 0;
   const firstPage = Math.max(0, Math.min(currentPage - 2, pageCount - 5));
   const pageNumbers = Array.from({ length: Math.min(5, pageCount) }, (_, index) => firstPage + index);
   const paginationClass = "flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-gold-400 text-sm text-brand disabled:opacity-35 focus-visible:outline-2 focus-visible:outline-offset-2";
 
   function goToPage(page: number) {
-    setPosition({ category: activeCategory, index: page });
+    setPosition({ location: activeLocation, index: page });
     listRef.current?.scrollIntoView({ block: "start", behavior: "instant" });
   }
 
-  // Tailwind classes for a category button (dark green when selected)
+  // Tailwind classes for a location button (dark green when selected).
   function buttonClass(selected: boolean) {
     return cn(
       "inline-flex min-h-9 items-center rounded-full border px-3 text-xs sm:min-h-11 sm:px-5 sm:text-sm font-medium transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand",
@@ -76,21 +76,21 @@ export function DestinationsBrowser({ destinations, initialCategory, eagerFirstI
 
   return (
     <div>
-      {/* CATEGORY BUTTONS */}
-      {categories.length > 1 && (
+      {/* LOCATION BUTTONS */}
+      {locations.length > 1 && (
         <div role="group" aria-label={t("filterLabel")} className="mb-3 flex flex-wrap gap-1.5 sm:mb-4 sm:gap-2.5" data-testid="destination-filters">
-          <button type="button" aria-pressed={!activeCategory} className={buttonClass(!activeCategory)} onClick={() => setActiveCategory(undefined)}>
+          <button type="button" aria-pressed={!activeLocation} className={buttonClass(!activeLocation)} onClick={() => setActiveLocation(undefined)}>
             {t("allCategories")}
           </button>
-          {categories.map((category) => (
+          {locations.map((location) => (
             <button
-              key={category.slug}
+              key={location.slug}
               type="button"
-              aria-pressed={activeCategory === category.slug}
-              className={buttonClass(activeCategory === category.slug)}
-              onClick={() => setActiveCategory(category.slug)}
+              aria-pressed={activeLocation === location.slug}
+              className={buttonClass(activeLocation === location.slug)}
+              onClick={() => setActiveLocation(location.slug)}
             >
-              {category.name}
+              {location.name}
             </button>
           ))}
         </div>
@@ -105,7 +105,7 @@ export function DestinationsBrowser({ destinations, initialCategory, eagerFirstI
 
       {/* DESTINATION CARDS */}
       {visibleDestinations.length ? (
-        <ul key={activeCategory || "all"} id={listId} ref={listRef}
+        <ul key={activeLocation || "all"} id={listId} ref={listRef}
           className="grid-center-last grid scroll-mt-24 grid-cols-1 gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8" data-testid="destination-list">
           {visibleDestinations.map((destination, index) => {
             const cover = destinationCover(destination);

@@ -7,7 +7,6 @@ export const CURRENCIES = [
 /** A sensible "to" currency for each UI language (the visitor's likely home currency). */
 export const LOCALE_CURRENCY: Record<string, string> = {
   en: "GBP",
-  si: "LKR",
   ta: "LKR",
   de: "EUR",
   fr: "EUR",

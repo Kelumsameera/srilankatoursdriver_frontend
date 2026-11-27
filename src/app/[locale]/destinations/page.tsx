@@ -114,7 +114,7 @@ export default async function DestinationsPage({
             <DestinationsBrowser
               destinations={destinationList.items}
               eagerFirstImage={!pageData?.page.heroImage?.url && !(pageData && hasActiveHero(pageData.sections))}
-              initialCategory={param(query, "category")}
+              initialLocation={param(query, "location")}
             />
           ) : (
             <EmptyState text={tCommon("noResults")} />

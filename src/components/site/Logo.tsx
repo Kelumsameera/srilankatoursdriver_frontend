@@ -30,14 +30,17 @@ export function Logo({ branding, siteName, tone = "dark", mobile, className, pre
 
   if (text) {
     const fontFamily = {
+      SriLankan: 'var(--font-srilankan, "SriLankan"), Arial, sans-serif',
       Poppins: '"Poppins", sans-serif',
       "Playfair Display": '"Playfair Display", serif',
-      Arial: 'Arial, sans-serif',
-      Georgia: 'Georgia, serif',
+      Arial: "Arial, sans-serif",
+      Georgia: "Georgia, serif",
     }[branding?.logoFont ?? "Poppins"];
-    const iconHeight = mobile ? 36 : 48;
+    const configuredWidth = branding?.logoIconWidth;
+    const configuredHeight = branding?.logoIconHeight;
+    const iconHeight = configuredHeight ?? (mobile ? 44 : 70);
     const { width: w, height: h } = text.icon ?? {};
-    const iconWidth = w && h ? Math.round((iconHeight * w) / h) : iconHeight;
+    const iconWidth = configuredWidth ?? (w && h ? Math.round((iconHeight * w) / h) : iconHeight);
     return (
       <span className={cn("flex items-center gap-2 sm:gap-2.5", className)}>
         {text.icon?.url && (
@@ -55,23 +58,21 @@ export function Logo({ branding, siteName, tone = "dark", mobile, className, pre
         {/* Editable text stays separate from the icon, with independent colours for each background. */}
         <span className="flex flex-col whitespace-nowrap font-bold leading-none" style={{ fontFamily }}>
           <span
-            style={{ color: tone === "light" ? branding?.logoLightTextColor1 : branding?.logoTextColor1 }}
-            className={cn(
-              "tracking-[0.08em]",
-              tone === "light" ? "text-white" : "text-brand",
-              mobile ? "text-base" : "text-xl sm:text-2xl",
-            )}
+            style={{
+              color: tone === "light" ? branding?.logoLightTextColor1 : branding?.logoTextColor1,
+              fontSize: branding?.logoTextLine1Size ? `${branding.logoTextLine1Size * 0.9}px` : undefined,
+            }}
+            className={cn("tracking-[0.08em]", tone === "light" ? "text-white" : "text-brand", mobile ? "text-[0.9rem]" : "text-lg sm:text-[1.35rem]")}
           >
             {text.lines[0]}
           </span>
           {text.lines[1] && (
             <span
-              style={{ color: tone === "light" ? branding?.logoLightTextColor2 : branding?.logoTextColor2 }}
-              className={cn(
-                "mt-1 tracking-[0.16em]",
-              tone === "light" ? "text-gold-400" : "text-gold-600",
-                mobile ? "text-[0.7rem]" : "text-sm sm:text-base",
-              )}
+              style={{
+                color: tone === "light" ? branding?.logoLightTextColor2 : branding?.logoTextColor2,
+                fontSize: branding?.logoTextLine2Size ? `${branding.logoTextLine2Size * 0.9}px` : undefined,
+              }}
+              className={cn("mt-1 tracking-[0.16em]", tone === "light" ? "text-gold-400" : "text-gold-600", mobile ? "text-[0.63rem]" : "text-[0.7875rem] sm:text-[0.9rem]")}
             >
               {text.lines[1]}
             </span>
@@ -83,7 +84,7 @@ export function Logo({ branding, siteName, tone = "dark", mobile, className, pre
 
   const logo =
     (mobile && tone === "dark" && branding?.mobileLogo?.url ? branding.mobileLogo : null) ??
-    (tone === "light" ? branding?.lightLogo ?? branding?.primaryLogo : branding?.primaryLogo ?? branding?.darkLogo);
+    (tone === "light" ? (branding?.lightLogo ?? branding?.primaryLogo) : (branding?.primaryLogo ?? branding?.darkLogo));
   const width = branding?.logoWidth ?? 180;
   const height = branding?.logoHeight ?? 56;
   const alt = branding?.logoAlt || siteName;
@@ -102,9 +103,5 @@ export function Logo({ branding, siteName, tone = "dark", mobile, className, pre
       />
     );
   }
-  return (
-    <span className={cn("whitespace-nowrap font-display text-lg font-semibold tracking-tight sm:text-2xl", tone === "light" ? "text-white" : "text-heading", className)}>
-      {siteName}
-    </span>
-  );
+  return <span className={cn("whitespace-nowrap font-display text-[1.0125rem] font-semibold tracking-tight sm:text-[1.35rem]", tone === "light" ? "text-white" : "text-heading", className)}>{siteName}</span>;
 }

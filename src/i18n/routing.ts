@@ -1,13 +1,12 @@
 import { defineRouting } from "next-intl/routing";
 
-export const locales = ["en", "si", "ta", "de", "fr", "es", "it", "zh", "ja", "ko", "ru", "ar", "hi", "pt"] as const;
+export const locales = ["en", "ta", "de", "fr", "es", "it", "zh", "ja", "ko", "ru", "ar", "hi", "pt"] as const;
 export type Locale = (typeof locales)[number];
 export const defaultLocale: Locale = "en";
 export const rtlLocales: Locale[] = ["ar"];
 
 export const localeNames: Record<Locale, string> = {
   en: "English",
-  si: "සිංහල",
   ta: "தமிழ்",
   de: "Deutsch",
   fr: "Français",
@@ -25,7 +24,6 @@ export const localeNames: Record<Locale, string> = {
 /** BCP-47 tags used for hreflang / OpenGraph. */
 export const localeTags: Record<Locale, string> = {
   en: "en",
-  si: "si-LK",
   ta: "ta-LK",
   de: "de",
   fr: "fr",

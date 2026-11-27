@@ -4,6 +4,7 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { cn } from "@/lib/utils";
 import type { MediaAsset } from "@/types/cms";
 import { bannerMedia, pageBanner, type PageBannerKey } from "@/lib/page-banners";
+import { reveal } from "@/lib/reveal";
 import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 import { HeroVideo } from "@/components/site/HeroVideo";
 import { CmsImage } from "./CmsImage";
@@ -35,14 +36,14 @@ export function SectionHeading({
       )}
     >
       <div className={cn("max-w-2xl", align === "center" && "mx-auto")}>
-        {eyebrow && <p className={cn("eyebrow mb-3", light && "text-gold-400")}>{eyebrow}</p>}
+        {eyebrow && <p className={cn("eyebrow mb-3", light && "text-gold-400")} {...reveal("fade", { baseDelay: 0 })}>{eyebrow}</p>}
         {title && (
-          <h2 className={cn("text-3xl leading-tight sm:text-4xl lg:text-[2.75rem]", light ? "text-white" : "text-heading")}>{title}</h2>
+          <h2 className={cn("text-3xl leading-tight sm:text-4xl lg:text-[2.75rem]", light ? "text-white" : "text-heading")} {...reveal("mask", { baseDelay: 60 })}>{title}</h2>
         )}
-        {badge && <p className={cn("mt-3 font-display text-xl italic sm:text-2xl", light ? "text-gold-400" : "text-gold-600")}>{badge}</p>}
-        {subtitle && <p className={cn("mt-4 text-base leading-relaxed sm:text-lg", light ? "text-white/75" : "text-muted")}>{subtitle}</p>}
+        {badge && <p className={cn("mt-3 font-display text-xl italic sm:text-2xl", light ? "text-gold-400" : "text-gold-600")} {...reveal("rise", { baseDelay: 180 })}>{badge}</p>}
+        {subtitle && <p className={cn("mt-4 text-base leading-relaxed sm:text-lg", light ? "text-white/75" : "text-muted")} {...reveal("fade", { baseDelay: 160 })}>{subtitle}</p>}
       </div>
-      {action && <div className="shrink-0">{action}</div>}
+      {action && <div className="shrink-0" {...reveal("fade", { baseDelay: 200 })}>{action}</div>}
     </div>
   );
 }

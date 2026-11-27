@@ -206,7 +206,7 @@
     "next": "Next",
     "listEyebrow": "Discover Sri Lanka",
     "listIntro": "From sacred cities and misty tea country to wild national parks and palm-lined beaches, choose the places you'd love to see and we'll shape the journey around them.",
-    "filterLabel": "Filter destinations by category",
+    "filterLabel": "Filter destinations by location",
     "allCategories": "All",
     "resultsCount": "{count, plural, one {# destination} other {# destinations}}",
     "noMatches": "No destinations match this filter."

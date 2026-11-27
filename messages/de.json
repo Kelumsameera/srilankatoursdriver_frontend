@@ -206,7 +206,7 @@
     "next": "Weiter",
     "listEyebrow": "Sri Lanka entdecken",
     "listIntro": "Von heiligen Städten und nebligem Teeland bis zu wilden Nationalparks und palmengesäumten Stränden: Wählen Sie die Orte, die Sie sehen möchten, und wir gestalten die Reise darum herum.",
-    "filterLabel": "Reiseziele nach Kategorie filtern",
+    "filterLabel": "Reiseziele nach Ort filtern",
     "allCategories": "Alle",
     "resultsCount": "{count, plural, one {# Reiseziel} other {# Reiseziele}}",
     "noMatches": "Keine Reiseziele für diesen Filter."
@@ -461,9 +461,9 @@
     "banner": "Vorschaumodus – deaktivierte Abschnitte sind sichtbar. Diese Seite ist nicht öffentlich."
   },
   "about": {
-    "teamLabel": "Our team",
-    "teamTitle": "Meet the people behind your journey",
-    "teamLanguages": "Speaks",
+    "teamLabel": "Unser Team",
+    "teamTitle": "Lernen Sie die Menschen hinter Ihrer Reise kennen",
+    "teamLanguages": "Spricht",
     "title": "Über Sri Lanka Tours Driver",
     "awardsTitle": "Von Reisenden ausgezeichnet",
     "awardsSubtitle": "Wir freuen uns über die Tripadvisor Travelers’ Choice Awards – eine Auszeichnung für unvergessliche Reisen unserer Gäste.",

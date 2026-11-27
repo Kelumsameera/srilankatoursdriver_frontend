@@ -6,6 +6,7 @@ import { Markdown } from "@/components/ui/Markdown";
 import { FeatureIcon } from "@/components/ui/icons";
 import { GoldText } from "./home/Decor";
 import { FernBranch } from "./home/Foliage";
+import { reveal, reveal3d } from "@/lib/reveal";
 import { Buttons, distinctPhotos, sectionTheme, type SectionProps } from "./sectionParts";
 
 /** Three overlapping photos (design: one large photo with two smaller cards laid over it at different angles). */

@@ -206,7 +206,7 @@
     "next": "Suivant",
     "listEyebrow": "Découvrir le Sri Lanka",
     "listIntro": "Des cités sacrées aux plantations de thé brumeuses, des parcs nationaux sauvages aux plages bordées de palmiers : choisissez les lieux qui vous font rêver et nous construirons le voyage autour d'eux.",
-    "filterLabel": "Filtrer les destinations par catégorie",
+    "filterLabel": "Filtrer les destinations par lieu",
     "allCategories": "Toutes",
     "resultsCount": "{count, plural, one {Destination #} other {Destinations #}}",
     "noMatches": "Aucune destination ne correspond à ce filtre."
@@ -461,9 +461,9 @@
     "banner": "Mode aperçu – les sections désactivées sont visibles. Cette page n'est pas publique."
   },
   "about": {
-    "teamLabel": "Our team",
-    "teamTitle": "Meet the people behind your journey",
-    "teamLanguages": "Speaks",
+    "teamLabel": "Notre équipe",
+    "teamTitle": "Découvrez les personnes qui rendent votre voyage possible",
+    "teamLanguages": "Parle",
     "title": "À propos de Sri Lanka Tours Driver",
     "awardsTitle": "Plébiscités par les voyageurs",
     "awardsSubtitle": "Nous sommes fiers de recevoir les prix Travelers’ Choice de Tripadvisor, qui récompensent les voyages inoubliables de nos voyageurs.",

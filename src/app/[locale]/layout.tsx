@@ -20,13 +20,14 @@ import { Logo } from "@/components/site/Logo";
 import { CustomerAuthProvider } from "@/lib/customer/auth";
 import { PageViewTracker } from "@/components/site/PageViewTracker";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
+import { ScrollProgress } from "@/components/ui/ScrollProgress";
 import { HomeMotion } from "@/components/ui/HomeMotion";
 import { DepthScroll } from "@/components/ui/DepthScroll";
 import { Snowfall } from "@/components/ui/Snowfall";
 import { ChristmasScrollDecor } from "@/components/site/ChristmasScrollDecor";
 import { ChristmasFooterScene } from "@/components/site/ChristmasFooterScene";
 import type { SiteSettings } from "@/types/cms";
-import { travelSans, travelDisplay } from "@/lib/fonts";
+import { travelSans, travelDisplay, sriLankan } from "@/lib/fonts";
 import { DEFAULT_THEME, THEME_INIT_SCRIPT, googleFonts, googleFontsUrl, resolveTheme, themeToCss } from "@/lib/theme";
 import Script from "next/script";
 
@@ -106,7 +107,7 @@ export default async function LocaleLayout({ children, params }: Props) {
   return (
     // Browser extensions (password managers, launchers, translators…) add attributes to <html>/<body> before
     // React hydrates; suppressHydrationWarning ignores attribute differences on these two elements only.
-    <html data-scroll-behavior="smooth" data-theme={fixedMode} data-festive={theme.snowfall ? "" : undefined} lang={locale} dir={dir} style={brandStyle} className={`${travelSans.variable} ${travelDisplay.variable}`} data-site="public" suppressHydrationWarning>
+    <html data-scroll-behavior="smooth" data-theme={fixedMode} data-festive={theme.snowfall ? "" : undefined} lang={locale} dir={dir} style={brandStyle} className={`${travelSans.variable} ${travelDisplay.variable} ${sriLankan.variable}`} data-site="public" suppressHydrationWarning>
       <head>
         {fontsUrl && (
           <>
@@ -156,6 +157,7 @@ export default async function LocaleLayout({ children, params }: Props) {
             <CurrencyConverter siteCurrency={settings.currency} />
             <WhatsAppFloat phone={settings.whatsapp} message={settings.whatsappMessage} />
             <WhatsAppClickTracker />
+            <ScrollProgress />
             <DepthScroll />
             {theme.snowfall && <Snowfall />}
             {theme.snowfall && <ChristmasScrollDecor />}

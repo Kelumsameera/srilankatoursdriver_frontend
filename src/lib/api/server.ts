@@ -175,6 +175,7 @@ export interface ListParams {
   category?: string;
   featured?: boolean;
   destination?: string;
+  location?: string;
   search?: string;
   /** Tours only: 1, 5, 8, 10, 12, 14 or "other". */
   days?: string;

@@ -206,7 +206,7 @@
     "next": "다음",
     "listEyebrow": "스리랑카 발견하기",
     "listIntro": "신성한 고도와 안개 낀 차 재배지부터 야생 국립공원과 야자수 해변까지, 가 보고 싶은 곳을 고르시면 그에 맞춰 여행을 만들어 드립니다.",
-    "filterLabel": "카테고리별 여행지 필터",
+    "filterLabel": "장소별 여행지 필터",
     "allCategories": "전체",
     "resultsCount": "{count, plural, other {여행지 #곳}}",
     "noMatches": "이 필터에 맞는 여행지가 없습니다."
@@ -461,9 +461,9 @@
     "banner": "미리보기 모드 – 비활성화된 섹션도 표시됩니다. 이 페이지는 공개되지 않았습니다."
   },
   "about": {
-    "teamLabel": "Our team",
-    "teamTitle": "Meet the people behind your journey",
-    "teamLanguages": "Speaks",
+    "teamLabel": "저희 팀",
+    "teamTitle": "여러분의 여행을 만들어 가는 사람들을 만나보세요",
+    "teamLanguages": "구사 언어",
     "title": "Sri Lanka Tours Driver 소개",
     "awardsTitle": "여행자에게 인정받은 서비스",
     "awardsSubtitle": "고객에게 오래 기억될 여행을 선사한 공로로 Tripadvisor Travelers’ Choice를 수상했습니다.",

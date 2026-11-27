@@ -80,6 +80,20 @@ export function CategoryFilter({ basePath, categories, active, query = {}, class
   );
 }
 
+/** Location filter chips for the excursions page (links, so they work without JS and are crawlable). */
+export function LocationFilter({ basePath, locations, active, query = {}, className, inline }: { basePath: string; locations: string[]; active?: string; query?: Record<string, string | undefined>; className?: string; inline?: boolean }) {
+  const t = useTranslations("common");
+  if (!locations.length) return null;
+  return (
+    <ChipRow label="Filter" className={className} inline={inline}>
+      <FilterChip href={listHref(basePath, query)} label={t("all")} selected={!active} />
+      {locations.map((location) => (
+        <FilterChip key={location} href={listHref(basePath, { location, ...query })} label={location} selected={active === location} />
+      ))}
+    </ChipRow>
+  );
+}
+
 /** ?days= values of the tour length chips – must match `days` in backend/src/validations/public.ts. */
 export const TOUR_DAY_OPTIONS = ["5", "8", "10", "12", "14", "1", "other"] as const;
 
